@@ -47,6 +47,12 @@ export default function ProductDetailClient({product,related=[]}){
       <div className={styles.warranty}><Icon name="check" size={17}/><div><b>Warranty shown separately</b><span>{product.warranty?.manufacturer||product.warranty?.seller||'See product details for current coverage'}</span>{product.warranty?.compressor&&<span>{product.warranty.compressor}</span>}<Link href="/policies/warranty">Coverage and start date details →</Link></div></div>
       <div className={styles.purchase}><div className={styles.qty}><button type="button" aria-label="Decrease quantity" onClick={()=>setQty(Math.max(1,qty-1))}>−</button><span>{qty}</span><button type="button" aria-label="Increase quantity" onClick={()=>setQty(Math.min(99,qty+1))}>+</button></div><Button onClick={add} size="lg" disabled={!product.isDemo&&Number(product.stock||0)<=0}>{product.isDemo||product.stock>0?`Add to bag · ${formatINR(product.price*qty)}`:'Out of stock'}</Button></div>
       <p className={styles.stock}><span/>{product.isDemo?' Sample stock shown · final availability is confirmed when you check out.':product.stock>0?` ${product.stock} available · rechecked at checkout.`:' Currently out of stock.'}</p>
+      <div style={{ margin: '14px 0', padding: '10px 14px', borderRadius: '10px', background: 'var(--rf-cream-50)', border: '1px solid var(--rf-line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, fontSize: 12 }}>
+        <span style={{ color: 'var(--rf-charcoal-600)' }}>Not sure which size or model fits?</span>
+        <Link href={`/consultation?interest=${product.type==='appliance'?'appliances':'furniture'}&product=${product.slug}`} style={{ color: 'var(--rf-green-800)', fontWeight: 800, whiteSpace: 'nowrap' }}>
+          Get advice →
+        </Link>
+      </div>
     </div>
   </div>
   <div className={styles.detailBlocks}>

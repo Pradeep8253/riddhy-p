@@ -1,4 +1,4 @@
-import HomeHero from '@/components/store/HomeHero';
+import HomePromotionalBanner from '@/components/store/HomePromotionalBanner';
 import Marquee from '@/components/store/Marquee';
 import RoomCards from '@/components/store/RoomCards';
 import ShopByAppliance from '@/components/store/ShopByAppliance';
@@ -19,7 +19,7 @@ export default function HomePage(){
   const products=getDemoProducts();
   const bestsellers=[products[0],products[8],products[17],products[24],products[30],products[36],products[41],products[12]];
   return <>
-    <HomeHero/>
+    <HomePromotionalBanner/>
     <Marquee/>
     <section className="section"><div className="container"><SectionHeading eyebrow="Shop by room" title="Start with the room you’re shaping." description="Layer furniture, light and useful details into a space that feels like yours." action={<Button href="/rooms/living" variant="outline">Explore all rooms <span>↗</span></Button>}/><RoomCards/></div></section>
     <section className="section" style={{paddingTop:0}}><div className="container"><SectionHeading eyebrow="Bestsellers, thoughtfully picked" title="The pieces people come back to." description="A demo assortment with dimensions, price and delivery details ready to explore." action={<Button href="/furniture" variant="ghost">Shop all furniture <span>↗</span></Button>}/><ProductRail products={bestsellers}/></div></section>

@@ -4,16 +4,101 @@ const AddressSchema = new Schema({ userId: { type: Schema.Types.ObjectId, ref: '
 const ShipmentSchema = new Schema({ orderId: Schema.Types.ObjectId, carrier: String, trackingNumber: String, status: String, trackingUrl: String, events: [{ status: String, at: Date, location: String, note: String }] }, { timestamps: true });
 const InstallationSchema = new Schema({ orderId: Schema.Types.ObjectId, itemSku: String, pincode: String, slotAt: Date, technician: String, status: { type: String, enum: ['requested','booked','in_progress','completed','cancelled'], default: 'requested' }, notes: String }, { timestamps: true });
 const WarrantyPolicySchema = new Schema({ name: String, source: { type: String, enum: ['manufacturer','seller','extended'] }, durationDays: Number, extensionPriceInr: Number, startsOn: { type: String, enum: ['delivery','installation'], default: 'delivery' }, coverage: String, active: { type: Boolean, default: true }, policyVersion: String }, { timestamps: true });
-const ProductRegistrationSchema = new Schema({ userId: Schema.Types.ObjectId, orderId: Schema.Types.ObjectId, productId: Schema.Types.ObjectId, variantId: Schema.Types.ObjectId, sku: String, serialNumber: String, activationDate: Date, expiryDate: Date, source: { type: String, enum: ['manufacturer','seller','extended'] }, policyVersion: String, registeredFrom: { type: String, enum: ['order','offline','admin'], default: 'order' } }, { timestamps: true });
+const ProductRegistrationSchema = new Schema({
+  userId: Schema.Types.ObjectId,
+  orderId: Schema.Types.ObjectId,
+  orderNumber: String,
+  productId: Schema.Types.ObjectId,
+  productName: String,
+  variantId: Schema.Types.ObjectId,
+  sku: String,
+  serialNumber: String,
+  customerName: String,
+  customerPhone: String,
+  customerEmail: String,
+  purchaseDate: Date,
+  activationDate: Date,
+  expiryDate: Date,
+  durationDays: { type: Number, default: 365 },
+  proofOfPurchase: String,
+  source: { type: String, enum: ['manufacturer','seller','extended'], default: 'seller' },
+  policyVersion: String,
+  registeredFrom: { type: String, enum: ['order','offline','admin','website'], default: 'website' },
+  status: { type: String, enum: ['active', 'expiring_soon', 'expired', 'rejected'], default: 'active' },
+  verified: { type: Boolean, default: true },
+  adminNotes: String
+}, { timestamps: true });
 const WarrantyExtensionSchema = new Schema({ userId: Schema.Types.ObjectId, registrationId: Schema.Types.ObjectId, years: Number, quotedAmount: Number, currency: { type: String, default: 'INR' }, status: { type: String, enum: ['requested','quoted','paid','active','declined'], default: 'requested' }, policyVersion: String, notes: String }, { timestamps: true });
 WarrantyExtensionSchema.index({ registrationId: 1, userId: 1, status: 1 });
 ProductRegistrationSchema.index({ userId: 1, expiryDate: 1 });
 ProductRegistrationSchema.index({ serialNumber: 1 }, { sparse: true, unique: true });
+ProductRegistrationSchema.index({ customerPhone: 1, orderNumber: 1 });
 const ClaimSchema = new Schema({ userId: Schema.Types.ObjectId, registrationId: Schema.Types.ObjectId, orderId: Schema.Types.ObjectId, issue: String, media: [String], status: { type: String, enum: ['submitted','under_review','approved','rejected','resolved'], default: 'submitted' }, preferredContact: String }, { timestamps: true });
 const ClaimEventSchema = new Schema({ claimId: Schema.Types.ObjectId, status: String, note: String, actorId: Schema.Types.ObjectId }, { timestamps: true });
 const ReturnRequestSchema = new Schema({ userId: Schema.Types.ObjectId, orderId: Schema.Types.ObjectId, orderNumber: String, reason: { type: String, required: true }, itemSkus: [String], status: { type: String, enum: ['requested','under_review','approved','rejected','picked_up','refunded'], default: 'requested' }, notes: String }, { timestamps: true });
-const LeadSchema = new Schema({ kind: { type: String, enum: ['contact','trade'], required: true }, name: String, email: String, phone: String, company: String, pincode: String, quantity: Number, message: String, status: { type: String, enum: ['new','in_progress','resolved','spam'], default: 'new' }, source: String, ip: String, emailSent: { type: Boolean, default: false } }, { timestamps: true });
+const LeadSchema = new Schema({
+  kind: { type: String, enum: ['contact', 'trade', 'consultation', 'bulk', 'on_demand', 'general'], required: true },
+  reference: String,
+  name: { type: String, required: true },
+  email: String,
+  phone: { type: String, required: true },
+  company: String,
+  pincode: String,
+  quantity: Number,
+  topic: String,
+  subject: String,
+  orderNumber: String,
+  message: String,
+  status: {
+    type: String,
+    enum: ['new', 'in_progress', 'scheduled', 'completed', 'no_show', 'resolved', 'spam'],
+    default: 'new'
+  },
+  // On-demand & bulk inquiry fields
+  productName: String,
+  category: String,
+  specifications: String,
+  deliveryLocation: String,
+  preferredContactMethod: { type: String, default: 'phone' },
+  intendedUse: String,
+  referenceImage: String,
+
+  // Consultation specific fields
+  interest: [String],
+  roomType: String,
+  budgetRange: String,
+  timeline: String,
+  mode: String,
+  preferredDate: Date,
+  timeWindow: String,
+  altDate: Date,
+  altTimeWindow: String,
+  language: { type: String, default: 'en' },
+  whatsappOptIn: { type: Boolean, default: false },
+  consentAt: Date,
+  serviceable: { type: Boolean, default: true },
+  attachments: [String],
+  assignedTo: { type: Schema.Types.ObjectId, ref: 'User' },
+  internalNotes: [{
+    by: { type: Schema.Types.ObjectId, ref: 'User' },
+    byName: String,
+    at: { type: Date, default: Date.now },
+    text: String
+  }],
+  scheduledAt: Date,
+  utm: {
+    source: String,
+    medium: String,
+    campaign: String
+  },
+  source: { type: String, default: 'website' },
+  ip: String,
+  emailSent: { type: Boolean, default: false }
+}, { timestamps: true });
+
 LeadSchema.index({ kind: 1, status: 1, createdAt: -1 });
+LeadSchema.index({ reference: 1 }, { unique: true, sparse: true });
+LeadSchema.index({ phone: 1, preferredDate: 1 });
 ReturnRequestSchema.index({ userId: 1, createdAt: -1 });
 ReturnRequestSchema.index({ orderId: 1 }, { unique: true });
 

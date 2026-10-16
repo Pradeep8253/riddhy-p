@@ -24,7 +24,7 @@ export const viewport = { themeColor: '#f3eee6', colorScheme: 'light' };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable} ${noto.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${manrope.variable} ${noto.variable}`}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"Organization",name:'RF Riddhy',url:process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000',logo:`${process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000'}/riddhy-logo.jpeg`}).replace(/</g,'\\u003c')}} />
         <a className="skip-link" href="#main-content">Skip to content</a>

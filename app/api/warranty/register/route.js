@@ -1,24 +1,142 @@
 import { z } from 'zod';
 import { connectDB } from '@/lib/db';
-import { ProductRegistration, Product, Variant, Order, WarrantyPolicy } from '@/models/index';
-import { getSession } from '@/lib/auth';
+import { ProductRegistration, Order, AuditLog } from '@/models/index';
 import { ok, fail, jsonBody } from '@/lib/http';
-const schema=z.object({sku:z.string().min(2),serialNumber:z.string().trim().min(4).max(80),activationDate:z.coerce.date(),source:z.enum(['manufacturer','seller']).default('seller'),orderNumber:z.string().trim().optional(),offlinePurchase:z.boolean().default(false)});
-export async function POST(request){
-  const session=await getSession();if(!session)return fail('Sign in to register a product.',401);
-  const parsed=schema.safeParse(await jsonBody(request));if(!parsed.success)return fail('Registration details are incomplete.',400,parsed.error.flatten());
-  try{
-    await connectDB();const {sku,serialNumber,activationDate,source,orderNumber,offlinePurchase}=parsed.data;
-    if(activationDate>new Date())return fail('Warranty activation date cannot be in the future.',400);
-    if(!orderNumber&&!offlinePurchase)return fail('Add an order number, or choose offline purchase registration.',400);
-    if(orderNumber&&offlinePurchase)return fail('Choose either an order number or offline purchase registration.',400);
-    const variant=await Variant.findOne({sku,active:true});if(!variant)return fail('SKU not found.',404);
-    const product=await Product.findById(variant.productId);if(!product)return fail('Product not found.',404);
-    let order=null;
-    if(orderNumber){order=await Order.findOne({orderNumber:orderNumber.toUpperCase(),userId:session.sub});if(!order)return fail('Order does not belong to this account.',403);if(!order.items.some((item)=>item.sku===sku))return fail('This SKU is not part of the order.',400);if(!['confirmed','processing','packed','ready_for_dispatch','shipped','out_for_delivery','delivered','installation_scheduled','installed','completed'].includes(order.status))return fail('Product registration opens after order confirmation.',409)}
-    const policy=await WarrantyPolicy.findOne({source,active:true}).sort({durationDays:-1}).lean();if(!policy?.durationDays)return fail('Warranty terms for this product are not configured.',409);
-    const expiryDate=new Date(activationDate);expiryDate.setDate(expiryDate.getDate()+policy.durationDays);
-    const record=await ProductRegistration.create({userId:session.sub,orderId:order?._id,productId:product._id,variantId:variant._id,sku,serialNumber,activationDate,expiryDate,source,policyVersion:policy.policyVersion,registeredFrom:offlinePurchase?'offline':'order'});
-    return ok({id:String(record._id),sku,activationDate,expiryDate,daysRemaining:policy.durationDays,policyVersion:policy.policyVersion},201);
-  }catch(error){return fail(error.code===11000?'This serial number is already registered.':error.message,400)}
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
+
+const registerSchema = z.object({
+  orderNumber: z.string().optional(),
+  productName: z.string().min(2, 'Product name is required'),
+  serialNumber: z.string().optional(),
+  customerName: z.string().min(2, 'Customer name is required'),
+  customerPhone: z.string().min(10, 'Valid 10-digit phone number is required'),
+  customerEmail: z.string().email().optional().or(z.literal('')),
+  purchaseDate: z.string().min(1, 'Purchase date is required'),
+  durationDays: z.coerce.number().int().min(30).max(3650).default(365),
+  proofOfPurchase: z.string().optional(),
+  category: z.string().optional()
+});
+
+export async function POST(request) {
+  const ip = getClientIp(request);
+  const limit = rateLimit(`warranty-reg:${ip}`, { limit: 10, windowMs: 15 * 60 * 1000 });
+  if (!limit.allowed) {
+    return fail('Too many registration requests. Please try again later.', 429);
+  }
+
+  const body = await jsonBody(request);
+  const parsed = registerSchema.safeParse(body);
+  if (!parsed.success) {
+    return fail('Validation error in warranty registration', 422, parsed.error.flatten());
+  }
+
+  const data = parsed.data;
+
+  // Calculate activation & expiry dates
+  const purchase = new Date(data.purchaseDate);
+  if (isNaN(purchase.getTime()) || purchase > new Date()) {
+    return fail('Purchase date cannot be in the future.', 400);
+  }
+
+  // Determine warranty duration: default 365 days (1 year), 730 days (2 years) for appliances if specified
+  let duration = data.durationDays || 365;
+  if (data.category && data.category.toLowerCase().includes('appliance')) {
+    duration = Math.max(duration, 730);
+  }
+
+  const activationDate = purchase;
+  const expiryDate = new Date(activationDate.getTime() + duration * 86400000);
+  const now = Date.now();
+  const remainingDays = Math.max(0, Math.ceil((expiryDate.getTime() - now) / 86400000));
+
+  let status = 'active';
+  if (remainingDays <= 0) {
+    status = 'expired';
+  } else if (remainingDays <= 30) {
+    status = 'expiring_soon';
+  }
+
+  const cleanSerial = data.serialNumber ? data.serialNumber.trim().toUpperCase() : null;
+
+  try {
+    if (process.env.MONGODB_URI) {
+      await connectDB();
+
+      // Duplicate guard: check serial number
+      if (cleanSerial) {
+        const existing = await ProductRegistration.findOne({ serialNumber: cleanSerial });
+        if (existing) {
+          return fail(
+            `A warranty has already been registered for serial number ${cleanSerial}. You can check your remaining warranty on the warranty status tab.`,
+            409
+          );
+        }
+      }
+
+      // Check if orderNumber matches an existing Order
+      let orderId = null;
+      if (data.orderNumber) {
+        const matchingOrder = await Order.findOne({ orderNumber: data.orderNumber.trim() }).lean();
+        if (matchingOrder) {
+          orderId = matchingOrder._id;
+        }
+      }
+
+      const doc = await ProductRegistration.create({
+        orderNumber: data.orderNumber ? data.orderNumber.trim() : '',
+        orderId,
+        productName: data.productName.trim(),
+        serialNumber: cleanSerial,
+        customerName: data.customerName.trim(),
+        customerPhone: data.customerPhone.trim(),
+        customerEmail: data.customerEmail ? data.customerEmail.trim() : '',
+        purchaseDate: purchase,
+        activationDate,
+        expiryDate,
+        durationDays: duration,
+        proofOfPurchase: data.proofOfPurchase || '',
+        status,
+        verified: true,
+        registeredFrom: 'website'
+      });
+
+      return ok(
+        {
+          registrationId: String(doc._id),
+          serialNumber: cleanSerial,
+          productName: doc.productName,
+          status,
+          purchaseDate: purchase.toISOString().split('T')[0],
+          activationDate: activationDate.toISOString().split('T')[0],
+          expiryDate: expiryDate.toISOString().split('T')[0],
+          durationDays: duration,
+          remainingDays,
+          message: 'Warranty registered successfully.'
+        },
+        201
+      );
+    }
+
+    // Demo/offline fallback response
+    return ok(
+      {
+        registrationId: `REG-DEMO-${Date.now().toString().slice(-6)}`,
+        serialNumber: cleanSerial || 'N/A',
+        productName: data.productName,
+        status,
+        purchaseDate: purchase.toISOString().split('T')[0],
+        activationDate: activationDate.toISOString().split('T')[0],
+        expiryDate: expiryDate.toISOString().split('T')[0],
+        durationDays: duration,
+        remainingDays,
+        message: 'Warranty registered successfully in demo mode.'
+      },
+      201
+    );
+  } catch (error) {
+    if (error.code === 11000) {
+      return fail('This serial number has already been registered.', 409);
+    }
+    return fail(`Registration failed: ${error.message}`, 500);
+  }
 }

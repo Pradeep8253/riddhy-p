@@ -1,0 +1,96 @@
+.pillWrap {
+  position: fixed;
+  bottom: clamp(16px, 3vw, 28px);
+  right: clamp(16px, 3vw, 28px);
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--rf-white);
+  border: 1px solid rgba(224, 160, 64, 0.45);
+  border-radius: 999px;
+  padding: 6px 14px 6px 8px;
+  box-shadow: 0 10px 32px -10px rgba(30, 36, 32, 0.25), 0 4px 12px rgba(224, 160, 64, 0.15);
+  backdrop-filter: blur(8px);
+  transition: transform 0.25s var(--ease-out-expo), box-shadow 0.25s;
+  animation: slideUp 0.35s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pillWrap:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 38px -10px rgba(30, 36, 32, 0.3);
+}
+
+.pillLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--rf-charcoal-900);
+}
+
+.iconCircle {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--rf-gold-500);
+  color: var(--rf-forest-deep);
+  flex-shrink: 0;
+}
+
+.pillText {
+  display: grid;
+  line-height: 1.25;
+}
+
+.pillText b {
+  font-size: 11px;
+  color: var(--rf-forest-deep);
+}
+
+.pillText span {
+  font-size: 10px;
+  color: var(--rf-green-800);
+  font-weight: 700;
+}
+
+.closeBtn {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--rf-charcoal-600);
+  cursor: pointer;
+  margin-left: 4px;
+  padding: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.closeBtn:hover {
+  background: var(--rf-cream-100);
+  color: var(--rf-charcoal-900);
+}
+
+@media (max-width: 480px) {
+  .pillText b {
+    display: none;
+  }
+  .pillText span {
+    font-size: 11px;
+  }
+}

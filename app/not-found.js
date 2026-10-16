@@ -2,5 +2,19 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 
 export default function NotFound() {
-  return <main className="container" style={{ paddingBlock: '14vh', textAlign: 'center' }}><div className="kicker">404 · NOT FOUND</div><h1 className="display-title">This room isn’t here.</h1><p className="muted" style={{ margin: '18px auto 28px', maxWidth: 480 }}>The page may have moved, but your next favourite find is just around the corner.</p><Button href="/">Return to home</Button></main>;
+  return (
+    <main className="container" style={{ paddingBlock: '14vh', textAlign: 'center' }}>
+      <div className="kicker">404 · NOT FOUND</div>
+      <h1 className="display-title">This room isn’t here.</h1>
+      <p className="muted" style={{ margin: '18px auto 28px', maxWidth: 480 }}>
+        The page may have moved, but your next favourite piece is just around the corner.
+        Our team is also happy to help you find what you need.
+      </p>
+      <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Button href="/">Return to home</Button>
+        <Button href="/consultation" variant="gold">Book consultation</Button>
+        <Button href="/contact" variant="outline">Contact support</Button>
+      </div>
+    </main>
+  );
 }

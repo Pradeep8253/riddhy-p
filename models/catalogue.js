@@ -14,6 +14,43 @@ const PriceSchema = new Schema({ productId: { type: Schema.Types.ObjectId, ref: 
 const PromotionSchema = new Schema({ name: String, code: String, kind: { type: String, enum: ['percentage','fixed','bundle','bank'] }, value: Number, startsAt: Date, endsAt: Date, active: { type: Boolean, default: false }, rules: Schema.Types.Mixed }, { timestamps: true });
 const CouponSchema = new Schema({ code: { type: String, unique: true, uppercase: true }, kind: { type: String, enum: ['percentage','fixed'] }, value: Number, minCartValue: { type: Number, default: 0 }, maxDiscount: Number, startsAt: Date, endsAt: Date, usageLimit: Number, usageCount: { type: Number, default: 0 }, active: { type: Boolean, default: true }, rules: Schema.Types.Mixed }, { timestamps: true });
 
+const MarriagePackageSchema = new Schema({
+  name: { type: String, required: true },
+  slug: { type: String, unique: true, required: true },
+  tier: { type: String, enum: ['basic', 'premium', 'luxury'], default: 'basic' },
+  tagline: String,
+  description: { type: String, required: true },
+  bannerImage: String,
+  thumbnailImage: String,
+  price: { type: Number, required: true },
+  originalPrice: Number,
+  savings: Number,
+  categories: [String],
+  items: [{
+    category: String,
+    title: String,
+    quantity: { type: Number, default: 1 },
+    productId: { type: Schema.Types.ObjectId, ref: 'Product' },
+    productName: String,
+    specs: String,
+    image: String,
+    isOptional: { type: Boolean, default: false }
+  }],
+  customizableAddons: [{
+    title: String,
+    category: String,
+    price: Number,
+    description: String,
+    image: String,
+    includedByDefault: { type: Boolean, default: false }
+  }],
+  highlightBadge: String,
+  sortOrder: { type: Number, default: 0 },
+  active: { type: Boolean, default: true }
+}, { timestamps: true });
+
+MarriagePackageSchema.index({ active: 1, sortOrder: 1 });
+
 export const Category = mongoose.models.Category || mongoose.model('Category', CategorySchema);
 export const Brand = mongoose.models.Brand || mongoose.model('Brand', BrandSchema);
 export const Product = mongoose.models.Product || mongoose.model('Product', ProductSchema);
@@ -21,3 +58,5 @@ export const Variant = mongoose.models.Variant || mongoose.model('Variant', Vari
 export const Price = mongoose.models.Price || mongoose.model('Price', PriceSchema);
 export const Promotion = mongoose.models.Promotion || mongoose.model('Promotion', PromotionSchema);
 export const Coupon = mongoose.models.Coupon || mongoose.model('Coupon', CouponSchema);
+export const MarriagePackage = mongoose.models.MarriagePackage || mongoose.model('MarriagePackage', MarriagePackageSchema);
+

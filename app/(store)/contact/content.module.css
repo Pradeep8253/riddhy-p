@@ -1,2 +1,253 @@
-.content{display:grid;grid-template-columns:1fr minmax(350px,.8fr);gap:clamp(35px,8vw,120px);padding-block:clamp(55px,8vw,110px)}.intro h1{margin:15px 0;font:500 clamp(48px,7vw,84px)/.92 var(--font-display);letter-spacing:-.065em}.intro h1 em{color:var(--rf-gold-600);font-weight:400}.intro>p{max-width:480px;color:#667168;font-size:13px;line-height:1.8}.info{display:grid;gap:5px;margin-top:22px;padding-top:15px;border-top:1px solid var(--rf-line)}.info span{color:#8c6b2e;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.info b{font-size:11px}.info small{color:#7d857d;font-size:9px}.form{align-self:center;padding:26px;border:1px solid var(--rf-line);border-radius:21px;background:#fffefa;box-shadow:var(--shadow-card)}
-@media(max-width:800px){.content{grid-template-columns:1fr}.form{max-width:620px}}
+.introHeader {
+  max-width: 680px;
+  margin-bottom: clamp(36px, 5vw, 56px);
+}
+
+.introHeader h1 {
+  margin: 12px 0 14px;
+  font: 500 clamp(40px, 6vw, 76px) / 0.94 var(--font-display);
+  letter-spacing: -0.05em;
+  color: var(--rf-forest-deep);
+}
+
+.introHeader h1 em {
+  color: var(--rf-gold-600);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.introHeader p {
+  margin: 0;
+  color: var(--rf-charcoal-600);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.responseNotice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--rf-cream-100);
+  border: 1px solid var(--rf-line);
+  color: var(--rf-green-800);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Channels Grid */
+.channelsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+
+.channelCard {
+  background: var(--rf-white);
+  border: 1px solid var(--rf-line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: grid;
+  gap: 6px;
+  transition: transform 0.2s, border-color 0.2s;
+  color: var(--rf-charcoal-900);
+}
+
+.channelCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(31, 95, 46, 0.4);
+}
+
+.channelIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--rf-cream-100);
+  color: var(--rf-green-700);
+  margin-bottom: 6px;
+}
+
+.waIcon {
+  color: #128c7e;
+  background: #f0fdf4;
+}
+
+.channelCard span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rf-gold-600);
+}
+
+.channelCard b {
+  font-size: 15px;
+  color: var(--rf-forest-deep);
+}
+
+.channelCard small {
+  color: var(--rf-charcoal-600);
+  font-size: 11px;
+}
+
+.dirLink {
+  margin-top: 6px;
+  color: var(--rf-green-800);
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-block;
+}
+
+/* Main Form & Help Section */
+.formSectionGrid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: clamp(28px, 5vw, 64px);
+  align-items: start;
+}
+
+.formCard {
+  background: var(--rf-white);
+  border: 1px solid var(--rf-line);
+  border-radius: var(--radius-xl);
+  padding: clamp(24px, 4vw, 44px);
+  box-shadow: var(--shadow-card);
+}
+
+.formHead {
+  margin-bottom: 24px;
+}
+
+.formHead h2 {
+  margin: 8px 0 4px;
+  font: 500 clamp(26px, 3.5vw, 38px) var(--font-display);
+  color: var(--rf-forest-deep);
+}
+
+.formHead p {
+  margin: 0;
+  color: var(--rf-charcoal-600);
+  font-size: 13px;
+}
+
+/* Side Help */
+.sideHelpCol {
+  display: grid;
+  gap: 20px;
+}
+
+.consultationPromo {
+  background: linear-gradient(135deg, var(--rf-cream-100), #f7ede0);
+  border: 1px solid rgba(224, 160, 64, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: grid;
+  gap: 10px;
+}
+
+.consultationPromo h3 {
+  margin: 0;
+  font: 500 22px var(--font-display);
+  color: var(--rf-forest-deep);
+}
+
+.consultationPromo p {
+  margin: 0;
+  color: var(--rf-charcoal-600);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.consultationBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 22px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: var(--rf-gold-500);
+  color: var(--rf-forest-deep);
+  font-size: 12px;
+  font-weight: 800;
+  width: max-content;
+  transition: transform 0.2s;
+}
+
+.consultationBtn:hover {
+  transform: translateY(-2px);
+}
+
+.instantHelpCard {
+  background: var(--rf-white);
+  border: 1px solid var(--rf-line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.instantHelpCard h4 {
+  margin: 0 0 16px;
+  font: 500 18px var(--font-display);
+  color: var(--rf-forest-deep);
+}
+
+.helpLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.helpLinks a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--rf-charcoal-600);
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+.helpLinks a:hover {
+  color: var(--rf-green-800);
+}
+
+.helpLinks svg {
+  color: var(--rf-gold-600);
+  flex-shrink: 0;
+}
+
+.hoursCard {
+  background: var(--rf-cream-50);
+  border: 1px solid var(--rf-line);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.hoursCard b {
+  color: var(--rf-forest-deep);
+}
+
+.hoursCard p {
+  margin: 0;
+  color: var(--rf-charcoal-600);
+}
+
+.hoursCard small {
+  color: #8c6b2e;
+}
+
+@media (max-width: 900px) {
+  .formSectionGrid {
+    grid-template-columns: 1fr;
+  }
+}
