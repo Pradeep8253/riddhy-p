@@ -1,9 +1,0 @@
-.testimonials{max-width:800px;margin:40px auto;padding:0 20px;text-align:center}
-.testimonials__card{background:var(--surface);border-radius:20px;padding:28px;box-shadow:var(--shadow-md);margin-top:16px}
-.testimonials__quote{font-size:18px;line-height:1.6;color:var(--text-primary);font-weight:600}
-.testimonials__meta{margin-top:12px}
-.testimonials__meta strong{display:block;color:var(--secondary)}
-.testimonials__meta span{font-size:13px;color:var(--text-muted)}
-.testimonials__dots{display:flex;justify-content:center;gap:8px;margin-top:14px}
-.testimonials__dot{width:8px;height:8px;border-radius:50%;background:#ddd}
-.testimonials__dot--active{background:var(--primary);width:24px;border-radius:999px}

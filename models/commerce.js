@@ -1,0 +1,31 @@
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+const orderStatuses = ['draft_cart','reserved','payment_pending','paid','confirmed','processing','packed','ready_for_dispatch','shipped','out_for_delivery','delivered','installation_scheduled','installed','completed','payment_failed','cancelled','delivery_failed','return_requested','returned','refund_pending','refunded'];
+const itemSnapshot = new Schema({ productId: Schema.Types.ObjectId, variantId: Schema.Types.ObjectId, name: { type: String, required: true }, slug: String, image: String, variant: Schema.Types.Mixed, sku: { type: String, required: true }, qty: { type: Number, min: 1, required: true }, unitPrice: { type: Number, required: true }, mrp: Number, tax: Number, discount: Number, lineTotal: Number, warrantySnapshot: Schema.Types.Mixed }, { _id: false, strict: true });
+const addressSnapshot = new Schema({ name: String, phone: String, line1: String, line2: String, city: String, state: String, pincode: String, landmark: String }, { _id: false });
+const WarehouseSchema = new Schema({ code: { type: String, unique: true }, name: String, address: Schema.Types.Mixed, active: { type: Boolean, default: true } }, { timestamps: true });
+const InventorySchema = new Schema({ variantId: { type: Schema.Types.ObjectId, ref: 'Variant', required: true }, warehouseId: { type: Schema.Types.ObjectId, ref: 'Warehouse', required: true }, available: { type: Number, min: 0, default: 0 }, reserved: { type: Number, min: 0, default: 0 }, lowStockAt: { type: Number, default: 5 } }, { timestamps: true });
+InventorySchema.index({ variantId: 1, warehouseId: 1 }, { unique: true });
+const StockMovementSchema = new Schema({ variantId: Schema.Types.ObjectId, warehouseId: Schema.Types.ObjectId, orderId: Schema.Types.ObjectId, kind: { type: String, enum: ['opening','reserve','release','sale','return','adjustment'] }, quantity: Number, reference: String, actorId: Schema.Types.ObjectId }, { timestamps: true });
+const CartSchema = new Schema({ userId: Schema.Types.ObjectId, sessionId: String, items: [{ variantId: Schema.Types.ObjectId, sku: String, qty: Number, addedAt: Date }] }, { timestamps: true });
+CartSchema.index({ userId: 1 }, { unique: true, sparse: true });
+const ReservationSchema = new Schema({ orderId: Schema.Types.ObjectId, variantId: Schema.Types.ObjectId, warehouseId: Schema.Types.ObjectId, qty: Number, status: { type: String, enum: ['active','consumed','released'], default: 'active' }, expiresAt: { type: Date, required: true }, purgeAt: { type: Date } }, { timestamps: true });
+// Expiry is processed by application logic first; this TTL index only purges completed reservation records.
+ReservationSchema.index({ purgeAt: 1 }, { expireAfterSeconds: 0, sparse: true });
+const OrderSchema = new Schema({ orderNumber: { type: String, unique: true }, checkoutKey: { type: String, unique: true, sparse: true }, checkoutFingerprint: String, userId: Schema.Types.ObjectId, email: String, phone: String, status: { type: String, enum: orderStatuses, default: 'draft_cart' }, paymentStatus: { type: String, enum: ['unpaid','pending','paid','failed','refunded','partially_refunded'], default: 'unpaid' }, paymentMethod: { type: String, enum: ['razorpay','cod','offline'], default: 'razorpay' }, items: { type: [itemSnapshot], immutable: true }, shippingAddress: addressSnapshot, billingAddress: addressSnapshot, subtotal: Number, tax: Number, deliveryFee: Number, installationFee: Number, discount: Number, total: Number, refundedAmount: { type: Number, default: 0 }, currency: { type: String, default: 'INR' }, couponCode: String, notes: String, deliveredAt: Date, installedAt: Date, timeline: [{ status: String, at: Date, note: String, by: Schema.Types.ObjectId }] }, { timestamps: true });
+OrderSchema.index({ userId: 1, createdAt: -1 });
+OrderSchema.index({ status: 1, createdAt: -1 });
+const PaymentSchema = new Schema({ orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: true }, provider: { type: String, default: 'razorpay' }, providerOrderId: { type: String, unique: true, sparse: true }, providerPaymentId: { type: String, unique: true, sparse: true }, amount: Number, currency: { type: String, default: 'INR' }, status: { type: String, enum: ['created','authorized','captured','failed','refunded'], default: 'created' }, signature: String, method: String }, { timestamps: true });
+const PaymentEventSchema = new Schema({ provider: String, eventId: { type: String, unique: true }, type: String, paymentId: String, orderId: String, payload: Schema.Types.Mixed, processedAt: Date }, { timestamps: true });
+const RefundSchema = new Schema({ orderId: Schema.Types.ObjectId, paymentId: Schema.Types.ObjectId, providerRefundId: { type: String, unique: true, sparse: true }, idempotencyKey: { type: String, unique: true, sparse: true }, amount: Number, reason: String, status: { type: String, enum: ['requested','processed','failed'], default: 'requested' }, requestedBy: Schema.Types.ObjectId }, { timestamps: true });
+
+export const Warehouse = mongoose.models.Warehouse || mongoose.model('Warehouse', WarehouseSchema);
+export const Inventory = mongoose.models.Inventory || mongoose.model('Inventory', InventorySchema);
+export const StockMovement = mongoose.models.StockMovement || mongoose.model('StockMovement', StockMovementSchema);
+export const Cart = mongoose.models.Cart || mongoose.model('Cart', CartSchema);
+export const Reservation = mongoose.models.Reservation || mongoose.model('Reservation', ReservationSchema);
+export const Order = mongoose.models.Order || mongoose.model('Order', OrderSchema);
+export const Payment = mongoose.models.Payment || mongoose.model('Payment', PaymentSchema);
+export const PaymentEvent = mongoose.models.PaymentEvent || mongoose.model('PaymentEvent', PaymentEventSchema);
+export const Refund = mongoose.models.Refund || mongoose.model('Refund', RefundSchema);
+export { orderStatuses };

@@ -1,7 +1,0 @@
-.dim{display:flex;flex-direction:column;gap:14px}
-.dim__box{background:var(--surface);border-radius:16px;padding:24px;display:grid;place-items:center;box-shadow:var(--shadow-sm)}
-.dim__rect{width:220px;height:140px;border:2px dashed var(--secondary);border-radius:12px;position:relative;background:var(--surface-alt)}
-.dim__label{position:absolute;background:var(--secondary);color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800}
-.dim__label{left:50%;top:-10px;transform:translateX(-50%)}
-.dim__label--h{left:auto;right:-18px;top:50%;transform:translateY(-50%)}
-.dim__label--d{bottom:-10px;top:auto;left:50%}

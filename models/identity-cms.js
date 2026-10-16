@@ -1,0 +1,23 @@
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+const UserSchema = new Schema({ name: { type: String, required: true }, email: { type: String, lowercase: true, unique: true, sparse: true }, phone: { type: String, unique: true, sparse: true }, passwordHash: String, role: { type: String, enum: ['customer','admin','super-admin','support','warehouse','marketing','finance'], default: 'customer' }, addresses: [Schema.Types.ObjectId], preferences: Schema.Types.Mixed, active: { type: Boolean, default: true } }, { timestamps: true });
+const AdminUserSchema = new Schema({ name: String, email: { type: String, unique: true, lowercase: true }, passwordHash: { type: String, required: true }, role: { type: String, enum: ['admin','super-admin','support','warehouse','marketing','finance'], default: 'admin' }, active: { type: Boolean, default: true }, lastLoginAt: Date }, { timestamps: true });
+const RoleSchema = new Schema({ name: { type: String, unique: true }, permissions: [String], system: { type: Boolean, default: false } }, { timestamps: true });
+const BannerSchema = new Schema({ name: String, zone: String, desktopImage: String, mobileImage: String, href: String, startsAt: Date, endsAt: Date, active: { type: Boolean, default: false }, targeting: Schema.Types.Mixed, analytics: Schema.Types.Mixed, alt: String }, { timestamps: true });
+BannerSchema.index({ zone: 1, active: 1, startsAt: 1, endsAt: 1 });
+const CmsPageSchema = new Schema({ slug: { type: String, unique: true }, title: String, body: String, status: { type: String, enum: ['draft','published'], default: 'draft' }, publishedAt: Date, seo: Schema.Types.Mixed }, { timestamps: true });
+const MediaAssetSchema = new Schema({ url: String, publicId: String, storage: { type: String, enum: ['cloudinary','local'], default: 'local' }, mime: String, bytes: Number, alt: String, isDemoImage: { type: Boolean, default: false }, uploadedBy: Schema.Types.ObjectId }, { timestamps: true });
+const ReviewSchema = new Schema({ productId: Schema.Types.ObjectId, userId: Schema.Types.ObjectId, orderId: Schema.Types.ObjectId, rating: { type: Number, min: 1, max: 5 }, title: String, body: String, media: [String], verifiedPurchase: { type: Boolean, default: false }, status: { type: String, enum: ['pending','published','rejected'], default: 'pending' } }, { timestamps: true });
+const WishlistSchema = new Schema({ userId: Schema.Types.ObjectId, items: [Schema.Types.ObjectId] }, { timestamps: true });
+WishlistSchema.index({ userId: 1 }, { unique: true });
+const AuditLogSchema = new Schema({ actorId: Schema.Types.ObjectId, actorEmail: String, action: String, entity: String, entityId: String, before: Schema.Types.Mixed, after: Schema.Types.Mixed, ip: String }, { timestamps: true });
+
+export const User = mongoose.models.User || mongoose.model('User', UserSchema);
+export const AdminUser = mongoose.models.AdminUser || mongoose.model('AdminUser', AdminUserSchema);
+export const Role = mongoose.models.Role || mongoose.model('Role', RoleSchema);
+export const Banner = mongoose.models.Banner || mongoose.model('Banner', BannerSchema);
+export const CmsPage = mongoose.models.CmsPage || mongoose.model('CmsPage', CmsPageSchema);
+export const MediaAsset = mongoose.models.MediaAsset || mongoose.model('MediaAsset', MediaAssetSchema);
+export const Review = mongoose.models.Review || mongoose.model('Review', ReviewSchema);
+export const Wishlist = mongoose.models.Wishlist || mongoose.model('Wishlist', WishlistSchema);
+export const AuditLog = mongoose.models.AuditLog || mongoose.model('AuditLog', AuditLogSchema);

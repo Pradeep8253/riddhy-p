@@ -1,8 +1,0 @@
-.pay{background:var(--surface);border-radius:16px;box-shadow:var(--shadow-sm);overflow:hidden}
-.pay__tabs{display:flex;flex-direction:column}
-.pay__tab{padding:14px 16px;text-align:left;border-bottom:1px solid #f0ece1;display:flex;flex-direction:column;gap:2px}
-.pay__tab strong{font-size:13px}
-.pay__tab span{font-size:11px;color:var(--text-muted)}
-.pay__tab--active{background:var(--surface-alt);border-left:3px solid var(--secondary)}
-.pay__panel{padding:16px;background:var(--surface-alt);font-size:13px}
-@media(min-width:700px){.pay{display:grid;grid-template-columns:220px 1fr}.pay__tabs{border-right:1px solid #eee}}

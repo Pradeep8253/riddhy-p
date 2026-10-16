@@ -1,0 +1,8 @@
+import { z } from 'zod';
+import { connectDB } from '@/lib/db';
+import { Lead, AuditLog } from '@/models/index';
+import { requireAdmin } from '@/lib/roles';
+import { ok, fail, jsonBody } from '@/lib/http';
+const updateSchema=z.object({id:z.string().min(1),status:z.enum(['new','in_progress','resolved','spam'])});
+export async function GET(request){const actor=await requireAdmin(new Set(['admin','super-admin','support','marketing']));if(!actor)return fail('Admin permission required.',403);try{await connectDB();const url=new URL(request.url),status=url.searchParams.get('status'),kind=url.searchParams.get('kind');const query={...(status?{status}:{}),...(kind?{kind}:{})};const leads=await Lead.find(query).sort({createdAt:-1}).limit(200).lean();return ok(leads.map((lead)=>({...lead,id:String(lead._id),_id:undefined})))}catch{return fail('Unable to load enquiries.',500)}}
+export async function PATCH(request){const actor=await requireAdmin(new Set(['admin','super-admin','support','marketing']));if(!actor)return fail('Admin permission required.',403);const parsed=updateSchema.safeParse(await jsonBody(request));if(!parsed.success)return fail('Enquiry update is invalid.',400);try{await connectDB();const lead=await Lead.findByIdAndUpdate(parsed.data.id,{$set:{status:parsed.data.status}},{new:true});if(!lead)return fail('Enquiry not found.',404);await AuditLog.create({actorId:actor.sub,actorEmail:actor.email,action:'lead.status.update',entity:'Lead',entityId:String(lead._id),after:{status:lead.status}});return ok({id:String(lead._id),status:lead.status})}catch(error){return fail(error.message,400)}}

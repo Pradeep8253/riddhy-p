@@ -1,4 +1,0 @@
-.specs h4{margin-bottom:12px}
-.specs__table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
-.specs__table th,.specs__table td{padding:12px 16px;text-align:left;border-bottom:1px solid #f0ece1;font-size:14px}
-.specs__table th{background:var(--surface-alt);color:var(--secondary);text-transform:capitalize;width:180px;font-weight:700}

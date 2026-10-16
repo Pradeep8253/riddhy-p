@@ -1,7 +1,0 @@
-.deals{max-width:var(--max-width);margin:32px auto;padding:0 20px}
-.deals__head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
-.deals__timer{display:flex;align-items:center;gap:10px;background:var(--surface);padding:10px 14px;border-radius:999px;box-shadow:var(--shadow-sm);font-weight:700;font-size:13px}
-.deals__scroll{display:flex;gap:16px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:none}
-.deals__scroll::-webkit-scrollbar{display:none}
-.deals__card{min-width:260px;flex:0 0 260px;scroll-snap-align:start}
-@media(max-width:640px){.deals__card{min-width:200px;flex-basis:200px}}

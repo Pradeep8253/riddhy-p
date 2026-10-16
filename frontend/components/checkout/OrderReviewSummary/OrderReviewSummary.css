@@ -1,6 +1,0 @@
-.orsum{background:var(--surface);padding:18px;border-radius:16px;box-shadow:var(--shadow-sm);position:sticky;top:132px}
-.orsum h4{margin-bottom:12px}
-.orsum__row{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #f0ece1;font-size:13px}
-.orsum__row img{width:48px;height:48px;border-radius:8px;object-fit:cover}
-.orsum__row div{flex:1}
-.orsum__total{display:flex;justify-content:space-between;padding-top:12px;font-size:16px}

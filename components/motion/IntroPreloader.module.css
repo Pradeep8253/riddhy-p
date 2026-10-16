@@ -1,0 +1,9 @@
+.preloader { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; overflow: hidden; background: var(--rf-cream-100); animation: intro-out .55s 1.52s var(--ease-out-expo) forwards; }
+.lockup { display: grid; justify-items: center; gap: 8px; animation: intro-mark .8s var(--ease-out-expo) both; }
+.word { color: var(--rf-gold-600); font-family: var(--font-display); font-size: clamp(38px, 7vw, 72px); line-height: .95; letter-spacing: .09em; }
+.tagline { color: var(--rf-green-800); font-size: 9px; font-weight: 800; letter-spacing: .22em; }
+.sweep { position: absolute; inset: auto 0 0; height: 3px; transform: scaleX(0); transform-origin: left; background: linear-gradient(90deg,var(--rf-gold-500),var(--rf-green-700)); animation: sweep 1.1s .15s ease forwards; }
+.skip { position: absolute; top: 24px; right: 26px; border: 1px solid var(--rf-line); border-radius: 999px; padding: 9px 16px; background: rgba(255,255,255,.4); cursor: pointer; font-size: 12px; }
+@keyframes intro-mark { from { opacity: 0; transform: translateY(22px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes intro-out { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+@keyframes sweep { to { transform: scaleX(1); } }

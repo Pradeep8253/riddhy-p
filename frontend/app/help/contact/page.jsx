@@ -1,2 +1,0 @@
-import './page.css';
-export default function Contact(){ return <div className="help"><h1>Contact Us</h1><div className="help__grid"><div className="help__card"><strong>Call</strong><p>1800-123-7799 (9am-9pm, all days)</p><strong>Email</strong><p>support@rfriddhy.com • grievance@rfriddhy.com</p><strong>Address</strong><p>RF Riddhy Pvt. Ltd., 14/2 Civil Lines, Kanpur, UP 208001</p></div><form className="help__form"><input placeholder="Your Name"/><input placeholder="Email"/><textarea placeholder="Message" rows={4}/><button>Send Message</button></form></div></div>}

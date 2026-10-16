@@ -1,0 +1,7 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Icon from '@/components/ui/Icon';
+import styles from './DeliveryTimeline.module.css';
+const steps=[['Choose your piece','See serviceability, delivery and installation options on the product page.'],['Pick a convenient date','Available delivery windows are shown before checkout.'],['We prepare your order','Our team confirms your order and keeps you updated.'],['Delivered with care','Installation is booked where it is offered for your item and pincode.']];
+export default function DeliveryTimeline(){const ref=useRef(null);const [visible,setVisible]=useState(false);useEffect(()=>{const node=ref.current;if(!node)return;const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){setVisible(true);observer.disconnect()}},{threshold:.24});observer.observe(node);return()=>observer.disconnect()},[]);return <div ref={ref} className={`${styles.timeline} ${visible?styles.visible:''}`}><svg className={styles.line} viewBox="0 0 40 500" preserveAspectRatio="none" aria-hidden="true"><path className={styles.path} d="M20 0 C3 70 37 120 20 180 S3 290 20 350 S37 430 20 500"/></svg><div className={styles.steps}>{steps.map(([title,body],index)=><div className={styles.step} key={title}><span className={styles.marker}>{index===3?<Icon name="check" size={16}/>:`0${index+1}`}</span><div><h3>{title}</h3><p>{body}</p></div></div>)}</div><div className={styles.truck}><Icon name="truck" size={23}/></div></div>}

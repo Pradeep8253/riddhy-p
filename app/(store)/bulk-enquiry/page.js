@@ -1,0 +1,4 @@
+import InquiryForm from '@/components/commerce/InquiryForm';
+import styles from './bulk.module.css';
+export const metadata={title:'Trade & bulk enquiries',description:'Tell RF Riddhy about your furnishing or appliance project and request a considered trade quote.'};
+export default function BulkEnquiryPage(){return <section className={`${styles.page} container`}><div className={styles.copy}><span className="kicker">Trade · hospitality · projects</span><h1>Furnishing a little<br/><em>more room?</em></h1><p>For offices, rental homes, hospitality projects and multi-room orders, share your product mix, quantities and timeline. We’ll route your request for a human review.</p><div className={styles.points}><span>Furniture & appliance mix</span><span>Project delivery planning</span><span>Quote review by a real team</span></div></div><div className={styles.form}><h2>Tell us about your project.</h2><InquiryForm kind="bulk"/></div></section>}

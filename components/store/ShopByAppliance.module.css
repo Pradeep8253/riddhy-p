@@ -1,0 +1,2 @@
+.section{padding-block:clamp(60px,8vw,110px);color:#f8f3e9;background:#10261a}.section :global(.kicker){color:#d4c9ac}.section :global(.kicker)::before{background:#e0a040}.section :global(h2){color:#f8f3e9}.section :global(p){color:#c6d0c7}.note{display:flex;justify-content:space-between;gap:20px;margin-top:23px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14);color:#c3cec4;font-size:10px}.note a{color:#edb95e;font-weight:800}.note a span{margin-left:4px}
+@media(max-width:600px){.section :global(.heading){gap:13px}.note{flex-direction:column;gap:8px}}

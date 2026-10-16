@@ -1,8 +1,0 @@
-.buybar{position:fixed;bottom:0;left:0;right:0;z-index:42;background:var(--surface);border-top:1px solid #eee;box-shadow:0 -8px 24px rgba(23,77,53,0.12);padding:10px 16px}
-.buybar__inner{max-width:var(--max-width);margin:0 auto;display:flex;align-items:center;gap:14px}
-.buybar__inner img{width:48px;height:48px;border-radius:10px;object-fit:cover}
-.buybar__info{display:flex;flex-direction:column}
-.buybar__info strong{font-size:13px;line-height:1.2}
-.buybar__info span{font-size:12px;color:var(--text-muted)}
-.buybar__actions{margin-left:auto;display:flex;gap:10px}
-@media(max-width:768px){.buybar{bottom:58px}.buybar__inner img{display:none}}

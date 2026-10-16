@@ -1,0 +1,5 @@
+import Image from 'next/image';
+import { IMG } from '@/lib/images';
+import styles from './ReviewWall.module.css';
+const cards=[['Room edit','Living spaces','A place for verified customer photos, styling notes and helpful detail.'],['Soft landing','Bedrooms','Real homes tell the most useful stories—these demo frames show the layout.'],['Gather here','Dining','Verified-purchase reviews will be moderated before publishing.'],['Delivered with care','Service','A future space for delivery and installation experiences.']];
+export default function ReviewWall(){return <div className={styles.wall}>{cards.map(([title,tagline,copy],index)=><article key={title} className={`${styles.card} ${index%2===1?styles.offset:''}`}><div className={styles.photo}><Image src={IMG.reviews[index]} alt={`${tagline} scene illustration`} fill sizes="(max-width:700px) 80vw, 25vw" placeholder="blur" blurDataURL={IMG.blurDataURL} unoptimized/><span>Demo image</span></div><div className={styles.body}><span>{tagline} · SAMPLE LAYOUT</span><h3>{title}</h3><p>{copy}</p></div></article>)}</div>}

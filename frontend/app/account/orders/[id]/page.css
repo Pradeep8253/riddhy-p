@@ -1,8 +1,0 @@
-.odetail{ display:flex;flex-direction:column;gap:16px}
-.odetail h2{font-size:18px}
-.odetail__card{background:var(--surface);padding:18px;border-radius:16px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:12px}
-.odetail__item{display:flex;gap:12px;align-items:center}
-.odetail__item img{width:64px;height:64px;border-radius:10px;object-fit:cover}
-.odetail__total{display:flex;justify-content:space-between;padding-top:12px;border-top:1px dashed #eee;font-weight:800}
-.odetail__card button{background:var(--secondary);color:#fff;padding:10px;border-radius:999px;font-weight:700}
-.odetail__card .secondary{background:var(--surface-alt);color:var(--text-primary)}

@@ -1,0 +1,3 @@
+import CheckoutClient from '@/components/commerce/CheckoutClient';
+export const metadata={title:'Secure checkout',robots:{index:false,follow:false}};
+export default async function CheckoutPage({searchParams}){const params=await searchParams;return <section className="container" style={{paddingBlock:'42px 90px'}}><span className="kicker">Checkout · secure & clear</span><h1 className="display-title">Bring it home.</h1><p className="muted" style={{maxWidth:590,margin:'12px 0 28px'}}>Delivery, installation, taxes and valid coupon terms are confirmed before you pay.</p><CheckoutClient initialCoupon={String(params?.coupon||'')}/></section>}

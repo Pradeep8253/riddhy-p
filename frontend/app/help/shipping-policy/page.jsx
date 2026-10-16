@@ -1,2 +1,0 @@
-import './page.css';
-export default function Shipping(){ return <div className="help"><h1>Shipping Policy</h1><div className="help__card"><p>We deliver to 120+ pincodes. Furniture: bulky freight with appointment slot. Appliances: 3-7 days. Free delivery above ₹15,000. Installation included for furniture.</p><ul><li>Order: Inventory Reserved (TTL via Redis)</li><li>After payment verification: Processing → Quality Check → Shipped → Out for Delivery → Delivered</li><li>Tracking via SMS/email + account dashboard</li></ul></div></div>}

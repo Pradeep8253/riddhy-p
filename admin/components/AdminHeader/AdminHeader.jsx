@@ -1,1 +1,0 @@
-export default function AdminHeader({ title }){ return <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18}}><h1>{title}</h1><span style={{background:'#fff',padding:'8px 12px',borderRadius:999}}>Super Admin • 2FA ✓</span></header> }

@@ -1,5 +1,0 @@
-.listing{max-width:var(--max-width);margin:0 auto;padding:18px 20px}
-.listing__top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px}
-.listing__meta{display:flex;gap:12px;align-items:center}
-.listing__layout{display:grid;grid-template-columns:280px 1fr;gap:18px}
-@media(max-width:900px){.listing__layout{grid-template-columns:1fr}}

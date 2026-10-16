@@ -1,3 +1,0 @@
-.claim{background:var(--surface);padding:18px;border-radius:16px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:12px}
-.claim textarea{padding:12px;border-radius:12px;border:1.5px solid #E8E2D3;background:var(--surface-alt)}
-.claim button{background:var(--secondary);color:#fff;padding:12px;border-radius:999px;font-weight:800}

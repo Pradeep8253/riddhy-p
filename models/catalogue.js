@@ -1,0 +1,23 @@
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+
+const CategorySchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true, required: true }, type: { type: String, enum: ['furniture','appliance'], required: true }, parentId: { type: Schema.Types.ObjectId, ref: 'Category', default: null }, room: String, image: String, sortOrder: { type: Number, default: 0 }, filters: { type: [Schema.Types.Mixed], default: [] }, active: { type: Boolean, default: true } }, { timestamps: true });
+CategorySchema.index({ parentId: 1, sortOrder: 1 });
+const BrandSchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true }, logo: String, description: String, active: { type: Boolean, default: true } }, { timestamps: true });
+const ProductSchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true, required: true }, brandId: { type: Schema.Types.ObjectId, ref: 'Brand' }, brand: String, categoryId: { type: Schema.Types.ObjectId, ref: 'Category' }, category: { type: String, required: true }, categoryLabel: String, room: String, type: { type: String, enum: ['furniture','appliance'], required: true }, modelType: String, description: String, tagline: String, media: { type: [Schema.Types.Mixed], default: [] }, image: String, imageAlt: String, specs: { type: Schema.Types.Mixed, default: {} }, dimensions: Schema.Types.Mixed, packageDimensions: Schema.Types.Mixed, warranty: Schema.Types.Mixed, gstRate: { type: Number, default: 18 }, price: { type: Number, min: 0 }, mrp: { type: Number, min: 0 }, discount: { type: Number, min: 0, max: 100 }, status: { type: String, enum: ['draft','active','archived'], default: 'draft' }, isDemo: { type: Boolean, default: true }, isDemoImage: { type: Boolean, default: true }, features: [String], seo: Schema.Types.Mixed, model3d: Schema.Types.Mixed }, { timestamps: true });
+ProductSchema.index({ type: 1, category: 1, status: 1, price: 1 });
+ProductSchema.index({ brand: 1, category: 1, price: 1 });
+ProductSchema.index({ name: 'text', slug: 'text', brand: 'text', categoryLabel: 'text' });
+const VariantSchema = new Schema({ productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true }, sku: { type: String, unique: true, required: true }, barcode: String, attributes: { type: Map, of: String, default: {} }, price: { type: Number, min: 0, required: true }, mrp: { type: Number, min: 0 }, stock: { type: Number, min: 0, default: 0 }, active: { type: Boolean, default: true }, model3d: Schema.Types.Mixed }, { timestamps: true });
+VariantSchema.index({ productId: 1, active: 1 });
+const PriceSchema = new Schema({ productId: { type: Schema.Types.ObjectId, ref: 'Product' }, variantId: { type: Schema.Types.ObjectId, ref: 'Variant' }, currency: { type: String, default: 'INR' }, mrp: Number, sellingPrice: Number, validFrom: Date, validTo: Date, active: { type: Boolean, default: true } }, { timestamps: true });
+const PromotionSchema = new Schema({ name: String, code: String, kind: { type: String, enum: ['percentage','fixed','bundle','bank'] }, value: Number, startsAt: Date, endsAt: Date, active: { type: Boolean, default: false }, rules: Schema.Types.Mixed }, { timestamps: true });
+const CouponSchema = new Schema({ code: { type: String, unique: true, uppercase: true }, kind: { type: String, enum: ['percentage','fixed'] }, value: Number, minCartValue: { type: Number, default: 0 }, maxDiscount: Number, startsAt: Date, endsAt: Date, usageLimit: Number, usageCount: { type: Number, default: 0 }, active: { type: Boolean, default: true }, rules: Schema.Types.Mixed }, { timestamps: true });
+
+export const Category = mongoose.models.Category || mongoose.model('Category', CategorySchema);
+export const Brand = mongoose.models.Brand || mongoose.model('Brand', BrandSchema);
+export const Product = mongoose.models.Product || mongoose.model('Product', ProductSchema);
+export const Variant = mongoose.models.Variant || mongoose.model('Variant', VariantSchema);
+export const Price = mongoose.models.Price || mongoose.model('Price', PriceSchema);
+export const Promotion = mongoose.models.Promotion || mongoose.model('Promotion', PromotionSchema);
+export const Coupon = mongoose.models.Coupon || mongoose.model('Coupon', CouponSchema);

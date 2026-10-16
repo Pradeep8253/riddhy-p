@@ -1,6 +1,0 @@
-.brandstrip{background:var(--surface);border-top:1px solid #eee;border-bottom:1px solid #eee;padding:18px 0;display:flex;align-items:center;gap:24px;overflow:hidden}
-.brandstrip__label{padding:0 20px;font-weight:800;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--secondary);white-space:nowrap}
-.brandstrip__marquee{flex:1;overflow:hidden}
-.brandstrip__track{display:flex;gap:48px;animation:marquee 18s linear infinite;width:max-content}
-.brandstrip__brand{font-family:var(--font-heading);font-weight:800;letter-spacing:0.12em;color:var(--text-muted);opacity:0.7;font-size:16px;white-space:nowrap}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}

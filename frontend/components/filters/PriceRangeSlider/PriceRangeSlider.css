@@ -1,5 +1,0 @@
-.prange{display:flex;flex-direction:column;gap:10px}
-.prange__inputs{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--secondary)}
-.prange__track{position:relative;height:6px;background:#eee;border-radius:999px}
-.prange__track input{position:absolute;inset:0;width:100%;appearance:none;background:transparent;pointer-events:none}
-.prange__track input::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary);border:2px solid #fff;box-shadow:var(--shadow-sm);pointer-events:auto}

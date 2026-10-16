@@ -1,3 +1,0 @@
-import mongoose from 'mongoose';
-const BannerSchema=new mongoose.Schema({ title:String, zone:{type:String,enum:['announcement','hero','category','product','cart','popup']}, desktopImage:String, mobileImage:String, cta:String, link:String, schedule:{start:Date,end:Date,timezone:String}, targeting:{categories:[String],brands:[String],skus:[String],regions:[String],loggedIn:Boolean}, status:{type:String,enum:['draft','scheduled','published','paused'],default:'draft'}, analytics:{impressions:Number,clicks:Number,addToCart:Number,orders:Number}, approvalLog:[{by:String,at:Date,action:String}] },{timestamps:true});
-export default mongoose.model('Banner',BannerSchema);

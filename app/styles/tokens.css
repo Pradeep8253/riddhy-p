@@ -1,0 +1,33 @@
+:root {
+  color-scheme: light;
+  --rf-gold-500: #e0a040;
+  --rf-gold-400: #edb95e;
+  --rf-gold-600: #c48620;
+  --rf-green-700: #2e7d32;
+  --rf-green-800: #1f5f2e;
+  --rf-green-500: #6b8f5e;
+  --rf-cream-50: #fbf8f2;
+  --rf-cream-100: #f3eee6;
+  --rf-charcoal-900: #1e2420;
+  --rf-charcoal-600: #4a524c;
+  --rf-forest-deep: #10261a;
+  --rf-white: #fffefa;
+  --rf-line: rgba(31, 95, 46, .14);
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 9px;
+  --shadow-soft: 0 20px 60px -20px rgba(30,36,32,.25);
+  --shadow-card: 0 12px 38px -22px rgba(30,36,32,.32);
+  --ease-out-expo: cubic-bezier(.16, 1, .3, 1);
+  --page-gutter: clamp(20px, 5.5vw, 88px);
+  --content-max: 1440px;
+  --header-height: 86px;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-ui: var(--font-manrope), Arial, sans-serif;
+  --font-hindi: var(--font-noto), sans-serif;
+}
+
+@media (max-width: 720px) {
+  :root { --header-height: 70px; }
+}

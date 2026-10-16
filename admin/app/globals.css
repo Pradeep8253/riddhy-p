@@ -1,8 +1,0 @@
-@import '../../frontend/styles/variables.css';
-body{ background:#f7f3ea; font-family:Inter,sans-serif; margin:0; }
-.admin{ display:flex; min-height:100vh; }
-.admin__sidebar{ width:260px; background:var(--secondary-dark); color:#fff; padding:20px; }
-.admin__sidebar a{ display:block; color:#9AB0A4; padding:10px; border-radius:8px; margin:4px 0; text-decoration:none; }
-.admin__sidebar a:hover, .admin__sidebar a.active{ background:rgba(255,255,255,0.08); color:#fff; }
-.admin__main{ flex:1; padding:24px; }
-.stat{ background:#fff; padding:18px; border-radius:16px; box-shadow:0 4px 16px rgba(23,77,53,0.08); }
