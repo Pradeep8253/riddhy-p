@@ -1,0 +1,7 @@
+.listing{max-width:var(--max-width);margin:0 auto;padding:18px 20px}
+.listing__top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.listing__meta{display:flex;align-items:center;gap:12px}
+.listing__chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.listing__layout{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}
+.listing__filterBtn{display:none;background:var(--secondary);color:#fff;padding:10px 14px;border-radius:999px;font-weight:700}
+@media(max-width:900px){.listing__layout{grid-template-columns:1fr}.listing__sidebar{display:none}.listing__filterBtn{display:inline-flex}}

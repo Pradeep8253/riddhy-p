@@ -1,0 +1,5 @@
+.announcement{background:var(--secondary-dark);color:#fff;height:var(--announcement-height);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;letter-spacing:0.02em;overflow:hidden}
+.announcement__track{display:flex;align-items:center;gap:14px;white-space:nowrap;animation:fadeUp 0.5s var(--ease)}
+.announcement__dot{opacity:0.5}
+.announcement__cta{color:var(--primary-light);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:768px){.announcement{font-size:11px;padding:0 12px;text-align:center}.announcement__cta{display:none}}

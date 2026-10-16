@@ -1,0 +1,5 @@
+.msheet{position:fixed;inset:0;z-index:70}
+.msheet__backdrop{position:absolute;inset:0;background:rgba(15,54,36,0.45);backdrop-filter:blur(6px)}
+.msheet__panel{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:20px 20px 0 0;max-height:86vh;overflow:auto}
+.msheet__head{position:sticky;top:0;background:var(--surface);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee}
+.msheet__body{padding:20px}

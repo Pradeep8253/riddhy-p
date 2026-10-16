@@ -1,0 +1,7 @@
+.coupon{background:var(--surface);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm)}
+.coupon__row{display:flex;gap:10px}
+.coupon__row input{flex:1;padding:12px 14px;border-radius:999px;border:1.5px dashed #E8E2D3;background:var(--surface-alt);outline:none;font-weight:600}
+.coupon__row button{background:var(--secondary);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700}
+.coupon__msg{margin-top:8px;font-size:13px;font-weight:600;color:var(--error)}
+.coupon__msg--ok{color:var(--success)}
+.coupon__hints{font-size:11px;color:var(--text-muted);margin-top:6px}

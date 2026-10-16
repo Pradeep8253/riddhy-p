@@ -1,0 +1,8 @@
+.fSidebar{background:var(--surface);border-radius:16px;padding:18px;box-shadow:var(--shadow-sm);position:sticky;top:132px;display:flex;flex-direction:column;gap:18px;min-width:260px}
+.fSidebar h3{font-size:16px}
+.fSection{display:flex;flex-direction:column;gap:8px;padding-bottom:14px;border-bottom:1px solid #f0ece1}
+.fSection strong{font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--secondary)}
+.fCheck{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:500}
+.fClear,.fReset{font-size:12px;font-weight:700;color:var(--secondary);text-align:left}
+.fReset{background:var(--surface-alt);padding:10px 14px;border-radius:999px;text-align:center;border:1px solid #E8E2D3}
+@media(max-width:900px){.fSidebar{position:static;min-width:0}}

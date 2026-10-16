@@ -1,0 +1,2 @@
+import './page.css';
+export default function Invoices(){ return <div className="invoices"><h2>Invoices (GST)</h2><div className="invoices__card"><div><strong>RF-INV-2025-88421</strong><span>18 Sep 2025 • ₹42,999 • GST 18% included</span></div><button>Download PDF</button></div><div className="invoices__card"><div><strong>RF-INV-2025-88422</strong><span>02 Oct 2025 • ₹26,990</span></div><button>Download PDF</button></div></div>}

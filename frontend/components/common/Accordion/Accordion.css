@@ -1,0 +1,5 @@
+.accordion{display:flex;flex-direction:column;gap:12px}
+.accordion__item{background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden}
+.accordion__head{width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 18px;font-weight:600;text-align:left}
+.accordion__icon{width:28px;height:28px;border-radius:50%;background:var(--surface-alt);display:grid;place-items:center;font-weight:800;color:var(--secondary)}
+.accordion__content{padding:0 18px 18px;color:var(--text-muted);line-height:1.7}

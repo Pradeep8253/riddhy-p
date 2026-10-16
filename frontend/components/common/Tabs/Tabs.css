@@ -1,0 +1,4 @@
+.tabs__nav{display:flex;gap:8px;overflow:auto;padding-bottom:8px;border-bottom:1px solid #eee;margin-bottom:18px;scrollbar-width:none}
+.tabs__btn{padding:10px 16px;border-radius:var(--radius-full);font-weight:600;white-space:nowrap;background:var(--surface-alt);color:var(--text-muted)}
+.tabs__btn--active{background:var(--secondary);color:#fff}
+.tabs__panel{min-height:120px}

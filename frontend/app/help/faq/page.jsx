@@ -1,0 +1,4 @@
+import Accordion from '@/components/common/Accordion/Accordion';
+import './page.css';
+const items=[{title:'How is warranty activated?',content:'Warranty activates on delivery date for appliances and on installation sign-off for furniture — configurable per brand/category. Days remaining is computed server-side.'},{title:'Do you offer EMI?',content:'Yes, No-Cost EMI via Razorpay for orders above ₹7,500. Tenure and interest shown accurately at checkout.'},{title:'What about COD?',content:'COD available for orders below ₹50,000 and serviceable pincodes. OTP verification at delivery.'},{title:'How to raise a claim?',content:'Go to Account → Warranty → Raise Claim. Upload photos, describe issue. Technician assigned within 24 hours.'}];
+export default function FAQ(){ return <div className="help"><h1>FAQ</h1><Accordion items={items}/></div>}

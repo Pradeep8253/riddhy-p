@@ -1,0 +1,5 @@
+.profile h2{margin-bottom:12px}
+.profile__card{background:var(--surface);padding:18px;border-radius:16px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:12px}
+.profile__card label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:13px}
+.profile__card input{padding:12px;border-radius:12px;border:1.5px solid #E8E2D3;background:var(--surface-alt)}
+.profile__card button{background:var(--secondary);color:#fff;padding:12px;border-radius:999px;font-weight:800;margin-top:8px}

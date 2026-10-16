@@ -1,0 +1,2 @@
+import './page.css';
+export default function Returns(){ return <div className="help"><h1>Returns & Refunds</h1><div className="help__card"><p>7-day returns for furniture (unused, original packaging), 10 days for appliances with manufacturing defect. Refunds via original payment method within 5-7 days after QC. Partial returns supported. All refunds go through Razorpay API with audit trail.</p></div></div>}

@@ -1,0 +1,6 @@
+.cart{max-width:var(--max-width);margin:0 auto;padding:18px 20px}
+.cart h2{margin-bottom:16px}
+.cart__layout{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+.cart__items{display:flex;flex-direction:column;gap:14px}
+.cart__checkout{display:block;text-align:center;background:var(--primary);color:#fff;padding:14px;border-radius:999px;font-weight:800;margin-top:12px}
+@media(max-width:900px){.cart__layout{grid-template-columns:1fr}}

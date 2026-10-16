@@ -1,0 +1,13 @@
+.catgrid{max-width:var(--max-width);margin:32px auto;padding:0 20px}
+.catgrid__head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:18px}
+.catgrid__link{font-weight:700;color:var(--secondary);white-space:nowrap}
+.catgrid__grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.catgrid__card{background:var(--surface);border-radius:20px;padding:12px;text-align:center;box-shadow:var(--shadow-sm);transition:transform var(--transition-base), box-shadow var(--transition-base)}
+.catgrid__card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover)}
+.catgrid__imgWrap{position:relative;aspect-ratio:1;background:var(--surface-alt);border-radius:16px;overflow:hidden}
+.catgrid__imgWrap img{width:100%;height:100%;object-fit:cover}
+.catgrid__count{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,0.92);padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800}
+.catgrid__name{font-weight:700;margin-top:10px;font-size:14px}
+.catgrid__parent{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em}
+@media(max-width:1024px){.catgrid__grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:640px){.catgrid__grid{grid-template-columns:repeat(3,1fr);gap:10px}.catgrid__card{padding:8px}}

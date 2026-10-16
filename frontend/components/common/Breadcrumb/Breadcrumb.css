@@ -1,0 +1,4 @@
+.breadcrumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--text-muted)}
+.breadcrumb__link:hover{color:var(--secondary);text-decoration:underline}
+.breadcrumb__current{color:var(--text-primary);font-weight:600}
+.breadcrumb__sep{opacity:0.4;margin:0 4px}

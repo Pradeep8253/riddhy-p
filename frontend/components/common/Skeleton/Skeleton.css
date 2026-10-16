@@ -1,0 +1,5 @@
+.skeleton{background:linear-gradient(90deg,#eee 25%,#f6f1e6 37%,#eee 63%);background-size:400px 100%;animation:shimmer 1.3s infinite linear;border-radius:8px}
+.skeleton__group{display:flex;flex-direction:column;gap:10px}
+.skeleton-card{background:var(--surface);border-radius:var(--radius-md);padding:12px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow-sm)}
+.skeleton--img{height:180px;width:100%;border-radius:12px}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}

@@ -1,0 +1,9 @@
+.comparebar{position:fixed;bottom:0;left:0;right:0;z-index:44;background:var(--surface);border-top:1px solid #eee;box-shadow:0 -8px 24px rgba(23,77,53,0.12);padding:10px 16px}
+.comparebar__inner{max-width:var(--max-width);margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.comparebar__label{font-weight:800;color:var(--secondary);white-space:nowrap}
+.comparebar__items{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+.comparebar__chip{background:var(--surface-alt);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600;display:flex;gap:6px;align-items:center}
+.comparebar__actions{display:flex;gap:8px}
+.comparebar__clear{padding:8px 12px;border-radius:999px;background:var(--surface-alt);font-weight:600}
+.comparebar__cta{background:var(--secondary);color:#fff;padding:10px 16px;border-radius:999px;font-weight:700}
+@media(max-width:768px){.comparebar{bottom:58px}}

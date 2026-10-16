@@ -1,0 +1,5 @@
+.help{max-width:800px;margin:0 auto;padding:18px 20px}
+.help__card{background:var(--surface);padding:18px;border-radius:16px;box-shadow:var(--shadow-sm)}
+.help__table{width:100%;margin-top:12px;border-collapse:collapse}
+.help__table th,.help__table td{padding:10px;border:1px solid #eee;text-align:left;font-size:13px}
+.help__table th{background:var(--surface-alt)}

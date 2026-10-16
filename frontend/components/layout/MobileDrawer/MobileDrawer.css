@@ -1,0 +1,6 @@
+.drawer{position:fixed;inset:0;z-index:60}
+.drawer__backdrop{position:absolute;inset:0;background:rgba(15,54,36,0.45);backdrop-filter:blur(4px)}
+.drawer__panel{position:absolute;left:0;top:0;bottom:0;width:86%;max-width:320px;background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--shadow-lg)}
+.drawer__head{display:flex;justify-content:space-between;align-items:center;font-size:18px}
+.drawer__nav{display:flex;flex-direction:column;gap:4px}
+.drawer__nav a{padding:12px 14px;border-radius:10px;background:var(--surface-alt);font-weight:600}

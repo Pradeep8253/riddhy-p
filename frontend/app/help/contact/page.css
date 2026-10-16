@@ -1,0 +1,6 @@
+.help{max-width:900px;margin:0 auto;padding:18px 20px}
+.help__grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}
+.help__card,.help__form{background:var(--surface);padding:18px;border-radius:16px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:12px}
+.help__form input,.help__form textarea{padding:12px;border-radius:12px;border:1.5px solid #E8E2D3;background:var(--surface-alt)}
+.help__form button{background:var(--secondary);color:#fff;padding:12px;border-radius:999px;font-weight:800}
+@media(max-width:700px){.help__grid{grid-template-columns:1fr}}

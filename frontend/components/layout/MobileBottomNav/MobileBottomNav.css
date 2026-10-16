@@ -1,0 +1,6 @@
+.mnav{position:fixed;bottom:0;left:0;right:0;z-index:45;background:var(--surface);border-top:1px solid #eee;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -6px 24px rgba(23,77,53,0.08)}
+.mnav__item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;border-radius:12px;color:var(--text-muted);font-size:11px;font-weight:600;position:relative}
+.mnav__item--active{color:var(--secondary);background:var(--surface-alt)}
+.mnav__icon{font-size:18px;position:relative}
+.mnav__badge{position:absolute;top:-6px;right:-10px;background:var(--primary);color:#fff;min-width:16px;height:16px;border-radius:999px;font-size:10px;display:grid;place-items:center;padding:0 4px}
+@media(min-width:768px){.mnav{display:none}}

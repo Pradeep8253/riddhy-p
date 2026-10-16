@@ -1,0 +1,7 @@
+.bundle{background:var(--surface);border-radius:20px;padding:18px;box-shadow:var(--shadow-sm);margin-top:24px}
+.bundle__head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.bundle__head span{background:var(--accent);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--secondary)}
+.bundle__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bundle__total{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;background:var(--surface-alt);padding:12px 16px;border-radius:12px}
+.bundle__total button{margin-left:auto;background:var(--primary);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800}
+@media(max-width:700px){.bundle__grid{grid-template-columns:1fr 1fr}}

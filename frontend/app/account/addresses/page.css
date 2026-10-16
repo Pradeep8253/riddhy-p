@@ -1,0 +1,6 @@
+.addrs h2{margin-bottom:12px}
+.addrs__card{background:var(--surface);padding:16px;border-radius:16px;box-shadow:var(--shadow-sm);margin-bottom:12px}
+.addrs__actions{display:flex;gap:8px;margin-top:10px}
+.addrs__actions button{padding:8px 14px;border-radius:999px;background:var(--surface-alt);font-weight:600}
+.addrs__actions .danger{color:var(--error)}
+.addrs__add{margin-top:8px;padding:12px 18px;border-radius:999px;background:var(--secondary);color:#fff;font-weight:700}

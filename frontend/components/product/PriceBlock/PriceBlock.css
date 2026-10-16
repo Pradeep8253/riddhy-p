@@ -1,0 +1,8 @@
+.priceblock{display:flex;flex-direction:column;gap:4px}
+.priceblock__row{display:flex;align-items:center;gap:10px}
+.priceblock__price{font-size:28px;font-weight:800;color:var(--text-primary)}
+.priceblock__off{background:var(--success);color:#fff;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:800}
+.priceblock__mrp{font-size:13px;color:var(--text-muted);text-decoration:line-through}
+.priceblock__mrp span{text-decoration:none;margin-left:6px;color:var(--text-muted)}
+.priceblock__emi{font-size:12px;color:var(--text-muted);margin-top:4px}
+.priceblock__emi a{color:var(--info);font-weight:700;text-decoration:underline}

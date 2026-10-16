@@ -1,0 +1,4 @@
+.qna{display:flex;flex-direction:column;gap:16px}
+.qna__ask{display:flex;gap:10px;background:var(--surface);padding:10px;border-radius:999px;box-shadow:var(--shadow-sm)}
+.qna__ask input{flex:1;border:none;outline:none;padding:10px 14px;background:transparent}
+.qna__ask button{background:var(--secondary);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700}

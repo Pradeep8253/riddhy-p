@@ -1,0 +1,4 @@
+.acard{padding:14px;border-radius:12px;border:1.5px solid #E8E2D3;background:var(--surface);cursor:pointer}
+.acard--active{border-color:var(--secondary);background:var(--surface-alt);box-shadow:0 0 0 3px rgba(23,77,53,0.08)}
+.acard__head{display:flex;justify-content:space-between;font-size:13px}
+.acard p{font-size:13px;margin-top:6px}

@@ -1,0 +1,11 @@
+.ocard{display:block;background:var(--surface);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm);transition:transform 0.2s}
+.ocard:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.ocard__head{display:flex;justify-content:space-between;align-items:center}
+.ocard__status{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase}
+.ocard__status--delivered{background:#E6F4EC;color:var(--success)}
+.ocard__status--shipped{background:#FFF3E0;color:#8A5A00}
+.ocard__status--cancelled{background:#FDECEC;color:var(--error)}
+.ocard__meta{font-size:12px;color:var(--text-muted);margin-top:6px}
+.ocard__items{display:flex;gap:8px;align-items:center;margin-top:10px}
+.ocard__items img{width:48px;height:48px;border-radius:10px;object-fit:cover}
+.ocard__foot{display:flex;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px dashed #eee;font-weight:700}

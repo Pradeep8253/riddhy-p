@@ -1,0 +1,6 @@
+.slot{background:var(--surface);padding:18px;border-radius:16px;box-shadow:var(--shadow-sm)}
+.slot h4{margin-bottom:12px}
+.slot__grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.slot__btn{padding:12px;border-radius:12px;border:1.5px solid #E8E2D3;background:var(--surface-alt);font-weight:600;font-size:13px;text-align:left}
+.slot__btn--active{border-color:var(--secondary);background:var(--secondary);color:#fff}
+@media(max-width:640px){.slot__grid{grid-template-columns:1fr}}

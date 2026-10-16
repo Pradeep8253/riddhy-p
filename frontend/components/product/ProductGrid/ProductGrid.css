@@ -1,0 +1,4 @@
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.pgrid__empty{padding:40px;text-align:center;color:var(--text-muted);background:var(--surface);border-radius:16px}
+@media(max-width:1024px){.pgrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.pgrid{grid-template-columns:repeat(2,1fr);gap:12px}}

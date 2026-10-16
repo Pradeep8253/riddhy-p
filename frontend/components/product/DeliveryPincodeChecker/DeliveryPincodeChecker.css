@@ -1,0 +1,9 @@
+.pincode{background:var(--surface);border:1px solid #E8E2D3;border-radius:16px;padding:16px}
+.pincode__label{font-weight:700;font-size:13px;margin-bottom:8px}
+.pincode__row{display:flex;gap:10px}
+.pincode__row input{flex:1;padding:12px 14px;border-radius:999px;border:1.5px solid #E8E2D3;background:var(--surface-alt);outline:none}
+.pincode__row input:focus{border-color:var(--primary);background:#fff}
+.pincode__row button{background:var(--secondary);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;white-space:nowrap}
+.pincode__res{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600}
+.pincode__res--ok{background:#E6F4EC;color:var(--success)}
+.pincode__res--err{background:#FDECEC;color:var(--error)}

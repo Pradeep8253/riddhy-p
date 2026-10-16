@@ -1,0 +1,9 @@
+.variant{margin:14px 0}
+.variant__label{font-weight:700;font-size:13px;margin-bottom:8px}
+.variant__list{display:flex;flex-wrap:wrap;gap:10px}
+.variant__chip{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;border:1.5px solid #E8E2D3;background:var(--surface);text-align:left;min-width:180px}
+.variant__chip--active{border-color:var(--secondary);background:var(--surface-alt);box-shadow:0 0 0 3px rgba(23,77,53,0.08)}
+.variant__chip--oos{opacity:0.5;pointer-events:none}
+.variant__swatch{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #ddd;flex-shrink:0}
+.variant__text strong{display:block;font-size:13px}
+.variant__text small{font-size:11px;color:var(--text-muted)}

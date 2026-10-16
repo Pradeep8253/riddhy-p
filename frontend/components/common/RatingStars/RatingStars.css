@@ -1,0 +1,7 @@
+.rating{display:flex;align-items:center;gap:6px}
+.rating__stars{display:flex}
+.rating__star{position:relative;display:inline-block;line-height:1;color:#E8D7B5}
+.rating__starBg{color:#E9E5D9}
+.rating__starFill{position:absolute;left:0;top:0;overflow:hidden;color:var(--primary);white-space:nowrap}
+.rating__value{font-weight:700;font-size:13px;color:var(--text-primary)}
+.rating__count{font-size:12px;color:var(--text-muted)}

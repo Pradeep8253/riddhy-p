@@ -1,0 +1,4 @@
+.invoices h2{margin-bottom:12px}
+.invoices__card{background:var(--surface);padding:16px;border-radius:16px;box-shadow:var(--shadow-sm);display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.invoices__card span{font-size:12px;color:var(--text-muted);display:block}
+.invoices__card button{padding:8px 14px;border-radius:999px;background:var(--secondary);color:#fff;font-weight:700}

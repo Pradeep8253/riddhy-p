@@ -1,0 +1,2 @@
+.fchip{display:inline-flex;align-items:center;gap:6px;background:var(--secondary);color:#fff;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.fchip button{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.2);display:grid;place-items:center;font-size:11px}

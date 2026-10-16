@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
+
+h1,h2,h3,h4{font-family:var(--font-heading);color:var(--text-primary);line-height:1.2;letter-spacing:-0.02em}
+h1{font-size:clamp(32px,5vw,48px);font-weight:800}
+h2{font-size:clamp(24px,3.5vw,36px);font-weight:700}
+h3{font-size:clamp(20px,2.5vw,28px);font-weight:600}
+h4{font-size:clamp(16px,2vw,22px);font-weight:600}
+p{color:var(--text-muted);font-size:var(--fs-base);line-height:1.7}
+small{font-size:var(--fs-sm);color:var(--text-muted)}
+.text-gradient{background:linear-gradient(135deg,var(--secondary) 0%,var(--secondary-light) 60%,var(--primary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-eyebrow{font-size:var(--fs-xs);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--primary-dark)}
+.section-title{margin-top:6px}
+.section-subtitle{margin-top:8px;max-width:560px}

@@ -1,0 +1,63 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports: ["27017:27017"]
+    volumes: ["mongo_data:/data/db"]
+    environment:
+      MONGO_INITDB_DATABASE: rfriddhy
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports: ["6379:6379"]
+    volumes: ["redis_data:/data"]
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    ports: ["4000:4000"]
+    environment:
+      PORT: 4000
+      MONGO_URI: mongodb://mongo:27017/rfriddhy
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: rf-riddhy-super-secret-change-in-prod
+      RAZORPAY_KEY_ID: rzp_test_xxx
+      RAZORPAY_KEY_SECRET: test_secret
+      FRONTEND_URL: http://localhost:3000,http://localhost:3001
+    depends_on: [mongo, redis]
+    volumes: ["./backend:/app", "/app/node_modules"]
+    command: npm run dev
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports: ["3000:3000"]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+    depends_on: [backend]
+    volumes: ["./frontend:/app", "/app/node_modules", "/app/.next"]
+    command: npm run dev
+
+  admin:
+    build: ./admin
+    restart: unless-stopped
+    ports: ["3001:3001"]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+    depends_on: [backend]
+    volumes: ["./admin:/app", "/app/node_modules", "/app/.next"]
+    command: npm run dev
+
+  traefik:
+    image: traefik:v3.0
+    command:
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+    ports: ["80:80", "8080:8080"]
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock:ro"]
+
+volumes:
+  mongo_data:
+  redis_data:
