@@ -22,8 +22,6 @@ img { display: block; max-width: 100%; }
 .display-title { margin: 12px 0 0; font-family: var(--font-display); font-size: clamp(38px, 5.5vw, 76px); font-weight: 500; letter-spacing: -.045em; line-height: 1.02; }
 .muted { color: var(--rf-charcoal-600); }
 .divider { border: 0; border-top: 1px solid var(--rf-line); }
-.scene-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-.scene-layer canvas { pointer-events: none; }
 .site-shell { position: relative; z-index: 1; }
 .countdown-ended { color: #aeb9ae; font-size: 10px; font-weight: 800; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .35s; }

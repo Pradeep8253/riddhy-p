@@ -145,7 +145,7 @@ export default function AdminPackages() {
           <h1>Marriage Packages</h1>
           <p>
             Configure and manage wedding furniture and appliance packages. Changes reflect live on
-            the <code>/packages</code> storefront.
+            the <code>/packages</code> store page.
           </p>
         </div>
         <button type="button" className={styles.createBtn} onClick={openCreate}>
@@ -230,8 +230,8 @@ export default function AdminPackages() {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHead}>
               <h2>{editingPackage ? 'Edit Package' : 'Create Marriage Package'}</h2>
-              <button type="button" onClick={closeModal} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>
-                ✕
+              <button type="button" onClick={closeModal} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }} aria-label="Close modal">
+                <Icon name="close" size={18} />
               </button>
             </div>
 

@@ -15,7 +15,12 @@ export default function HomeHero(){
     <div className={styles.overlay}/><div className={styles.orbit} aria-hidden="true"><span>RF</span></div>
     <div className={`container ${styles.content}`}>
       <div className={styles.copy}>
-        <div className={styles.campaign}><span className={styles.liveDot}/><span>THE GOLDEN HOUR EDIT</span><b>ENDS IN</b><Countdown endsAt={endAt} compact/></div>
+        <div className={styles.campaign}>
+          <span className={styles.liveDot} />
+          <span>THE GOLDEN HOUR DEAL</span>
+          <b>ENDS IN</b>
+          <Countdown endsAt={endAt} compact />
+        </div>
         <span className="kicker">Living spaces · thoughtfully curated</span>
         <h1 id="hero-title">Furnish your<br/><em>story.</em></h1>
         <p>Furniture with a sense of home. Appliances chosen for the everyday things that matter.</p>
@@ -24,7 +29,7 @@ export default function HomeHero(){
       </div>
       <div className={styles.sideNote}><span>01 / 02</span><i/><span>FURNITURE + APPLIANCES</span></div>
     </div>
-    <div className={styles.bottom}><span>Curated for real homes</span><span>Scroll to explore <b>↓</b></span></div>
+    <div className={styles.bottom}><span>Curated for real homes</span><span>Scroll to explore <Icon name="arrowDown" size={13} style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 4 }} /></span></div>
     <Link className={styles.mobileJump} href="/appliances" aria-label="Explore home appliances">Power your home <Icon name="arrow" size={16}/></Link>
   </section>;
 }

@@ -236,7 +236,25 @@
   color: var(--rf-forest-deep);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.typeIconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(31, 95, 46, 0.08);
+  color: var(--rf-green-800);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.typeCardActive .typeIconWrap {
+  background: var(--rf-gold-600);
+  color: #ffffff;
 }
 
 .typeDesc {

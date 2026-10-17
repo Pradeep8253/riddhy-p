@@ -392,27 +392,6 @@
   gap: 12px;
 }
 
-.liveIndicator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #1b5e20;
-  background: #eaf5ec;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid #c8e6c9;
-}
-
-.pulseDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #2e7d32;
-  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
-}
-
 .topbarStoreLink {
   display: inline-flex;
   align-items: center;

@@ -303,9 +303,19 @@ export default function AdminLeads() {
                 </h2>
 
                 <div className={styles.contactLine}>
-                  <span>📞 {item.phone}</span>
-                  {item.email && <span>✉️ {item.email}</span>}
-                  {item.pincode && <span>📍 {item.pincode}</span>}
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                    <Icon name="phone" size={13} /> {item.phone}
+                  </span>
+                  {item.email && (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <Icon name="mail" size={13} /> {item.email}
+                    </span>
+                  )}
+                  {item.pincode && (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <Icon name="pin" size={13} /> {item.pincode}
+                    </span>
+                  )}
                 </div>
 
                 {item.kind === 'consultation' && (
@@ -330,7 +340,13 @@ export default function AdminLeads() {
 
               <div className={styles.cardFooter} onClick={(e) => e.stopPropagation()}>
                 <small className={styles.emailStatus}>
-                  {item.emailSent ? '✓ Email notified' : 'Email not sent'}
+                  {item.emailSent ? (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Icon name="check" size={12} /> Email notified
+                    </span>
+                  ) : (
+                    'Email not sent'
+                  )}
                   {item.internalNotes?.length ? ` · ${item.internalNotes.length} notes` : ''}
                 </small>
 

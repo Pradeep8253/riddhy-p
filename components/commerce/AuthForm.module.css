@@ -89,10 +89,15 @@
   letter-spacing: 0.02em;
 }
 
-.labelRow {
+.passwordFieldGroup {
+  display: grid;
+  gap: 7px;
+}
+
+.forgotRowBelow {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  padding: 0 2px;
 }
 
 .forgotLink {
@@ -273,6 +278,9 @@
   border: 1px solid #f6cfc9;
   font-size: 12px;
   line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .successAlert {
@@ -285,6 +293,9 @@
   font-size: 12px;
   line-height: 1.5;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .info {
@@ -296,6 +307,9 @@
   border: 1px solid #c8e6c9;
   font-size: 12px;
   line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .demo {

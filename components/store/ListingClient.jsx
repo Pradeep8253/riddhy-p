@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import ProductGrid from '@/components/ui/ProductGrid';
 import { formatINR } from '@/lib/demo-data';
+import Icon from '@/components/ui/Icon';
 import styles from './ListingClient.module.css';
 const PAGE_SIZE=12;
 export default function ListingClient({ products=[], title='Explore the collection', description='Thoughtfully selected for your home.' }){
@@ -20,11 +21,16 @@ export default function ListingClient({ products=[], title='Explore the collecti
    <label className={styles.field}>Search in this collection<input value={query} onChange={(e)=>setQueryAndSync(e.target.value)} placeholder="Try ‘sage sofa’"/></label>
    <label className={styles.field}>Brand<select value={brand} onChange={(e)=>{setBrand(e.target.value);setVisible(PAGE_SIZE);syncUrl({brand:e.target.value})}}><option value="">All brands</option>{brands.map((name)=><option key={name}>{name}</option>)}</select></label>
    <label className={styles.field}>Price up to <strong>{maxPrice?formatINR(maxPrice):'Any price'}</strong><input type="range" min="0" max="150000" step="5000" value={maxPrice} onChange={(e)=>{const value=Number(e.target.value);setMaxPrice(value);setVisible(PAGE_SIZE);syncUrl({maxPrice:value})}}/><span className={styles.rangeEnds}><span>Any</span><span>₹1,50,000</span></span></label>
-   <div className={styles.checks}><b>Shop with confidence</b><span>✓ Demo items have sample stock</span><span>✓ Dimensions shown per product</span><span>✓ Service options by pincode</span></div>
+    <div className={styles.checks}>
+      <b>Shop with confidence</b>
+      <span><Icon name="check" size={13} /> Demo items have sample stock</span>
+      <span><Icon name="check" size={13} /> Dimensions shown per product</span>
+      <span><Icon name="check" size={13} /> Service options by pincode</span>
+    </div>
   </aside>
   <div className={styles.results}><div className={styles.toolbar}><button type="button" className={styles.mobileFilter} onClick={()=>setFiltersOpen(!filtersOpen)}>{filtersOpen?'Close filters':'Filters & sort'}</button><span>{filtered.length} thoughtfully chosen finds</span><label>Sort by <select value={sort} onChange={(e)=>{setSort(e.target.value);setVisible(PAGE_SIZE);syncUrl({sort:e.target.value})}}><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="rating">Customer rating</option></select></label></div>
-   {(query||brand||maxPrice>0)&&<div className={styles.chips}>{query&&<button onClick={()=>setQueryAndSync('')}>“{query}” ×</button>}{brand&&<button onClick={()=>{setBrand('');syncUrl({brand:''})}}>{brand} ×</button>}{maxPrice>0&&<button onClick={()=>{setMaxPrice(0);syncUrl({maxPrice:''})}}>Up to {formatINR(maxPrice)} ×</button>}</div>}
-   {filtered.length?<><ProductGrid products={filtered.slice(0,visible)}/>{visible<filtered.length&&<button className={styles.more} onClick={()=>setVisible((v)=>v+PAGE_SIZE)} type="button">Show more products <span>↓</span></button>}</>:<div className={styles.empty}><h3>No exact matches just yet.</h3><p>Try a broader search or clear one of the filters.</p><button onClick={clear} type="button">Clear filters</button></div>}
+   {(query||brand||maxPrice>0)&&<div className={styles.chips}>{query&&<button onClick={()=>setQueryAndSync('')}>“{query}” <Icon name="close" size={12} /></button>}{brand&&<button onClick={()=>{setBrand('');syncUrl({brand:''})}}>{brand} <Icon name="close" size={12} /></button>}{maxPrice>0&&<button onClick={()=>{setMaxPrice(0);syncUrl({maxPrice:''})}}>Up to {formatINR(maxPrice)} <Icon name="close" size={12} /></button>}</div>}
+   {filtered.length?<><ProductGrid products={filtered.slice(0,visible)}/>{visible<filtered.length&&<button className={styles.more} onClick={()=>setVisible((v)=>v+PAGE_SIZE)} type="button">Show more products <Icon name="arrowDown" size={14} /></button>}</>:<div className={styles.empty}><h3>No exact matches just yet.</h3><p>Try a broader search or clear one of the filters.</p><button onClick={clear} type="button">Clear filters</button></div>}
   </div>
  </div>;
 }

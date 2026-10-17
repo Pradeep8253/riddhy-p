@@ -47,23 +47,49 @@
 }
 
 .waItem {
-  background: #eafaf1;
-  color: #128c7e;
+  background: #f0fdf4;
+  color: #14532d;
+  border: 1px solid rgba(37, 211, 102, 0.25);
 }
 
 .waItem:hover {
+  background: #dcfce7;
+  border-color: #25d366;
+}
+
+.callItem {
+  background: var(--rf-cream-50);
+  color: var(--rf-forest-deep);
+  border: 1px solid var(--rf-line);
+}
+
+.callItem:hover {
+  background: var(--rf-cream-100);
+  border-color: var(--rf-gold-500);
+}
+
+.itemIconCircle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.waIconCircle {
   background: #25d366;
   color: #ffffff;
 }
 
-.callItem {
-  background: var(--rf-cream-100);
-  color: var(--rf-forest-deep);
-}
-
-.callItem:hover {
+.callIconCircle {
   background: var(--rf-forest-deep);
   color: #ffffff;
+}
+
+.menuItem:hover .itemIconCircle {
+  transform: scale(1.08);
 }
 
 .mainToggle {

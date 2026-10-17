@@ -4,7 +4,6 @@ import StoreProvider from '@/components/providers/StoreProvider';
 import LocaleSync from '@/components/providers/LocaleSync';
 import LenisProvider from '@/components/motion/LenisProvider';
 import IntroPreloader from '@/components/motion/IntroPreloader';
-import SceneRootLoader from '@/components/three/SceneRootLoader';
 import { IMG } from '@/lib/images';
 
 const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-fraunces', display: 'swap' });
@@ -31,7 +30,6 @@ export default function RootLayout({ children }) {
         <StoreProvider>
           <LocaleSync />
           <LenisProvider>
-            <SceneRootLoader />
             <IntroPreloader />
             <div className="site-shell" id="main-content">{children}</div>
           </LenisProvider>

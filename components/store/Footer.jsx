@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLiteMode, setLocale } from '@/store/uiSlice';
+import { setLocale } from '@/store/uiSlice';
 import Icon from '@/components/ui/Icon';
 import { siteConfig, isConfigured } from '@/lib/site-config';
 import { tr } from '@/lib/i18n';
@@ -43,15 +43,7 @@ const groups = [
 
 export default function Footer() {
   const dispatch = useDispatch();
-  const liteMode = useSelector((state) => state.ui.liteMode);
   const locale = useSelector((state) => state.ui.locale);
-
-  const toggleLite = () => {
-    const next = !liteMode;
-    dispatch(setLiteMode(next));
-    window.localStorage.setItem('rf-lite-mode', next ? '1' : '0');
-    window.dispatchEvent(new CustomEvent('rf-lite-mode', { detail: next }));
-  };
 
   const hasPhone = isConfigured(siteConfig.contact.phone);
   const hasEmail = isConfigured(siteConfig.contact.email);
@@ -99,8 +91,8 @@ export default function Footer() {
             <Link href="/consultation" style={{ color: '#edb95e', fontWeight: 800, fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               Book home consultation <Icon name="arrow" size={15} />
             </Link>
-            <Link href="/contact" style={{ color: '#d7ddd6', fontSize: 11 }}>
-              Talk to our team →
+            <Link href="/contact" style={{ color: '#d7ddd6', fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              Talk to our team <Icon name="arrow" size={13} />
             </Link>
           </div>
         </div>
@@ -120,9 +112,6 @@ export default function Footer() {
         <div className={styles.toggles}>
           <button type="button" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>
             {locale === 'en' ? 'EN · हिन्दी' : 'हिन्दी · EN'}
-          </button>
-          <button type="button" aria-pressed={liteMode} onClick={toggleLite}>
-            {liteMode ? tr(locale, 'liteOn') : tr(locale, 'reduceMotion')}
           </button>
         </div>
       </div>

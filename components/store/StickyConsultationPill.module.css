@@ -1,7 +1,8 @@
 .pillWrap {
   position: fixed;
   bottom: clamp(16px, 3vw, 28px);
-  right: clamp(16px, 3vw, 28px);
+  left: clamp(16px, 3vw, 28px);
+  right: auto;
   z-index: 55;
   display: flex;
   align-items: center;
@@ -84,6 +85,14 @@
 .closeBtn:hover {
   background: var(--rf-cream-100);
   color: var(--rf-charcoal-900);
+}
+
+@media (max-width: 600px) {
+  .pillWrap {
+    bottom: 16px;
+    left: 14px;
+    max-width: calc(100vw - 80px);
+  }
 }
 
 @media (max-width: 480px) {

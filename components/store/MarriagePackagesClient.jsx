@@ -222,7 +222,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
                 </p>
               </div>
               <button type="button" className={styles.closeBtn} onClick={closeDrawer} aria-label="Close drawer">
-                ✕
+                <Icon name="close" size={18} />
               </button>
             </div>
 

@@ -25,10 +25,20 @@ export default function AdminWarranty() {
       }
       const res = await fetch(url);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to load warranty records');
-      setRegistrations(data.registrations || []);
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/admin/login';
+          return;
+        }
+        const errorMsg =
+          data?.error?.message ||
+          (typeof data?.error === 'string' ? data.error : '') ||
+          'Failed to load warranty records';
+        throw new Error(errorMsg);
+      }
+      setRegistrations(data?.data?.registrations || data?.registrations || []);
     } catch (err) {
-      setError(err.message);
+      setError(typeof err?.message === 'string' ? err.message : 'Failed to load warranty records');
     } finally {
       setLoading(false);
     }
@@ -48,13 +58,19 @@ export default function AdminWarranty() {
         body: JSON.stringify({ id, status: newStatus })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to update status');
+      if (!res.ok) {
+        const errorMsg =
+          data?.error?.message ||
+          (typeof data?.error === 'string' ? data.error : '') ||
+          'Failed to update status';
+        throw new Error(errorMsg);
+      }
 
       setRegistrations((prev) =>
         prev.map((r) => (r.id === id ? { ...r, status: newStatus, currentStatus: newStatus } : r))
       );
     } catch (err) {
-      alert(err.message);
+      alert(typeof err?.message === 'string' ? err.message : 'Failed to update status');
     } finally {
       setUpdatingId(null);
     }
@@ -101,14 +117,18 @@ export default function AdminWarranty() {
         </div>
       </div>
 
-      {error && <div style={{ color: '#c62828', background: '#ffebee', padding: '12px 16px', borderRadius: '8px' }}>{error}</div>}
+      {error && (
+        <div style={{ color: '#c62828', background: '#ffebee', padding: '12px 16px', borderRadius: '8px', marginBottom: 16 }}>
+          {typeof error === 'string' ? error : (error?.message || 'Failed to load warranty records')}
+        </div>
+      )}
 
       <div className={styles.tableCard}>
         {loading ? (
           <div className={styles.emptyState}>Loading warranty registrations...</div>
         ) : registrations.length === 0 ? (
           <div className={styles.emptyState}>
-            No registrations found {statusFilter !== 'all' ? `matching status "${statusFilter}"` : ''}.
+            No registrations found{statusFilter !== 'all' ? ` matching status "${statusFilter}"` : ''}.
           </div>
         ) : (
           <table className={styles.table}>

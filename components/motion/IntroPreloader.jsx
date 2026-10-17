@@ -7,9 +7,18 @@ import styles from './IntroPreloader.module.css';
 export default function IntroPreloader() {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (window.sessionStorage.getItem('rf-intro-seen')) return;
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mediaQuery.matches) {
+      window.sessionStorage.setItem('rf-intro-seen', '1');
+      return;
+    }
     setVisible(true);
-    const finish = window.setTimeout(() => { setVisible(false); window.sessionStorage.setItem('rf-intro-seen', '1'); }, 2100);
+    const finish = window.setTimeout(() => {
+      setVisible(false);
+      window.sessionStorage.setItem('rf-intro-seen', '1');
+    }, 750);
     return () => window.clearTimeout(finish);
   }, []);
   if (!visible) return null;

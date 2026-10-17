@@ -20,8 +20,8 @@ export const fallbackBanners = [
     sortOrder: 1
   },
   {
-    id: 'banner-festive-edit',
-    name: 'The Golden Hour Festive Edit',
+    id: 'banner-festive-deal',
+    name: 'The Golden Hour Festive Deal',
     title: 'Warmth, Comfort & Craft',
     subtitle: 'Curated for real Indian living rooms',
     description: 'Solid Sheesham and CP Teak craftsmanship paired with 5-star energy efficient inverter appliances.',
@@ -30,7 +30,7 @@ export const fallbackBanners = [
     href: '/furniture',
     desktopImage: IMG.hero.desktop,
     mobileImage: IMG.hero.mobile,
-    alt: 'RF Riddhy Living Room Festive Edit',
+    alt: 'RF Riddhy Living Room Festive Deal',
     active: true,
     sortOrder: 2
   },

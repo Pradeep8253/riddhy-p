@@ -331,8 +331,8 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
           <button type="button" className={styles.resetBtn} onClick={resetForm}>
             {tr(locale, 'bookAnother')}
           </button>
-          <Link href="/furniture" className={styles.catalogueLink}>
-            {tr(locale, 'exploreCatalogue')} →
+          <Link href="/furniture" className={styles.catalogueLink} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            {tr(locale, 'exploreCatalogue')} <Icon name="arrow" size={14} />
           </Link>
         </div>
       </div>
@@ -487,8 +487,8 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
 
             <div className={styles.buttonRow}>
               <div />
-              <button type="button" className={styles.primaryBtn} onClick={goToNextStep}>
-                Next: Your need →
+              <button type="button" className={styles.primaryBtn} onClick={goToNextStep} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                Next: Your need <Icon name="arrow" size={14} />
               </button>
             </div>
           </fieldset>
@@ -586,11 +586,11 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
             </div>
 
             <div className={styles.buttonRow}>
-              <button type="button" className={styles.secondaryBtn} onClick={goToPrevStep}>
-                ← Back
+              <button type="button" className={styles.secondaryBtn} onClick={goToPrevStep} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Icon name="arrowLeft" size={14} /> Back
               </button>
-              <button type="button" className={styles.primaryBtn} onClick={goToNextStep}>
-                Next: Pick slot →
+              <button type="button" className={styles.primaryBtn} onClick={goToNextStep} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                Next: Pick slot <Icon name="arrow" size={14} />
               </button>
             </div>
           </fieldset>
@@ -735,7 +735,10 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
                   checked={form.whatsappOptIn}
                   onChange={(e) => updateField('whatsappOptIn', e.target.checked)}
                 />
-                <span>{tr(locale, 'optInWhatsApp')}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Icon name="whatsapp" size={16} color="#25d366" />
+                  {tr(locale, 'optInWhatsApp')}
+                </span>
               </label>
 
               <label className={styles.checkboxLabel}>
@@ -763,8 +766,8 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
             </div>
 
             <div className={styles.buttonRow}>
-              <button type="button" className={styles.secondaryBtn} onClick={goToPrevStep}>
-                ← Back
+              <button type="button" className={styles.secondaryBtn} onClick={goToPrevStep} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Icon name="arrowLeft" size={14} /> Back
               </button>
               <button type="submit" className={styles.primaryBtn} disabled={busy}>
                 {busy ? tr(locale, 'submitting') : tr(locale, 'bookMyConsultation')}

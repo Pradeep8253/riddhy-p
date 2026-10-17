@@ -8,8 +8,9 @@ const wishlistSlice = createSlice({
       state.items = exists ? state.items.filter((item) => (item.slug || item.id) !== key) : [...state.items, payload];
     },
     removeWishlistItem(state, { payload: key }) { state.items = state.items.filter((item) => (item.slug || item.id) !== key); },
+    clearWishlist(state) { state.items = []; },
     rehydrate(state, { payload }) { state.items = Array.isArray(payload?.items) ? payload.items : []; }
   }
 });
-export const { toggleWishlist, removeWishlistItem } = wishlistSlice.actions;
+export const { toggleWishlist, removeWishlistItem, clearWishlist } = wishlistSlice.actions;
 export default wishlistSlice.reducer;

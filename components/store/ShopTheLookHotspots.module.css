@@ -1,0 +1,412 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 420px;
+  max-height: 640px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--rf-line);
+  background: var(--rf-cream-100);
+}
+
+.roomImage {
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-out-expo);
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(16, 38, 26, 0.05) 0%,
+    rgba(16, 38, 26, 0.25) 100%
+  );
+  pointer-events: none;
+}
+
+.hotspotsLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.pinAnchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.pinAnchorActive {
+  z-index: 30;
+}
+
+.pinButton {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  outline: none;
+}
+
+.pinPulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(224, 160, 64, 0.4);
+  animation: pulsePin 2.2s infinite ease-in-out;
+}
+
+.pinCore {
+  position: relative;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--rf-forest-deep);
+  color: var(--rf-gold-400);
+  border: 2px solid #fffefa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s var(--ease-out-expo), background 0.2s;
+}
+
+.pinButton:hover .pinCore,
+.pinAnchorActive .pinCore {
+  transform: scale(1.15);
+  background: var(--rf-gold-600);
+  color: #fffefa;
+}
+
+@keyframes pulsePin {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* Popover card */
+.popover {
+  position: absolute;
+  width: 284px;
+  max-width: calc(100vw - 36px);
+  background: rgba(255, 254, 250, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 44px rgba(16, 38, 26, 0.28);
+  border: 1px solid var(--rf-line);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 50;
+  animation: popIn 0.22s var(--ease-out-expo);
+}
+
+.popoverClose {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--rf-charcoal-700);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+  z-index: 2;
+}
+
+.popoverClose:hover {
+  background: var(--rf-charcoal-900);
+  color: #fffefa;
+}
+
+/* Vertical auto-placement */
+.popoverBelow {
+  top: calc(100% + 12px);
+}
+
+.popoverAbove {
+  bottom: calc(100% + 12px);
+}
+
+/* Horizontal auto-placement */
+.popoverCenter {
+  left: 50%;
+  translate: -50% 0;
+}
+
+.popoverLeft {
+  left: -8px;
+}
+
+.popoverRight {
+  right: -8px;
+  left: auto;
+}
+
+/* Caret pointer arrows pointing towards the pin */
+.popoverAbove::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 254, 250, 0.98);
+  border-right: 1px solid var(--rf-line);
+  border-bottom: 1px solid var(--rf-line);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.popoverBelow::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 254, 250, 0.98);
+  border-left: 1px solid var(--rf-line);
+  border-top: 1px solid var(--rf-line);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.popoverCenter::after {
+  left: 50%;
+  margin-left: -6px;
+}
+
+.popoverLeft::after {
+  left: 20px;
+}
+
+.popoverRight::after {
+  right: 20px;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.popoverContent {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.popoverThumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  background: var(--rf-cream-100);
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--rf-line);
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.popoverInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.category {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rf-green-700);
+  font-weight: 700;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--rf-charcoal-900);
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.title:hover {
+  color: var(--rf-green-800);
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.priceRow strong {
+  font-size: 14px;
+  color: var(--rf-forest-deep);
+}
+
+.priceRow del {
+  font-size: 11px;
+  color: var(--rf-charcoal-600);
+}
+
+.popoverActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--rf-line);
+}
+
+.viewLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--rf-charcoal-900);
+  transition: color 0.15s;
+}
+
+.viewLink:hover {
+  color: var(--rf-green-800);
+}
+
+.addBtn {
+  border: none;
+  background: var(--rf-forest-deep);
+  color: #fffefa;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.addBtn:hover {
+  background: var(--rf-green-700);
+  transform: translateY(-1px);
+}
+
+/* Mobile fallback list */
+.mobileList {
+  display: none;
+  gap: 10px;
+  overflow-x: auto;
+  padding-top: 16px;
+  scroll-snap-type: x mandatory;
+}
+
+.mobileCard {
+  scroll-snap-align: start;
+  flex: 0 0 240px;
+  background: #fffefa;
+  border: 1px solid var(--rf-line);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.mobileCardActive {
+  border-color: var(--rf-gold-500);
+  background: var(--rf-cream-50);
+}
+
+.mobileThumb {
+  border-radius: var(--radius-sm);
+  background: var(--rf-cream-100);
+  object-fit: cover;
+}
+
+.mobileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mobileInfo strong {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileInfo span {
+  font-size: 11px;
+  color: var(--rf-green-800);
+  font-weight: 700;
+}
+
+.mobileAdd {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--rf-forest-deep);
+  color: #fffefa;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .imageContainer {
+    aspect-ratio: 4 / 3;
+    min-height: 280px;
+  }
+  .popover {
+    display: none;
+  }
+  .mobileList {
+    display: flex;
+  }
+}

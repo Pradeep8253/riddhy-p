@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Icon from '@/components/ui/Icon';
 import styles from './AuthForm.module.css';
 
 export default function AuthForm({ admin = false }) {
@@ -15,8 +16,8 @@ export default function AuthForm({ admin = false }) {
   // Login / Register state
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState(admin ? 'admin@gmail.com' : '');
-  const [password, setPassword] = useState(admin ? 'admin@123' : '');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   // Forgot password OTP flow state
@@ -33,7 +34,7 @@ export default function AuthForm({ admin = false }) {
   const [successMessage, setSuccessMessage] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
 
-  // Handle URL errors (e.g. from Google OAuth callback)
+  // Handle URL errors and redirect hints
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -41,8 +42,12 @@ export default function AuthForm({ admin = false }) {
       if (urlError) {
         setMessage(decodeURIComponent(urlError));
       }
+      const redirectParam = params.get('redirect');
+      if (redirectParam && !admin) {
+        setInfoMessage('Please sign in to save items to your bag and wishlist.');
+      }
     }
-  }, []);
+  }, [admin]);
 
   // OTP resend countdown ticker
   useEffect(() => {
@@ -83,7 +88,15 @@ export default function AuthForm({ admin = false }) {
         throw new Error(json.error?.message || 'Unable to sign in.');
       }
 
-      router.push(admin ? '/admin' : '/account');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('rf-auth-change'));
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const redirectUrl = params.get('redirect');
+      const safeRedirect = redirectUrl && redirectUrl.startsWith('/') && !redirectUrl.startsWith('//') ? redirectUrl : '/account';
+
+      router.push(admin ? '/admin' : safeRedirect);
       router.refresh();
     } catch (error) {
       setMessage(error.message);
@@ -195,21 +208,21 @@ export default function AuthForm({ admin = false }) {
       {/* Success notification */}
       {successMessage && (
         <div className={styles.successAlert} role="status">
-          ✓ {successMessage}
+          <Icon name="check" size={14} /> {successMessage}
         </div>
       )}
 
       {/* Error notification */}
       {message && (
         <p className={styles.error} role="alert">
-          ✕ {message}
+          <Icon name="close" size={14} /> {message}
         </p>
       )}
 
       {/* Informative notification */}
       {infoMessage && (
         <div className={styles.info} role="status">
-          ℹ {infoMessage}
+          <Icon name="info" size={14} /> {infoMessage}
         </div>
       )}
 
@@ -295,48 +308,53 @@ export default function AuthForm({ admin = false }) {
             />
           </label>
 
-          <label className={styles.label}>
-            <div className={styles.labelRow}>
+          <div className={styles.passwordFieldGroup}>
+            <label className={styles.label}>
               <span>Password</span>
-              <button
-                type="button"
-                className={styles.forgotLink}
-                onClick={() => {
-                  setForgotEmail(email);
-                  setMessage('');
-                  setSuccessMessage('');
-                  setAuthView('forgot_email');
-                }}
-              >
-                Forgot password?
-              </button>
-            </div>
-            <div className={styles.passwordWrapper}>
-              <input
-                required
-                type={showPassword ? 'text' : 'password'}
-                autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.passwordInput}
-              />
-              <button
-                type="button"
-                className={styles.passwordToggle}
-                onClick={() => setShowPassword((prev) => !prev)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                title={showPassword ? 'Hide password' : 'Show password'}
-                tabIndex={-1}
-              >
-                {showPassword ? <EyeOff size={18} strokeWidth={2} /> : <Eye size={18} strokeWidth={2} />}
-              </button>
-            </div>
-          </label>
+              <div className={styles.passwordWrapper}>
+                <input
+                  required
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={styles.passwordInput}
+                />
+                <button
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={18} strokeWidth={2} /> : <Eye size={18} strokeWidth={2} />}
+                </button>
+              </div>
+            </label>
+
+            {mode === 'login' && (
+              <div className={styles.forgotRowBelow}>
+                <button
+                  type="button"
+                  className={styles.forgotLink}
+                  onClick={() => {
+                    setForgotEmail(email);
+                    setMessage('');
+                    setSuccessMessage('');
+                    setAuthView('forgot_email');
+                  }}
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
+          </div>
 
           <Button type="submit" size="lg" disabled={busy}>
             {busy ? 'Please wait…' : admin ? 'Open admin dashboard' : mode === 'register' ? 'Create account' : 'Sign in'}{' '}
-            <span>→</span>
+            <Icon name="arrow" size={16} />
           </Button>
 
           {!admin && (
@@ -354,11 +372,6 @@ export default function AuthForm({ admin = false }) {
             </button>
           )}
 
-          {admin && process.env.NODE_ENV !== 'production' && (
-            <small className={styles.demo}>
-              Default super-admin: admin@gmail.com / admin@123
-            </small>
-          )}
         </form>
       )}
 
@@ -386,7 +399,7 @@ export default function AuthForm({ admin = false }) {
           </label>
 
           <Button type="submit" size="lg" disabled={busy || !forgotEmail}>
-            {busy ? 'Sending OTP to email…' : 'Send Verification OTP'} <span>→</span>
+            {busy ? 'Sending OTP to email…' : 'Send Verification OTP'} <Icon name="arrow" size={16} />
           </Button>
 
           <button
@@ -398,7 +411,7 @@ export default function AuthForm({ admin = false }) {
               setSuccessMessage('');
             }}
           >
-            ← Back to sign in
+            <Icon name="arrowLeft" size={14} /> Back to sign in
           </button>
         </form>
       )}
@@ -467,7 +480,7 @@ export default function AuthForm({ admin = false }) {
             size="lg"
             disabled={busy || otp.length < 6 || !newPassword || !confirmPassword}
           >
-            {busy ? 'Verifying & resetting…' : 'Reset Password & Sign In'} <span>→</span>
+            {busy ? 'Verifying & resetting…' : 'Reset Password & Sign In'} <Icon name="arrow" size={16} />
           </Button>
 
           <div className={styles.resendRow}>
@@ -494,7 +507,7 @@ export default function AuthForm({ admin = false }) {
               setSuccessMessage('');
             }}
           >
-            ← Back to sign in
+            <Icon name="arrowLeft" size={14} /> Back to sign in
           </button>
         </form>
       )}

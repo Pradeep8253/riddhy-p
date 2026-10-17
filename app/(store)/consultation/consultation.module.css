@@ -113,10 +113,68 @@
   color: var(--rf-green-700);
 }
 
-.heroCanvasCol {
-  display: grid;
-  place-items: center;
-  min-height: 300px;
+.heroImageCol {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroImageWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--rf-line);
+  background: var(--rf-cream-100);
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.heroImageWrapper:hover .heroImage {
+  transform: scale(1.03);
+}
+
+.heroImageCard {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 254, 250, 0.94);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--rf-line);
+  box-shadow: 0 10px 30px rgba(16, 38, 26, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.heroCardBadge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--rf-green-700);
+}
+
+.heroImageCard strong {
+  font-size: 14px;
+  color: var(--rf-charcoal-900);
+}
+
+.heroImageCard small {
+  font-size: 11px;
+  color: var(--rf-charcoal-600);
 }
 
 /* Headings */
@@ -401,7 +459,7 @@
   .heroGrid {
     grid-template-columns: 1fr;
   }
-  .heroCanvasCol {
+  .heroImageCol {
     order: -1;
     min-height: 200px;
   }

@@ -56,8 +56,10 @@ export default function Header() {
   const [query, setQuery] = useState('');
   const pathname = usePathname();
   const router = useRouter();
-  const cartCount = useSelector((state) => state.cart.items.reduce((sum, item) => sum + item.qty, 0));
-  const wishlistCount = useSelector((state) => state.wishlist.items.length);
+  const user = useSelector((state) => state.auth?.user);
+  const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
+  const cartCount = useSelector((state) => state.auth?.isAuthenticated ? state.cart.items.reduce((sum, item) => sum + item.qty, 0) : 0);
+  const wishlistCount = useSelector((state) => state.auth?.isAuthenticated ? state.wishlist.items.length : 0);
   const locale = useSelector((state) => state.ui.locale);
 
   const submitSearch = (event) => {

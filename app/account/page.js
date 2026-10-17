@@ -22,7 +22,7 @@ export default async function AccountPage() {
           <div className={styles.topNav}>
             <Link href="/" className={styles.backHomeBtn}>
               <ArrowLeft size={15} strokeWidth={2.2} />
-              <span>Back to Storefront</span>
+              <span>Back to Store</span>
             </Link>
           </div>
           <span className="kicker">Your Riddhy account</span>
@@ -59,8 +59,8 @@ export default async function AccountPage() {
               <h2>Welcome back.</h2>
               <AuthForm />
               <div className={styles.backHomeRow}>
-                <Link href="/" className={styles.bottomBackLink}>
-                  ← Return to Storefront
+                <Link href="/" className={styles.bottomBackLink} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <ArrowLeft size={14} /> Return to Store
                 </Link>
               </div>
             </section>

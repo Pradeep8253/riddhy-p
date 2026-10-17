@@ -75,7 +75,7 @@ export async function POST(request) {
         <div style="padding:32px 28px;">
           <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3f4941;">Hello ${account.name || 'there'},</p>
           <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#4f5850;">
-            We received a request to reset the password for your <b>${userType === 'admin' ? 'RF Riddhy Admin' : 'RF Riddhy Storefront'}</b> account (<b>${email}</b>).
+            We received a request to reset the password for your <b>${userType === 'admin' ? 'RF Riddhy Admin' : 'RF Riddhy Store'}</b> account (<b>${email}</b>).
           </p>
           <div style="background:#f4eee2;border:1.5px dashed #c89332;border-radius:12px;padding:20px;text-align:center;margin:24px 0;">
             <span style="display:block;font-size:11px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#795548;margin-bottom:6px;">Your One-Time Password (OTP)</span>

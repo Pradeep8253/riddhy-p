@@ -18,6 +18,7 @@ import {
   Settings,
   Search,
   ExternalLink,
+  ArrowUpRight,
   LogOut,
   Menu,
   X
@@ -86,7 +87,7 @@ const NAV_GROUPS = [
   }
 ];
 
-export default function AdminShell({ children }) {
+export default function AdminShell({ children, session }) {
   const pathname = usePathname();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -106,6 +107,17 @@ export default function AdminShell({ children }) {
       setBusy(false);
     }
   };
+
+  if (!session) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/admin/login';
+    }
+    return (
+      <div style={{ display: 'grid', placeItems: 'center', minHeight: '100vh', background: '#131b15', color: '#a7baa9', fontFamily: 'sans-serif' }}>
+        <p>Redirecting to secure admin sign in…</p>
+      </div>
+    );
+  }
 
   // Find active label for breadcrumb
   let activePageName = 'Overview';
@@ -180,18 +192,26 @@ export default function AdminShell({ children }) {
         {/* Sidebar Footer: Profile & Logout */}
         <div className={styles.sidebarFooter}>
           <div className={styles.adminProfile}>
-            <div className={styles.avatar}>AD</div>
+            <div className={styles.avatar}>
+              {(session?.name || session?.email || 'AD').slice(0, 2).toUpperCase()}
+            </div>
             <div className={styles.profileInfo}>
-              <b>Store Administrator</b>
-              <span>Super Admin · Live</span>
+              <b>{session?.name || 'Store Administrator'}</b>
+              <span>{session?.role ? `${session.role} · Live` : 'Admin · Live'}</span>
             </div>
           </div>
 
           <div className={styles.sidebarActionBtns}>
-            <Link href="/" target="_blank" className={styles.storeLinkBtn} title="View live storefront">
-              <span>Storefront</span>
-              <span>↗</span>
-            </Link>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.storeLinkBtn}
+              title="View live store in new tab"
+            >
+              <span>Store</span>
+              <ArrowUpRight size={13} />
+            </a>
             <button
               type="button"
               className={styles.signOutBtn}
@@ -240,15 +260,16 @@ export default function AdminShell({ children }) {
           </div>
 
           <div className={styles.topbarRight}>
-            <div className={styles.liveIndicator}>
-              <span className={styles.pulseDot} />
-              <span>MongoDB Atlas Connected</span>
-            </div>
-
-            <Link href="/" target="_blank" className={styles.topbarStoreLink}>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.topbarStoreLink}
+              title="View live store in new tab"
+            >
               <span>View Store</span>
               <ExternalLink size={12} strokeWidth={2} />
-            </Link>
+            </a>
 
             <button
               type="button"

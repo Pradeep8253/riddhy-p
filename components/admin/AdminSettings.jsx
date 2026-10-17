@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Icon from '@/components/ui/Icon';
 import styles from './AdminSettings.module.css';
 
 export default function AdminSettings() {
@@ -190,7 +191,7 @@ export default function AdminSettings() {
           <h1>Store Settings & Brand Proof</h1>
           <p>
             Configure customer care channels, showroom hours & address, consultation booking rules,
-            and brand story proof. Values update immediately across the storefront.
+            and brand story proof. Values update immediately across the store.
           </p>
         </div>
 
@@ -223,9 +224,10 @@ export default function AdminSettings() {
           <button
             type="button"
             onClick={() => setToast(null)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            aria-label="Dismiss notification"
           >
-            ✕
+            <Icon name="close" size={14} />
           </button>
         </div>
       )}
@@ -268,7 +270,7 @@ export default function AdminSettings() {
           <div className={styles.cardHead}>
             <h2>Customer Care Channels</h2>
             <p>
-              Leave any channel blank to automatically hide that contact option from the storefront.
+              Leave any channel blank to automatically hide that contact option from the store.
               Do not enter mock or unverified numbers.
             </p>
           </div>
@@ -569,12 +571,12 @@ export default function AdminSettings() {
         </section>
       )}
 
-      {/* Storefront Feature Status Preview */}
+      {/* Store Feature Status Preview */}
       <section className={styles.card}>
         <div className={styles.cardHead}>
-          <h2>Live Storefront Status Preview</h2>
+          <h2>Live Store Status Preview</h2>
           <p>
-            The storefront avoids showing placeholder or developer text. Sections render only when
+            The store avoids showing placeholder or developer text. Sections render only when
             backed by real configuration:
           </p>
         </div>

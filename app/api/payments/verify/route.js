@@ -46,7 +46,7 @@ export async function POST(request){
     return ok({verified:true,paid:true,alreadyPaid,orderNumber:order.orderNumber});
   }catch(error){
     console.error('Payment verification failed:',error.message);
-    if(error.message.includes('replica set')||error.message.includes('Transaction numbers'))return fail('Payment was verified, but MongoDB transactions need a replica set. Configure a local replica set or MongoDB Atlas.',503);
+    if(error.message.includes('replica set')||error.message.includes('Transaction numbers'))return fail('Payment was verified, but database transaction could not complete. Please contact support.',503);
     return fail('Could not verify payment. The order remains unpaid until a verified capture is received.',502);
   }finally{await session?.endSession()}
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import HomeHero from '@/components/store/HomeHero';
+import Icon from '@/components/ui/Icon';
 import styles from './HomePromotionalBanner.module.css';
 
 export default function HomePromotionalBanner({ initialBanners = null }) {
@@ -141,7 +142,7 @@ export default function HomePromotionalBanner({ initialBanners = null }) {
                   <div className={styles.actions}>
                     {banner.href && (
                       <Link href={banner.href} className={styles.primaryCta}>
-                        {banner.ctaText || 'Explore Offers'} →
+                        {banner.ctaText || 'Explore Offers'} <Icon name="arrow" size={15} />
                       </Link>
                     )}
 
@@ -153,7 +154,7 @@ export default function HomePromotionalBanner({ initialBanners = null }) {
                       rel="noopener noreferrer"
                       className={styles.whatsappCta}
                     >
-                      💬 Inquire on WhatsApp
+                      <Icon name="whatsapp" size={16} /> Inquire on WhatsApp
                     </a>
                   </div>
                 </div>
@@ -172,7 +173,7 @@ export default function HomePromotionalBanner({ initialBanners = null }) {
             onClick={prevSlide}
             aria-label="Previous promotional slide"
           >
-            ←
+            <Icon name="arrowLeft" size={18} />
           </button>
           <button
             type="button"
@@ -180,7 +181,7 @@ export default function HomePromotionalBanner({ initialBanners = null }) {
             onClick={nextSlide}
             aria-label="Next promotional slide"
           >
-            →
+            <Icon name="arrow" size={18} />
           </button>
         </>
       )}

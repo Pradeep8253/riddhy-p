@@ -19,5 +19,56 @@ export default function AdminCatalogue(){
  const importCsv=async(event)=>{const input=event.currentTarget,file=input.files?.[0];if(!file)return;setBusy(true);setMessage('Importing products…');try{const table=parseCsv(await file.text()),header=table[0]?.map((value)=>value.trim());if(!header?.length)throw new Error('The CSV has no header row.');let imported=0,failed=0;for(const fields of table.slice(1)){const row=Object.fromEntries(header.map((key,index)=>[key,fields[index]||'']));if(!row.name||!row.slug||!row.sku||!row.price||!row.category){failed++;continue}const payload={...row,price:Number(row.price),mrp:Number(row.mrp||row.price),stock:Number(row.stock||0),type:row.type==='appliance'?'appliance':'furniture',modelType:row.modelType||(row.type==='appliance'?'refrigerator':'sofa'),status:row.status||'draft'};const response=await fetch('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(response.ok)imported++;else failed++}setMessage(`CSV import complete: ${imported} saved, ${failed} skipped or rejected.`);await load()}catch(error){setMessage(error.message)}finally{input.value='';setBusy(false)}};
  return <div className={styles.page}><div className={styles.head}><div><span className="kicker">Catalogue operations</span><h1>Products & SKUs.</h1><p>Each product has one editable default SKU; demo image media is labelled and can be replaced.</p></div><div className={styles.tools}><button onClick={exportCsv} type="button">Export CSV</button><label>Import CSV<input type="file" accept=".csv,text/csv" onChange={importCsv} disabled={busy}/></label></div></div>
  <form className={styles.form} onSubmit={save}><h2>{editing?'Edit product':'Create a product'}</h2><div className={styles.fields}><label>Name<input required minLength={3} value={form.name} onChange={(event)=>{const value=event.target.value;setForm((current)=>({...current,name:value,slug:current.slug||value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}))}}/></label><label>Slug<input required pattern="[a-z0-9-]+" value={form.slug} onChange={(event)=>update('slug',event.target.value)}/></label><label>SKU<input required pattern="[A-Z0-9-]{3,40}" value={form.sku} onChange={(event)=>update('sku',event.target.value.toUpperCase())}/></label><label>Type<select value={form.type} onChange={(event)=>{const type=event.target.value;setForm((current)=>({...current,type,modelType:type==='appliance'?'refrigerator':'sofa',category:CATEGORY_SEED.find((cat)=>cat.type===type)?.slug||''}))}}><option value="furniture">Furniture</option><option value="appliance">Appliance</option></select></label><label>3D model type<select value={form.modelType} onChange={(event)=>update('modelType',event.target.value)}>{modelTypes.map((type)=><option key={type} value={type}>{type}</option>)}</select></label><label>Category<select value={form.category} onChange={(event)=>update('category',event.target.value)}>{categories.map((item)=><option value={item.slug} key={item.slug}>{item.name}</option>)}</select></label><label>Brand<input required value={form.brand} onChange={(event)=>update('brand',event.target.value)}/></label><label>Selling price ₹<input required min="1" type="number" value={form.price} onChange={(event)=>update('price',event.target.value)}/></label><label>MRP ₹<input required min="1" type="number" value={form.mrp} onChange={(event)=>update('mrp',event.target.value)}/></label><label>Available stock<input required min="0" type="number" value={form.stock} onChange={(event)=>update('stock',event.target.value)}/></label><label>Image path<input value={form.image} onChange={(event)=>update('image',event.target.value)}/></label><label>Status<select value={form.status} onChange={(event)=>update('status',event.target.value)}><option value="draft">Draft</option><option value="active">Active</option><option value="archived">Archived</option></select></label></div><div className={styles.formActions}><button type="submit" disabled={busy}>{busy?'Saving…':editing?'Update product':'Save product'}</button>{editing&&<button type="button" onClick={()=>{setEditing('');setForm(blank)}}>Cancel edit</button>}</div>{message&&<p role="status">{message}</p>}</form>
- <div className={styles.tableWrap}><table><thead><tr><th>Product</th><th>Type / category</th><th>SKU / price</th><th>Stock</th><th>State</th><th>Media</th><th></th></tr></thead><tbody>{products.map((product)=><tr key={product.id}><td><b>{product.name}</b><small>{product.slug}</small></td><td>{product.type}<small>{product.categoryLabel||product.category}</small></td><td>{product.sku||'—'}<small>{formatINR(product.price)} · MRP {formatINR(product.mrp)}</small></td><td>{product.stock}<small>{product.reserved||0} reserved</small></td><td><span className={styles.state}>{product.status}</span></td><td>{product.isDemoImage?<span className={styles.demo}>Demo image</span>:'Live media'}</td><td><button type="button" onClick={()=>edit(product)}>Edit</button></td></tr>)}</tbody></table>{!products.length&&<p className={styles.noData}>No products loaded yet. Configure MongoDB and run <code>npm run seed</code>.</p>}</div></div>
+  <div className={styles.tableWrap}>
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Type / category</th>
+          <th>SKU / price</th>
+          <th>Stock</th>
+          <th>State</th>
+          <th>Media</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((product) => (
+          <tr key={product.id}>
+            <td>
+              <b>{product.name}</b>
+              <small>{product.slug}</small>
+            </td>
+            <td>
+              {product.type}
+              <small>{product.categoryLabel || product.category}</small>
+            </td>
+            <td>
+              {product.sku || '—'}
+              <small>{formatINR(product.price)} · MRP {formatINR(product.mrp)}</small>
+            </td>
+            <td>
+              {product.stock}
+              <small>{product.reserved || 0} reserved</small>
+            </td>
+            <td>
+              <span className={styles.state}>{product.status}</span>
+            </td>
+            <td>
+              {product.image ? 'Media ready' : 'No media'}
+            </td>
+            <td>
+              <button type="button" onClick={() => edit(product)}>Edit</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {!products.length && (
+      <p className={styles.noData}>
+        No products loaded yet. Database connection unavailable or catalogue empty.
+      </p>
+    )}
+  </div>
+</div>;
 }

@@ -160,8 +160,9 @@ export default async function ContactPage({ searchParams }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.dirLink}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
                   >
-                    Get directions →
+                    Get directions <Icon name="arrow" size={13} />
                   </a>
                 )}
               </div>

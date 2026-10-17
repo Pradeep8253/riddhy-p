@@ -28,7 +28,7 @@ export async function POST(request){
   const parsed=reservationSchema.safeParse(await jsonBody(request));if(!parsed.success)return fail('Please complete the delivery details.',400,parsed.error.flatten());
   const checkoutKey=parsed.data.idempotencyKey||randomBytes(16).toString('hex');let dbSession,checkoutFingerprint='';
   try{
-    if(!process.env.MONGODB_URI)return fail('Order reservations require MongoDB. Add MONGODB_URI and run npm run seed.',503);
+    if(!process.env.MONGODB_URI)return fail('Database connection unavailable. Please try again later.',503);
     await connectDB();await releaseExpiredReservations();const account=await getSession();
     const items=await resolveCheckoutItems(parsed.data.items),subtotal=items.reduce((sum,item)=>sum+item.price*item.qty,0);
     let couponDiscount=0,couponCode=null;
@@ -61,7 +61,7 @@ export async function POST(request){
     return ok(created,201);
   }catch(error){
     if(error.code===11000){try{await connectDB();const existing=await Order.findOne({checkoutKey}).lean();if(existing)return await replayOrder(existing,parsed.data.email,await getSession(),parsed.data.paymentMethod,checkoutFingerprint)}catch{}}
-    if(error.message.includes('replica set')||error.message.includes('Transaction numbers'))return fail('MongoDB transactions need a replica set. Configure a local replica set or use MongoDB Atlas.',503);
+    if(error.message.includes('replica set')||error.message.includes('Transaction numbers'))return fail('Database transaction unavailable. Please try again later.',503);
     return fail(error.message,400);
   }finally{await dbSession?.endSession()}
 }
