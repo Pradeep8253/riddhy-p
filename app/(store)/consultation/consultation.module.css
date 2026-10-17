@@ -113,6 +113,13 @@
   color: var(--rf-green-700);
 }
 
+.heroCanvasCol {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+}
+
 .heroImageCol {
   position: relative;
   display: flex;
@@ -459,7 +466,8 @@
   .heroGrid {
     grid-template-columns: 1fr;
   }
-  .heroImageCol {
+  .heroImageCol,
+  .heroCanvasCol {
     order: -1;
     min-height: 200px;
   }

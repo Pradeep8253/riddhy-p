@@ -43,6 +43,17 @@ export async function POST(request){
       for(const reservation of reservations){const stock=await Inventory.updateOne({variantId:reservation.variantId,warehouseId:reservation.warehouseId,reserved:{$gte:reservation.qty}},{$inc:{reserved:-reservation.qty}},{session});if(!stock.matchedCount)throw new Error(`Reserved stock is inconsistent for ${reservation._id}.`)}
       await Reservation.updateMany({orderId:freshOrder._id,status:'active'},{$set:{status:'consumed',purgeAt:new Date(Date.now()+7*86400000)}},{session});
     });
+
+    // Idempotent invoice generation and warranty auto-registration per unit
+    try {
+      const { generateInvoiceForOrder } = await import('@/lib/invoice-generator');
+      const { autoRegisterOrderWarranties } = await import('@/lib/warranty');
+      await generateInvoiceForOrder(order._id).catch(() => null);
+      await autoRegisterOrderWarranties(order._id).catch(() => null);
+    } catch (e) {
+      console.warn('Post-payment side effects deferred:', e.message);
+    }
+
     return ok({verified:true,paid:true,alreadyPaid,orderNumber:order.orderNumber});
   }catch(error){
     console.error('Payment verification failed:',error.message);

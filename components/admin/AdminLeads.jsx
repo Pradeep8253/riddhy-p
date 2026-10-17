@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Icon from '@/components/ui/Icon';
+import ExportDropdown from './ExportDropdown';
+import AdminPagination from './AdminPagination';
 import styles from './AdminLeads.module.css';
 
 const STATUS_OPTIONS = [
@@ -29,6 +31,32 @@ export default function AdminLeads() {
   const [newNote, setNewNote] = useState('');
   const [assignee, setAssignee] = useState('');
   const [scheduledAtInput, setScheduledAtInput] = useState('');
+
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  useEffect(() => {
+    setPage(1);
+  }, [kindFilter, statusFilter, serviceFilter, searchQuery, dateFrom, dateTo]);
+
+  const paginatedItems = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return items.slice(start, start + pageSize);
+  }, [items, page, pageSize]);
+
+  const exportColumns = [
+    { label: 'Reference', key: (item) => item.reference || '—' },
+    { label: 'Type', key: (item) => item.kind || '—' },
+    { label: 'Customer Name', key: 'name' },
+    { label: 'Phone', key: 'phone' },
+    { label: 'Email', key: (item) => item.email || '—' },
+    { label: 'Pincode', key: (item) => item.pincode || '—' },
+    { label: 'Serviceable', key: (item) => (item.serviceable === false ? 'No' : 'Yes') },
+    { label: 'Status', key: 'status' },
+    { label: 'Date', key: (item) => new Date(item.createdAt).toLocaleString('en-IN') },
+    { label: 'Message / Notes', key: (item) => item.message || item.specifications || '' }
+  ];
 
   const loadLeads = () => {
     setLoading(true);
@@ -169,10 +197,12 @@ export default function AdminLeads() {
         </div>
 
         <div className={styles.headerActions}>
-          <button type="button" className={styles.csvBtn} onClick={handleExportCsv}>
-            <Icon name="download" size={16} />
-            Export Filtered CSV
-          </button>
+          <ExportDropdown
+            title="Export Enquiries"
+            fileName="rf-riddhy-enquiries"
+            columns={exportColumns}
+            data={items}
+          />
         </div>
       </div>
 
@@ -255,7 +285,7 @@ export default function AdminLeads() {
         <div className={styles.empty}>Loading enquiries…</div>
       ) : items.length > 0 ? (
         <div className={styles.list}>
-          {items.map((item) => (
+          {paginatedItems.map((item) => (
             <article
               key={item.id}
               className={`${styles.card} ${activeLead?.id === item.id ? styles.cardSelected : ''}`}
@@ -374,6 +404,20 @@ export default function AdminLeads() {
         </div>
       ) : (
         <div className={styles.empty}>No enquiries found matching this filter.</div>
+      )}
+
+      {items.length > 0 && (
+        <AdminPagination
+          currentPage={page}
+          totalItems={items.length}
+          pageSize={pageSize}
+          onPageChange={(p) => setPage(p)}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+          itemLabel="enquiries"
+        />
       )}
 
       {/* Slide-over Detail Drawer */}

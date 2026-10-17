@@ -9,13 +9,22 @@ import { addItem } from '@/store/cartSlice';
 import { toggleWishlist } from '@/store/wishlistSlice';
 import { showToast, setCartDrawer } from '@/store/uiSlice';
 import { formatINR } from '@/lib/demo-data';
+import { formatPriceSafe } from '@/lib/pricing';
 import { IMG } from '@/lib/images';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import ServiceabilityChecker from '@/components/store/ServiceabilityChecker';
 import ProductRail from '@/components/store/ProductRail';
 import DimensionDiagram from './DimensionDiagram';
+import dynamic from 'next/dynamic';
+import MaterialConfigurator from '@/components/three/MaterialConfigurator';
+import ExplodeView from '@/components/three/ExplodeView';
 import styles from './ProductDetailClient.module.css';
+
+const ProductModelCanvas = dynamic(() => import('./ProductModelCanvas'), {
+  ssr: false,
+  loading: () => <div className={styles.viewerLoading}>Preparing the 3D view…</div>
+});
 
 const defaultSwatches = ['#6b8f5e', '#c4a47d', '#e7e2d7', '#28553a'];
 
@@ -30,21 +39,50 @@ export default function ProductDetailClient({ product, related = [] }) {
   const [view, setView] = useState('photo');
   const [qty, setQty] = useState(1);
   const [finish, setFinish] = useState(defaultSwatches[0]);
+  const [open, setOpen] = useState(false);
+  const [explode, setExplode] = useState(0);
+  const [rotation, setRotation] = useState([0, 0, 0]);
 
-  const media = useMemo(() => [
-    {
-      src: product.image || IMG.products.sofa,
-      alt: product.imageAlt || `${product.name} product photo`
-    },
-    {
-      src: IMG.rooms.find((room) => room.slug === product.room)?.src || IMG.rooms[0].src,
-      alt: `${product.name} styled in room setting`
-    },
-    {
-      src: IMG.categories[product.category] || product.image,
-      alt: `${product.categoryLabel} collection overview`
+  const handleKeys = (e) => {
+    if (view !== '3d') return;
+    if (e.key === 'ArrowLeft') setRotation(([x, y, z]) => [x, y - 0.2, z]);
+    if (e.key === 'ArrowRight') setRotation(([x, y, z]) => [x, y + 0.2, z]);
+    if (e.key === 'ArrowUp') setRotation(([x, y, z]) => [x - 0.15, y, z]);
+    if (e.key === 'ArrowDown') setRotation(([x, y, z]) => [x + 0.15, y, z]);
+    if (e.key === 'Enter') setOpen((v) => !v);
+  };
+
+  const priceFormatted = formatPriceSafe(product.price);
+  const mrpFormatted = formatPriceSafe(product.mrp);
+  const hasValidPrice = Boolean(priceFormatted);
+
+  const media = useMemo(() => {
+    if (product.gallery && product.gallery.length > 0) {
+      return product.gallery.map((g, idx) => ({
+        src: g.large || g.medium || g.url,
+        thumb: g.thumbUrl || g.thumb || g.url,
+        blurDataURL: g.blurDataURL || IMG.blurDataURL,
+        alt: g.alt || `${product.name} view ${idx + 1}`
+      }));
     }
-  ], [product]);
+    return [
+      {
+        src: product.image || IMG.products.sofa,
+        alt: product.imageAlt || `${product.name} product photo`,
+        blurDataURL: IMG.blurDataURL
+      },
+      {
+        src: IMG.rooms.find((room) => room.slug === product.room)?.src || IMG.rooms[0].src,
+        alt: `${product.name} styled in room setting`,
+        blurDataURL: IMG.blurDataURL
+      },
+      {
+        src: IMG.categories[product.category] || product.image || IMG.products.sofa,
+        alt: `${product.categoryLabel || 'Collection'} overview`,
+        blurDataURL: IMG.blurDataURL
+      }
+    ];
+  }, [product]);
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -108,7 +146,8 @@ export default function ProductDetailClient({ product, related = [] }) {
               <div
                 className={styles.mainMedia}
                 tabIndex={0}
-                aria-label={`Product media gallery for ${product.name}`}
+                onKeyDown={handleKeys}
+                aria-label={view === '3d' ? "Product gallery and 3D viewer; arrow keys rotate model; plus and minus zoom; Enter opens moving parts." : `Product media gallery for ${product.name}`}
               >
                 {view === 'photo' && (
                   <Image
@@ -119,6 +158,18 @@ export default function ProductDetailClient({ product, related = [] }) {
                     sizes="(max-width: 900px) 100vw, 52vw"
                     placeholder="blur"
                     blurDataURL={IMG.blurDataURL}
+                  />
+                )}
+
+                {view === '3d' && (
+                  <ProductModelCanvas
+                    type={product.modelType || product.category?.replace(/s$/, '') || 'sofa'}
+                    dims={dims}
+                    colorway={finish}
+                    open={open}
+                    explode={explode}
+                    rotation={rotation}
+                    showHotspots
                   />
                 )}
 
@@ -141,6 +192,14 @@ export default function ProductDetailClient({ product, related = [] }) {
                   <button
                     type="button"
                     role="tab"
+                    aria-selected={view === '3d'}
+                    onClick={() => setView('3d')}
+                  >
+                    3D view
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
                     aria-selected={view === 'dimensions'}
                     onClick={() => setView('dimensions')}
                   >
@@ -148,6 +207,23 @@ export default function ProductDetailClient({ product, related = [] }) {
                   </button>
                 </div>
               </div>
+
+              {view === '3d' && (
+                <div className={styles.modelTools}>
+                  <MaterialConfigurator value={finish} onChange={setFinish} />
+                  {['refrigerator', 'washer', 'wardrobe', 'microwave'].includes(product.modelType || product.category?.replace(/s$/, '')) && (
+                    <button
+                      className={styles.openToggle}
+                      type="button"
+                      onClick={() => setOpen(!open)}
+                    >
+                      {open ? 'Close' : 'Open'} {(product.categoryLabel || product.category || 'unit').toLowerCase()}
+                    </button>
+                  )}
+                  <ExplodeView value={explode} onChange={setExplode} />
+                  <small>Drag to rotate · arrow keys also work · interactive 3D model</small>
+                </div>
+              )}
 
               {view === 'photo' && (
                 <div className={styles.thumbs}>
@@ -160,10 +236,11 @@ export default function ProductDetailClient({ product, related = [] }) {
                       onClick={() => setActiveMedia(index)}
                     >
                       <Image
-                        src={item.src}
+                        src={item.thumb || item.src}
                         alt=""
                         width={90}
                         height={90}
+                        unoptimized={Boolean((item.thumb || item.src)?.startsWith('/api/files/') || (item.thumb || item.src)?.startsWith('/uploads/'))}
                       />
                     </button>
                   ))}
@@ -174,11 +251,11 @@ export default function ProductDetailClient({ product, related = [] }) {
             {/* Product Info Section */}
             <div className={styles.info}>
               <div className={styles.brand}>
-                {product.brand || 'Riddhy Select'} <span>·</span> {product.categoryLabel}
+                {product.brand || 'RF Riddhy'} <span>·</span> {product.categoryLabel || product.category}
               </div>
 
               <h1>{product.name}</h1>
-              <p className={styles.tagline}>{product.tagline}</p>
+              {product.tagline && <p className={styles.tagline}>{product.tagline}</p>}
 
               <div className={styles.rating}>
                 {product.rating && product.reviewCount ? (
@@ -194,14 +271,20 @@ export default function ProductDetailClient({ product, related = [] }) {
               </div>
 
               <div className={styles.price}>
-                <strong>{formatINR(product.price)}</strong>
-                {product.mrp > product.price && (
+                {hasValidPrice ? (
                   <>
-                    <del>{formatINR(product.mrp)}</del>
-                    <span>{product.discount}% off</span>
+                    <strong>{priceFormatted}</strong>
+                    {product.mrp > product.price && mrpFormatted && (
+                      <>
+                        <del>{mrpFormatted}</del>
+                        {product.discount > 0 && <span>{product.discount}% off</span>}
+                      </>
+                    )}
+                    <small>Applicable taxes and delivery charges calculated at checkout.</small>
                   </>
+                ) : (
+                  <span style={{ color: '#64748b' }}>Price on inquiry · Currently not available online</span>
                 )}
-                <small>Applicable taxes and delivery charges calculated at checkout.</small>
               </div>
 
               <div className={styles.dimensionFirst}>
@@ -271,10 +354,12 @@ export default function ProductDetailClient({ product, related = [] }) {
                 <Button
                   onClick={handleAddToCart}
                   size="lg"
-                  disabled={!isAvailable}
+                  disabled={!isAvailable || !hasValidPrice}
                 >
-                  {isAvailable
-                    ? `Add to bag · ${formatINR(product.price * qty)}`
+                  {!hasValidPrice
+                    ? 'Currently Unavailable'
+                    : isAvailable
+                    ? `Add to bag · ${formatPriceSafe(product.price * qty)}`
                     : 'Out of stock'}
                 </Button>
 

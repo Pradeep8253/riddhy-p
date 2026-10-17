@@ -3,6 +3,7 @@ import Image from 'next/image';
 import ConsultationForm from '@/components/commerce/ConsultationForm';
 import ConsultationFaq from '@/components/store/ConsultationFaq';
 import { getConsultationFaqSchema } from '@/lib/consultation-faq-data';
+import ConsultationHeroCanvas from '@/components/three/ConsultationHeroCanvas';
 import Icon from '@/components/ui/Icon';
 import { siteConfig, isConfigured, getWhatsAppUrl } from '@/lib/site-config';
 import { IMG } from '@/lib/images';
@@ -133,22 +134,26 @@ export default async function ConsultationPage({ searchParams }) {
                 </div>
               </div>
 
-              <div className={styles.heroImageCol}>
-                <div className={styles.heroImageWrapper}>
-                  <Image
-                    src={IMG.rooms[0]?.src || '/images/room-living.webp'}
-                    alt="Warm, curated living space arranged by RF Riddhy"
-                    width={560}
-                    height={420}
-                    className={styles.heroImage}
-                    priority
-                  />
-                  <div className={styles.heroImageCard}>
-                    <span className={styles.heroCardBadge}>Guided Layout</span>
-                    <strong>Room Fit & Clearance Plan</strong>
-                    <small>Tailored to your space & requirements</small>
-                  </div>
-                </div>
+              <div className={styles.heroCanvasCol}>
+                <ConsultationHeroCanvas
+                  fallback={
+                    <div className={styles.heroImageWrapper}>
+                      <Image
+                        src={IMG.rooms[0]?.src || '/images/room-living.webp'}
+                        alt="Warm, curated living space arranged by RF Riddhy"
+                        width={560}
+                        height={420}
+                        className={styles.heroImage}
+                        priority
+                      />
+                      <div className={styles.heroImageCard}>
+                        <span className={styles.heroCardBadge}>Guided Layout</span>
+                        <strong>Room Fit & Clearance Plan</strong>
+                        <small>Tailored to your space & requirements</small>
+                      </div>
+                    </div>
+                  }
+                />
               </div>
             </div>
           </div>

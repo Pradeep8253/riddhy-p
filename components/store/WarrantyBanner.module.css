@@ -1,0 +1,124 @@
+.strip {
+  background: var(--rf-forest-deep, #142a1b);
+  color: #fffefa;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 0;
+  position: relative;
+  z-index: 10;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 28px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #e4ebe5;
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4ade80;
+  flex-shrink: 0;
+}
+
+.message {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.message strong {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.liveHighlight {
+  color: #fde047;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnPrimary:hover {
+  background: #ffffff;
+  color: var(--rf-forest-deep, #142a1b);
+  border-color: #ffffff;
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #a7f3d0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnSecondary:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.skeleton {
+  width: 220px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 16px;
+  }
+  .actions {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 26px;
+  }
+}

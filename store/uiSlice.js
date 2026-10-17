@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   locale: 'en',
+  liteMode: false,
   cartDrawerOpen: false,
   toast: null
 };
@@ -12,6 +13,12 @@ const uiSlice = createSlice({
   reducers: {
     setLocale(state, { payload }) {
       state.locale = payload === 'hi' ? 'hi' : 'en';
+    },
+    setLiteMode(state, { payload }) {
+      state.liteMode = Boolean(payload);
+    },
+    toggleLiteMode(state) {
+      state.liteMode = !state.liteMode;
     },
     setCartDrawer(state, { payload }) {
       state.cartDrawerOpen = Boolean(payload);
@@ -25,6 +32,6 @@ const uiSlice = createSlice({
   }
 });
 
-export const { setLocale, setCartDrawer, showToast, clearToast } = uiSlice.actions;
+export const { setLocale, setLiteMode, toggleLiteMode, setCartDrawer, showToast, clearToast } = uiSlice.actions;
 export default uiSlice.reducer;
 

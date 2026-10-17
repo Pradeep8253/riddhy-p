@@ -1,52 +1,57 @@
 services:
   traefik:
-    image: traefik:v3.1
-    command:
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-      - --api.dashboard=false
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
+  image: traefik:v3.1
+  command:
+    - --providers.docker=true
+    - --providers.docker.exposedbydefault=false
+    - --entrypoints.web.address=:80
+    - --api.dashboard=false
+  ports:
+    - "80:80"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+  restart: unless-stopped
 
   mongo:
-    image: mongo:8.0
-    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
-    volumes:
-      - mongo-data:/data/db
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - >-
-          mongosh --quiet --eval
-          "try { rs.status().ok } catch (e) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}).ok }"
-      interval: 5s
-      timeout: 5s
-      retries: 20
-      start_period: 10s
-    restart: unless-stopped
+  image: mongo:8.0
+  command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+  volumes:
+    - mongo-data:/data/db
+  healthcheck:
+    test:
+      - CMD-SHELL
+      - >-
+        mongosh --quiet --eval
+        "try { rs.status().ok } catch (e) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo:27017'}]}).ok }"
+    interval: 5s
+    timeout: 5s
+    retries: 20
+    start_period: 10s
+  restart: unless-stopped
 
   app:
-    build: .
-    env_file:
-      - .env
-    environment:
-      NODE_ENV: production
-      PORT: 3000
-      MONGODB_URI: mongodb://mongo:27017/rf-riddhy?replicaSet=rs0
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://riddhy.localhost}
-    depends_on:
-      mongo:
-        condition: service_healthy
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.riddhy.rule=Host(`${TRAEFIK_HOST:-riddhy.localhost}`)
-      - traefik.http.routers.riddhy.entrypoints=web
-      - traefik.http.services.riddhy.loadbalancer.server.port=3000
-    restart: unless-stopped
+  build: .
+  env_file:
+    - .env
+  environment:
+    NODE_ENV: production
+    PORT: 3000
+    MONGODB_URI: mongodb://mongo:27017/rf-riddhy?replicaSet=rs0
+    NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://riddhy.localhost}
+    UPLOAD_DIR: /app/storage/uploads
+    UPLOAD_STORAGE: local
+  volumes:
+    - uploads-data:/app/storage/uploads
+  depends_on:
+    mongo:
+      condition: service_healthy
+  labels:
+    - traefik.enable=true
+    - traefik.http.routers.riddhy.rule=Host(`${TRAEFIK_HOST:-riddhy.localhost}`)
+    - traefik.http.routers.riddhy.entrypoints=web
+    - traefik.http.services.riddhy.loadbalancer.server.port=3000
+  restart: unless-stopped
 
 volumes:
   mongo-data:
+  uploads-data:

@@ -19,6 +19,7 @@ A premium, modern Indian e-commerce platform crafted with **Next.js 16 App Route
 - **Curated Catalog**: Handcrafted wooden furniture, modern living essentials, and dependable home appliances with verified Indian home dimensions.
 - **Shop The Look (Interactive Hotspots)**: High-resolution room staging with smart auto-positioning hotspot pins that adapt above or below viewport boundaries.
 - **Product Dimension Diagrams**: Architectural SVG diagrams for lift and entryway clearances before purchase.
+- **Interactive 3D / WebGL Viewer**: Procedural 3D furniture and appliance models with dynamic finish swatches, exploded assembly view, interactive turntable controls, and a compact 3D room layout planner powered by React Three Fiber.
 - **Dynamic Swatches**: Real-time finish and fabric preview on product detail pages.
 - **Side-by-Side Product Comparison**: Compare dimensions, materials, capacities, and warranty terms up to 4 items simultaneously.
 - **Direct WhatsApp Concierge**: Instant customer service & product inquiry integration with official brand vector icons across header, footer, and floating triggers.
@@ -66,6 +67,7 @@ A premium, modern Indian e-commerce platform crafted with **Next.js 16 App Route
 | **Styling** | **Vanilla CSS Modules** | Zero-runtime CSS Modules with cohesive HSL tokens (Forest Green, Warm Ivory, Brass Gold) |
 | **Icons** | **Lucide React** | Crisp, lightweight, accessible SVG vector icon system |
 | **Motion & Dynamics** | **GSAP & Lenis** | Smooth momentum scrolling and micro-animations |
+| **3D & WebGL Engine** | **React Three Fiber & Three.js** | Interactive procedural 3D models, room playground, and GPU effects with automatic 2D fallback |
 | **Database** | **MongoDB & Mongoose** | Flexible document modeling with transactions and connection caching |
 | **Authentication** | **Jose & Bcrypt.js** | Stateless `httpOnly` JWT session cookies (`rf_session`) with 7-day expiry |
 | **Validation** | **Zod** | Schema validation for forms, checkout quotes, and API requests |

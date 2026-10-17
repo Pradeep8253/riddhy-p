@@ -3,13 +3,33 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   output: 'standalone',
+  turbopack: {
+    rules: {
+      '*.glsl': { loaders: ['raw-loader'], as: '*.js' },
+      '*.vert': { loaders: ['raw-loader'], as: '*.js' },
+      '*.frag': { loaders: ['raw-loader'], as: '*.js' }
+    }
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    localPatterns: [
+      { pathname: '/api/files/**' },
+      { pathname: '/uploads/**' },
+      { pathname: '/images/**' }
+    ]
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: '/api/files/:path*'
+      }
+    ];
   },
   experimental: {
-    serverActions: { bodySizeLimit: '5mb' }
+    serverActions: { bodySizeLimit: '8mb' }
   }
 };
 

@@ -1,0 +1,7 @@
+.fieldset { margin: 0; padding: 0; border: 0; }
+.fieldset legend { margin-bottom: 10px; font-size: 12px; font-weight: 800; }
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.swatch { display: grid; justify-items: center; gap: 5px; padding: 4px; border: 1px solid transparent; border-radius: 12px; background: transparent; cursor: pointer; }
+.swatch[aria-pressed="true"] { border-color: var(--rf-green-700); }
+.swatch span { width: 29px; height: 29px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(30,36,32,.18); }
+.swatch small { color: var(--rf-charcoal-600); font-size: 10px; }

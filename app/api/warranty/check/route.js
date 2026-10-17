@@ -73,7 +73,7 @@ export async function GET(request) {
         productName: doc.productName,
         serialNumber: doc.serialNumber,
         orderNumber: doc.orderNumber,
-        customerName: doc.customerName,
+        customerName: doc.customerName ? `${doc.customerName.slice(0, 1)}***` : 'Verified Buyer',
         purchaseDate: doc.purchaseDate ? new Date(doc.purchaseDate).toISOString().split('T')[0] : '',
         activationDate: doc.activationDate ? new Date(doc.activationDate).toISOString().split('T')[0] : '',
         expiryDate: exp.toISOString().split('T')[0],

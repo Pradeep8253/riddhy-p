@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { createHash,randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { connectDB } from '@/lib/db';
-import { Order,Variant,Inventory,Reservation,StockMovement,Coupon } from '@/models/index';
+import { Order,Variant,Inventory,Reservation,StockMovement,Coupon,Product } from '@/models/index';
 import { addressSchema,checkoutQuoteSchema } from '@/lib/validators';
 import { getSession } from '@/lib/auth';
 import { resolveCheckoutItems,getCoupon } from '@/lib/checkout';
@@ -55,6 +55,9 @@ export async function POST(request){
           await StockMovement.create([{variantId:variant._id,warehouseId:stock.warehouseId,orderId:order._id,kind:parsed.data.paymentMethod==='cod'?'sale':'reserve',quantity:-take,reference:`checkout:${order.orderNumber}:${stock.warehouseId}`}],{session:dbSession});remaining-=take;
         }
         if(remaining>0)throw new Error(`${item.name} is no longer available in the requested quantity.`);
+        if(variant.productId){
+          await Product.updateOne({_id:variant.productId},{$inc:{stock:-item.qty}},{session:dbSession});
+        }
       }
       created={id:String(order._id),orderNumber:order.orderNumber,total:order.total,currency:'INR',paymentMethod:parsed.data.paymentMethod,expiresAt:parsed.data.paymentMethod==='cod'?null:new Date(Date.now()+20*60000).toISOString(),demoOnly:false,reused:false};
     });

@@ -60,6 +60,7 @@ const NAV_GROUPS = [
     items: [
       { label: 'Overview', href: '/admin', icon: 'overview' },
       { label: 'Orders & Shipments', href: '/admin/orders', icon: 'orders' },
+      { label: 'GST Invoices', href: '/admin/invoices', icon: 'reports' },
       { label: 'Customer Inquiries', href: '/admin/leads', icon: 'leads' }
     ]
   },
@@ -67,6 +68,7 @@ const NAV_GROUPS = [
     title: 'Catalogue & Stock',
     items: [
       { label: 'Products Catalogue', href: '/admin/catalogue', icon: 'catalogue' },
+      { label: 'Merchandising Rails', href: '/admin/merchandising', icon: 'campaigns' },
       { label: 'Marriage Packages', href: '/admin/packages', icon: 'packages', badge: 'Special' },
       { label: 'Inventory & Stock', href: '/admin/inventory', icon: 'inventory' }
     ]

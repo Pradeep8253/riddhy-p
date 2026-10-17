@@ -1,30 +1,58 @@
 import { connectDB } from '@/lib/db';
-import { ProductRegistration, WarrantyClaim, AuditLog } from '@/models/index';
+import { ProductRegistration, WarrantyClaim, AuditLog, ClaimEvent } from '@/models/index';
 import { requireAdmin } from '@/lib/roles';
-import { ok, fail, jsonBody } from '@/lib/http';
+import { ok, fail, apiError } from '@/lib/http';
+import { computeWarrantyStatus, daysRemaining } from '@/lib/warranty';
 
 export async function GET(request) {
-  const actor = await requireAdmin();
+  const actor = await requireAdmin(new Set(['admin', 'super-admin', 'support']));
   if (!actor) return fail('Admin permission required.', 403);
 
   try {
-    if (!process.env.MONGODB_URI) {
-      return ok({
-        registrations: [],
-        claims: [],
-        isDemo: true
-      });
-    }
-
     await connectDB();
     const url = new URL(request.url);
     const search = url.searchParams.get('search')?.trim();
     const status = url.searchParams.get('status');
+    const tab = url.searchParams.get('tab') || 'registrations'; // 'registrations' | 'review_queue' | 'claims'
+    const page = Math.max(1, Number(url.searchParams.get('page') || 1));
+    const limit = Math.min(100, Math.max(10, Number(url.searchParams.get('limit') || 25)));
 
+    if (tab === 'claims') {
+      const claimFilter = {};
+      if (status && status !== 'all') claimFilter.status = status;
+      if (search) {
+        claimFilter.$or = [
+          { claimNumber: { $regex: search, $options: 'i' } },
+          { issue: { $regex: search, $options: 'i' } },
+          { preferredContact: { $regex: search, $options: 'i' } }
+        ];
+      }
+
+      const [claims, totalClaims] = await Promise.all([
+        WarrantyClaim.find(claimFilter)
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean(),
+        WarrantyClaim.countDocuments(claimFilter)
+      ]);
+
+      return ok({
+        claims: claims.map((c) => ({ ...c, id: String(c._id) })),
+        total: totalClaims,
+        page,
+        limit
+      });
+    }
+
+    // Registrations & Review Queue
     const regQuery = {};
-    if (status && status !== 'all') {
+    if (tab === 'review_queue') {
+      regQuery.verified = false;
+    } else if (status && status !== 'all') {
       regQuery.status = status;
     }
+
     if (search) {
       const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       regQuery.$or = [
@@ -32,140 +60,107 @@ export async function GET(request) {
         { customerPhone: { $regex: escaped, $options: 'i' } },
         { serialNumber: { $regex: escaped, $options: 'i' } },
         { orderNumber: { $regex: escaped, $options: 'i' } },
+        { sku: { $regex: escaped, $options: 'i' } },
         { productName: { $regex: escaped, $options: 'i' } }
       ];
     }
 
-    const registrations = await ProductRegistration.find(regQuery).sort({ createdAt: -1 }).limit(100).lean();
-    const claims = await WarrantyClaim.find({}).sort({ createdAt: -1 }).limit(50).lean();
+    const [registrations, totalRegs] = await Promise.all([
+      ProductRegistration.find(regQuery)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      ProductRegistration.countDocuments(regQuery)
+    ]);
 
-    const now = Date.now();
     const enrichedRegs = registrations.map((r) => {
-      const exp = new Date(r.expiryDate);
-      const remainingDays = Math.max(0, Math.ceil((exp.getTime() - now) / 86400000));
+      const remaining = daysRemaining(r.expiryDate);
       return {
         ...r,
         id: String(r._id),
-        remainingDays,
-        currentStatus: remainingDays <= 0 ? 'expired' : remainingDays <= 30 ? 'expiring_soon' : 'active'
+        remainingDays: remaining,
+        currentStatus: computeWarrantyStatus(r.expiryDate)
       };
     });
 
-    const sampleRegistrations = [
-      {
-        id: 'demo-reg-1',
-        _id: 'demo-reg-1',
-        customerName: 'Aarav Sharma',
-        customerPhone: '+91 98765 43210',
-        productName: 'Royal Sheesham 3-Seater Sofa',
-        serialNumber: 'RF-SF-8841',
-        orderNumber: 'RF26-1042',
-        purchaseDate: new Date(Date.now() - 120 * 86400000).toISOString(),
-        expiryDate: new Date(Date.now() + 610 * 86400000).toISOString(),
-        status: 'active',
-        remainingDays: 610,
-        currentStatus: 'active',
-        proofOfPurchase: null
-      },
-      {
-        id: 'demo-reg-2',
-        _id: 'demo-reg-2',
-        customerName: 'Pooja Verma',
-        customerPhone: '+91 98112 34567',
-        productName: 'Inverter Double Door Refrigerator 340L',
-        serialNumber: 'RF-AP-3329',
-        orderNumber: 'RF26-1088',
-        purchaseDate: new Date(Date.now() - 340 * 86400000).toISOString(),
-        expiryDate: new Date(Date.now() + 25 * 86400000).toISOString(),
-        status: 'expiring_soon',
-        remainingDays: 25,
-        currentStatus: 'expiring_soon',
-        proofOfPurchase: null
-      },
-      {
-        id: 'demo-reg-3',
-        _id: 'demo-reg-3',
-        customerName: 'Vikramaditya Rathore',
-        customerPhone: '+91 97234 56789',
-        productName: 'Teakwood 6-Seater Dining Set',
-        serialNumber: 'RF-DN-1120',
-        orderNumber: 'RF26-0921',
-        purchaseDate: new Date(Date.now() - 750 * 86400000).toISOString(),
-        expiryDate: new Date(Date.now() - 20 * 86400000).toISOString(),
-        status: 'expired',
-        remainingDays: 0,
-        currentStatus: 'expired',
-        proofOfPurchase: null
-      }
-    ];
-
-    let finalRegs = enrichedRegs;
-    if (finalRegs.length === 0) {
-      finalRegs = sampleRegistrations.filter((r) => {
-        const matchesStatus = !status || status === 'all' || r.currentStatus === status || r.status === status;
-        const matchesSearch =
-          !search ||
-          r.customerName.toLowerCase().includes(search.toLowerCase()) ||
-          r.customerPhone.includes(search) ||
-          r.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
-          r.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
-          r.productName.toLowerCase().includes(search.toLowerCase());
-        return matchesStatus && matchesSearch;
-      });
-    }
-
     return ok({
-      registrations: finalRegs,
-      claims: claims.map((c) => ({ ...c, id: String(c._id) }))
+      registrations: enrichedRegs,
+      total: totalRegs,
+      page,
+      limit
     });
   } catch (error) {
-    console.error('[Admin Warranty Error]', error);
-    return fail('Unable to load warranty records. Database connection may be unavailable.', 500);
+    return apiError(error);
   }
 }
 
 export async function PATCH(request) {
-  const actor = await requireAdmin();
+  const actor = await requireAdmin(new Set(['admin', 'super-admin', 'support']));
   if (!actor) return fail('Admin permission required.', 403);
 
-  const body = await jsonBody(request);
-  const { id, type, status, adminNotes } = body;
-
-  if (!id) return fail('Record ID is required.', 400);
-
   try {
-    if (String(id).startsWith('demo-')) {
-      return ok({ id, status, adminNotes, currentStatus: status });
-    }
+    const body = await request.json();
+    const { id, type, status, action, adminNotes, assignedToEmail, slaDeadline } = body;
+    if (!id) return fail('Record ID is required.', 400);
 
     await connectDB();
+
     if (type === 'claim') {
+      const updateFields = {};
+      if (status) updateFields.status = status;
+      if (adminNotes) updateFields.resolutionNotes = adminNotes;
+      if (assignedToEmail) updateFields.assignedToEmail = assignedToEmail;
+      if (slaDeadline) updateFields.slaDeadline = new Date(slaDeadline);
+      if (status === 'resolved') updateFields.resolvedAt = new Date();
+
       const updated = await WarrantyClaim.findByIdAndUpdate(
         id,
-        { $set: { status, adminNotes } },
+        { $set: updateFields },
         { new: true }
       ).lean();
+
+      // Log claim event
+      await ClaimEvent.create({
+        claimId: id,
+        status: status || updated.status,
+        note: adminNotes || `Claim updated by ${actor.email}`,
+        actorId: actor.sub
+      }).catch(() => null);
+
       return ok(updated);
     }
 
-    const updated = await ProductRegistration.findByIdAndUpdate(
-      id,
-      { $set: { status, adminNotes } },
-      { new: true }
-    ).lean();
+    // Product Registration action (Approve, Reject, or status update)
+    const reg = await ProductRegistration.findById(id);
+    if (!reg) return fail('Registration not found', 404);
+
+    if (action === 'approve') {
+      reg.verified = true;
+      reg.status = computeWarrantyStatus(reg.expiryDate);
+      reg.adminNotes = adminNotes || 'Approved by operations desk.';
+    } else if (action === 'reject') {
+      reg.verified = false;
+      reg.status = 'rejected';
+      reg.adminNotes = adminNotes || 'Proof of purchase invalid / rejected.';
+    } else {
+      if (status) reg.status = status;
+      if (adminNotes) reg.adminNotes = adminNotes;
+    }
+
+    await reg.save();
 
     await AuditLog.create({
-      actorId: actor.id,
+      actorId: actor.sub,
       actorEmail: actor.email,
-      action: 'UPDATE_WARRANTY_REGISTRATION',
+      action: `warranty_registration.${action || 'update'}`,
       entity: 'ProductRegistration',
       entityId: id,
-      after: { status, adminNotes }
-    }).catch(() => {});
+      after: { status: reg.status, verified: reg.verified, adminNotes: reg.adminNotes }
+    }).catch(() => null);
 
-    return ok(updated);
+    return ok(reg.toObject());
   } catch (error) {
-    console.error('[Admin Warranty Update Error]', error);
-    return fail('Unable to update warranty record.', 500);
+    return apiError(error);
   }
 }

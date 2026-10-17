@@ -1,40 +1,35 @@
 import HomePromotionalBanner from '@/components/store/HomePromotionalBanner';
+import WarrantyBanner from '@/components/store/WarrantyBanner';
 import Marquee from '@/components/store/Marquee';
 import RoomCards from '@/components/store/RoomCards';
 import ShopByAppliance from '@/components/store/ShopByAppliance';
-import ProductRail from '@/components/store/ProductRail';
+import TagRail from '@/components/store/TagRail';
 import CampaignSection from '@/components/store/CampaignSection';
 import WarrantyPromise from '@/components/store/WarrantyPromise';
 import DeliveryTimeline from '@/components/store/DeliveryTimeline';
 import ReviewWall from '@/components/store/ReviewWall';
 import ServiceabilityChecker from '@/components/store/ServiceabilityChecker';
 import ShopTheLookHotspots from '@/components/store/ShopTheLookHotspots';
+import RoomPlaygroundLoader from '@/components/three/RoomPlaygroundLoader';
 import SectionHeading from '@/components/ui/SectionHeading';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
-import { getDemoProducts } from '@/lib/demo-data';
+import { getProductsByTag } from '@/lib/catalogue';
 
 export const metadata = {
   title: 'Furniture & Home Appliances for Thoughtful Living',
   description: 'Explore room-ready furniture and dependable home appliances, with delivery, installation and warranty details made clear.'
 };
 
-export default function HomePage() {
-  const products = getDemoProducts();
-  const bestsellers = [
-    products[0],
-    products[8],
-    products[17],
-    products[24],
-    products[30],
-    products[36],
-    products[41],
-    products[12]
-  ];
+export default async function HomePage() {
+  const bestsellers = await getProductsByTag('best-selling', 10);
+  const trending = await getProductsByTag('trending', 10);
+  const newArrivals = await getProductsByTag('new-arrival', 10);
 
   return (
     <>
       <HomePromotionalBanner />
+      <WarrantyBanner />
       <Marquee />
 
       <section className="section">
@@ -49,19 +44,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <SectionHeading
-            eyebrow="Bestsellers, thoughtfully picked"
-            title="The pieces people come back to."
-            description="Our most cherished furniture and appliance selections, designed for Indian homes."
-            action={<Button href="/furniture" variant="ghost">Shop all furniture <Icon name="arrowUpRight" size={15} /></Button>}
-          />
-          <ProductRail products={bestsellers} />
-        </div>
-      </section>
+      {/* Target UX Bestsellers Rail */}
+      <TagRail
+        eyebrow="Bestsellers, thoughtfully picked"
+        title="The pieces people come back to."
+        tag="best-selling"
+        viewAllHref="/collections/best-selling"
+        products={bestsellers}
+      />
 
       <ShopByAppliance />
+
+      {/* Trending Rail */}
+      <TagRail
+        eyebrow="Trending this season"
+        title="In demand for modern spaces."
+        tag="trending"
+        viewAllHref="/collections/trending"
+        products={trending}
+      />
 
       <section className="section">
         <div className="container">
@@ -75,7 +76,28 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="section">
+        <div className="container">
+          <SectionHeading
+            eyebrow="Interactive Room Layout"
+            title="Try a room, piece by piece."
+            description="Arrange furniture in an interactive 3D space and preview your layout in real time. Your delivery options depend on your pincode."
+          />
+          <RoomPlaygroundLoader />
+        </div>
+      </section>
+
       <CampaignSection />
+
+      {/* New Arrivals Rail */}
+      <TagRail
+        eyebrow="Fresh in the showroom"
+        title="New arrivals for your space."
+        tag="new-arrival"
+        viewAllHref="/collections/new-arrival"
+        products={newArrivals}
+      />
+
       <WarrantyPromise />
 
       <section className="section" style={{ background: 'linear-gradient(180deg, #f3eee6, #fbf8f2)' }}>

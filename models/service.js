@@ -12,6 +12,7 @@ const ProductRegistrationSchema = new Schema({
   productName: String,
   variantId: Schema.Types.ObjectId,
   sku: String,
+  unitIndex: { type: Number, default: 0 },
   serialNumber: String,
   customerName: String,
   customerPhone: String,
@@ -33,7 +34,26 @@ WarrantyExtensionSchema.index({ registrationId: 1, userId: 1, status: 1 });
 ProductRegistrationSchema.index({ userId: 1, expiryDate: 1 });
 ProductRegistrationSchema.index({ serialNumber: 1 }, { sparse: true, unique: true });
 ProductRegistrationSchema.index({ customerPhone: 1, orderNumber: 1 });
-const ClaimSchema = new Schema({ userId: Schema.Types.ObjectId, registrationId: Schema.Types.ObjectId, orderId: Schema.Types.ObjectId, issue: String, media: [String], status: { type: String, enum: ['submitted','under_review','approved','rejected','resolved'], default: 'submitted' }, preferredContact: String }, { timestamps: true });
+ProductRegistrationSchema.index({ orderId: 1, sku: 1, unitIndex: 1 }, { unique: true, sparse: true });
+ProductRegistrationSchema.index({ status: 1, expiryDate: 1 });
+ProductRegistrationSchema.index({ verified: 1, createdAt: -1 });
+
+const ClaimSchema = new Schema({
+  claimNumber: { type: String, unique: true, sparse: true },
+  userId: Schema.Types.ObjectId,
+  registrationId: Schema.Types.ObjectId,
+  orderId: Schema.Types.ObjectId,
+  issue: String,
+  media: [String],
+  status: { type: String, enum: ['submitted','under_review','approved','rejected','resolved'], default: 'submitted' },
+  preferredContact: String,
+  assignedTo: { type: Schema.Types.ObjectId, ref: 'AdminUser' },
+  assignedToEmail: String,
+  slaDeadline: Date,
+  resolvedAt: Date,
+  resolutionNotes: String
+}, { timestamps: true });
+ClaimSchema.index({ status: 1, createdAt: -1 });
 const ClaimEventSchema = new Schema({ claimId: Schema.Types.ObjectId, status: String, note: String, actorId: Schema.Types.ObjectId }, { timestamps: true });
 const ReturnRequestSchema = new Schema({ userId: Schema.Types.ObjectId, orderId: Schema.Types.ObjectId, orderNumber: String, reason: { type: String, required: true }, itemSkus: [String], status: { type: String, enum: ['requested','under_review','approved','rejected','picked_up','refunded'], default: 'requested' }, notes: String }, { timestamps: true });
 const LeadSchema = new Schema({

@@ -4,10 +4,69 @@ const { Schema } = mongoose;
 const CategorySchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true, required: true }, type: { type: String, enum: ['furniture','appliance'], required: true }, parentId: { type: Schema.Types.ObjectId, ref: 'Category', default: null }, room: String, image: String, sortOrder: { type: Number, default: 0 }, filters: { type: [Schema.Types.Mixed], default: [] }, active: { type: Boolean, default: true } }, { timestamps: true });
 CategorySchema.index({ parentId: 1, sortOrder: 1 });
 const BrandSchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true }, logo: String, description: String, active: { type: Boolean, default: true } }, { timestamps: true });
-const ProductSchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true, required: true }, brandId: { type: Schema.Types.ObjectId, ref: 'Brand' }, brand: String, categoryId: { type: Schema.Types.ObjectId, ref: 'Category' }, category: { type: String, required: true }, categoryLabel: String, room: String, type: { type: String, enum: ['furniture','appliance'], required: true }, modelType: String, description: String, tagline: String, media: { type: [Schema.Types.Mixed], default: [] }, image: String, imageAlt: String, specs: { type: Schema.Types.Mixed, default: {} }, dimensions: Schema.Types.Mixed, packageDimensions: Schema.Types.Mixed, warranty: Schema.Types.Mixed, gstRate: { type: Number, default: 18 }, price: { type: Number, min: 0 }, mrp: { type: Number, min: 0 }, discount: { type: Number, min: 0, max: 100 }, status: { type: String, enum: ['draft','active','archived'], default: 'draft' }, isDemo: { type: Boolean, default: true }, isDemoImage: { type: Boolean, default: true }, features: [String], seo: Schema.Types.Mixed, model3d: Schema.Types.Mixed }, { timestamps: true });
+const ProductSchema = new Schema({
+  name: { type: String, required: true },
+  slug: { type: String, unique: true, required: true },
+  brandId: { type: Schema.Types.ObjectId, ref: 'Brand' },
+  brand: String,
+  categoryId: { type: Schema.Types.ObjectId, ref: 'Category' },
+  category: { type: String, required: true },
+  categoryLabel: String,
+  room: String,
+  type: { type: String, enum: ['furniture','appliance'], required: true },
+  modelType: String,
+  description: String,
+  tagline: String,
+  media: { type: [Schema.Types.Mixed], default: [] },
+  image: String,
+  imageAlt: String,
+  gallery: [{
+    mediaId: { type: Schema.Types.ObjectId, ref: 'Media' },
+    url: { type: String, required: true },
+    thumbUrl: String,
+    blurDataURL: String,
+    alt: String,
+    sortOrder: { type: Number, default: 0 }
+  }],
+  tags: {
+    type: [String],
+    default: [],
+    enum: ['best-selling', 'popular', 'trending', 'new-arrival', 'featured', 'deal', 'limited']
+  },
+  tagOverrides: {
+    pin: { type: [String], default: [] },
+    hide: { type: [String], default: [] }
+  },
+  sales30d: { type: Number, default: 0, min: 0 },
+  views30d: { type: Number, default: 0, min: 0 },
+  wishlistCount: { type: Number, default: 0, min: 0 },
+  rating: { type: Number, default: 0, min: 0, max: 5 },
+  ratingCount: { type: Number, default: 0, min: 0 },
+  salesTotal: { type: Number, default: 0, min: 0 },
+  badgeText: String,
+  hsnCode: { type: String, default: '9403' },
+  specs: { type: Schema.Types.Mixed, default: {} },
+  dimensions: Schema.Types.Mixed,
+  packageDimensions: Schema.Types.Mixed,
+  warranty: Schema.Types.Mixed,
+  gstRate: { type: Number, default: 18 },
+  price: { type: Number, min: 0 },
+  mrp: { type: Number, min: 0 },
+  discount: { type: Number, min: 0, max: 100 },
+  status: { type: String, enum: ['draft','active','archived'], default: 'draft' },
+  archivedAt: Date,
+  isDemo: { type: Boolean, default: true },
+  isDemoImage: { type: Boolean, default: true },
+  features: [String],
+  seo: Schema.Types.Mixed,
+  model3d: Schema.Types.Mixed
+}, { timestamps: true });
 ProductSchema.index({ type: 1, category: 1, status: 1, price: 1 });
 ProductSchema.index({ brand: 1, category: 1, price: 1 });
-ProductSchema.index({ name: 'text', slug: 'text', brand: 'text', categoryLabel: 'text' });
+ProductSchema.index({ status: 1, tags: 1 });
+ProductSchema.index({ status: 1, sales30d: -1 });
+ProductSchema.index({ status: 1, createdAt: -1 });
+ProductSchema.index({ name: 'text', slug: 'text', brand: 'text', category: 'text', categoryLabel: 'text', tags: 'text' });
 const VariantSchema = new Schema({ productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true }, sku: { type: String, unique: true, required: true }, barcode: String, attributes: { type: Map, of: String, default: {} }, price: { type: Number, min: 0, required: true }, mrp: { type: Number, min: 0 }, stock: { type: Number, min: 0, default: 0 }, active: { type: Boolean, default: true }, model3d: Schema.Types.Mixed }, { timestamps: true });
 VariantSchema.index({ productId: 1, active: 1 });
 const PriceSchema = new Schema({ productId: { type: Schema.Types.ObjectId, ref: 'Product' }, variantId: { type: Schema.Types.ObjectId, ref: 'Variant' }, currency: { type: String, default: 'INR' }, mrp: Number, sellingPrice: Number, validFrom: Date, validTo: Date, active: { type: Boolean, default: true } }, { timestamps: true });

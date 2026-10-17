@@ -82,11 +82,10 @@ export async function POST(request) {
         }
       }
 
-      const doc = await ProductRegistration.create({
-        orderNumber: data.orderNumber ? data.orderNumber.trim() : '',
+      const regPayload = {
+        orderNumber: data.orderNumber ? data.orderNumber.trim() : 'OFFLINE',
         orderId,
         productName: data.productName.trim(),
-        serialNumber: cleanSerial,
         customerName: data.customerName.trim(),
         customerPhone: data.customerPhone.trim(),
         customerEmail: data.customerEmail ? data.customerEmail.trim() : '',
@@ -96,14 +95,20 @@ export async function POST(request) {
         durationDays: duration,
         proofOfPurchase: data.proofOfPurchase || '',
         status,
-        verified: true,
-        registeredFrom: 'website'
-      });
+        verified: Boolean(orderId), // Verified if matched to existing system order; false for review queue
+        registeredFrom: orderId ? 'website' : 'offline'
+      };
+
+      if (cleanSerial) {
+        regPayload.serialNumber = cleanSerial;
+      }
+
+      const doc = await ProductRegistration.create(regPayload);
 
       return ok(
         {
           registrationId: String(doc._id),
-          serialNumber: cleanSerial,
+          serialNumber: cleanSerial || undefined,
           productName: doc.productName,
           status,
           purchaseDate: purchase.toISOString().split('T')[0],
@@ -111,7 +116,10 @@ export async function POST(request) {
           expiryDate: expiryDate.toISOString().split('T')[0],
           durationDays: duration,
           remainingDays,
-          message: 'Warranty registered successfully.'
+          verified: doc.verified,
+          message: doc.verified
+            ? 'Warranty registered and verified successfully.'
+            : 'Warranty registration received. Our operations desk will review proof of purchase within 24 hours.'
         },
         201
       );

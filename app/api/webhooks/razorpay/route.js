@@ -58,6 +58,22 @@ export async function POST(request){
       }
       await PaymentEvent.updateOne({eventId},{$set:{processedAt:new Date(),paymentId:providerPaymentId,orderId:providerOrderId}},{session});
     });
+
+    if (payload.event === 'payment.captured') {
+      try {
+        const { generateInvoiceForOrder } = await import('@/lib/invoice-generator');
+        const { autoRegisterOrderWarranties } = await import('@/lib/warranty');
+        const pOrderId = payload.payload?.payment?.entity?.order_id || payload.payload?.order?.entity?.id;
+        const localPayment = pOrderId ? await Payment.findOne({ providerOrderId: pOrderId }).lean() : null;
+        if (localPayment?.orderId) {
+          await generateInvoiceForOrder(localPayment.orderId).catch(() => null);
+          await autoRegisterOrderWarranties(localPayment.orderId).catch(() => null);
+        }
+      } catch (err) {
+        console.warn('Webhook post-capture side effects deferred:', err.message);
+      }
+    }
+
     return ok({received:true,duplicate});
   }catch(error){
     console.error('Razorpay webhook processing error:',error.message);
