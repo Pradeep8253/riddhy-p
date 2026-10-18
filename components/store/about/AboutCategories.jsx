@@ -9,42 +9,42 @@ const categories = [
     title: 'Living Room Furniture',
     description: 'Chesterfields, fabric sectional sofas, solid Sheesham coffee tables, and fluted TV units.',
     href: '/furniture/living',
-    image: IMG.categories.living,
+    image: IMG.categories.living || '/images/room-living.webp',
     tag: 'Handcrafted Furniture'
   },
   {
     title: 'Master & Guest Bedrooms',
     description: 'Hydraulic storage beds, orthopedic pocket-spring mattresses, and modular wardrobes.',
     href: '/furniture/bedroom',
-    image: IMG.categories.bedroom,
+    image: IMG.categories.bedroom || '/images/room-bedroom.webp',
     tag: 'Solid Wood & Storage'
   },
   {
     title: 'Dining & Entertaining',
     description: 'Italian marble top dining tables, solid teak 6-seater sets, and display buffets.',
     href: '/furniture/dining',
-    image: IMG.categories.dining,
+    image: IMG.categories.dining || '/images/room-dining.webp',
     tag: 'Center of the Home'
   },
   {
     title: 'Refrigeration & Cooling',
     description: 'Frost-free convertible double-door & side-by-side smart inverter refrigerators.',
     href: '/appliances/refrigerators',
-    image: IMG.categories.kitchen,
+    image: IMG.categories.refrigerators || IMG.categories.kitchen || '/images/category-refrigerators.webp',
     tag: '5-Star Energy Saver'
   },
   {
     title: 'Fabric & Laundry Care',
     description: 'AI inverter front-load washers and washer-dryer combos with hygiene steam care.',
     href: '/appliances/washing-machines',
-    image: IMG.categories.laundry,
+    image: IMG.categories['washing-machines'] || IMG.categories.laundry || '/images/category-washers.webp',
     tag: 'Allergen Steam Wash'
   },
   {
     title: 'Smart Kitchen Tech',
     description: 'Convection microwave ovens, touch induction hobs, and motion-sensing auto-clean chimneys.',
     href: '/appliances',
-    image: IMG.categories.living,
+    image: IMG.categories.microwaves || IMG.categories.chimneys || '/images/category-microwave.webp',
     tag: 'Effortless Cooking'
   }
 ];
@@ -66,14 +66,16 @@ export default function AboutCategories() {
           {categories.map((cat) => (
             <Link key={cat.title} href={cat.href} className={styles.categoryCard}>
               <div className={styles.categoryImageWrapper}>
-                <Image
-                  src={cat.image}
-                  alt={cat.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className={styles.categoryImg}
-                  unoptimized
-                />
+                {cat.image ? (
+                  <Image
+                    src={cat.image}
+                    alt={cat.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className={styles.categoryImg}
+                    unoptimized
+                  />
+                ) : null}
                 <span className={styles.categoryTag}>{cat.tag}</span>
               </div>
               <div className={styles.categoryContent}>

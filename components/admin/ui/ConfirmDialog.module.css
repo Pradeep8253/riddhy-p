@@ -1,0 +1,55 @@
+.message {
+  margin: 0 0 20px;
+  color: var(--admin-text-muted, #556257);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--admin-border, #d4ddd5);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--admin-text-main, #10261a);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn:hover {
+  background: #f4eee2;
+}
+
+.confirmBtn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dangerBtn {
+  background: #c62828;
+}
+
+.dangerBtn:hover {
+  background: #b71c1c;
+}
+
+.primaryBtn {
+  background: var(--admin-accent-green, #1b5e20);
+}
+
+.primaryBtn:hover {
+  background: #144719;
+}

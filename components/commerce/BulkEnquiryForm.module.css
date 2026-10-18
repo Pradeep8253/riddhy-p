@@ -1,0 +1,375 @@
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Trust Badges Banner */
+.b2bPerksGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(224, 160, 64, 0.08) 0%, rgba(16, 38, 26, 0.04) 100%);
+  border: 1px solid rgba(224, 160, 64, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.perkItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--rf-forest-deep);
+}
+
+.perkIcon {
+  color: var(--rf-gold-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Section Grouping */
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rf-green-800);
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--rf-line);
+}
+
+/* Industry / Project Type Chips */
+.chipsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--rf-line);
+  background: var(--rf-white);
+  color: var(--rf-charcoal-700);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip:hover {
+  border-color: var(--rf-gold-500);
+  background: rgba(224, 160, 64, 0.08);
+  color: var(--rf-charcoal-900);
+}
+
+.chipActive,
+.chipActive:hover,
+.chipActive:focus,
+.chipActive:active {
+  border-color: var(--rf-forest-deep) !important;
+  background: var(--rf-forest-deep) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(16, 38, 26, 0.22);
+}
+
+/* Field Grid */
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--rf-forest-deep);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.subLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--rf-charcoal-600);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--rf-line);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--rf-charcoal-900);
+  font-size: 13.5px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--rf-gold-500);
+  box-shadow: 0 0 0 3px rgba(224, 160, 64, 0.18);
+}
+
+.textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+
+.errorText {
+  font-size: 11px;
+  color: #c62828;
+  font-weight: 600;
+}
+
+/* Category Checkbox Grid */
+.categoryPillsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.catPill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rf-line);
+  background: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--rf-charcoal-600);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.catPill:hover {
+  border-color: var(--rf-gold-500);
+  background: rgba(224, 160, 64, 0.06);
+}
+
+.catPillSelected,
+.catPillSelected:hover,
+.catPillSelected:focus,
+.catPillSelected:active {
+  border-color: #1b5e20 !important;
+  background: #1b5e20 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+/* Radio Pill Group */
+.radioPillGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.radioPill {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rf-line);
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rf-charcoal-700);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.radioPill:hover {
+  border-color: var(--rf-gold-500);
+  background: rgba(224, 160, 64, 0.06);
+}
+
+.radioPillActive,
+.radioPillActive:hover,
+.radioPillActive:focus,
+.radioPillActive:active {
+  border-color: var(--rf-forest-deep) !important;
+  background: var(--rf-forest-deep) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+/* Submit Actions */
+.submitSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 32px;
+  border-radius: 999px;
+  border: none;
+  background: var(--rf-gold-500);
+  color: var(--rf-forest-deep);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 18px rgba(224, 160, 64, 0.3);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--rf-gold-400);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(224, 160, 64, 0.4);
+}
+
+.submitBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.guaranteeNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--rf-charcoal-600);
+  text-align: center;
+}
+
+/* Success View */
+.successCard {
+  text-align: center;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.successIconWrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(46, 125, 50, 0.12);
+  color: var(--rf-green-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successTitle {
+  font: 500 28px var(--font-display);
+  color: var(--rf-forest-deep);
+  margin: 0;
+}
+
+.successDesc {
+  color: var(--rf-charcoal-600);
+  font-size: 14px;
+  max-width: 440px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.refBadge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 24px;
+  background: var(--rf-cream-100);
+  border: 1px dashed var(--rf-gold-600);
+  border-radius: var(--radius-md);
+  margin: 8px 0;
+}
+
+.refLabel {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rf-gold-600);
+}
+
+.refCode {
+  font-family: monospace;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--rf-forest-deep);
+}
+
+.anotherBtn {
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--rf-line);
+  background: transparent;
+  color: var(--rf-charcoal-600);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.anotherBtn:hover {
+  background: var(--rf-cream-100);
+  color: var(--rf-forest-deep);
+}
+
+/* Honeypot hidden */
+.hpField {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  .fieldsGrid {
+    grid-template-columns: 1fr;
+  }
+  .b2bPerksGrid {
+    grid-template-columns: 1fr;
+  }
+}

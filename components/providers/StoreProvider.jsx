@@ -13,6 +13,11 @@ export default function StoreProvider({ children }) {
   useEffect(() => {
     const store = storeRef.current;
     try {
+      const savedLocale = window.localStorage.getItem('rf-locale');
+      if (savedLocale === 'hi' || savedLocale === 'en') {
+        store.dispatch({ type: 'ui/setLocale', payload: savedLocale });
+      }
+
       const saved = window.localStorage.getItem('rf-riddhy-state');
       if (saved) {
         const state = JSON.parse(saved);
@@ -24,6 +29,9 @@ export default function StoreProvider({ children }) {
         }
         if (state.compare) {
           store.dispatch({ type: 'compare/rehydrate', payload: state.compare });
+        }
+        if (!savedLocale && state.ui?.locale) {
+          store.dispatch({ type: 'ui/setLocale', payload: state.ui.locale });
         }
       }
     } catch {
@@ -55,9 +63,13 @@ export default function StoreProvider({ children }) {
           JSON.stringify({
             cart: state.cart,
             wishlist: state.wishlist,
-            compare: state.compare
+            compare: state.compare,
+            ui: { locale: state.ui?.locale }
           })
         );
+        if (state.ui?.locale) {
+          window.localStorage.setItem('rf-locale', state.ui.locale);
+        }
       } catch {
         // Ignore quota/serialization issues
       }

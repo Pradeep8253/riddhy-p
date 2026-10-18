@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import { getWhatsAppUrl, getTelUrl } from '@/lib/site-config';
 import styles from './FloatingContactWidget.module.css';
 
@@ -55,6 +56,7 @@ function CloseIcon({ size = 16, color = 'currentColor' }) {
 export default function FloatingContactWidget() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const locale = useSelector((state) => state.ui?.locale || 'en');
 
   // Don't show inside admin console
   if (pathname?.startsWith('/admin')) {
@@ -96,9 +98,9 @@ export default function FloatingContactWidget() {
               <WhatsAppIcon size={19} color="#ffffff" />
             </span>
             <div>
-              <div>Chat on WhatsApp</div>
+              <div>{locale === 'hi' ? 'व्हाट्सएप पर चैट करें' : 'Chat on WhatsApp'}</div>
               <small style={{ opacity: 0.85, fontSize: '11px', display: 'block' }}>
-                Instant response
+                {locale === 'hi' ? 'तुरंत जवाब' : 'Instant response'}
               </small>
             </div>
           </a>
@@ -112,9 +114,9 @@ export default function FloatingContactWidget() {
               <PhoneIcon size={18} color="#ffffff" />
             </span>
             <div>
-              <div>Call Showroom Care</div>
+              <div>{locale === 'hi' ? 'शोरूम केयर को कॉल करें' : 'Call Showroom Care'}</div>
               <small style={{ opacity: 0.85, fontSize: '11px', display: 'block' }}>
-                Direct telephone assistance
+                {locale === 'hi' ? 'सीधी टेलीफ़ोन सहायता' : 'Direct telephone assistance'}
               </small>
             </div>
           </a>
@@ -126,7 +128,7 @@ export default function FloatingContactWidget() {
         className={styles.mainToggle}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        aria-label={open ? 'Close contact menu' : 'Open chat and call options'}
+        aria-label={open ? (locale === 'hi' ? 'संपर्क मेनू बंद करें' : 'Close contact menu') : (locale === 'hi' ? 'चैट एवं कॉल विकल्प खोलें' : 'Open chat and call options')}
       >
         <span
           className={styles.iconCircle}
@@ -134,7 +136,7 @@ export default function FloatingContactWidget() {
         >
           {open ? <CloseIcon size={15} color="#ffffff" /> : <WhatsAppIcon size={18} color="#ffffff" />}
         </span>
-        <span>{open ? 'Close' : 'Chat & Call'}</span>
+        <span>{open ? (locale === 'hi' ? 'बंद करें' : 'Close') : (locale === 'hi' ? 'सहायता एवं चैट' : 'Chat & Call')}</span>
       </button>
     </aside>
   );

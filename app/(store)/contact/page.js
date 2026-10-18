@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import InquiryForm from '@/components/commerce/InquiryForm';
+import ContactForm from '@/components/commerce/ContactForm';
 import Icon from '@/components/ui/Icon';
 import { siteConfig, isConfigured } from '@/lib/site-config';
 import { getLiveSiteConfig } from '@/lib/server-config';
@@ -175,11 +175,11 @@ export default async function ContactPage({ searchParams }) {
           {/* Form */}
           <div className={styles.formCard}>
             <div className={styles.formHead}>
-              <span className="kicker">Direct message</span>
-              <h2>Send an enquiry</h2>
-              <p>Select your topic so we can direct your message to the right specialist.</p>
+              <span className="kicker">Direct customer care</span>
+              <h2>How can we help you?</h2>
+              <p>Select your topic and share your message. Our concierge team responds directly via WhatsApp or phone call.</p>
             </div>
-            <InquiryForm kind="contact" initialTopic={topicParam} />
+            <ContactForm initialTopic={topicParam} />
           </div>
 
           {/* Quick Help & Consultation Cross-link */}

@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import Icon from '@/components/ui/Icon';
 import { formatINR } from '@/lib/demo-data';
 import { siteConfig } from '@/lib/site-config';
 import styles from './MarriagePackages.module.css';
 
 export default function MarriagePackagesClient({ packages = [] }) {
+  const locale = useSelector((state) => state.ui?.locale || 'en');
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [isCustomizing, setIsCustomizing] = useState(false);
   const [selectedAddons, setSelectedAddons] = useState(new Set());
@@ -70,17 +72,28 @@ export default function MarriagePackagesClient({ packages = [] }) {
       {/* Hero Header */}
       <section className={styles.hero}>
         <div className={`container ${styles.heroContent}`}>
-          <span className={styles.heroTag}>Wedding Collections · Home Setup</span>
+          <span className={styles.heroTag}>
+            {locale === 'hi' ? 'विवाह संग्रह · संपूर्ण गृह व्यवस्था' : 'Wedding Collections · Home Setup'}
+          </span>
           <h1>
-            Marriage Packages, <em>considered</em> for real life.
+            {locale === 'hi' ? (
+              <>विवाह पैकेज, <em>सुखी जीवन</em> की शुरुआत।</>
+            ) : (
+              <>Marriage Packages, <em>considered</em> for real life.</>
+            )}
           </h1>
           <p>
-            Complete household furniture and smart home appliance collections designed for newly married couples.
-            Cohesive styling, verified structural warranties, and customizable room selections.
+            {locale === 'hi'
+              ? 'नवविवाहित जोड़ों के लिए डिज़ाइन किए गए संपूर्ण घरेलू फ़र्नीचर और स्मार्ट उपकरणों के संग्रह। सामंजस्यपूर्ण स्टाइलिंग, प्रमाणित संरचनात्मक वारंटी और कस्टमाइज़ेबल चयन।'
+              : 'Complete household furniture and smart home appliance collections designed for newly married couples. Cohesive styling, verified structural warranties, and customizable room selections.'}
           </p>
           <div className={styles.noticeBar}>
             <Icon name="check" size={15} />
-            <span>Indicative package prices shown. Tailored quotations available upon consultation.</span>
+            <span>
+              {locale === 'hi'
+                ? 'संकेतक पैकेज मूल्य दर्शाए गए हैं। परामर्श पर अनुकूलित कोटेशन उपलब्ध।'
+                : 'Indicative package prices shown. Tailored quotations available upon consultation.'}
+            </span>
           </div>
         </div>
       </section>
@@ -123,10 +136,12 @@ export default function MarriagePackagesClient({ packages = [] }) {
                           : styles.luxuryBadge
                       }`}
                     >
-                      {pkg.tier} Collection
+                      {locale === 'hi'
+                        ? (pkg.tier === 'basic' ? 'बेसिक कलेक्शन' : pkg.tier === 'premium' ? 'प्रीमियम कलेक्शन' : 'लक्ज़री कलेक्शन')
+                        : `${pkg.tier} Collection`}
                     </span>
-                    <h2>{pkg.name}</h2>
-                    <p>{pkg.tagline || pkg.description}</p>
+                    <h2>{pkg.name_hi && locale === 'hi' ? pkg.name_hi : pkg.name}</h2>
+                    <p>{(locale === 'hi' && (pkg.tagline_hi || pkg.description_hi)) || pkg.tagline || pkg.description}</p>
                   </div>
 
                   <div className={styles.priceArea}>
@@ -137,12 +152,18 @@ export default function MarriagePackagesClient({ packages = [] }) {
                       )}
                     </div>
                     {pkg.savings && (
-                      <span className={styles.savingsBadge}>Save {formatINR(pkg.savings)}</span>
+                      <span className={styles.savingsBadge}>
+                        {locale === 'hi' ? `बचत ${formatINR(pkg.savings)}` : `Save ${formatINR(pkg.savings)}`}
+                      </span>
                     )}
                   </div>
 
                   <div className={styles.itemsList}>
-                    <span className={styles.itemsCount}>Includes {itemCount} Essential Items:</span>
+                    <span className={styles.itemsCount}>
+                      {locale === 'hi'
+                        ? `इसमें ${itemCount} आवश्यक वस्तुएं शामिल हैं:`
+                        : `Includes ${itemCount} Essential Items:`}
+                    </span>
                     {(pkg.items || []).slice(0, 5).map((item, idx) => (
                       <div key={idx} className={styles.itemRow}>
                         <div className={styles.itemCheck}>
@@ -170,7 +191,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
                       className={styles.btnPrimary}
                       onClick={() => openDetails(pkg)}
                     >
-                      View Package Details <Icon name="arrow" size={14} />
+                      {locale === 'hi' ? 'पैकेज विवरण देखें' : 'View Package Details'} <Icon name="arrow" size={14} />
                     </button>
 
                     <button
@@ -178,7 +199,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
                       className={styles.btnSecondary}
                       onClick={() => openCustomize(pkg)}
                     >
-                      <Icon name="sliders" size={14} /> Customize Package & Add-ons
+                      <Icon name="sliders" size={14} /> {locale === 'hi' ? 'पैकेज एवं ऐड-ऑन कस्टमाइज़ करें' : 'Customize Package & Add-ons'}
                     </button>
 
                     <a
@@ -187,7 +208,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
                       rel="noopener noreferrer"
                       className={styles.btnWhatsApp}
                     >
-                      <Icon name="whatsapp" size={15} /> WhatsApp for Quote
+                      <Icon name="whatsapp" size={15} /> {locale === 'hi' ? 'व्हाट्सएप पर कोटेशन' : 'WhatsApp for Quote'}
                     </a>
                   </div>
                 </article>
@@ -303,7 +324,11 @@ export default function MarriagePackagesClient({ packages = [] }) {
             {/* Sticky Drawer Footer */}
             <div className={styles.drawerFooter}>
               <div className={styles.drawerTotal}>
-                <span>{isCustomizing ? 'Estimated Package Total' : 'Package Price'}</span>
+                <span>
+                  {locale === 'hi'
+                    ? (isCustomizing ? 'अनुमानित पैकेज कुल' : 'पैकेज मूल्य')
+                    : (isCustomizing ? 'Estimated Package Total' : 'Package Price')}
+                </span>
                 <b>{formatINR(calculateTotal(selectedPackage))}</b>
               </div>
 
@@ -315,7 +340,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
                   className={styles.btnWhatsApp}
                   style={{ minHeight: 44, padding: '0 18px' }}
                 >
-                  <Icon name="whatsapp" size={16} /> WhatsApp Quote
+                  <Icon name="whatsapp" size={16} /> {locale === 'hi' ? 'व्हाट्सएप कोट' : 'WhatsApp Quote'}
                 </a>
 
                 <Link
@@ -323,7 +348,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
                   className={styles.btnPrimary}
                   style={{ minHeight: 44, padding: '0 20px' }}
                 >
-                  Request Consultation <Icon name="arrow" size={14} />
+                  {locale === 'hi' ? 'परामर्श का अनुरोध करें' : 'Request Consultation'} <Icon name="arrow" size={14} />
                 </Link>
               </div>
             </div>

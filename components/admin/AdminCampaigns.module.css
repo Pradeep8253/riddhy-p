@@ -114,7 +114,13 @@
   margin-top: 18px;
   padding: 20px;
   border-radius: 14px;
-  background: radial-gradient(ellipse at 80% 20%, rgba(217, 154, 50, 0.2), transparent 50%), #11261b;
+  background:
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(217, 154, 50, 0.2),
+      transparent 50%
+    ),
+    #11261b;
   color: #f7f3ea;
   border: 1px solid rgba(217, 154, 50, 0.3);
 }

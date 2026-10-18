@@ -333,12 +333,14 @@
 }
 
 /* Density Modifiers */
-.dense th, .dense td {
+.dense th,
+.dense td {
   padding: 8px 10px !important;
   font-size: 0.82rem;
 }
 
-.comfortable th, .comfortable td {
+.comfortable th,
+.comfortable td {
   padding: 18px 16px !important;
 }
 
@@ -489,8 +491,12 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Empty State */
@@ -537,8 +543,14 @@
 }
 
 @keyframes popUp {
-  from { transform: translate(-50%, 20px); opacity: 0; }
-  to { transform: translate(-50%, 0); opacity: 1; }
+  from {
+    transform: translate(-50%, 20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
 }
 
 .bulkCount {

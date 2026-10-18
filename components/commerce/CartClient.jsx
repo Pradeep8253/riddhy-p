@@ -1,31 +1,69 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useDispatch,useSelector } from 'react-redux';
-import { removeItem,setQuantity } from '@/store/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeItem, setQuantity } from '@/store/cartSlice';
 import { formatINR } from '@/lib/demo-data';
 import { IMG } from '@/lib/images';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
+import { tr } from '@/lib/i18n';
 import styles from './CartClient.module.css';
+
+const FREE_SHIPPING_THRESHOLD = 50000;
 
 export default function CartClient() {
   const items = useSelector((state) => state.cart.items);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const authChecked = useSelector((state) => state.auth?.checked);
+  const locale = useSelector((state) => state.ui?.locale || 'en');
   const dispatch = useDispatch();
+
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState('');
+
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+  const handleApplyCoupon = (e) => {
+    e?.preventDefault();
+    setCouponError('');
+    const code = couponCode.trim().toUpperCase();
+    if (!code) return;
+
+    if (code === 'WELCOME10' || code === 'RIDDHY10') {
+      const discount = Math.round(subtotal * 0.1);
+      setAppliedCoupon({ code, discount, label: '10% Welcome Discount' });
+      setCouponCode('');
+    } else if (code === 'FESTIVE5') {
+      const discount = Math.round(subtotal * 0.05);
+      setAppliedCoupon({ code, discount, label: '5% Festive Offer' });
+      setCouponCode('');
+    } else if (code === 'FLAT2000') {
+      const discount = Math.min(2000, subtotal);
+      setAppliedCoupon({ code, discount, label: 'Flat ₹2,000 Off' });
+      setCouponCode('');
+    } else {
+      setCouponError('Invalid or expired coupon code. Try WELCOME10 or FLAT2000.');
+    }
+  };
+
+  const discountAmount = appliedCoupon ? appliedCoupon.discount : 0;
+  const estimatedTotal = Math.max(0, subtotal - discountAmount);
+  const shippingProgress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
+  const shippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
   if (authChecked && !isAuthenticated) {
     return (
       <div className={styles.empty}>
         <span>RF</span>
-        <h2>Sign in to view your bag</h2>
-        <p>Sign in to your Riddhy account to view saved items and proceed to secure checkout.</p>
+        <h2>{tr(locale, 'signInToViewBag')}</h2>
+        <p>{tr(locale, 'signInBagSubtitle')}</p>
         <div>
-          <Button href="/account?redirect=/cart">Sign in to continue</Button>
-          <Button href="/furniture" variant="outline">Shop furniture</Button>
+          <Button href="/account?redirect=/cart">{tr(locale, 'signInToContinue')}</Button>
+          <Button href="/furniture" variant="outline">{tr(locale, 'shopFurniture')}</Button>
         </div>
       </div>
     );
@@ -35,11 +73,11 @@ export default function CartClient() {
     return (
       <div className={styles.empty}>
         <span>RF</span>
-        <h2>Your bag is ready for a good find.</h2>
-        <p>Browse furniture or appliances, then add your favourites here.</p>
+        <h2>{tr(locale, 'emptyCartTitle')}</h2>
+        <p>{tr(locale, 'emptyCartSubtitle')}</p>
         <div>
-          <Button href="/furniture">Shop furniture</Button>
-          <Button href="/appliances" variant="outline">Shop appliances</Button>
+          <Button href="/furniture">{tr(locale, 'shopFurniture')}</Button>
+          <Button href="/appliances" variant="outline">{tr(locale, 'shopAppliances')}</Button>
         </div>
       </div>
     );
@@ -48,6 +86,24 @@ export default function CartClient() {
   return (
     <div className={styles.layout}>
       <div className={styles.items}>
+        {/* Free Shipping Progress Bar */}
+        <div className={styles.shippingBar}>
+          <div className={styles.shippingText}>
+            <Icon name="truck" size={16} />
+            <span>
+              {shippingRemaining === 0
+                ? '🎉 Congratulations! You have unlocked Free White-Glove Delivery & Assembly.'
+                : `Add ${formatINR(shippingRemaining)} more to unlock Free White-Glove Delivery & Assembly!`}
+            </span>
+          </div>
+          <div className={styles.shippingProgressTrack}>
+            <div
+              className={styles.shippingProgressBar}
+              style={{ width: `${shippingProgress}%` }}
+            />
+          </div>
+        </div>
+
         {items.map((item) => {
           const key = item.variantId || item.slug || item.id;
           return (
@@ -101,32 +157,75 @@ export default function CartClient() {
       </div>
 
       <aside className={styles.summary}>
-        <span className={styles.kicker}>Your order</span>
-        <h2>Basket summary</h2>
+        <span className={styles.kicker}>{tr(locale, 'yourOrder')}</span>
+        <h2>{tr(locale, 'cartSummary')}</h2>
         <div className={styles.line}>
-          <span>Items subtotal</span>
+          <span>{tr(locale, 'itemsSubtotal')}</span>
           <b>{formatINR(subtotal)}</b>
         </div>
+
+        {appliedCoupon && (
+          <div className={styles.line} style={{ color: '#1b5e20' }}>
+            <span>Coupon ({appliedCoupon.code})</span>
+            <b>- {formatINR(appliedCoupon.discount)}</b>
+          </div>
+        )}
+
         <div className={styles.line}>
-          <span>Delivery & installation</span>
-          <span>Calculated at checkout</span>
+          <span>{tr(locale, 'deliveryInstallation')}</span>
+          <span>{shippingRemaining === 0 ? <strong style={{ color: '#1b5e20' }}>FREE</strong> : tr(locale, 'calculatedAtCheckout')}</span>
         </div>
         <div className={styles.line}>
-          <span>Taxes</span>
-          <span>Calculated at checkout</span>
+          <span>{tr(locale, 'taxes')}</span>
+          <span>{tr(locale, 'calculatedAtCheckout')}</span>
         </div>
         <div className={`${styles.line} ${styles.total}`}>
-          <span>Estimated total</span>
-          <b>{formatINR(subtotal)}</b>
+          <span>{tr(locale, 'estimatedTotal')}</span>
+          <b>{formatINR(estimatedTotal)}</b>
         </div>
+
+        {/* Promo Code Input */}
+        <div className={styles.couponSection}>
+          <form className={styles.couponForm} onSubmit={handleApplyCoupon}>
+            <input
+              type="text"
+              className={styles.couponInput}
+              placeholder="Promo / Coupon code"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+            />
+            <button type="submit" className={styles.couponBtn}>
+              Apply
+            </button>
+          </form>
+          {couponError && (
+            <div style={{ color: '#c62828', fontSize: 10, marginTop: 4 }}>
+              {couponError}
+            </div>
+          )}
+          {appliedCoupon && (
+            <div className={styles.couponSuccess}>
+              <span>✓ {appliedCoupon.label} applied!</span>
+              <button
+                type="button"
+                className={styles.couponRemove}
+                onClick={() => setAppliedCoupon(null)}
+              >
+                Remove
+              </button>
+            </div>
+          )}
+        </div>
+
         <p>
-          Final totals are calculated securely on the server from current SKU pricing, serviceability and any valid coupon.
+          {tr(locale, 'checkoutNotice')}
         </p>
         <Button href="/checkout" size="lg" className={styles.checkout}>
-          Continue to checkout <Icon name="arrow" size={16} />
+          {tr(locale, 'continueToCheckout')} <Icon name="arrow" size={16} />
         </Button>
-        <div className={styles.secure}>Secure payment · Clear warranty terms</div>
+        <div className={styles.secure}>{tr(locale, 'securePaymentWarranty')}</div>
       </aside>
     </div>
   );
 }
+

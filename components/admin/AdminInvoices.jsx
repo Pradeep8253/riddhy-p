@@ -34,8 +34,12 @@ export default function AdminInvoices() {
       params.set('limit', String(pageSize));
 
       const res = await fetch(`/api/admin/invoices?${params.toString()}`);
+      if (!res.ok) {
+        setInvoices([]);
+        return;
+      }
       const data = await res.json();
-      if (res.ok && data.success) {
+      if (data.success) {
         setInvoices(data.data || []);
         setTotal(data.meta?.total || 0);
         if (data.meta?.summary) setSummary(data.meta.summary);

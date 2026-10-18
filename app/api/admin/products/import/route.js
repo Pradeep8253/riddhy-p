@@ -4,6 +4,7 @@ import { Product, Variant, Category, Warehouse, Inventory, StockMovement, AuditL
 import { requireAdmin } from '@/lib/roles';
 import { ok, fail } from '@/lib/http';
 import { revalidateTag } from 'next/cache';
+import { getCompanySettings } from '@/lib/company-settings';
 
 const REQUIRED_HEADERS = ['sku', 'name', 'category', 'type', 'price'];
 
@@ -198,7 +199,8 @@ export async function POST(request) {
       return fail('No valid rows available to import.', 400);
     }
 
-    const warehouseCode = process.env.DEFAULT_WAREHOUSE_CODE || 'DELHI-01';
+    const company = await getCompanySettings();
+    const warehouseCode = company.defaultWarehouseCode || 'DELHI-01';
     const warehouse = await Warehouse.findOneAndUpdate(
       { code: warehouseCode },
       { $setOnInsert: { code: warehouseCode, name: 'Default Hub', active: true } },

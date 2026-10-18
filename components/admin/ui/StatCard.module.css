@@ -1,0 +1,119 @@
+.statCard {
+  background: var(--admin-card-bg, #fffefa);
+  border: 1px solid var(--admin-border, rgba(31, 95, 46, 0.14));
+  border-radius: var(--admin-radius-card, 18px);
+  padding: 20px 22px;
+  box-shadow: var(--admin-shadow-sm, 0 2px 8px rgba(16, 38, 26, 0.04));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--admin-shadow-md, 0 8px 24px rgba(16, 38, 26, 0.08));
+  border-color: rgba(224, 160, 64, 0.4);
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--admin-text-muted, #617064);
+}
+
+.iconCircle {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(31, 95, 46, 0.08);
+  color: var(--admin-accent-green, #1b5e20);
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.value {
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--admin-text-main, #10261a);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.footerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.deltaBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.deltaUp {
+  background: #eaf5ec;
+  color: #1b5e20;
+}
+
+.deltaDown {
+  background: #fdeeea;
+  color: #c62828;
+}
+
+.deltaNeutral {
+  background: #f0f3f1;
+  color: #556257;
+}
+
+.deltaLabel {
+  color: var(--admin-text-subtle, #8a968d);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.green .iconCircle {
+  background: #eaf5ec;
+  color: #1b5e20;
+}
+
+.gold .iconCircle {
+  background: #fbf3e4;
+  color: #9c6c18;
+}
+
+.red .iconCircle {
+  background: #fdeeea;
+  color: #c62828;
+}
+
+.blue .iconCircle {
+  background: #e3f2fd;
+  color: #1565c0;
+}

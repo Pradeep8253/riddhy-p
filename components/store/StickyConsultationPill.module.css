@@ -87,9 +87,9 @@
   color: var(--rf-charcoal-900);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .pillWrap {
-    bottom: 16px;
+    bottom: 74px;
     left: 14px;
     max-width: calc(100vw - 80px);
   }

@@ -215,6 +215,49 @@
   cursor: pointer;
 }
 
+.gridSwitcher {
+  display: flex;
+  align-items: center;
+  background: #f3f0e8;
+  padding: 3px;
+  border-radius: 99px;
+  gap: 2px;
+}
+
+.gridSwitchBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 34px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 99px;
+  border: none;
+  background: transparent;
+  color: #647065;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gridSwitchBtn:hover {
+  color: var(--rf-forest-deep, #10261a);
+}
+
+.gridSwitchBtn.activeGrid {
+  background: #ffffff;
+  color: var(--rf-green-800, #1f5f2e);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 720px) {
+  .gridSwitcher {
+    display: none;
+  }
+}
+
 .mobileFilter {
   display: none;
 }

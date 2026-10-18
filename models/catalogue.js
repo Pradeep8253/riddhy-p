@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const CategorySchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true, required: true }, type: { type: String, enum: ['furniture','appliance'], required: true }, parentId: { type: Schema.Types.ObjectId, ref: 'Category', default: null }, room: String, image: String, sortOrder: { type: Number, default: 0 }, filters: { type: [Schema.Types.Mixed], default: [] }, active: { type: Boolean, default: true } }, { timestamps: true });
+const CategorySchema = new Schema({ name: { type: String, required: true }, name_hi: String, slug: { type: String, unique: true, required: true }, type: { type: String, enum: ['furniture','appliance'], required: true }, parentId: { type: Schema.Types.ObjectId, ref: 'Category', default: null }, room: String, image: String, sortOrder: { type: Number, default: 0 }, filters: { type: [Schema.Types.Mixed], default: [] }, active: { type: Boolean, default: true } }, { timestamps: true });
 CategorySchema.index({ parentId: 1, sortOrder: 1 });
 const BrandSchema = new Schema({ name: { type: String, required: true }, slug: { type: String, unique: true }, logo: String, description: String, active: { type: Boolean, default: true } }, { timestamps: true });
 const ProductSchema = new Schema({
   name: { type: String, required: true },
+  name_hi: String,
   slug: { type: String, unique: true, required: true },
   brandId: { type: Schema.Types.ObjectId, ref: 'Brand' },
   brand: String,
@@ -16,7 +17,9 @@ const ProductSchema = new Schema({
   type: { type: String, enum: ['furniture','appliance'], required: true },
   modelType: String,
   description: String,
+  description_hi: String,
   tagline: String,
+  tagline_hi: String,
   media: { type: [Schema.Types.Mixed], default: [] },
   image: String,
   imageAlt: String,
@@ -75,10 +78,13 @@ const CouponSchema = new Schema({ code: { type: String, unique: true, uppercase:
 
 const MarriagePackageSchema = new Schema({
   name: { type: String, required: true },
+  name_hi: String,
   slug: { type: String, unique: true, required: true },
   tier: { type: String, enum: ['basic', 'premium', 'luxury'], default: 'basic' },
   tagline: String,
+  tagline_hi: String,
   description: { type: String, required: true },
+  description_hi: String,
   bannerImage: String,
   thumbnailImage: String,
   price: { type: Number, required: true },

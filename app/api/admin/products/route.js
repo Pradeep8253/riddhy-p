@@ -5,6 +5,7 @@ import { Product, Variant, Category, Brand, Warehouse, Inventory, StockMovement,
 import { requireAdmin } from '@/lib/roles';
 import { ok, fail, jsonBody } from '@/lib/http';
 import { revalidateTag } from 'next/cache';
+import { getCompanySettings } from '@/lib/company-settings';
 
 const productSchema = z.object({
   name: z.string().min(2).max(160),
@@ -425,7 +426,8 @@ export async function POST(request) {
         );
       }
 
-      const warehouseCode = process.env.DEFAULT_WAREHOUSE_CODE || 'DELHI-01';
+      const company = await getCompanySettings();
+      const warehouseCode = company.defaultWarehouseCode || 'DELHI-01';
       const warehouse = await Warehouse.findOneAndUpdate(
         { code: warehouseCode },
         { $setOnInsert: { code: warehouseCode, name: 'Default fulfilment hub', active: true } },
@@ -522,7 +524,8 @@ export async function PATCH(request) {
       await variant.save();
 
       if (stock !== undefined) {
-        const warehouseCode = process.env.DEFAULT_WAREHOUSE_CODE || 'DELHI-01';
+        const company = await getCompanySettings();
+        const warehouseCode = company.defaultWarehouseCode || 'DELHI-01';
         const warehouse = await Warehouse.findOne({ code: warehouseCode });
         if (warehouse) {
           const oldInv = await Inventory.findOne({ variantId: variant._id, warehouseId: warehouse._id });

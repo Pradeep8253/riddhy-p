@@ -359,33 +359,48 @@
 
 /* CTA */
 .ctaBand {
-  padding: clamp(70px, 9vw, 110px) 0;
-  background: var(--rf-forest-deep);
-  color: #ffffff;
+  padding: clamp(64px, 8vw, 108px) 0;
+  background: linear-gradient(180deg, var(--rf-cream-50) 0%, var(--rf-cream-100) 100%);
+  border-top: 1px solid var(--rf-line);
+}
+
+.ctaCard {
+  position: relative;
+  overflow: hidden;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(48px, 6vw, 76px) clamp(24px, 5vw, 64px);
+  background: linear-gradient(145deg, #fffefa 0%, #f9f4ea 100%);
+  border: 1.5px solid rgba(224, 160, 64, 0.4);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 60px -20px rgba(16, 38, 26, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
   text-align: center;
 }
 
 .ctaContent {
   max-width: 640px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .ctaContent h2 {
   margin: 14px 0 12px;
-  font: 500 clamp(36px, 6vw, 70px) / 1 var(--font-display);
-  letter-spacing: -0.05em;
-  color: #fffefa;
+  font: 500 clamp(34px, 5.5vw, 58px) / 1.08 var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--rf-forest-deep);
 }
 
 .ctaContent h2 em {
-  color: var(--rf-gold-400);
+  color: var(--rf-gold-600);
   font-style: italic;
 }
 
 .ctaContent p {
-  color: #cad3cb;
+  color: var(--rf-charcoal-600);
   font-size: 15px;
-  margin-bottom: 32px;
+  line-height: 1.7;
+  margin: 0 auto 28px;
 }
 
 .ctaButtons {
@@ -396,45 +411,48 @@
   gap: 16px;
 }
 
+.ctaButtonsGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+}
+
 .ctaPrimary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 52px;
-  padding: 0 32px;
+  min-height: 50px;
+  padding: 0 28px;
   border-radius: 999px;
-  background: var(--rf-gold-500);
-  color: var(--rf-forest-deep);
+  background: var(--rf-forest-deep);
+  color: #fffefa;
   font-size: 13px;
   font-weight: 800;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(16, 38, 26, 0.18);
 }
 
 .ctaPrimary:hover {
-  background: var(--rf-gold-400);
+  background: #193826;
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 38, 26, 0.26);
 }
 
 .ctaSecondary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 52px;
-  padding: 0 28px;
+  min-height: 50px;
+  padding: 0 26px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1.5px solid var(--rf-forest-deep);
   background: transparent;
-  color: #ffffff;
+  color: var(--rf-forest-deep);
   font-size: 13px;
   font-weight: 700;
-}
-
-.ctaButtonsGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  justify-content: center;
-  margin-top: 32px;
 }
 
 .ctaGold {
@@ -448,12 +466,14 @@
   color: var(--rf-forest-deep);
   font-size: 13px;
   font-weight: 800;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(224, 160, 64, 0.25);
 }
 
 .ctaGold:hover {
   background: var(--rf-gold-400);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(224, 160, 64, 0.35);
 }
 
 .ctaWhatsApp {
@@ -461,13 +481,14 @@
   align-items: center;
   gap: 8px;
   min-height: 50px;
-  padding: 0 24px;
+  padding: 0 22px;
   border-radius: 999px;
   background: #25d366;
   color: #ffffff;
   font-size: 13px;
   font-weight: 800;
   transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.22);
 }
 
 .ctaWhatsApp:hover {
@@ -480,14 +501,19 @@
   align-items: center;
   gap: 8px;
   min-height: 50px;
-  padding: 0 24px;
+  padding: 0 22px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  border: 1.5px solid var(--rf-forest-deep);
+  background: transparent;
+  color: var(--rf-forest-deep);
   font-size: 13px;
   font-weight: 700;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.ctaCall:hover {
+  background: rgba(16, 38, 26, 0.06);
+  transform: translateY(-2px);
 }
 
 .ctaCall:hover {

@@ -1,0 +1,281 @@
+.wrapper {
+  max-width: 860px;
+  margin: 40px auto 80px;
+  padding: 0 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.header h1 {
+  font: 500 clamp(32px, 4vw, 44px) var(--font-display);
+  color: var(--rf-forest-deep);
+  margin: 8px 0 12px;
+  letter-spacing: -0.04em;
+}
+
+.header p {
+  color: #617064;
+  font-size: 14px;
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.formCard {
+  background: #fffefa;
+  border: 1px solid var(--rf-line);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  margin-bottom: 32px;
+}
+
+.trackForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--rf-forest-deep);
+}
+
+.input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid rgba(31, 95, 46, 0.2);
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 13px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--rf-gold-600);
+  box-shadow: 0 0 0 3px rgba(224, 160, 64, 0.15);
+}
+
+.trackBtn {
+  min-height: 46px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--rf-green-800);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.trackBtn:hover:not(:disabled) {
+  background: #144719;
+  transform: translateY(-1px);
+}
+
+.errorAlert {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fdeeea;
+  color: #c62828;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.resultCard {
+  background: #fffefa;
+  border: 1px solid var(--rf-line);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+}
+
+.resultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--rf-line);
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: #eaf5ec;
+  color: #1b5e20;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.resultHeader h2 {
+  margin: 0 0 4px;
+  font: 500 24px var(--font-display);
+  color: var(--rf-forest-deep);
+}
+
+.resultHeader p {
+  margin: 0;
+  font-size: 12px;
+  color: #687269;
+}
+
+.carrierInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #556257;
+  text-align: right;
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  position: relative;
+}
+
+.stepDot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f0f3f1;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.stepCompleted .stepDot {
+  background: #1b5e20;
+  color: #ffffff;
+}
+
+.stepCurrent .stepDot {
+  background: #d99726;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(217, 151, 38, 0.25);
+}
+
+.stepText b {
+  display: block;
+  font-size: 11px;
+  color: var(--rf-forest-deep);
+  margin-bottom: 2px;
+}
+
+.stepText span {
+  display: block;
+  font-size: 9px;
+  color: #7b857c;
+}
+
+.itemsSection {
+  background: #fbfbf8;
+  border: 1px solid var(--rf-line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+}
+
+.itemsSection h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--rf-forest-deep);
+}
+
+.itemsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #333;
+}
+
+.helpFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  border-top: 1px solid var(--rf-line);
+  font-size: 12px;
+  color: #617064;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.helpLink {
+  color: #1b5e20;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .trackForm {
+    grid-template-columns: 1fr;
+  }
+
+  .carrierInfo {
+    text-align: left;
+  }
+
+  .stepper {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .stepItem {
+    flex-direction: row;
+    text-align: left;
+  }
+}

@@ -6,6 +6,26 @@ import { ok, fail, jsonBody } from '@/lib/http';
 import { siteConfig } from '@/lib/site-config';
 
 const settingsSchema = z.object({
+  company: z.object({
+    legalName: z.string().optional().default('RF Riddhy Furniture & Appliances Pvt Ltd'),
+    tradeName: z.string().optional().default('RF Riddhy'),
+    gstin: z.string().optional().default('07AAAAA0000A1Z5'),
+    pan: z.string().optional().default('AAAAA0000A'),
+    state: z.string().optional().default('Delhi'),
+    stateCode: z.string().optional().default('07'),
+    addressLine1: z.string().optional().default('Plot 42, Okhla Industrial Area Phase III'),
+    addressLine2: z.string().optional().default(''),
+    city: z.string().optional().default('New Delhi'),
+    pincode: z.string().optional().default('110020'),
+    phone: z.string().optional().default('+91 98765 43210'),
+    email: z.string().optional().default('billing@rfriddhy.com'),
+    invoicePrefix: z.string().optional().default('RF'),
+    creditNotePrefix: z.string().optional().default('RF/CN'),
+    invoiceGenerationTiming: z.enum(['paid', 'dispatch']).optional().default('paid'),
+    warrantyStartsOn: z.enum(['purchase', 'delivery', 'installation']).optional().default('purchase'),
+    defaultWarehouseCode: z.string().optional().default('DELHI-01'),
+    currency: z.string().optional().default('INR')
+  }).optional(),
   contact: z.object({
     phone: z.string().optional().default(''),
     whatsapp: z.string().optional().default(''),
@@ -43,6 +63,26 @@ const settingsSchema = z.object({
 
 function getFallbackSettings() {
   return {
+    company: {
+      legalName: process.env.COMPANY_LEGAL_NAME || 'RF Riddhy Furniture & Appliances Pvt Ltd',
+      tradeName: process.env.COMPANY_TRADE_NAME || 'RF Riddhy',
+      gstin: process.env.COMPANY_GSTIN || '07AAAAA0000A1Z5',
+      pan: process.env.COMPANY_PAN || 'AAAAA0000A',
+      state: process.env.COMPANY_STATE || 'Delhi',
+      stateCode: process.env.COMPANY_STATE_CODE || '07',
+      addressLine1: process.env.COMPANY_ADDRESS_LINE1 || 'Plot 42, Okhla Industrial Area Phase III',
+      addressLine2: '',
+      city: process.env.COMPANY_CITY || 'New Delhi',
+      pincode: process.env.COMPANY_PINCODE || '110020',
+      phone: process.env.COMPANY_PHONE || '+91 98765 43210',
+      email: process.env.COMPANY_EMAIL || 'billing@rfriddhy.com',
+      invoicePrefix: process.env.INVOICE_PREFIX || 'RF',
+      creditNotePrefix: 'RF/CN',
+      invoiceGenerationTiming: process.env.INVOICE_TIMING || 'paid',
+      warrantyStartsOn: 'purchase',
+      defaultWarehouseCode: process.env.DEFAULT_WAREHOUSE_CODE || 'DELHI-01',
+      currency: process.env.STORE_CURRENCY || 'INR'
+    },
     contact: {
       phone: siteConfig.contact.phone || '',
       whatsapp: siteConfig.contact.whatsapp || '',
@@ -80,7 +120,7 @@ function getFallbackSettings() {
 }
 
 export async function GET() {
-  const actor = await requireAdmin(new Set(['admin', 'super-admin', 'support', 'marketing']));
+  const actor = await requireAdmin(new Set(['admin', 'super-admin', 'support', 'marketing', 'finance']));
   if (!actor) return fail('Admin permission required.', 403);
 
   const fallback = getFallbackSettings();
@@ -99,6 +139,7 @@ export async function GET() {
 
     // Merge doc with fallback to ensure all keys exist
     const merged = {
+      company: { ...fallback.company, ...(doc.company || {}) },
       contact: { ...fallback.contact, ...(doc.contact || {}) },
       showroom: { ...fallback.showroom, ...(doc.showroom || {}) },
       consultation: { ...fallback.consultation, ...(doc.consultation || {}) },
@@ -158,6 +199,7 @@ export async function POST(request) {
 
   const updatePayload = {
     key: 'site_config',
+    company: data.company || {},
     contact: data.contact || {},
     showroom: data.showroom || {},
     consultation: data.consultation || {},

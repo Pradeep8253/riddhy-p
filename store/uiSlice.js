@@ -12,7 +12,16 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     setLocale(state, { payload }) {
-      state.locale = payload === 'hi' ? 'hi' : 'en';
+      const next = payload === 'hi' ? 'hi' : 'en';
+      state.locale = next;
+      if (typeof window !== 'undefined') {
+        try {
+          window.localStorage.setItem('rf-locale', next);
+          document.cookie = `rf-locale=${next}; path=/; max-age=31536000; SameSite=Lax`;
+        } catch {
+          // Ignore storage quota/permission issues
+        }
+      }
     },
     setLiteMode(state, { payload }) {
       state.liteMode = Boolean(payload);

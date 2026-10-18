@@ -1,10 +1,21 @@
-import AdminSettings from '@/components/admin/AdminSettings';
+import { Suspense } from "react";
+import AdminSettings from "@/components/admin/AdminSettings";
 
 export const metadata = {
-  title: 'Store Settings & Brand Proof — Operations',
-  robots: { index: false, follow: false }
+  title: "Company & Store Settings — Operations CRM",
+  robots: { index: false, follow: false },
 };
 
 export default function AdminSettingsPage() {
-  return <AdminSettings />;
+  return (
+    <Suspense
+      fallback={
+        <div style={{ padding: 32, color: "#687269", fontStyle: "italic" }}>
+          Loading settings...
+        </div>
+      }
+    >
+      <AdminSettings />
+    </Suspense>
+  );
 }

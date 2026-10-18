@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
   TrendingUp,
   TrendingDown,
-  DollarSign,
+  CreditCard,
   ShoppingCart,
   Users,
   AlertTriangle,
@@ -14,272 +14,840 @@ import {
   Package,
   Layers,
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  IndianRupee,
+  Receipt,
+  FileCheck,
+  CheckCircle2,
+  XCircle,
+  Truck,
+  RotateCcw
 } from 'lucide-react';
-import { formatINR } from '@/lib/demo-data';
 import styles from './AdminDashboard.module.css';
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0
+  }).format(amount || 0);
+}
+
+function timeAgo(dateString) {
+  if (!dateString) return 'recently';
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffSec = Math.floor((now.getTime() - past.getTime()) / 1000);
+
+  if (diffSec < 60) return `${Math.max(1, diffSec)}s ago`;
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDays = Math.floor(diffHr / 24);
+  return `${diffDays}d ago`;
+}
 
 export default function AdminDashboard() {
   const [range, setRange] = useState('30d');
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
 
-  const loadData = async (selectedRange = range) => {
+  const loadData = async (selectedRange = range, from = customFrom, to = customTo) => {
     setLoading(true);
+    setRefreshing(true);
+    setError('');
     try {
-      const res = await fetch(`/api/admin/reports?range=${selectedRange}`, { cache: 'no-store' });
+      let query = `/api/admin/dashboard?range=${selectedRange}`;
+      if (selectedRange === 'custom') {
+        if (from) query += `&from=${encodeURIComponent(from)}`;
+        if (to) query += `&to=${encodeURIComponent(to)}`;
+      }
+
+      const res = await fetch(query, { cache: 'no-store' });
       const json = await res.json();
       if (res.ok && json.success) {
         setData(json.data);
       } else {
-        setError(json.error?.message || 'Database live reports unavailable.');
+        setError(json.error?.message || 'Dashboard telemetry unavailable.');
       }
     } catch {
-      setError('Database live reports unavailable.');
+      setError('Could not connect to operations telemetry database.');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
   useEffect(() => {
-    loadData(range);
+    if (range !== 'custom') {
+      loadData(range);
+    }
   }, [range]);
 
-  const kpis = data?.kpis || {
-    revenue: 0,
-    revenueChange: 0,
-    orders: 0,
-    ordersChange: 0,
-    aov: 0,
-    newCustomers: 0,
-    pendingPayments: 0,
-    lowStockCount: 0,
-    expiringWarranties: 0,
-    openClaims: 0
+  const handleCustomApply = (e) => {
+    e.preventDefault();
+    if (customFrom) {
+      loadData('custom', customFrom, customTo);
+    }
   };
 
-  const trend = data?.revenueTrend || [];
-  const maxTrend = Math.max(1, ...trend.map((t) => t.revenue || 0));
-  const topProducts = data?.topProducts || [];
-  const recentActivity = data?.recentActivity || [];
+  const kpis = data?.kpis || {};
+  const payments = data?.payments || {};
+  const charts = data?.charts || {};
+  const widgets = data?.widgets || {};
+
+  const dailyTrend = charts.dailyTrend || [];
+  const maxTrend = useMemo(() => {
+    return Math.max(1, ...dailyTrend.map((t) => t.total || 0));
+  }, [dailyTrend]);
 
   return (
     <div className={styles.page}>
-      {/* Header */}
-      <div className={styles.title}>
-        <div>
-          <span className="kicker" style={{ fontSize: '11px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase' }}>
-            RF Riddhy · Operations CRM
-          </span>
+      {/* 1. Header & Controls */}
+      <header className={styles.header}>
+        <div className={styles.headerLeft}>
+          <span className={styles.kicker}>RF Riddhy · Operations CRM</span>
           <h1>Executive Dashboard.</h1>
-          <p>Real-time commerce telemetry, order pipelines, statutory revenue metrics, and inventory alerts.</p>
+          <p>
+            Real-time commerce telemetry, automated payment reconciliations, GST analytics, and inventory alerts.
+          </p>
         </div>
 
-        {/* Range Selector */}
-        <div style={{ display: 'flex', gap: '6px', background: '#f4efe7', padding: '4px', borderRadius: '8px' }}>
-          {['today', '7d', '30d'].map((r) => (
-            <button
-              key={r}
-              type="button"
-              onClick={() => setRange(r)}
-              style={{
-                border: 'none',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                background: range === r ? '#1b5e20' : 'transparent',
-                color: range === r ? '#ffffff' : '#4a574e',
-                transition: 'all 0.15s'
-              }}
-            >
-              {r === 'today' ? 'Today' : r === '7d' ? '7 Days' : '30 Days'}
-            </button>
-          ))}
+        <div className={styles.controls}>
+          <div className={styles.rangeGroup}>
+            {[
+              { id: 'today', label: 'Today' },
+              { id: '7d', label: '7 Days' },
+              { id: '30d', label: '30 Days' },
+              { id: 'custom', label: 'Custom' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                className={`${styles.rangeBtn} ${range === tab.id ? styles.rangeBtnActive : ''}`}
+                onClick={() => setRange(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {range === 'custom' && (
+            <form onSubmit={handleCustomApply} className={styles.customDateBar}>
+              <input
+                type="date"
+                value={customFrom}
+                onChange={(e) => setCustomFrom(e.target.value)}
+                required
+              />
+              <span>to</span>
+              <input
+                type="date"
+                value={customTo}
+                onChange={(e) => setCustomTo(e.target.value)}
+              />
+              <button type="submit" className={styles.rangeBtn} style={{ background: '#1b5e20', color: '#fff' }}>
+                Apply
+              </button>
+            </form>
+          )}
+
+          <button
+            type="button"
+            className={styles.refreshBtn}
+            onClick={() => loadData(range, customFrom, customTo)}
+            disabled={refreshing}
+            title="Refresh dashboard metrics"
+          >
+            <RefreshCw size={14} className={refreshing ? styles.spinning : ''} />
+            <span>Refresh</span>
+          </button>
         </div>
-      </div>
+      </header>
 
-      {error && <div className={styles.notice}>{error}</div>}
+      {/* Error Banner */}
+      {error && (
+        <div style={{ background: '#fee2e2', border: '1px solid #f87171', color: '#991b1b', padding: '12px 16px', borderRadius: '10px', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span>{error}</span>
+          <button type="button" onClick={() => loadData(range)} style={{ background: 'transparent', border: 'none', color: '#991b1b', fontWeight: 800, cursor: 'pointer' }}>
+            Retry
+          </button>
+        </div>
+      )}
 
-      {/* 8 Primary CRM KPI Cards */}
-      <div className={styles.metrics} style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
-        <article>
-          <span>Net Revenue</span>
-          <b>{formatINR(kpis.revenue)}</b>
-          <small style={{ color: kpis.revenueChange >= 0 ? '#1b5e20' : '#b71c1c', display: 'flex', alignItems: 'center', gap: '3px' }}>
-            {kpis.revenueChange >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-            <span>{kpis.revenueChange >= 0 ? `+${kpis.revenueChange}%` : `${kpis.revenueChange}%`} vs prev period</span>
-          </small>
+      {/* 2. Primary KPI Cards Grid */}
+      <section className={styles.kpiGrid}>
+        {/* Net Revenue */}
+        <article className={styles.kpiCard}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Net Revenue</span>
+            <div className={styles.kpiIconWrap}><IndianRupee size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 120 }} /> : formatCurrency(kpis.netRevenue)}
+          </div>
+          <div className={styles.kpiFooter}>
+            {kpis.revenueChange >= 0 ? (
+              <span className={styles.kpiPillPositive}><TrendingUp size={11} /> +{kpis.revenueChange}%</span>
+            ) : (
+              <span className={styles.kpiPillNegative}><TrendingDown size={11} /> {kpis.revenueChange}%</span>
+            )}
+            <span>vs previous period</span>
+          </div>
         </article>
 
-        <article>
-          <span>Total Orders</span>
-          <b>{kpis.orders}</b>
-          <small style={{ color: kpis.ordersChange >= 0 ? '#1b5e20' : '#b71c1c', display: 'flex', alignItems: 'center', gap: '3px' }}>
-            {kpis.ordersChange >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-            <span>{kpis.ordersChange >= 0 ? `+${kpis.ordersChange}%` : `${kpis.ordersChange}%`} volume</span>
-          </small>
+        {/* Total Orders */}
+        <article className={styles.kpiCard}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Total Orders</span>
+            <div className={styles.kpiIconWrap}><ShoppingCart size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 80 }} /> : (kpis.totalOrders || 0)}
+          </div>
+          <div className={styles.kpiFooter}>
+            {kpis.ordersChange >= 0 ? (
+              <span className={styles.kpiPillPositive}><TrendingUp size={11} /> +{kpis.ordersChange}%</span>
+            ) : (
+              <span className={styles.kpiPillNegative}><TrendingDown size={11} /> {kpis.ordersChange}%</span>
+            )}
+            <span>vs previous period</span>
+          </div>
         </article>
 
-        <article>
-          <span>Average Order Value</span>
-          <b>{formatINR(kpis.aov)}</b>
-          <small>Per paid transaction</small>
+        {/* Average Order Value (AOV) */}
+        <article className={styles.kpiCard}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Avg. Order Value</span>
+            <div className={styles.kpiIconWrap}><Receipt size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 100 }} /> : formatCurrency(kpis.aov)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span>per paid order</span>
+          </div>
         </article>
 
-        <article>
-          <span>Unique Customers</span>
-          <b>{kpis.newCustomers}</b>
-          <small>Active buyers in window</small>
+        {/* Unique Customers */}
+        <article className={styles.kpiCard}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Unique Customers</span>
+            <div className={styles.kpiIconWrap}><Users size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 70 }} /> : (kpis.uniqueCustomers || 0)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span>verified households</span>
+          </div>
         </article>
 
-        <article>
-          <span>Pending Payments</span>
-          <b style={{ color: kpis.pendingPayments > 0 ? '#b2533e' : '#1b5e20' }}>{kpis.pendingPayments}</b>
-          <small>Uncaptured checkout attempts</small>
+        {/* Payment Received */}
+        <article className={styles.kpiCard} style={{ borderLeft: '4px solid #1b5e20' }}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Payment Received</span>
+            <div className={styles.kpiIconWrap} style={{ background: '#e8f5e9', color: '#1b5e20' }}><CheckCircle2 size={16} /></div>
+          </div>
+          <div className={styles.kpiValue} style={{ color: '#1b5e20' }}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 120 }} /> : formatCurrency(kpis.paymentReceived)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span>captured via Razorpay & Offline</span>
+          </div>
         </article>
 
-        <article>
-          <span>Low-Stock Alerts</span>
-          <b style={{ color: kpis.lowStockCount > 0 ? '#c62828' : '#1b5e20' }}>{kpis.lowStockCount}</b>
-          <small>≤ 5 units remaining</small>
+        {/* Payment Pending */}
+        <article className={styles.kpiCard} style={{ borderLeft: '4px solid #f59e0b' }}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Payment Pending</span>
+            <div className={styles.kpiIconWrap} style={{ background: '#fef3c7', color: '#b45309' }}><Clock size={16} /></div>
+          </div>
+          <div className={styles.kpiValue} style={{ color: '#b45309' }}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 110 }} /> : formatCurrency(kpis.paymentPending)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span>awaiting settlement or COD</span>
+          </div>
         </article>
 
-        <article>
-          <span>Expiring Warranties</span>
-          <b style={{ color: kpis.expiringWarranties > 0 ? '#d97706' : '#1b5e20' }}>{kpis.expiringWarranties}</b>
-          <small>Within next 30 days</small>
+        {/* Refunds Issued */}
+        <article className={styles.kpiCard}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Refunds Issued</span>
+            <div className={styles.kpiIconWrap} style={{ background: '#fee2e2', color: '#b91c1c' }}><RotateCcw size={16} /></div>
+          </div>
+          <div className={styles.kpiValue} style={{ color: '#b91c1c' }}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 90 }} /> : formatCurrency(kpis.refundsIssued)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span>processed claims & returns</span>
+          </div>
         </article>
 
-        <article>
-          <span>Open Service Claims</span>
-          <b style={{ color: kpis.openClaims > 0 ? '#c62828' : '#1b5e20' }}>{kpis.openClaims}</b>
-          <small>Care desk SLA queue</small>
+        {/* GST Collected */}
+        <article className={styles.kpiCard}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>GST Collected</span>
+            <div className={styles.kpiIconWrap}><FileCheck size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 100 }} /> : formatCurrency(kpis.gstCollected)}
+          </div>
+          <div className={styles.kpiSplit}>
+            CGST: {formatCurrency(kpis.gstSplit?.cgst)} · SGST: {formatCurrency(kpis.gstSplit?.sgst)} · IGST: {formatCurrency(kpis.gstSplit?.igst)}
+          </div>
         </article>
-      </div>
 
-      {/* Main Grid: Revenue Trend & Top Products / Activity Feed */}
-      <div className={styles.columns}>
-        <section className={styles.panel}>
+        {/* Failed Payments */}
+        <article className={styles.kpiCard}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Failed Payments</span>
+            <div className={styles.kpiIconWrap} style={{ background: '#fef2f2', color: '#ef4444' }}><XCircle size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 50 }} /> : (kpis.failedPaymentsCount || 0)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span>abandoned gateway checkouts</span>
+          </div>
+        </article>
+
+        {/* Low Stock Alerts */}
+        <Link href="/admin/inventory" className={styles.kpiCard} style={{ textDecoration: 'none' }}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Low Stock Items</span>
+            <div className={styles.kpiIconWrap} style={{ background: '#fff7ed', color: '#ea580c' }}><Package size={16} /></div>
+          </div>
+          <div className={styles.kpiValue} style={{ color: '#ea580c' }}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 50 }} /> : (kpis.lowStockCount || 0)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span style={{ color: '#ea580c', fontWeight: 700 }}>Review inventory →</span>
+          </div>
+        </Link>
+
+        {/* Expiring Warranties */}
+        <Link href="/admin/warranty" className={styles.kpiCard} style={{ textDecoration: 'none' }}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Expiring Warranties</span>
+            <div className={styles.kpiIconWrap}><Clock size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 50 }} /> : (kpis.expiringWarranties || 0)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span>next 30 days renewal</span>
+          </div>
+        </Link>
+
+        {/* Open Claims */}
+        <Link href="/admin/warranty" className={styles.kpiCard} style={{ textDecoration: 'none' }}>
+          <div className={styles.kpiHead}>
+            <span className={styles.kpiTitle}>Open Service Claims</span>
+            <div className={styles.kpiIconWrap}><ShieldCheck size={16} /></div>
+          </div>
+          <div className={styles.kpiValue}>
+            {loading ? <div className={styles.skeleton} style={{ height: 32, width: 50 }} /> : (kpis.openClaims || 0)}
+          </div>
+          <div className={styles.kpiFooter}>
+            <span style={{ color: '#1b5e20', fontWeight: 700 }}>Manage claims →</span>
+          </div>
+        </Link>
+      </section>
+
+      {/* 3. Payments Section: Breakdown & Outstanding Table */}
+      <section className={styles.paymentsSection}>
+        {/* Left: Settlement Distribution */}
+        <div className={styles.panel} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div>
+            <div className={styles.panelHead}>
+              <div>
+                <h2>Payment Settlements</h2>
+                <p>Volume distribution by status</p>
+              </div>
+            </div>
+
+            <div className={styles.paymentBreakdownCard}>
+              <div className={styles.progressMulti}>
+                <div
+                  className={styles.progressBarReceived}
+                  style={{ width: `${payments.breakdown?.received?.pct || 0}%` }}
+                  title={`Received: ${formatCurrency(payments.breakdown?.received?.amount)}`}
+                />
+                <div
+                  className={styles.progressBarPending}
+                  style={{ width: `${payments.breakdown?.pending?.pct || 0}%` }}
+                  title={`Pending: ${formatCurrency(payments.breakdown?.pending?.amount)}`}
+                />
+                <div
+                  className={styles.progressBarRefunded}
+                  style={{ width: `${payments.breakdown?.refunded?.pct || 0}%` }}
+                  title={`Refunded: ${formatCurrency(payments.breakdown?.refunded?.amount)}`}
+                />
+              </div>
+
+              <div className={styles.legendList}>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendLabel}>
+                    <span className={styles.legendDot} style={{ background: '#1b5e20' }} />
+                    Received ({payments.breakdown?.received?.pct || 0}%)
+                  </span>
+                  <span className={styles.legendValue}>{formatCurrency(payments.breakdown?.received?.amount)}</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendLabel}>
+                    <span className={styles.legendDot} style={{ background: '#f59e0b' }} />
+                    Pending ({payments.breakdown?.pending?.pct || 0}%)
+                  </span>
+                  <span className={styles.legendValue}>{formatCurrency(payments.breakdown?.pending?.amount)}</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.legendLabel}>
+                    <span className={styles.legendDot} style={{ background: '#ef4444' }} />
+                    Refunded ({payments.breakdown?.refunded?.pct || 0}%)
+                  </span>
+                  <span className={styles.legendValue}>{formatCurrency(payments.breakdown?.refunded?.amount)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.paymentMethodCards}>
+              {(payments.methods || []).map((pm) => (
+                <div key={pm.method} className={styles.methodCard}>
+                  <b>{pm.label}</b>
+                  <span>{formatCurrency(pm.amount)}</span>
+                  <small>{pm.count} orders</small>
+                </div>
+              ))}
+              <div className={styles.methodCard} style={{ background: '#fffbeb', borderColor: '#fde68a' }}>
+                <b style={{ color: '#b45309' }}>COD To Collect</b>
+                <span style={{ color: '#b45309' }}>{formatCurrency(payments.cod?.pendingAmount)}</span>
+                <small>{payments.cod?.pendingCount || 0} open dispatches</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Outstanding & Pending Payments Table */}
+        <div className={styles.panel}>
           <div className={styles.panelHead}>
             <div>
-              <span className="kicker">Revenue Telemetry</span>
-              <h2>Daily Order Revenue Trend</h2>
+              <h2>Pending & Outstanding Payments</h2>
+              <p>Top orders awaiting full customer payment or COD clearance</p>
             </div>
-            <Link href="/admin/orders">
-              View all orders <ArrowRight size={13} style={{ display: 'inline', verticalAlign: 'middle' }} />
+            <Link href="/admin/orders" className={styles.panelLink}>
+              View All Orders <ArrowRight size={14} />
             </Link>
           </div>
 
-          <div className={styles.chart}>
-            {trend.length > 0 ? (
-              trend.map((item, idx) => {
-                const heightPercent = Math.max(8, Math.round((item.revenue / maxTrend) * 100));
-                return (
-                  <div
-                    key={idx}
-                    title={`${item.date}: ${formatINR(item.revenue)}`}
-                    style={{ height: `${heightPercent}%` }}
-                  />
-                );
-              })
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Order No</th>
+                  <th>Customer</th>
+                  <th>Order Total</th>
+                  <th>Paid</th>
+                  <th>Balance Due</th>
+                  <th>Age</th>
+                  <th>Method</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(payments.pendingPayments || []).length > 0 ? (
+                  payments.pendingPayments.map((row) => (
+                    <tr key={row.id}>
+                      <td>
+                        <Link href={`/admin/orders?orderNumber=${row.orderNumber}`} style={{ color: '#1b5e20', fontWeight: 800, textDecoration: 'none' }}>
+                          {row.orderNumber}
+                        </Link>
+                      </td>
+                      <td>
+                        <b style={{ display: 'block', fontSize: '12px' }}>{row.customer}</b>
+                        <small style={{ color: '#7a867c' }}>{row.phone}</small>
+                      </td>
+                      <td><b>{formatCurrency(row.total)}</b></td>
+                      <td style={{ color: '#1b5e20' }}>{formatCurrency(row.paid)}</td>
+                      <td>
+                        <strong style={{ color: '#b45309' }}>{formatCurrency(row.balance)}</strong>
+                      </td>
+                      <td>
+                        <span className={`${styles.ageChip} ${row.ageInDays > 7 ? styles.ageChipOld : ''}`}>
+                          {row.ageInDays === 0 ? 'Today' : `${row.ageInDays}d`}
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{ textTransform: 'uppercase', fontSize: '10px', fontWeight: 700, color: '#556257' }}>
+                          {row.paymentMethod}
+                        </span>
+                      </td>
+                      <td>
+                        <Link href={`/admin/orders?orderNumber=${row.orderNumber}`} style={{ color: '#1b5e20', fontWeight: 700, fontSize: '11px', textDecoration: 'none' }}>
+                          View Order
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} style={{ textAlign: 'center', padding: '30px', color: '#6d786f' }}>
+                      No pending payments in this period. All invoices settled!
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Analytics & Charts Grid */}
+      <section className={styles.analyticsGrid}>
+        {/* Left Column: Daily Trend & Pipeline Funnel */}
+        <div style={{ display: 'grid', gap: '20px' }}>
+          {/* Daily Revenue Trend Bar Chart */}
+          <div className={styles.panel}>
+            <div className={styles.panelHead}>
+              <div>
+                <h2>Daily Revenue Trend</h2>
+                <p>Stacked daily settlements (Paid vs Pending)</p>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', fontSize: '11px', fontWeight: 700 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#1b5e20' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 2, background: '#1b5e20' }} /> Paid
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#f59e0b' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 2, background: '#f59e0b' }} /> Pending
+                </span>
+              </div>
+            </div>
+
+            {dailyTrend.length > 0 ? (
+              <div className={styles.chartContainer}>
+                {dailyTrend.map((t, idx) => {
+                  const totalHeightPct = Math.min(100, Math.max(8, Math.round((t.total / maxTrend) * 100)));
+                  const receivedRatio = t.total > 0 ? t.received / t.total : 1;
+                  const receivedPartHeight = Math.round(totalHeightPct * receivedRatio);
+                  const pendingPartHeight = Math.max(0, totalHeightPct - receivedPartHeight);
+
+                  return (
+                    <div key={idx} className={styles.chartBarCol}>
+                      <div className={styles.chartTooltip}>
+                        <div>{t.date}</div>
+                        <div>Paid: {formatCurrency(t.received)}</div>
+                        <div>Pending: {formatCurrency(t.pending)}</div>
+                        <div>Total: {formatCurrency(t.total)}</div>
+                      </div>
+
+                      <div className={styles.chartStackedBar} style={{ height: `${totalHeightPct}%` }}>
+                        <div className={styles.barPartReceived} style={{ height: `${(receivedPartHeight / totalHeightPct) * 100}%` }} />
+                        <div className={styles.barPartPending} style={{ height: `${(pendingPartHeight / totalHeightPct) * 100}%` }} />
+                      </div>
+
+                      <span className={styles.chartDateLabel}>
+                        {dailyTrend.length <= 14 ? t.date : idx % Math.ceil(dailyTrend.length / 8) === 0 ? t.date : ''}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
-              Array.from({ length: 14 }, (_, i) => (
-                <div key={i} style={{ height: `${25 + ((i * 17) % 65)}%` }} />
-              ))
+              <div className={styles.emptyState}>
+                <h3>No trend telemetry yet.</h3>
+                <p>Orders recorded within the selected period will render your daily revenue graph automatically.</p>
+              </div>
             )}
-            <span>Daily captured gross (INR)</span>
           </div>
 
-          {/* Top Products In Period */}
-          <div style={{ marginTop: '24px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#1b2e23', marginBottom: '12px' }}>
-              Top Products by Sales
-            </h3>
-            {topProducts.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {topProducts.map((p, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '8px 12px',
-                      background: '#faf8f5',
-                      borderRadius: '8px',
-                      fontSize: '12px'
-                    }}
-                  >
-                    <div>
-                      <strong>{p.name}</strong>
-                      <span style={{ color: '#727e74', marginLeft: '6px' }}>({p.sku})</span>
+          {/* Orders by Status Funnel */}
+          <div className={styles.panel}>
+            <div className={styles.panelHead}>
+              <div>
+                <h2>Order Pipeline Funnel</h2>
+                <p>Fulfillment lifecycle progression</p>
+              </div>
+            </div>
+
+            <div className={styles.pipelineWrap}>
+              {[
+                { key: 'placed', label: '1. Order Placed / Cart Paid', count: charts.pipeline?.placed || 0 },
+                { key: 'confirmed', label: '2. Confirmed & Packed', count: charts.pipeline?.confirmed || 0 },
+                { key: 'shipped', label: '3. Shipped & Out for Delivery', count: charts.pipeline?.shipped || 0 },
+                { key: 'delivered', label: '4. Delivered & Installed', count: charts.pipeline?.delivered || 0 },
+                { key: 'returned', label: '5. Return / Refund Requested', count: charts.pipeline?.returned || 0 }
+              ].map((step) => {
+                const maxStep = Math.max(1, charts.pipeline?.placed || 1, charts.pipeline?.delivered || 1);
+                const pct = Math.min(100, Math.max(6, Math.round((step.count / maxStep) * 100)));
+
+                return (
+                  <div key={step.key} className={styles.pipelineStep}>
+                    <div className={styles.pipelineStepHead}>
+                      <b>{step.label}</b>
+                      <span>{step.count} orders</span>
                     </div>
-                    <div>
-                      <span style={{ marginRight: '12px', color: '#68736a' }}>{p.units} units</span>
-                      <strong style={{ color: '#1b5e20' }}>{formatINR(p.revenue)}</strong>
+                    <div className={styles.pipelineTrack}>
+                      <div className={styles.pipelineFill} style={{ width: `${pct}%` }} />
                     </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Top Products, Categories, Geo & GST */}
+        <div style={{ display: 'grid', gap: '20px' }}>
+          {/* Top 5 Selling Products */}
+          <div className={styles.panel}>
+            <div className={styles.panelHead}>
+              <div>
+                <h2>Top 5 Selling Products</h2>
+                <p>Ranked by revenue contribution</p>
+              </div>
+              <Link href="/admin/catalogue" className={styles.panelLink}>
+                Catalogue <ArrowRight size={14} />
+              </Link>
+            </div>
+
+            {(charts.topProducts || []).length > 0 ? (
+              <div className={styles.rankedList}>
+                {charts.topProducts.map((p, idx) => {
+                  const maxProd = Math.max(1, charts.topProducts[0]?.revenue || 1);
+                  const barPct = Math.round((p.revenue / maxProd) * 100);
+
+                  return (
+                    <div key={p.sku || idx} className={styles.rankedItem}>
+                      <div className={styles.rankedItemHead}>
+                        <b>#{idx + 1} {p.name || p.sku}</b>
+                        <span>{formatCurrency(p.revenue)}</span>
+                      </div>
+                      <div className={styles.rankedBarTrack}>
+                        <div className={styles.rankedBarFill} style={{ width: `${barPct}%` }} />
+                      </div>
+                      <small style={{ color: '#7a867b', fontSize: '10px' }}>
+                        {p.units || 1} units sold · SKU: {p.sku}
+                      </small>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className={styles.emptyState}>
+                <p>No products sold in this period.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Revenue by City / State */}
+          <div className={styles.panel}>
+            <div className={styles.panelHead}>
+              <div>
+                <h2>Regional Performance</h2>
+                <p>Top sales locations</p>
+              </div>
+            </div>
+
+            {(charts.geoRevenue || []).length > 0 ? (
+              <div className={styles.rankedList}>
+                {charts.geoRevenue.map((g, idx) => (
+                  <div key={idx} className={styles.rankedItem}>
+                    <div className={styles.rankedItemHead}>
+                      <b>{g.city}, {g.state}</b>
+                      <span>{formatCurrency(g.revenue)}</span>
+                    </div>
+                    <small style={{ color: '#7a867b', fontSize: '10px' }}>{g.orders} orders delivered</small>
                   </div>
                 ))}
               </div>
             ) : (
-              <p style={{ fontSize: '12px', color: '#727e74' }}>No completed orders in this window.</p>
+              <div className={styles.emptyState}>
+                <p>No regional sales records found for this period.</p>
+              </div>
             )}
           </div>
-        </section>
 
-        {/* Right Side: Quick Actions & Live Activity Feed */}
-        <section className={styles.panel}>
+          {/* Monthly GST Summary Table */}
+          <div className={styles.panel}>
+            <div className={styles.panelHead}>
+              <div>
+                <h2>Statutory GST Summary</h2>
+                <p>Applicable tax breakdown for filing</p>
+              </div>
+              <Link href="/admin/invoices" className={styles.panelLink}>
+                All Invoices <ArrowRight size={14} />
+              </Link>
+            </div>
+
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Period</th>
+                    <th>Taxable Value</th>
+                    <th>CGST</th>
+                    <th>SGST</th>
+                    <th>IGST</th>
+                    <th>Total Tax</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(charts.monthlyGst || []).map((row, idx) => (
+                    <tr key={idx}>
+                      <td><b>{row.month}</b></td>
+                      <td>{formatCurrency(row.taxable)}</td>
+                      <td>{formatCurrency(row.cgst)}</td>
+                      <td>{formatCurrency(row.sgst)}</td>
+                      <td>{formatCurrency(row.igst)}</td>
+                      <td style={{ color: '#1b5e20', fontWeight: 800 }}>{formatCurrency(row.totalTax)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Bottom Row: Recent Orders, Recent Audit Feed, Low Stock */}
+      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
+        {/* Recent Orders */}
+        <div className={styles.panel}>
           <div className={styles.panelHead}>
             <div>
-              <span className="kicker">Operational Feed</span>
+              <h2>Recent Orders</h2>
+              <p>Last 8 transactions</p>
+            </div>
+            <Link href="/admin/orders" className={styles.panelLink}>
+              View All <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(widgets.recentOrders || []).map((o) => (
+                  <tr key={o.id}>
+                    <td>
+                      <Link href={`/admin/orders?orderNumber=${o.orderNumber}`} style={{ color: '#1b5e20', fontWeight: 800, textDecoration: 'none' }}>
+                        {o.orderNumber}
+                      </Link>
+                      <small style={{ display: 'block', color: '#7a867c' }}>{timeAgo(o.createdAt)}</small>
+                    </td>
+                    <td><b>{formatCurrency(o.total)}</b></td>
+                    <td>
+                      <span className={`${styles.badge} ${o.status === 'delivered' ? styles.badgeDelivered : o.status === 'shipped' ? styles.badgeShipped : styles.badgeGrey}`}>
+                        {o.status.replace(/_/g, ' ')}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`${styles.badge} ${o.paymentStatus === 'paid' ? styles.badgePaid : styles.badgePending}`}>
+                        {o.paymentStatus}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Low Stock Items */}
+        <div className={styles.panel}>
+          <div className={styles.panelHead}>
+            <div>
+              <h2>Critical Stock Items</h2>
+              <p>Inventory requiring procurement</p>
+            </div>
+            <Link href="/admin/inventory" className={styles.panelLink}>
+              Inventory <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Piece Name</th>
+                  <th>SKU</th>
+                  <th>Available</th>
+                  <th>Threshold</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(widgets.lowStockItems || []).length > 0 ? (
+                  widgets.lowStockItems.map((item) => (
+                    <tr key={item._id}>
+                      <td><b>{item.name}</b></td>
+                      <td style={{ fontSize: '11px', color: '#68746a' }}>{item.sku}</td>
+                      <td>
+                        <strong style={{ color: item.available <= 2 ? '#dc2626' : '#ea580c' }}>
+                          {item.available} units
+                        </strong>
+                      </td>
+                      <td>{item.lowStockAt}</td>
+                      <td>
+                        <Link href="/admin/inventory" style={{ color: '#1b5e20', fontWeight: 800, fontSize: '11px', textDecoration: 'none' }}>
+                          Restock
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center', padding: '24px', color: '#6d786f' }}>
+                      All inventory stock levels are healthy!
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Recent Audit Activity */}
+        <div className={styles.panel}>
+          <div className={styles.panelHead}>
+            <div>
               <h2>Recent Audit Activity</h2>
+              <p>Security & admin audit trail</p>
             </div>
           </div>
 
-          <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {recentActivity.length > 0 ? (
-              recentActivity.map((act) => (
-                <div
-                  key={act.id}
-                  style={{
-                    padding: '8px 10px',
-                    borderLeft: '3px solid #1b5e20',
-                    background: '#faf8f5',
-                    borderRadius: '0 6px 6px 0',
-                    fontSize: '11px'
-                  }}
-                >
-                  <div style={{ fontWeight: 700, color: '#1b2e23' }}>
-                    {act.action?.replace(/_/g, ' ')}
+          <div className={styles.activityList}>
+            {(widgets.recentActivity || []).length > 0 ? (
+              widgets.recentActivity.map((a) => (
+                <div key={a.id} className={styles.activityItem}>
+                  <div className={styles.activityDot} />
+                  <div className={styles.activityInfo}>
+                    <b>{a.actor}</b> performed <span style={{ fontWeight: 700, color: '#1b5e20' }}>{a.action}</span> on {a.entity}
                   </div>
-                  <div style={{ color: '#727e74', marginTop: '2px' }}>
-                    {act.actor} · {new Date(act.at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                  </div>
+                  <div className={styles.activityTime}>{timeAgo(a.at)}</div>
                 </div>
               ))
             ) : (
-              <p style={{ fontSize: '12px', color: '#727e74' }}>Audit activity logs will populate as operations occur.</p>
+              <div className={styles.emptyState}>
+                <p>No recent activity logs recorded.</p>
+              </div>
             )}
           </div>
-
-          <div style={{ marginTop: '24px' }}>
-            <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#1b2e23', marginBottom: '10px' }}>
-              Quick Navigation
-            </h3>
-            <div className={styles.shortcuts}>
-              <Link href="/admin/catalogue">Product Catalogue &amp; Stock</Link>
-              <Link href="/admin/merchandising">Merchandising Rails</Link>
-              <Link href="/admin/orders">Orders &amp; Shipments</Link>
-              <Link href="/admin/invoices">Statutory GST Invoices</Link>
-              <Link href="/admin/warranty">Warranty &amp; Review Desk</Link>
-              <Link href="/admin/settings">Store Settings &amp; GSTIN</Link>
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

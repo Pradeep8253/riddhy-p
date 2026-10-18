@@ -14,36 +14,38 @@ export default function AboutCTA({ config = siteConfig } = {}) {
   return (
     <section className={styles.ctaBand}>
       <div className="container">
-        <div className={styles.ctaContent}>
-          <span className="kicker" style={{ color: 'var(--rf-gold-400)' }}>
-            Let’s start with your space
-          </span>
-          <h2>
-            Find a piece that feels <em>right.</em>
-          </h2>
-          <p>
-            Whether you are furnishing a new apartment, planning a marriage setup, or upgrading your everyday
-            appliances, our team is ready to assist you.
-          </p>
+        <div className={styles.ctaCard}>
+          <div className={styles.ctaContent}>
+            <span className="kicker" style={{ color: 'var(--rf-gold-600)' }}>
+              Let’s start with your space
+            </span>
+            <h2>
+              Find a piece that feels <em>right.</em>
+            </h2>
+            <p>
+              Whether you are furnishing a new apartment, planning a marriage setup, or upgrading your everyday
+              appliances, our team is ready to assist you.
+            </p>
 
-          <div className={styles.ctaButtonsGroup}>
-            <Link href="/furniture" className={styles.ctaPrimary}>
-              Explore Products <Icon name="arrow" size={15} />
-            </Link>
-            <Link href="/consultation" className={styles.ctaGold}>
-              Request a Consultation <Icon name="calendar" size={15} />
-            </Link>
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaWhatsApp}
-            >
-              <Icon name="whatsapp" size={16} /> Chat on WhatsApp
-            </a>
-            <a href={telUrl} className={styles.ctaCall}>
-              <Icon name="phone" size={15} /> Call Us ({phone})
-            </a>
+            <div className={styles.ctaButtonsGroup}>
+              <Link href="/furniture" className={styles.ctaPrimary}>
+                Explore Products <Icon name="arrow" size={15} />
+              </Link>
+              <Link href="/consultation" className={styles.ctaGold}>
+                Request a Consultation <Icon name="calendar" size={15} />
+              </Link>
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.ctaWhatsApp}
+              >
+                <Icon name="whatsapp" size={16} /> Chat on WhatsApp
+              </a>
+              <a href={telUrl} className={styles.ctaCall}>
+                <Icon name="phone" size={15} /> Call Us ({phone})
+              </a>
+            </div>
           </div>
         </div>
       </div>

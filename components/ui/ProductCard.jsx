@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -7,16 +8,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '@/store/cartSlice';
 import { toggleWishlist } from '@/store/wishlistSlice';
 import { toggleCompare } from '@/store/compareSlice';
-import { showToast } from '@/store/uiSlice';
+import { showToast, setCartDrawer } from '@/store/uiSlice';
 import { formatPriceSafe } from '@/lib/pricing';
 import { IMG } from '@/lib/images';
+import {
+  getLocalizedProductName,
+  getLocalizedCategoryName,
+  getLocalizedBadge,
+  getLocalizedProductTagline
+} from '@/lib/translate-backend';
 import Icon from './Icon';
+import QuickViewModal from './QuickViewModal';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product, compact = false }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
+  const locale = useSelector((state) => state.ui?.locale || 'en');
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const wishlisted = useSelector((state) =>
     Boolean(state.auth?.isAuthenticated && state.wishlist.items.some((item) => item.slug === product.slug))
@@ -24,6 +33,7 @@ export default function ProductCard({ product, compact = false }) {
   const compared = useSelector((state) =>
     state.compare.items.some((item) => item.slug === product.slug)
   );
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   const priceFormatted = formatPriceSafe(product.price);
   const mrpFormatted = formatPriceSafe(product.mrp);
@@ -38,6 +48,7 @@ export default function ProductCard({ product, compact = false }) {
     }
     dispatch(addItem({ ...product, qty: 1, variantId: product.sku }));
     dispatch(showToast({ message: `${product.name} added to your bag`, kind: 'success' }));
+    dispatch(setCartDrawer(true));
   };
 
   const handleWishlist = () => {
@@ -59,6 +70,12 @@ export default function ProductCard({ product, compact = false }) {
     product.gallery?.[0]?.url ||
     product.image ||
     IMG.products.sofa;
+
+  const secondaryImage =
+    product.gallery?.[1]?.mediumUrl ||
+    product.gallery?.[1]?.url ||
+    (product.room && IMG.rooms?.find?.((r) => r.slug === product.room)?.src) ||
+    null;
 
   const blurDataURL =
     product.gallery?.[0]?.blurDataURL ||
@@ -93,27 +110,47 @@ export default function ProductCard({ product, compact = false }) {
             sizes="(max-width: 620px) 44vw, (max-width: 980px) 30vw, 22vw"
             placeholder="blur"
             blurDataURL={blurDataURL}
+            className={`${styles.primaryImg} ${secondaryImage ? styles.hasSecondary : ''}`}
             unoptimized={image.startsWith('/api/files/') || image.startsWith('/uploads/')}
           />
+          {secondaryImage && (
+            <Image
+              src={secondaryImage}
+              alt={`${product.name} alternate view`}
+              fill
+              sizes="(max-width: 620px) 44vw, (max-width: 980px) 30vw, 22vw"
+              className={styles.secondaryImg}
+              unoptimized={secondaryImage.startsWith('/api/files/') || secondaryImage.startsWith('/uploads/')}
+            />
+          )}
         </Link>
 
         {/* Tag Badge Top-Left */}
         {tagBadge && !isOutOfStock && (
-          <span className={styles.tagBadgeTopLeft}>{tagBadge}</span>
+          <span className={styles.tagBadgeTopLeft}>{getLocalizedBadge(tagBadge, locale)}</span>
         )}
 
         {/* Stock / Discount Badges */}
         {isOutOfStock ? (
-          <span className={styles.outOfStockBadge}>Sold Out</span>
+          <span className={styles.outOfStockBadge}>{locale === 'hi' ? 'स्टॉक समाप्त' : 'Sold Out'}</span>
         ) : isLowStock ? (
-          <span className={styles.lowStockBadge}>Only {product.stock} left</span>
+          <span className={styles.lowStockBadge}>{locale === 'hi' ? `केवल ${product.stock} शेष` : `Only ${product.stock} left`}</span>
         ) : product.discount > 0 ? (
           <span className={`${styles.discount} ${tagBadge ? styles.discountOffset : ''}`}>
-            {product.discount}% off
+            {product.discount}% {locale === 'hi' ? 'छूट' : 'off'}
           </span>
         ) : null}
 
         <div className={styles.controls}>
+          <button
+            type="button"
+            className={styles.quickViewBtn}
+            aria-label="Quick view product details"
+            title="Quick view"
+            onClick={() => setQuickViewOpen(true)}
+          >
+            <Icon name="search" size={15} />
+          </button>
           <button
             type="button"
             aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
@@ -138,12 +175,16 @@ export default function ProductCard({ product, compact = false }) {
 
       <div className={styles.details}>
         <div className={styles.meta}>
-          {product.brand || 'RF Riddhy'} <span>·</span> {product.categoryLabel || product.category}
+          {product.brand || 'RF Riddhy'} <span>·</span> {getLocalizedCategoryName(product.categoryLabel || product.category, locale)}
         </div>
         <Link href={`/product/${product.slug}`} className={styles.name}>
-          {product.name}
+          {getLocalizedProductName(product, locale)}
         </Link>
-        {!compact && product.tagline && <p className={styles.tagline}>{product.tagline}</p>}
+        {!compact && product.tagline && (
+          <p className={styles.tagline}>
+            {getLocalizedProductTagline(product, locale)}
+          </p>
+        )}
 
         {/* Price Row: hidden if no valid price */}
         {hasValidPrice ? (
@@ -156,13 +197,19 @@ export default function ProductCard({ product, compact = false }) {
                   <Icon name="star" size={13} /> {product.rating}
                 </>
               ) : (
-                'Verified'
+                locale === 'hi' ? 'सत्यापित' : 'Verified'
               )}
             </span>
           </div>
         ) : (
           <div className={styles.priceRow} style={{ color: '#64748b', fontSize: '0.85rem' }}>
-            <span>Price on inquiry</span>
+            <span>{locale === 'hi' ? 'पूछताछ पर मूल्य' : 'Price on inquiry'}</span>
+          </div>
+        )}
+
+        {hasValidPrice && Number(product.price) >= 8000 && !compact && (
+          <div className={styles.emiSnippet}>
+            ⚡ {locale === 'hi' ? 'ईएमआई' : 'EMI'} ₹{Math.round(Number(product.price) / 6).toLocaleString('en-IN')}/mo
           </div>
         )}
 
@@ -173,11 +220,19 @@ export default function ProductCard({ product, compact = false }) {
           disabled={isOutOfStock || !hasValidPrice}
         >
           <span>
-            {!hasValidPrice ? 'Unavailable' : isOutOfStock ? 'Out of stock' : 'Add to bag'}
+            {!hasValidPrice
+              ? (locale === 'hi' ? 'अनुपलब्ध' : 'Unavailable')
+              : isOutOfStock
+              ? (locale === 'hi' ? 'स्टॉक में नहीं' : 'Out of stock')
+              : (locale === 'hi' ? 'बैग में जोड़ें' : 'Add to bag')}
           </span>
           <Icon name="arrow" size={17} />
         </button>
       </div>
+
+      {quickViewOpen && (
+        <QuickViewModal product={product} onClose={() => setQuickViewOpen(false)} />
+      )}
     </article>
   );
 }

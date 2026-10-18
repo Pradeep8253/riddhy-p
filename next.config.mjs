@@ -15,9 +15,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     localPatterns: [
-      { pathname: '/api/files/**' },
-      { pathname: '/uploads/**' },
-      { pathname: '/images/**' }
+      { pathname: '/**' }
     ]
   },
   async rewrites() {

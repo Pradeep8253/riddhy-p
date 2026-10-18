@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLocale, setCartDrawer } from '@/store/uiSlice';
+import { formatINR } from '@/lib/demo-data';
+import { getLocalizedProductName, getLocalizedCategoryName } from '@/lib/translate-backend';
 import BrandMark from '@/components/ui/BrandMark';
 import Icon from '@/components/ui/Icon';
 import { tr } from '@/lib/i18n';
@@ -56,23 +59,90 @@ export default function Header() {
   const [query, setQuery] = useState('');
   const pathname = usePathname();
   const router = useRouter();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth?.user);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const cartCount = useSelector((state) => state.auth?.isAuthenticated ? state.cart.items.reduce((sum, item) => sum + item.qty, 0) : 0);
   const wishlistCount = useSelector((state) => state.auth?.isAuthenticated ? state.wishlist.items.length : 0);
   const locale = useSelector((state) => state.ui.locale);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const displayCartCount = mounted ? cartCount : 0;
+  const displayWishlistCount = mounted ? wishlistCount : 0;
+
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchRef = useRef(null);
+
+  // Debounced live search
+  useEffect(() => {
+    const term = query.trim();
+    if (term.length < 2) {
+      setSearchResults([]);
+      setSearchLoading(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    const timer = setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(term)}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.data)) {
+            setSearchResults(data.data.slice(0, 4));
+          } else {
+            setSearchResults([]);
+          }
+        })
+        .catch(() => setSearchResults([]))
+        .finally(() => setSearchLoading(false));
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
   const submitSearch = (event) => {
     event.preventDefault();
     const term = query.trim();
-    if (term) router.push(`/search?q=${encodeURIComponent(term)}`);
+    if (term) {
+      router.push(`/search?q=${encodeURIComponent(term)}`);
+      setSearchFocused(false);
+    }
   };
 
   return (
     <header className={styles.header}>
       <div className={styles.announcement}>
         <span>{locale === 'hi' ? 'आपके घर के लिए सोच-समझकर चुनी चीज़ें' : 'Thoughtful choices for a home that feels like you'}</span>
-        <span className={styles.announceRight}>{locale === 'hi' ? 'डिलीवरी · इंस्टॉलेशन · देखभाल' : 'Delivery · Installation · Aftercare, made clear'}</span>
+        <div className={styles.announceRightGroup}>
+          <span className={styles.announceRight}>{locale === 'hi' ? 'डिलीवरी · इंस्टॉलेशन · देखभाल' : 'Delivery · Installation · Aftercare, made clear'}</span>
+          <button
+            type="button"
+            className={styles.langToggle}
+            onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}
+            aria-label={locale === 'en' ? 'Switch website to Hindi' : 'अंग्रेज़ी में बदलें'}
+          >
+            <span className={locale === 'en' ? styles.langActive : ''}>EN</span>
+            <span className={styles.langSep}>/</span>
+            <span className={locale === 'hi' ? styles.langActive : ''}>हिन्दी</span>
+          </button>
+        </div>
       </div>
 
       <div className={styles.mainRow}>
@@ -94,24 +164,123 @@ export default function Header() {
           </span>
         </Link>
 
-        <form
-          className={`${styles.search} ${searchOpen ? styles.searchActive : ''}`}
-          onSubmit={submitSearch}
-          role="search"
-        >
-          <Icon name="search" size={19} />
-          <input
-            aria-label={tr(locale, 'search')}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={tr(locale, 'search')}
-          />
-          <button type="submit" aria-label="Submit search">
-            {locale === 'hi' ? 'खोजें' : 'Search'}
-          </button>
-        </form>
+        <div className={styles.searchWrapper} ref={searchRef}>
+          <form
+            className={`${styles.search} ${searchOpen ? styles.searchActive : ''}`}
+            onSubmit={submitSearch}
+            role="search"
+          >
+            <Icon name="search" size={19} />
+            <input
+              aria-label={tr(locale, 'search')}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              placeholder={tr(locale, 'search')}
+            />
+            <button type="submit" aria-label="Submit search">
+              {locale === 'hi' ? 'खोजें' : 'Search'}
+            </button>
+          </form>
+
+          {/* Live Search Dropdown */}
+          {searchFocused && (
+            <div className={styles.searchDropdown}>
+              {query.trim().length >= 2 ? (
+                <>
+                  <div className={styles.searchDropdownSection}>
+                    <div className={styles.searchDropdownHeader}>
+                      {searchLoading
+                        ? 'Searching collection…'
+                        : searchResults.length > 0
+                        ? `Matching pieces (${searchResults.length})`
+                        : `No direct match for "${query}"`}
+                    </div>
+
+                    {searchResults.map((item) => {
+                      const thumb =
+                        item.gallery?.[0]?.thumbUrl ||
+                        item.gallery?.[0]?.url ||
+                        item.image ||
+                        '/images/product-sofa.webp';
+
+                      return (
+                        <Link
+                          key={item.slug}
+                          href={`/product/${item.slug}`}
+                          className={styles.searchResultItem}
+                          onClick={() => {
+                            setSearchFocused(false);
+                            setQuery('');
+                          }}
+                        >
+                          <div className={styles.searchItemThumb}>
+                            <img src={thumb} alt={item.name} />
+                          </div>
+                          <div className={styles.searchItemInfo}>
+                            <span className={styles.searchItemName}>
+                              {getLocalizedProductName(item, locale)}
+                            </span>
+                            <span className={styles.searchItemCat}>
+                              {getLocalizedCategoryName(item.categoryLabel || item.category, locale)}
+                            </span>
+                          </div>
+                          <span className={styles.searchItemPrice}>
+                            {formatINR(item.price)}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+
+                  <Link
+                    href={`/search?q=${encodeURIComponent(query.trim())}`}
+                    className={styles.searchDropdownFooter}
+                    onClick={() => setSearchFocused(false)}
+                  >
+                    <span>View all matching results</span>
+                    <Icon name="arrow" size={14} />
+                  </Link>
+                </>
+              ) : (
+                <div className={styles.searchDropdownSection}>
+                  <div className={styles.searchDropdownHeader}>
+                    {locale === 'hi' ? 'लोकप्रिय खोजें' : 'Popular searches'}
+                  </div>
+                  <div className={styles.searchTrendingRow}>
+                    {['Sofas', 'Storage Beds', 'Refrigerators', 'Dining Sets', 'Marriage Packages'].map((term) => (
+                      <button
+                        type="button"
+                        key={term}
+                        className={styles.trendingChip}
+                        onClick={() => {
+                          setQuery(term);
+                          router.push(`/search?q=${encodeURIComponent(term)}`);
+                          setSearchFocused(false);
+                        }}
+                      >
+                        <Icon name="search" size={12} />
+                        <span>{term}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.langActionBtn}
+            onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}
+            title={locale === 'en' ? 'वेबसाइट हिन्दी में देखें' : 'Switch to English'}
+            aria-label={locale === 'en' ? 'Switch website to Hindi' : 'Switch to English'}
+          >
+            {locale === 'en' ? 'हिन्दी' : 'EN'}
+          </button>
+
           <Link href="/consultation" className={styles.consultationBtn}>
             <Icon name="calendar" size={15} />
             <span>{tr(locale, 'bookConsultation')}</span>
@@ -130,25 +299,26 @@ export default function Header() {
           <Link
             href="/wishlist"
             className={styles.iconLink}
-            aria-label={`${tr(locale, 'wishlist')}${wishlistCount ? `, ${wishlistCount} items` : ''}`}
+            aria-label={`${tr(locale, 'wishlist')}${displayWishlistCount ? `, ${displayWishlistCount} items` : ''}`}
           >
             <Icon name="heart" size={21} />
-            {wishlistCount > 0 && <i>{wishlistCount}</i>}
+            {displayWishlistCount > 0 && <i>{displayWishlistCount}</i>}
           </Link>
 
           <Link href="/account" className={styles.iconLink} aria-label={tr(locale, 'account')}>
             <Icon name="user" size={21} />
           </Link>
 
-          <Link
-            href="/cart"
+          <button
+            type="button"
             className={`${styles.iconLink} ${styles.bag}`}
-            aria-label={`${tr(locale, 'bag')}${cartCount ? `, ${cartCount} items` : ''}`}
+            onClick={() => dispatch(setCartDrawer(true))}
+            aria-label={`${tr(locale, 'bag')}${displayCartCount ? `, ${displayCartCount} items` : ''}`}
           >
             <Icon name="bag" size={21} />
             <span>{tr(locale, 'bag')}</span>
-            {cartCount > 0 && <i>{cartCount}</i>}
-          </Link>
+            {displayCartCount > 0 && <i>{displayCartCount}</i>}
+          </button>
         </div>
       </div>
 
@@ -196,38 +366,39 @@ export default function Header() {
           </Link>
 
           <Link
-            href="/warranty"
-            className={pathname === '/warranty' ? styles.active : ''}
-            onClick={() => setMenuOpen(false)}
-          >
-            {locale === 'hi' ? 'वारंटी' : 'Warranty'}
-          </Link>
-
-          <Link
-            href="/contact"
-            className={pathname === '/contact' ? styles.active : ''}
-            onClick={() => setMenuOpen(false)}
-          >
-            {tr(locale, 'contact')}
-          </Link>
-
-          <Link
-            href="/bulk-enquiry"
-            className={pathname === '/bulk-enquiry' ? styles.active : ''}
-            onClick={() => setMenuOpen(false)}
-          >
-            {tr(locale, 'trade')}
-          </Link>
-
-          {/* Mobile menu CTA */}
-          <Link
             href="/consultation"
-            className={styles.mobileConsultationBtn}
+            className={pathname === '/consultation' ? styles.active : ''}
             onClick={() => setMenuOpen(false)}
           >
-            <Icon name="calendar" size={16} />
-            <span>{tr(locale, 'freeConsultation')}</span>
+            {tr(locale, 'freeConsultation')}
           </Link>
+
+          {/* Mobile menu Language Selector */}
+          <div className={styles.mobileLangRow}>
+            <span>{locale === 'hi' ? 'भाषा (Language)' : 'Language (भाषा)'}</span>
+            <div className={styles.mobileLangPills}>
+              <button
+                type="button"
+                className={locale === 'en' ? styles.activeLangPill : ''}
+                onClick={() => {
+                  dispatch(setLocale('en'));
+                  setMenuOpen(false);
+                }}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                className={locale === 'hi' ? styles.activeLangPill : ''}
+                onClick={() => {
+                  dispatch(setLocale('hi'));
+                  setMenuOpen(false);
+                }}
+              >
+                हिन्दी
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
 

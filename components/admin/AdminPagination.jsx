@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import styles from './AdminPagination.module.css';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import styles from "./AdminPagination.module.css";
 
 export default function AdminPagination({
   currentPage = 1,
@@ -9,7 +9,7 @@ export default function AdminPagination({
   pageSize = 10,
   onPageChange,
   onPageSizeChange,
-  pageSizeOptions = [10, 25, 50]
+  pageSizeOptions = [10, 25, 50],
 }) {
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
@@ -26,13 +26,13 @@ export default function AdminPagination({
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       pages.push(1);
-      if (currentPage > 3) pages.push('...');
+      if (currentPage > 3) pages.push("...");
       const startPage = Math.max(2, currentPage - 1);
       const endPage = Math.min(totalPages - 1, currentPage + 1);
       for (let i = startPage; i <= endPage; i++) {
         if (!pages.includes(i)) pages.push(i);
       }
-      if (currentPage < totalPages - 2) pages.push('...');
+      if (currentPage < totalPages - 2) pages.push("...");
       if (!pages.includes(totalPages)) pages.push(totalPages);
     }
     return pages;
@@ -46,7 +46,9 @@ export default function AdminPagination({
         </span>
 
         {onPageSizeChange && (
-          <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <label
+            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
             <span>Per page:</span>
             <select
               className={styles.pageSizeSelect}
@@ -75,7 +77,7 @@ export default function AdminPagination({
         </button>
 
         {getPageNumbers().map((page, index) =>
-          page === '...' ? (
+          page === "..." ? (
             <span key={`ellipsis-${index}`} className={styles.ellipsis}>
               …
             </span>
@@ -83,12 +85,12 @@ export default function AdminPagination({
             <button
               type="button"
               key={page}
-              className={`${styles.btn} ${currentPage === page ? styles.active : ''}`}
+              className={`${styles.btn} ${currentPage === page ? styles.active : ""}`}
               onClick={() => onPageChange(page)}
             >
               {page}
             </button>
-          )
+          ),
         )}
 
         <button

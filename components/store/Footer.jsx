@@ -8,35 +8,36 @@ import { siteConfig, isConfigured } from '@/lib/site-config';
 import { tr } from '@/lib/i18n';
 import styles from './Footer.module.css';
 
-const groups = [
+const getGroups = (locale) => [
   {
-    title: 'Shop',
+    title: locale === 'hi' ? 'ख़रीदारी' : 'Shop',
     links: [
-      ['Furniture', '/furniture'],
-      ['Home appliances', '/appliances'],
-      ['Marriage packages', '/packages'],
-      ['Shop by room', '/rooms/living'],
-      ['Current offers', '/offers']
+      [locale === 'hi' ? 'फ़र्नीचर' : 'Furniture', '/furniture'],
+      [locale === 'hi' ? 'घरेलू उपकरण' : 'Home appliances', '/appliances'],
+      [locale === 'hi' ? 'शादी पैकेज' : 'Marriage packages', '/packages'],
+      [locale === 'hi' ? 'कमरे के अनुसार' : 'Shop by room', '/rooms/living'],
+      [locale === 'hi' ? 'ऑफ़र' : 'Current offers', '/offers']
     ]
   },
   {
-    title: 'Care & support',
+    title: locale === 'hi' ? 'देखभाल एवं सहायता' : 'Care & support',
     links: [
-      ['Free home consultation', '/consultation'],
-      ['Warranty & certificate', '/warranty'],
-      ['Delivery & installation', '/policies/shipping'],
-      ['Returns & refunds', '/policies/returns'],
-      ['Warranty policies', '/policies/warranty'],
-      ['FAQs', '/faq']
+      [locale === 'hi' ? 'ऑर्डर ट्रैक करें' : 'Track your order', '/track-order'],
+      [locale === 'hi' ? 'मुफ़्त होम परामर्श' : 'Free home consultation', '/consultation'],
+      [locale === 'hi' ? 'वारंटी' : 'Warranty', '/warranty'],
+      [locale === 'hi' ? 'डिलीवरी एवं इंस्टॉलेशन' : 'Delivery & installation', '/policies/shipping'],
+      [locale === 'hi' ? 'रिटर्न एवं रिफ़ंड' : 'Returns & refunds', '/policies/returns'],
+      [locale === 'hi' ? 'वारंटी नीतियां' : 'Warranty policies', '/policies/warranty'],
+      [locale === 'hi' ? 'सामान्य प्रश्न' : 'FAQs', '/faq']
     ]
   },
   {
-    title: 'About Riddhy',
+    title: locale === 'hi' ? 'रिद्धी के बारे में' : 'About Riddhy',
     links: [
-      ['About us', '/about'],
-      ['Contact us', '/contact'],
-      ['Bulk & trade', '/bulk-enquiry'],
-      ['Privacy policy', '/policies/privacy']
+      [locale === 'hi' ? 'हमारे बारे में' : 'About us', '/about'],
+      [locale === 'hi' ? 'संपर्क करें' : 'Contact us', '/contact'],
+      [locale === 'hi' ? 'थोक एवं व्यापार' : 'Trade & bulk', '/bulk-enquiry'],
+      [locale === 'hi' ? 'गोपनीयता नीति' : 'Privacy policy', '/policies/privacy']
     ]
   }
 ];
@@ -47,6 +48,7 @@ export default function Footer() {
 
   const hasPhone = isConfigured(siteConfig.contact.phone);
   const hasEmail = isConfigured(siteConfig.contact.email);
+  const groups = getGroups(locale);
 
   return (
     <footer className={styles.footer}>
@@ -59,7 +61,7 @@ export default function Footer() {
               <small>FURNITURE & HOME APPLIANCES</small>
             </span>
           </Link>
-          <p>Thoughtful furniture. Dependable appliances. A little more ease in every corner.</p>
+          <p>{locale === 'hi' ? 'सोच-समझकर बना फ़र्नीचर। भरोसेमंद घरेलू उपकरण। घर के हर कोने में थोड़ी और आसानी।' : 'Thoughtful furniture. Dependable appliances. A little more ease in every corner.'}</p>
           <p className={styles.hindi}>{siteConfig.hindiTagline}</p>
           {(hasPhone || hasEmail) && (
             <div style={{ marginTop: 12, fontSize: 11, color: '#bdc7bd', display: 'grid', gap: 4 }}>
@@ -81,18 +83,31 @@ export default function Footer() {
         ))}
 
         <div className={styles.promise}>
-          <span className={styles.promiseLabel}>A Riddhy promise</span>
+          <span className={styles.promiseLabel}>{locale === 'hi' ? 'रिद्धी का वादा' : 'A Riddhy promise'}</span>
           <strong>
-            Made for living.<br />
-            Here for the long run.
+            {locale === 'hi' ? (
+              <>
+                घर के लिए बना।<br />
+                लंबे समय के लिए साथ।
+              </>
+            ) : (
+              <>
+                Made for living.<br />
+                Here for the long run.
+              </>
+            )}
           </strong>
-          <p>Clear delivery, careful installation and practical aftercare—before and after you order.</p>
+          <p>
+            {locale === 'hi'
+              ? 'पारदर्शी डिलीवरी, सावधानीपूर्वक इंस्टॉलेशन और व्यावहारिक आफ्टरकेयर — ऑर्डर से पहले और बाद में भी।'
+              : 'Clear delivery, careful installation and practical aftercare—before and after you order.'}
+          </p>
           <div style={{ display: 'grid', gap: 8, marginTop: 12 }}>
             <Link href="/consultation" style={{ color: '#edb95e', fontWeight: 800, fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              Book home consultation <Icon name="arrow" size={15} />
+              {locale === 'hi' ? 'मुफ़्त होम परामर्श बुक करें' : 'Book home consultation'} <Icon name="arrow" size={15} />
             </Link>
             <Link href="/contact" style={{ color: '#d7ddd6', fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              Talk to our team <Icon name="arrow" size={13} />
+              {locale === 'hi' ? 'हमारी टीम से बात करें' : 'Talk to our team'} <Icon name="arrow" size={13} />
             </Link>
           </div>
         </div>
@@ -103,11 +118,11 @@ export default function Footer() {
       </div>
 
       <div className={styles.footerBottom}>
-        <span>© {new Date().getFullYear()} RF Riddhy. All rights reserved.</span>
+        <span>{locale === 'hi' ? `© ${new Date().getFullYear()} RF Riddhy. सर्वाधिकार सुरक्षित।` : `© ${new Date().getFullYear()} RF Riddhy. All rights reserved.`}</span>
         <div className={styles.bottomLinks}>
-          <Link href="/policies/terms">Terms</Link>
-          <Link href="/policies/privacy">Privacy</Link>
-          <Link href="/policies/gst">GST information</Link>
+          <Link href="/policies/terms">{locale === 'hi' ? 'नियम व शर्तें' : 'Terms'}</Link>
+          <Link href="/policies/privacy">{locale === 'hi' ? 'गोपनीयता' : 'Privacy'}</Link>
+          <Link href="/policies/gst">{locale === 'hi' ? 'जीएसटी जानकारी' : 'GST information'}</Link>
         </div>
         <div className={styles.toggles}>
           <button type="button" onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}>

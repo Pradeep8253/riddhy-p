@@ -1,0 +1,58 @@
+.card {
+  background: var(--admin-card-bg, #fffefa);
+  border: 1px solid var(--admin-border, rgba(31, 95, 46, 0.14));
+  border-radius: var(--admin-radius-card, 18px);
+  box-shadow: var(--admin-shadow-sm, 0 2px 8px rgba(16, 38, 26, 0.04));
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--admin-shadow-md, 0 8px 24px rgba(16, 38, 26, 0.08));
+}
+
+.glass {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 254, 250, 0.85);
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 26px 14px;
+  border-bottom: 1px solid var(--admin-border, rgba(31, 95, 46, 0.08));
+}
+
+.title {
+  margin: 0;
+  font: 600 18px var(--font-display, serif);
+  letter-spacing: -0.02em;
+  color: var(--admin-text-main, #10261a);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--admin-text-muted, #617064);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.body {
+  padding: 24px 26px;
+}
+
+.footer {
+  padding: 14px 26px;
+  background: rgba(31, 95, 46, 0.02);
+  border-top: 1px solid var(--admin-border, rgba(31, 95, 46, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

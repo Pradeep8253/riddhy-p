@@ -18,6 +18,12 @@
 .name { display:block; margin-top:7px; font:600 17px/1.22 var(--font-ui); letter-spacing:-.035em; }
 .tagline { min-height:20px; margin:6px 0 12px; color:#6e756f; font-size:11px; }
 .priceRow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:13px; }.priceRow strong{font-size:16px}.priceRow del{color:#858b85;font-size:11px}.rating{display:inline-flex;align-items:center;gap:3px;margin-left:auto;color:#767f76;font-size:9px;font-weight:700}.rating svg{fill:#e4ad4c;stroke:#e4ad4c}.demoPrice{display:block;margin-top:5px;color:#7b817b;font-size:8px;letter-spacing:.03em}
-.add { display:flex; align-items:center; justify-content:space-between; width:100%; margin-top:13px; min-height:42px; padding:0 13px; border:1px solid rgba(31,95,46,.19); border-radius:12px; color:var(--rf-green-800); background:transparent; font-size:11px; font-weight:800; cursor:pointer; transition:background .2s,color .2s; }.add:hover{color:white;background:var(--rf-green-700)}.add:disabled{opacity:.48;cursor:not-allowed}.add:disabled:hover{color:var(--rf-green-800);background:transparent}
-.compact .details{padding:13px}.compact .name{font-size:15px}.compact .tagline{display:none}
-@media(max-width:600px){.details{padding:12px}.name{font-size:14px}.priceRow strong{font-size:14px}.tagline{display:none}.demoBadge{font-size:8px;padding:4px 7px}.controls button{width:32px;height:32px}}
+.primaryImg { transition: opacity .4s ease, transform .8s var(--ease-out-expo); }
+.secondaryImg { position:absolute; inset:0; width:100%; height:100%; opacity:0; transition: opacity .4s ease, transform .8s var(--ease-out-expo); }
+.card:hover .primaryImg.hasSecondary { opacity:0; }
+.card:hover .secondaryImg { opacity:1; transform:scale(1.045); }
+.emiSnippet { display:inline-flex; align-items:center; gap:5px; margin-top:6px; font-size:11px; color:#2d6a4f; background:rgba(45,106,79,0.08); padding:3px 8px; border-radius:4px; font-weight:600; width:fit-content; }
+.emiSnippet strong { color:var(--rf-forest-deep); font-weight:800; }
+.controls button.quickViewBtn { color:var(--rf-charcoal-700); }
+.controls button.quickViewBtn:hover { color:var(--rf-gold-600); background:#ffffff; }
+@media(max-width:600px){.details{padding:12px}.name{font-size:14px}.priceRow strong{font-size:14px}.tagline{display:none}.emiSnippet{display:none}.demoBadge{font-size:8px;padding:4px 7px}.controls button{width:32px;height:32px}}

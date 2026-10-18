@@ -1,17 +1,57 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Icon from '@/components/ui/Icon';
 import styles from './AdminSettings.module.css';
 
+const GSTIN_REGEX = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/;
+const PAN_REGEX = /^[A-Z]{5}\d{4}[A-Z]$/;
+const PINCODE_REGEX = /^\d{6}$/;
+
 export default function AdminSettings() {
-  const [activeTab, setActiveTab] = useState('care');
+  const searchParams = useSearchParams();
+  const tabParam = searchParams?.get('tab');
+
+  const [activeTab, setActiveTab] = useState(
+    tabParam && ['company', 'care', 'showroom', 'consultation', 'story'].includes(tabParam)
+      ? tabParam
+      : 'company'
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [source, setSource] = useState('database');
+  const [warehouses, setWarehouses] = useState([]);
 
   const [formData, setFormData] = useState({
+    company: {
+      legalName: '',
+      tradeName: '',
+      gstin: '',
+      pan: '',
+      state: 'Delhi',
+      stateCode: '07',
+      addressLine1: '',
+      addressLine2: '',
+      city: 'New Delhi',
+      pincode: '',
+      phone: '',
+      email: '',
+      invoicePrefix: 'RF',
+      invoiceTiming: 'paid',
+      defaultWarehouseCode: 'DELHI-01',
+      currency: 'INR',
+      logoUrl: '',
+      website: 'https://rfriddhy.com',
+      bankName: 'HDFC Bank Ltd',
+      accountNo: '50200012345678',
+      ifsc: 'HDFC0001234',
+      upiId: 'rfriddhy@hdfcbank',
+      invoiceTerms: '1. Goods once sold are covered under RF Riddhy Care Warranty Policy.\n2. Interest @ 18% p.a. will be charged if payment is delayed beyond due date.\n3. Subject to Delhi jurisdiction.',
+      invoiceFooterNote: 'Thank you for choosing RF Riddhy. For support & warranty, email care@riddhy.in or WhatsApp +91 99342 08035.',
+      nextInvoiceNumber: 1
+    },
     contact: {
       phone: '',
       whatsapp: '',
@@ -47,6 +87,14 @@ export default function AdminSettings() {
     }
   });
 
+  const initialDataRef = useRef(null);
+
+  useEffect(() => {
+    if (tabParam && ['company', 'care', 'showroom', 'consultation', 'story'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
   useEffect(() => {
     fetchSettings();
   }, []);
@@ -54,12 +102,52 @@ export default function AdminSettings() {
   const fetchSettings = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/admin/settings');
-      const data = await res.json();
+      // Fetch company specific settings and warehouses
+      const [settingsRes, companyRes] = await Promise.all([
+        fetch('/api/admin/settings'),
+        fetch('/api/admin/settings/company').catch(() => null)
+      ]);
+
+      const data = await settingsRes.json();
+      const companyData = companyRes ? await companyRes.json() : null;
+
+      if (companyData?.success && companyData.data?.warehouses) {
+        setWarehouses(companyData.data.warehouses);
+      }
+
       if (data.success && data.data) {
         const d = data.data.settings || data.data;
+        const comp = companyData?.data?.settings || d.company || {};
         setSource(data.data?.source || data.source || 'database');
-        setFormData({
+
+        const initialVals = {
+          company: {
+            legalName: comp.legalName || 'RF Riddhy Furniture & Appliances Pvt Ltd',
+            tradeName: comp.tradeName || 'RF Riddhy',
+            gstin: comp.gstin || '07AAAAA0000A1Z5',
+            pan: comp.pan || 'AAAAA0000A',
+            state: comp.state || 'Delhi',
+            stateCode: comp.stateCode || '07',
+            addressLine1: comp.addressLine1 || 'Plot 42, Okhla Industrial Area Phase III',
+            addressLine2: comp.addressLine2 || '',
+            city: comp.city || 'New Delhi',
+            pincode: comp.pincode || '110020',
+            phone: comp.phone || '+91 98765 43210',
+            email: comp.email || 'billing@rfriddhy.com',
+            invoicePrefix: comp.invoicePrefix || 'RF',
+            invoiceTiming: comp.invoiceTiming || 'paid',
+            defaultWarehouseCode: comp.defaultWarehouseCode || 'DELHI-01',
+            currency: comp.currency || 'INR',
+            logoUrl: comp.logoUrl || '',
+            website: comp.website || 'https://rfriddhy.com',
+            bankName: comp.bankName || 'HDFC Bank Ltd',
+            accountNo: comp.accountNo || '50200012345678',
+            ifsc: comp.ifsc || 'HDFC0001234',
+            upiId: comp.upiId || 'rfriddhy@hdfcbank',
+            invoiceTerms: comp.invoiceTerms || '1. Goods once sold are covered under RF Riddhy Care Warranty Policy.\n2. Interest @ 18% p.a. will be charged if payment is delayed beyond due date.\n3. Subject to Delhi jurisdiction.',
+            invoiceFooterNote: comp.invoiceFooterNote || 'Thank you for choosing RF Riddhy. For support & warranty, email care@riddhy.in or WhatsApp +91 99342 08035.',
+            nextInvoiceNumber: comp.nextInvoiceNumber || 1
+          },
           contact: {
             phone: d.contact?.phone || '',
             whatsapp: d.contact?.whatsapp || '',
@@ -95,13 +183,25 @@ export default function AdminSettings() {
               ? d.story.partnerBrands.join(', ')
               : d.story?.partnerBrands || ''
           }
-        });
+        };
+
+        setFormData(initialVals);
+        initialDataRef.current = JSON.stringify(initialVals);
       }
     } catch (err) {
       setToast({ type: 'error', message: 'Failed to load store settings.' });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const isDirty = initialDataRef.current && JSON.stringify(formData) !== initialDataRef.current;
+
+  const handleCompanyChange = (field, val) => {
+    setFormData((prev) => ({
+      ...prev,
+      company: { ...prev.company, [field]: val }
+    }));
   };
 
   const handleContactChange = (field, val) => {
@@ -142,34 +242,70 @@ export default function AdminSettings() {
     }));
   };
 
+  const handleReset = () => {
+    if (initialDataRef.current) {
+      setFormData(JSON.parse(initialDataRef.current));
+      setToast({ type: 'warning', message: 'Reverted all unsaved modifications.' });
+    }
+  };
+
+  // State code vs GSTIN consistency check
+  const gstinPrefix = formData.company.gstin ? formData.company.gstin.slice(0, 2) : '';
+  const isStateCodeMismatch = Boolean(
+    gstinPrefix &&
+    formData.company.stateCode &&
+    gstinPrefix.toUpperCase() !== formData.company.stateCode.toUpperCase()
+  );
+
   const handleSave = async (e) => {
     e?.preventDefault();
     setIsSaving(true);
     setToast(null);
 
-    const payload = {
-      contact: formData.contact,
-      showroom: formData.showroom,
-      consultation: formData.consultation,
-      story: {
-        ...formData.story,
-        partnerBrands: formData.story.partnerBrands
-          .split(',')
-          .map((b) => b.trim())
-          .filter(Boolean)
-      }
-    };
-
+    // Save company settings specifically via dedicated super-admin endpoint
     try {
+      const companySaveRes = await fetch('/api/admin/settings/company', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData.company)
+      });
+
+      const companyData = await companySaveRes.json();
+      if (!companySaveRes.ok || !companyData.success) {
+        setToast({
+          type: 'error',
+          message: companyData.error?.message || 'Validation error in Company Settings. Check GSTIN / PAN / State code.'
+        });
+        setIsSaving(false);
+        return;
+      }
+
+      // Also save other store settings
+      const payload = {
+        company: formData.company,
+        contact: formData.contact,
+        showroom: formData.showroom,
+        consultation: formData.consultation,
+        story: {
+          ...formData.story,
+          partnerBrands: formData.story.partnerBrands
+            .split(',')
+            .map((b) => b.trim())
+            .filter(Boolean)
+        }
+      };
+
       const res = await fetch('/api/admin/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+
       const data = await res.json();
       if (res.ok && data.success) {
         setSource('database');
-        setToast({ type: 'success', message: 'Settings saved and published successfully.' });
+        initialDataRef.current = JSON.stringify(formData);
+        setToast({ type: 'success', message: 'All company & store settings saved and published successfully.' });
       } else {
         setToast({ type: 'error', message: data.error?.message || 'Failed to save settings.' });
       }
@@ -188,24 +324,32 @@ export default function AdminSettings() {
       <div className={styles.head}>
         <div>
           <span className="kicker">Store Operations · Business Truth</span>
-          <h1>Store Settings & Brand Proof</h1>
+          <h1>Company & Store Settings</h1>
           <p>
-            Configure customer care channels, showroom hours & address, consultation booking rules,
-            and brand story proof. Values update immediately across the store.
+            Manage legal company credentials, GSTIN, invoice sequence numbering, fulfillment defaults,
+            customer care desks, showroom addresses, and verified brand proof metrics.
           </p>
         </div>
 
-        <div
-          className={`${styles.statusBadge} ${
-            source === 'database' ? styles.badgeDb : styles.badgeEnv
-          }`}
-        >
-          <span className={styles.statusDot} />
-          <span>
-            {source === 'database'
-              ? 'Stored in Database'
-              : 'System Preset Defaults'}
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {isDirty && (
+            <span className={styles.dirtyBadge}>
+              <span className={styles.statusDot} style={{ background: '#b78103' }} />
+              Unsaved Changes
+            </span>
+          )}
+          <div
+            className={`${styles.statusBadge} ${
+              source === 'database' ? styles.badgeDb : styles.badgeEnv
+            }`}
+          >
+            <span className={styles.statusDot} />
+            <span>
+              {source === 'database'
+                ? 'Stored in Database (Overrides .env)'
+                : 'Loaded from .env Defaults'}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -236,6 +380,13 @@ export default function AdminSettings() {
       <nav className={styles.tabs} aria-label="Settings categories">
         <button
           type="button"
+          className={`${styles.tabBtn} ${activeTab === 'company' ? styles.active : ''}`}
+          onClick={() => setActiveTab('company')}
+        >
+          Company & Invoice
+        </button>
+        <button
+          type="button"
           className={`${styles.tabBtn} ${activeTab === 'care' ? styles.active : ''}`}
           onClick={() => setActiveTab('care')}
         >
@@ -263,6 +414,491 @@ export default function AdminSettings() {
           Brand Proof & Story
         </button>
       </nav>
+
+      {/* Tab 0: Company & Invoice */}
+      {activeTab === 'company' && (
+        <section className={styles.card}>
+          <div className={styles.cardHead}>
+            <h2>Company Legal Identity & Invoicing Rules</h2>
+            <p>
+              These values configure your seller profile for sequential GST invoices, credit notes,
+              tax place-of-supply determination, and warehouse dispatch fulfillment.
+            </p>
+          </div>
+
+          <div className={styles.infoBanner}>
+            <Icon name="shield" size={16} />
+            <span>
+              <strong>Regulatory Notice:</strong> Ensure GSTIN and State Code match your official GST registration certificate.
+              All newly generated tax invoices will automatically adopt these credentials immediately upon saving.
+            </span>
+          </div>
+
+          <div className={styles.grid2}>
+            {/* Subsection 1: Legal Entity */}
+            <div className={styles.subSection}>
+              <h3 className={styles.subSectionTitle}>1. Legal Entity & Brand Identity</h3>
+              <p className={styles.subSectionDesc}>Official registration credentials printed on GST invoices and regulatory filings.</p>
+            </div>
+
+            <div className={styles.field}>
+              <label>Legal Business Name</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. RF Riddhy Furniture & Appliances Pvt Ltd"
+                value={formData.company.legalName}
+                onChange={(e) => handleCompanyChange('legalName', e.target.value)}
+              />
+              <span className={styles.hint}>Full legal entity name registered under MCA / Registrar of Companies.</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Trade Name / Brand</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. RF Riddhy"
+                value={formData.company.tradeName}
+                onChange={(e) => handleCompanyChange('tradeName', e.target.value)}
+              />
+              <span className={styles.hint}>Customer-facing brand name displayed across the website and storefront.</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Official Website</label>
+              <input
+                type="url"
+                className={styles.input}
+                placeholder="https://rfriddhy.com"
+                value={formData.company.website}
+                onChange={(e) => handleCompanyChange('website', e.target.value)}
+              />
+              <span className={styles.hint}>Primary domain printed on invoice receipts and emails.</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Corporate Logo URL (Optional)</label>
+              <input
+                type="url"
+                className={styles.input}
+                placeholder="https://.../logo.png"
+                value={formData.company.logoUrl}
+                onChange={(e) => handleCompanyChange('logoUrl', e.target.value)}
+              />
+              <span className={styles.hint}>High-resolution vector or PNG logo for generated PDF invoices.</span>
+            </div>
+
+            {/* Subsection 2: Tax Credentials */}
+            <div className={styles.subSection}>
+              <h3 className={styles.subSectionTitle}>2. Tax Credentials (GSTIN & PAN)</h3>
+              <p className={styles.subSectionDesc}>Used for Goods & Services Tax calculations, TDS, and credit note issuance.</p>
+            </div>
+
+            <div className={styles.field}>
+              <label>GSTIN (15 characters)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. 07AAAAA0000A1Z5"
+                value={formData.company.gstin}
+                onChange={(e) => handleCompanyChange('gstin', e.target.value.toUpperCase())}
+                maxLength={15}
+              />
+              <span className={styles.hint}>Mandatory 15-character Goods & Services Tax Identification Number.</span>
+              {formData.company.gstin && !GSTIN_REGEX.test(formData.company.gstin) && (
+                <span className={styles.validationWarning}>
+                  <Icon name="alert-circle" size={13} /> Invalid GSTIN format (must be 15 chars, e.g. 07AAAAA0000A1Z5)
+                </span>
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label>Permanent Account Number (PAN)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. AAAAA0000A"
+                value={formData.company.pan}
+                onChange={(e) => handleCompanyChange('pan', e.target.value.toUpperCase())}
+                maxLength={10}
+              />
+              <span className={styles.hint}>10-character corporate PAN for tax withholding and TDS reconciliation.</span>
+              {formData.company.pan && !PAN_REGEX.test(formData.company.pan) && (
+                <span className={styles.validationWarning}>
+                  <Icon name="alert-circle" size={13} /> Invalid PAN format (must be 10 chars, e.g. AAAAA0000A)
+                </span>
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label>State (Place of Supply Source)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. Delhi"
+                value={formData.company.state}
+                onChange={(e) => handleCompanyChange('state', e.target.value)}
+              />
+              <span className={styles.hint}>Used to evaluate whether delivery is intra-state (CGST+SGST) or inter-state (IGST).</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>GST 2-Digit State Code</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. 07"
+                value={formData.company.stateCode}
+                onChange={(e) => handleCompanyChange('stateCode', e.target.value)}
+                maxLength={2}
+              />
+              <span className={styles.hint}>Official GST 2-digit numerical prefix (e.g. 07 for Delhi, 27 for Maharashtra).</span>
+              {isStateCodeMismatch && (
+                <span className={styles.validationWarning}>
+                  <Icon name="alert-circle" size={13} /> Mismatch: State code '{formData.company.stateCode}' does not match GSTIN prefix '{gstinPrefix}'
+                </span>
+              )}
+            </div>
+
+            {/* Subsection 3: Place of Business Address */}
+            <div className={styles.subSection}>
+              <h3 className={styles.subSectionTitle}>3. Registered Place of Business Address</h3>
+              <p className={styles.subSectionDesc}>Principal corporate address printed on all customer invoices and tax returns.</p>
+            </div>
+
+            <div className={`${styles.field} ${styles.gridFull}`}>
+              <label>Address Line 1</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. Plot 42, Okhla Industrial Area Phase III"
+                value={formData.company.addressLine1}
+                onChange={(e) => handleCompanyChange('addressLine1', e.target.value)}
+              />
+            </div>
+
+            <div className={`${styles.field} ${styles.gridFull}`}>
+              <label>Address Line 2 (Optional)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. Landmark / Complex / Floor number"
+                value={formData.company.addressLine2}
+                onChange={(e) => handleCompanyChange('addressLine2', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>City</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. New Delhi"
+                value={formData.company.city}
+                onChange={(e) => handleCompanyChange('city', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>Postal Code / PIN (6 digits)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. 110020"
+                value={formData.company.pincode}
+                onChange={(e) => handleCompanyChange('pincode', e.target.value)}
+                maxLength={6}
+              />
+              {formData.company.pincode && !PINCODE_REGEX.test(formData.company.pincode) && (
+                <span className={styles.validationWarning}>
+                  <Icon name="alert-circle" size={13} /> Must be a 6-digit postal code
+                </span>
+              )}
+            </div>
+
+            {/* Subsection 4: Invoicing Series & Lifecycle */}
+            <div className={styles.subSection}>
+              <h3 className={styles.subSectionTitle}>4. Invoicing Series & Lifecycle Triggers</h3>
+              <p className={styles.subSectionDesc}>Sequential numbering format, credit note series, and issuance triggers.</p>
+            </div>
+
+            <div className={styles.field}>
+              <label>Tax Invoice Prefix</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. RF"
+                value={formData.company.invoicePrefix}
+                onChange={(e) => handleCompanyChange('invoicePrefix', e.target.value.toUpperCase())}
+              />
+              <span className={styles.hint}>Generates format: [Prefix]/YYYY-YY/XXXX (e.g. RF/2026-27/0001).</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Invoice Generation Timing</label>
+              <select
+                className={styles.select}
+                value={formData.company.invoiceTiming}
+                onChange={(e) => handleCompanyChange('invoiceTiming', e.target.value)}
+              >
+                <option value="paid">Immediate: Generate when payment is captured/paid</option>
+                <option value="dispatch">On Dispatch: Generate when warehouse ships order</option>
+              </select>
+              <span className={styles.hint}>Defines the automated event that triggers invoice creation.</span>
+            </div>
+
+            <div className={`${styles.field} ${styles.gridFull}`}>
+              <label>Invoice Terms & Conditions</label>
+              <textarea
+                className={styles.textarea}
+                style={{ minHeight: 70 }}
+                placeholder="1. Goods once sold are covered under warranty..."
+                value={formData.company.invoiceTerms}
+                onChange={(e) => handleCompanyChange('invoiceTerms', e.target.value)}
+              />
+              <span className={styles.hint}>Printed on the bottom-left of every generated invoice.</span>
+            </div>
+
+            <div className={`${styles.field} ${styles.gridFull}`}>
+              <label>Invoice Footer Note</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Thank you for choosing RF Riddhy..."
+                value={formData.company.invoiceFooterNote}
+                onChange={(e) => handleCompanyChange('invoiceFooterNote', e.target.value)}
+              />
+              <span className={styles.hint}>Friendly closing message printed at the footer of receipts.</span>
+            </div>
+
+            {/* Subsection 5: Operational & Warehouse Defaults */}
+            <div className={styles.subSection}>
+              <h3 className={styles.subSectionTitle}>5. Fulfillment Defaults & Finance Contacts</h3>
+              <p className={styles.subSectionDesc}>Default warehouse allocation, base currency, and billing contact details.</p>
+            </div>
+
+            <div className={styles.field}>
+              <label>Default Warehouse Code</label>
+              {warehouses.length > 0 ? (
+                <select
+                  className={styles.select}
+                  value={formData.company.defaultWarehouseCode}
+                  onChange={(e) => handleCompanyChange('defaultWarehouseCode', e.target.value)}
+                >
+                  {warehouses.map((w) => (
+                    <option key={w.code} value={w.code}>
+                      {w.code} — {w.name} ({w.city || 'India'})
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  className={styles.input}
+                  placeholder="e.g. DELHI-01"
+                  value={formData.company.defaultWarehouseCode}
+                  onChange={(e) => handleCompanyChange('defaultWarehouseCode', e.target.value.toUpperCase())}
+                />
+              )}
+              <span className={styles.hint}>Default stocking and dispatch node for newly imported products.</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Base Store Currency</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. INR"
+                value={formData.company.currency}
+                onChange={(e) => handleCompanyChange('currency', e.target.value.toUpperCase())}
+                maxLength={3}
+              />
+              <span className={styles.hint}>Standard 3-letter currency code (INR for Indian Rupee).</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Accounts & Billing Phone</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. +91 98765 43210"
+                value={formData.company.phone}
+                onChange={(e) => handleCompanyChange('phone', e.target.value)}
+              />
+              <span className={styles.hint}>Official billing grievance number printed on invoices.</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Accounts & Billing Email</label>
+              <input
+                type="email"
+                className={styles.input}
+                placeholder="e.g. billing@rfriddhy.com"
+                value={formData.company.email}
+                onChange={(e) => handleCompanyChange('email', e.target.value)}
+              />
+              <span className={styles.hint}>Direct billing and reconciliation desk for vendor / customer invoices.</span>
+            </div>
+
+            {/* Subsection 6: Bank Details for Invoice Footer */}
+            <div className={styles.subSection}>
+              <h3 className={styles.subSectionTitle}>6. Bank Details (Invoice Footer Settlement)</h3>
+              <p className={styles.subSectionDesc}>Direct bank transfer and UPI details printed on generated invoices for B2B/NEFT payments.</p>
+            </div>
+
+            <div className={styles.field}>
+              <label>Bank Name</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. HDFC Bank Ltd"
+                value={formData.company.bankName}
+                onChange={(e) => handleCompanyChange('bankName', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>Account Number</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. 50200012345678"
+                value={formData.company.accountNo}
+                onChange={(e) => handleCompanyChange('accountNo', e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>IFSC Code</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. HDFC0001234"
+                value={formData.company.ifsc}
+                onChange={(e) => handleCompanyChange('ifsc', e.target.value.toUpperCase())}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>UPI ID (VPA)</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. rfriddhy@hdfcbank"
+                value={formData.company.upiId}
+                onChange={(e) => handleCompanyChange('upiId', e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Live Invoice Preview Section */}
+          <div className={styles.invoicePreviewSection}>
+            <div className={styles.cardHead} style={{ marginBottom: 16 }}>
+              <h2>Live GST Invoice Preview</h2>
+              <p>Real-time visual rendering of how your seller header, tax breakdown, and footer will appear on official PDF tax invoices.</p>
+            </div>
+
+            <div className={styles.invoicePaper}>
+              {/* Invoice Header */}
+              <div className={styles.previewHeader}>
+                <div className={styles.previewSeller}>
+                  <h3>{formData.company.tradeName || 'RF Riddhy'}</h3>
+                  <p><strong>{formData.company.legalName || 'RF Riddhy Furniture & Appliances Pvt Ltd'}</strong></p>
+                  <p>{formData.company.addressLine1 || 'Plot 42, Okhla Industrial Area Phase III'}{formData.company.addressLine2 ? `, ${formData.company.addressLine2}` : ''}</p>
+                  <p>{formData.company.city || 'New Delhi'}, {formData.company.state || 'Delhi'} - {formData.company.pincode || '110020'}</p>
+                  <p>GSTIN: <strong>{formData.company.gstin || '07AAAAA0000A1Z5'}</strong> | PAN: <strong>{formData.company.pan || 'AAAAA0000A'}</strong></p>
+                  <p>Phone: {formData.company.phone || '+91 98765 43210'} | Email: {formData.company.email || 'billing@rfriddhy.com'}</p>
+                </div>
+
+                <div className={styles.previewDocTitle}>
+                  <h4>TAX INVOICE</h4>
+                  <span>Original for Recipient</span>
+                  <div style={{ marginTop: 8, fontSize: 11, color: '#1b5e20', fontWeight: 800 }}>
+                    {formData.company.website || 'https://rfriddhy.com'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Invoice Meta Grid */}
+              <div className={styles.previewMetaGrid}>
+                <div className={styles.previewMetaItem}>
+                  <span>Invoice No:</span>
+                  <b>{formData.company.invoicePrefix || 'RF'}/2026-27/0042</b>
+                </div>
+                <div className={styles.previewMetaItem}>
+                  <span>Invoice Date:</span>
+                  <b>18 Oct 2026</b>
+                </div>
+                <div className={styles.previewMetaItem}>
+                  <span>Place of Supply:</span>
+                  <b>{formData.company.state || 'Delhi'} ({formData.company.stateCode || '07'})</b>
+                </div>
+                <div className={styles.previewMetaItem}>
+                  <span>Warehouse Hub:</span>
+                  <b>{formData.company.defaultWarehouseCode || 'DELHI-01'}</b>
+                </div>
+              </div>
+
+              {/* Sample Line Item Table */}
+              <table className={styles.previewTable}>
+                <thead>
+                  <tr>
+                    <th>Item Description</th>
+                    <th>HSN</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>Taxable Val</th>
+                    <th>GST (18%)</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <b>RF Solid Teakwood 6-Seater Dining Set</b>
+                      <div style={{ fontSize: 9, color: '#777' }}>Natural Honey Finish · SKU: RF-TEAK-DIN-06</div>
+                    </td>
+                    <td>9403</td>
+                    <td>1</td>
+                    <td>₹42,372.88</td>
+                    <td>₹42,372.88</td>
+                    <td>₹7,627.12 (9% CGST + 9% SGST)</td>
+                    <td><strong>₹50,000.00</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Invoice Footer Grid */}
+              <div className={styles.previewFooterGrid}>
+                <div>
+                  <div className={styles.previewBankBox}>
+                    <h5>Bank Details for NEFT / RTGS / IMPS</h5>
+                    <p>Bank: <strong>{formData.company.bankName || 'HDFC Bank Ltd'}</strong></p>
+                    <p>A/C No: <strong>{formData.company.accountNo || '50200012345678'}</strong></p>
+                    <p>IFSC: <strong>{formData.company.ifsc || 'HDFC0001234'}</strong></p>
+                    <p>UPI ID: <strong>{formData.company.upiId || 'rfriddhy@hdfcbank'}</strong></p>
+                  </div>
+
+                  <div className={styles.previewTerms} style={{ marginTop: 12 }}>
+                    <h5>Terms & Conditions:</h5>
+                    <p style={{ whiteSpace: 'pre-line' }}>{formData.company.invoiceTerms || '1. Goods once sold are covered under warranty.'}</p>
+                    <p style={{ marginTop: 6, fontStyle: 'italic' }}>{formData.company.invoiceFooterNote}</p>
+                  </div>
+                </div>
+
+                <div className={styles.previewSignatory}>
+                  <span>For {formData.company.tradeName || 'RF Riddhy'}</span>
+                  <b>Authorized Signatory</b>
+                  <div style={{ fontSize: 9, color: '#888', marginTop: 4 }}>
+                    Computer Generated Tax Invoice
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Tab 1: Customer Care */}
       {activeTab === 'care' && (
@@ -321,68 +957,80 @@ export default function AdminSettings() {
                 value={formData.contact.responseTime}
                 onChange={(e) => handleContactChange('responseTime', e.target.value)}
               />
-              <span className={styles.hint}>Displayed on Contact Page response badge.</span>
+              <span className={styles.hint}>Shown on Contact page and customer care desk.</span>
             </div>
 
             <div className={styles.field}>
-              <label>Store / Care Operating Hours</label>
+              <label>Operating Hours</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. Mon – Sat: 10:00 AM – 7:30 PM"
+                placeholder="e.g. Mon - Sat, 10:00 AM - 7:30 PM"
                 value={formData.contact.hours}
                 onChange={(e) => handleContactChange('hours', e.target.value)}
               />
-              <span className={styles.hint}>Weekly customer care schedule.</span>
+              <span className={styles.hint}>When customer support agents are live.</span>
             </div>
 
             <div className={styles.field}>
-              <label>Holidays / Days Off Notice</label>
+              <label>Holidays & Maintenance Notice</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. Closed on national holidays and Sundays"
+                placeholder="e.g. Closed on National Holidays and Diwali"
                 value={formData.contact.holidaysNotice}
                 onChange={(e) => handleContactChange('holidaysNotice', e.target.value)}
               />
-              <span className={styles.hint}>Displayed alongside operating hours.</span>
+              <span className={styles.hint}>Banner message displayed during off-days.</span>
             </div>
           </div>
         </section>
       )}
 
-      {/* Tab 2: Showroom & Location */}
+      {/* Tab 2: Showroom & Hours */}
       {activeTab === 'showroom' && (
         <section className={styles.card}>
           <div className={styles.cardHead}>
-            <h2>Experience Showroom & Address</h2>
+            <h2>Experience Showroom Location & Hours</h2>
             <p>
-              When an address is set, it appears on the Contact page, in the showroom visit mode for
-              consultations, and in the site schema.
+              Leave the address blank to conceal showroom visit booking from the Consultation form
+              and store pages until the physical store officially opens.
             </p>
           </div>
 
           <div className={styles.grid2}>
             <div className={styles.field}>
-              <label>Showroom Name</label>
+              <label>Showroom Display Name</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. RF Riddhy Experience Store"
+                placeholder="RF Riddhy Experience Store"
                 value={formData.showroom.name}
                 onChange={(e) => handleShowroomChange('name', e.target.value)}
               />
             </div>
 
-            <div className={`${styles.field} ${styles.gridFull}`}>
-              <label>Street Address Line</label>
+            <div className={styles.field}>
+              <label>Visiting Hours</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. Plot 42, Sector 18, Design District"
+                placeholder="e.g. Daily 10:30 AM - 8:30 PM (Closed Tuesday)"
+                value={formData.showroom.hours}
+                onChange={(e) => handleShowroomChange('hours', e.target.value)}
+              />
+            </div>
+
+            <div className={`${styles.field} ${styles.gridFull}`}>
+              <label>Street Address Line 1</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. 1st Floor, Design Galleria, Linking Road"
                 value={formData.showroom.addressLine1}
                 onChange={(e) => handleShowroomChange('addressLine1', e.target.value)}
               />
+              <span className={styles.hint}>Leave empty if the physical showroom is not currently open to visitors.</span>
             </div>
 
             <div className={styles.field}>
@@ -390,7 +1038,7 @@ export default function AdminSettings() {
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. Gurugram / New Delhi / Patna"
+                placeholder="e.g. Mumbai"
                 value={formData.showroom.city}
                 onChange={(e) => handleShowroomChange('city', e.target.value)}
               />
@@ -401,7 +1049,7 @@ export default function AdminSettings() {
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. Haryana / Delhi / Bihar"
+                placeholder="e.g. Maharashtra"
                 value={formData.showroom.state}
                 onChange={(e) => handleShowroomChange('state', e.target.value)}
               />
@@ -412,14 +1060,14 @@ export default function AdminSettings() {
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. 122002"
+                placeholder="e.g. 400050"
                 value={formData.showroom.pincode}
                 onChange={(e) => handleShowroomChange('pincode', e.target.value)}
               />
             </div>
 
             <div className={styles.field}>
-              <label>Google Maps Direction URL</label>
+              <label>Google Maps Directions URL</label>
               <input
                 type="url"
                 className={styles.input}
@@ -427,6 +1075,7 @@ export default function AdminSettings() {
                 value={formData.showroom.mapUrl}
                 onChange={(e) => handleShowroomChange('mapUrl', e.target.value)}
               />
+              <span className={styles.hint}>Powers the 'Open in Maps' link on the Contact page.</span>
             </div>
           </div>
         </section>
@@ -436,37 +1085,33 @@ export default function AdminSettings() {
       {activeTab === 'consultation' && (
         <section className={styles.card}>
           <div className={styles.cardHead}>
-            <h2>Consultation Capacity & Rules</h2>
+            <h2>Consultation Booking Rules</h2>
             <p>
-              Control how many bookings each time window (Morning, Afternoon, Evening) can accept
-              before marking the slot as fully booked.
+              Tune designer availability, capacity caps per calendar slot, and home visit eligibility.
             </p>
           </div>
 
           <div className={styles.grid2}>
             <div className={styles.field}>
-              <label>Capacity Per Slot Window</label>
+              <label>Capacity per Time Slot</label>
               <input
                 type="number"
                 min="1"
                 max="20"
                 className={styles.input}
                 value={formData.consultation.capacityPerSlot}
-                onChange={(e) =>
-                  handleConsultationChange('capacityPerSlot', parseInt(e.target.value, 10) || 1)
-                }
+                onChange={(e) => handleConsultationChange('capacityPerSlot', Number(e.target.value) || 1)}
               />
               <span className={styles.hint}>
-                Max bookings allowed per window per day (e.g. 3).
+                Maximum simultaneous appointments accepted for any 60-minute window (1 - 20 designers).
               </span>
             </div>
 
-            <div className={styles.field}>
-              <label>Home Visit Consultation Mode</label>
+            <div className={styles.field} style={{ justifyContent: 'center' }}>
               <div className={styles.toggleRow}>
                 <div className={styles.toggleInfo}>
-                  <b>Enable At-Home Visits</b>
-                  <span>Allow customers in serviceable pincodes to book home consultations.</span>
+                  <b>Allow Home Visit Consultations</b>
+                  <span>When enabled, customers can select 'In-Home Design Visit' on the booking form.</span>
                 </div>
                 <input
                   type="checkbox"
@@ -484,14 +1129,13 @@ export default function AdminSettings() {
       {activeTab === 'story' && (
         <section className={styles.card}>
           <div className={styles.cardHead}>
-            <h2>Brand Proof & Story Metrics</h2>
+            <h2>Brand Story & Social Proof</h2>
             <p>
-              These values populate the About page metrics grid and brand origin narrative. Cards are
-              hidden automatically if unconfigured.
+              Verified narrative and metrics displayed on the About page and trust strips across the storefront.
             </p>
           </div>
 
-          <div className={styles.grid3}>
+          <div className={styles.grid2}>
             <div className={styles.field}>
               <label>Founded Year</label>
               <input
@@ -508,139 +1152,97 @@ export default function AdminSettings() {
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. Delhi NCR"
+                placeholder="e.g. Jodhpur, Rajasthan"
                 value={formData.story.originCity}
                 onChange={(e) => handleStoryChange('originCity', e.target.value)}
               />
             </div>
 
-            <div className={styles.field}>
-              <label>Partner Brands</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="Comma separated, e.g. Samsung, Haier, Bosch, Godrej"
-                value={formData.story.partnerBrands}
-                onChange={(e) => handleStoryChange('partnerBrands', e.target.value)}
+            <div className={`${styles.field} ${styles.gridFull}`}>
+              <label>Founder Narrative</label>
+              <textarea
+                className={styles.textarea}
+                placeholder="Tell the authentic story of how RF Riddhy started, crafting heirloom teakwood furniture and premium appliances..."
+                value={formData.story.founderNarrative}
+                onChange={(e) => handleStoryChange('founderNarrative', e.target.value)}
               />
+              <span className={styles.hint}>Displays in the prominent founder block on the About Us page.</span>
             </div>
 
             <div className={styles.field}>
-              <label>Homes Furnished Count</label>
+              <label>Metric: Homes Furnished</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. 12,000+"
+                placeholder="e.g. 12,500+"
                 value={formData.story.metrics.homesFurnished}
                 onChange={(e) => handleMetricChange('homesFurnished', e.target.value)}
               />
             </div>
 
             <div className={styles.field}>
-              <label>Pincodes Served Count</label>
+              <label>Metric: Pincodes Served</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. 180+"
+                placeholder="e.g. 19,000+"
                 value={formData.story.metrics.pincodesServed}
                 onChange={(e) => handleMetricChange('pincodesServed', e.target.value)}
               />
             </div>
 
             <div className={styles.field}>
-              <label>Customer Satisfaction Rating</label>
+              <label>Metric: Customer Satisfaction Rate</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="e.g. 4.9 / 5.0"
+                placeholder="e.g. 98.4%"
                 value={formData.story.metrics.satisfactionRate}
                 onChange={(e) => handleMetricChange('satisfactionRate', e.target.value)}
               />
             </div>
 
-            <div className={`${styles.field} ${styles.gridFull}`}>
-              <label>Founder Note / Brand Narrative</label>
-              <textarea
-                className={styles.textarea}
-                placeholder="A genuine note from the founders on purpose, quality, and the idea of home."
-                value={formData.story.founderNarrative}
-                onChange={(e) => handleStoryChange('founderNarrative', e.target.value)}
+            <div className={styles.field}>
+              <label>Partner Appliance Brands</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Bosch, Siemens, Faber, Hafele, Kaff"
+                value={formData.story.partnerBrands}
+                onChange={(e) => handleStoryChange('partnerBrands', e.target.value)}
               />
+              <span className={styles.hint}>Comma-separated list of certified appliance brand partners.</span>
             </div>
           </div>
         </section>
       )}
 
-      {/* Store Feature Status Preview */}
-      <section className={styles.card}>
-        <div className={styles.cardHead}>
-          <h2>Live Store Status Preview</h2>
-          <p>
-            The store avoids showing placeholder or developer text. Sections render only when
-            backed by real configuration:
-          </p>
-        </div>
-
-        <div className={styles.previewGrid}>
-          <div className={styles.previewCard}>
-            <span>Phone Support</span>
-            <b>{formData.contact.phone || 'Not configured'}</b>
-            <div
-              className={`${styles.previewStatus} ${
-                hasConfig(formData.contact.phone) ? styles.activeStatus : styles.hiddenStatus
-              }`}
-            >
-              {hasConfig(formData.contact.phone) ? '● Visible on site' : '○ Hidden on site'}
-            </div>
-          </div>
-
-          <div className={styles.previewCard}>
-            <span>WhatsApp Chat</span>
-            <b>{formData.contact.whatsapp || 'Not configured'}</b>
-            <div
-              className={`${styles.previewStatus} ${
-                hasConfig(formData.contact.whatsapp) ? styles.activeStatus : styles.hiddenStatus
-              }`}
-            >
-              {hasConfig(formData.contact.whatsapp) ? '● Visible on site' : '○ Hidden on site'}
-            </div>
-          </div>
-
-          <div className={styles.previewCard}>
-            <span>Experience Showroom</span>
-            <b>{formData.showroom.addressLine1 ? `${formData.showroom.city || 'Showroom'}` : 'Not configured'}</b>
-            <div
-              className={`${styles.previewStatus} ${
-                hasConfig(formData.showroom.addressLine1) ? styles.activeStatus : styles.hiddenStatus
-              }`}
-            >
-              {hasConfig(formData.showroom.addressLine1) ? '● Visible on site' : '○ Hidden on site'}
-            </div>
-          </div>
-
-          <div className={styles.previewCard}>
-            <span>Brand Proof Metrics</span>
-            <b>{formData.story.metrics.homesFurnished ? `${formData.story.metrics.homesFurnished} homes` : 'Not configured'}</b>
-            <div
-              className={`${styles.previewStatus} ${
-                hasConfig(formData.story.metrics.homesFurnished) ? styles.activeStatus : styles.hiddenStatus
-              }`}
-            >
-              {hasConfig(formData.story.metrics.homesFurnished) ? '● Visible on site' : '○ Hidden on site'}
-            </div>
-          </div>
-        </div>
-      </section>
-
+      {/* Sticky Actions Bar */}
       <div className={styles.actionsBar}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {isDirty && (
+            <span style={{ fontSize: 12, color: '#b78103', fontWeight: 700 }}>
+              ● You have unsaved changes
+            </span>
+          )}
+        </div>
+
         <div className={styles.actionGroup}>
           <button
             type="button"
             className={styles.saveBtn}
-            disabled={isSaving}
+            disabled={isSaving || !isDirty}
             onClick={handleSave}
           >
-            {isSaving ? 'Saving settings…' : 'Save Store Settings'}
+            {isSaving ? 'Saving changes…' : 'Save Changes'}
+          </button>
+          <button
+            type="button"
+            className={styles.secondaryBtn}
+            onClick={handleReset}
+            disabled={isSaving || !isDirty}
+          >
+            Reset
           </button>
           <button
             type="button"

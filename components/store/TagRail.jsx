@@ -3,8 +3,16 @@
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import { MapPin, Clock, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { formatPriceSafe } from '@/lib/pricing';
+import {
+  getLocalizedProductName,
+  getLocalizedCategoryName,
+  getLocalizedBadge,
+  getLocalizedWarranty,
+  getLocalizedSectionHeader
+} from '@/lib/translate-backend';
 import styles from './TagRail.module.css';
 
 function extractWarrantyShort(warranty, type) {
@@ -24,6 +32,7 @@ export default function TagRail({
   viewAllHref = '/collections/best-selling',
   products = []
 }) {
+  const locale = useSelector((state) => state.ui?.locale || 'en');
   const railRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -60,18 +69,21 @@ export default function TagRail({
     return null;
   }
 
+  const localizedEyebrow = getLocalizedSectionHeader(eyebrow, locale);
+  const localizedTitle = getLocalizedSectionHeader(title, locale);
+
   return (
-    <section className={styles.section} aria-label={title}>
+    <section className={styles.section} aria-label={localizedTitle}>
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.titleGroup}>
-            {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
-            <h2 className={styles.title}>{title}</h2>
+            {localizedEyebrow && <span className={styles.eyebrow}>{localizedEyebrow}</span>}
+            <h2 className={styles.title}>{localizedTitle}</h2>
           </div>
           {viewAllHref && (
             <Link href={viewAllHref} className={styles.viewAllLink}>
-              <span>View All</span>
+              <span>{locale === 'hi' ? 'सभी देखें' : 'View All'}</span>
               <ArrowRight size={14} />
             </Link>
           )}
@@ -85,18 +97,22 @@ export default function TagRail({
             onScroll={checkScroll}
             tabIndex={0}
             role="region"
-            aria-label={`${title} product carousel`}
+            aria-label={`${localizedTitle} product carousel`}
           >
             {validProducts.map((product) => {
               const formattedPrice = formatPriceSafe(product.price);
-              const warrantyLabel = extractWarrantyShort(product.warranty, product.type);
-              const categoryLabel = product.categoryLabel || product.category || 'Home';
-              const badge = product.badgeText || (
+              const warrantyRaw = extractWarrantyShort(product.warranty, product.type);
+              const warrantyLabel = getLocalizedWarranty(warrantyRaw, locale);
+              const categoryRaw = product.categoryLabel || product.category || 'Home';
+              const categoryLabel = getLocalizedCategoryName(categoryRaw, locale);
+              const badgeRaw = product.badgeText || (
                 tag === 'best-selling' ? 'Best Seller' :
                 tag === 'popular' ? 'Popular' :
                 tag === 'trending' ? 'Trending' :
                 tag === 'new-arrival' ? 'New' : 'Featured'
               );
+              const badge = getLocalizedBadge(badgeRaw, locale);
+              const productName = getLocalizedProductName(product, locale);
 
               // Use primary gallery image or fallback
               const imageUrl = product.image || product.gallery?.[0]?.url || '/placeholder.png';
@@ -111,7 +127,7 @@ export default function TagRail({
                     {badge && <span className={styles.badge}>{badge}</span>}
                     <Image
                       src={imageUrl}
-                      alt={product.name}
+                      alt={productName}
                       fill
                       sizes="(max-width: 640px) 200px, 260px"
                       className={styles.image}
@@ -131,12 +147,14 @@ export default function TagRail({
 
                   {/* Soft tinted price strip - Never ₹0 or missing */}
                   <div className={styles.priceStrip}>
-                    <span className={styles.priceText}>{formattedPrice} onwards</span>
+                    <span className={styles.priceText}>
+                      {formattedPrice} {locale === 'hi' ? 'से शुरू' : 'onwards'}
+                    </span>
                   </div>
 
                   {/* Two-line clamped title */}
                   <div className={styles.details}>
-                    <h3 className={styles.productName}>{product.name}</h3>
+                    <h3 className={styles.productName}>{productName}</h3>
                   </div>
                 </Link>
               );

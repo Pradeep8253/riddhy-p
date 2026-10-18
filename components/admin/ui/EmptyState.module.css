@@ -1,0 +1,54 @@
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.iconCircle {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(31, 95, 46, 0.08);
+  color: var(--admin-accent-green, #1b5e20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0 0 6px;
+  font: 600 16px var(--font-display, serif);
+  color: var(--admin-text-main, #10261a);
+}
+
+.description {
+  margin: 0 0 20px;
+  max-width: 360px;
+  font-size: 13px;
+  color: var(--admin-text-muted, #617064);
+  line-height: 1.5;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--admin-accent-green, #1b5e20);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+  background: #144719;
+  transform: translateY(-1px);
+}

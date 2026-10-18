@@ -5,12 +5,14 @@ import { removeWishlistItem } from '@/store/wishlistSlice';
 import ProductGrid from '@/components/ui/ProductGrid';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
+import { tr } from '@/lib/i18n';
 import styles from './WishlistClient.module.css';
 
 export default function WishlistClient() {
   const items = useSelector((state) => state.wishlist.items);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const authChecked = useSelector((state) => state.auth?.checked);
+  const locale = useSelector((state) => state.ui?.locale || 'en');
   const dispatch = useDispatch();
 
   if (authChecked && !isAuthenticated) {
@@ -19,9 +21,9 @@ export default function WishlistClient() {
         <div className={styles.heart}>
           <Icon name="heart" size={44} />
         </div>
-        <h2>Sign in to view your wishlist</h2>
-        <p>Sign in to your Riddhy account to save pieces, track prices, and view your curated collection across devices.</p>
-        <Button href="/account?redirect=/wishlist">Sign in to your account</Button>
+        <h2>{tr(locale, 'signInWishlist')}</h2>
+        <p>{tr(locale, 'signInWishlistSubtitle')}</p>
+        <Button href="/account?redirect=/wishlist">{tr(locale, 'signInToAccount')}</Button>
       </div>
     );
   }
@@ -32,9 +34,9 @@ export default function WishlistClient() {
         <div className={styles.heart}>
           <Icon name="heart" size={44} />
         </div>
-        <h2>Keep the pieces you love close.</h2>
-        <p>Save a product to your wishlist and return when you’re ready.</p>
-        <Button href="/furniture">Browse furniture</Button>
+        <h2>{tr(locale, 'wishlistTitle')}</h2>
+        <p>{tr(locale, 'wishlistSubtitle')}</p>
+        <Button href="/furniture">{tr(locale, 'browseFurniture')}</Button>
       </div>
     );
   }
@@ -43,13 +45,13 @@ export default function WishlistClient() {
     <div>
       <div className={styles.top}>
         <span>
-          {items.length} saved {items.length === 1 ? 'piece' : 'pieces'}
+          {items.length} {locale === 'hi' ? 'पसंदीदा उत्पाद' : items.length === 1 ? 'saved piece' : 'saved pieces'}
         </span>
         <button
           type="button"
           onClick={() => items.forEach((item) => dispatch(removeWishlistItem(item.slug)))}
         >
-          Clear wishlist
+          {tr(locale, 'clearWishlist')}
         </button>
       </div>
       <ProductGrid products={items} />
