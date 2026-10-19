@@ -13,7 +13,11 @@
     "seed": "node scripts/seed.js",
     "migrate": "node scripts/migrate-crm-upgrade.js",
     "seed:crm": "node scripts/seed-demo-crm.js",
-    "assets:check": "node scripts/check-assets.js"
+    "assets:check": "node scripts/check-assets.js",
+    "test": "node scripts/run-all-tests.js"
+  },
+  "imports": {
+    "@/*": "./*"
   },
   "dependencies": {
     "@react-three/drei": "10.7.6",
@@ -36,6 +40,7 @@
     "next": "^16.4.2",
     "nodemailer": "7.0.9",
     "pdfkit": "^0.20.2",
+    "qrcode": "^1.5.4",
     "raw-loader": "4.0.2",
     "razorpay": "2.9.5",
     "react": "19.2.0",

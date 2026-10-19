@@ -79,7 +79,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
             {locale === 'hi' ? (
               <>विवाह पैकेज, <em>सुखी जीवन</em> की शुरुआत।</>
             ) : (
-              <>Marriage Packages, <em>considered</em> for real life.</>
+              <>Wedding Packages, <em>considered</em> for real life.</>
             )}
           </h1>
           <p>

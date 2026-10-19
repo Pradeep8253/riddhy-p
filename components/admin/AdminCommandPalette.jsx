@@ -81,19 +81,62 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
+  // Legacy and synonym aliases for search
+  const NAV_ALIASES = {
+    '/admin': ['executive', 'overview', 'home', 'kpis', 'summary'],
+    '/admin/orders': ['shipments', 'fulfillment', 'deliveries', 'sales'],
+    '/admin/invoices': ['gst', 'tax', 'bill', 'receipt', 'gstin'],
+    '/admin/catalogue': ['products', 'skus', 'items', 'furnishings', 'appliances'],
+    '/admin/merchandising': ['rails', 'collections', 'featured', 'homepage rows'],
+    '/admin/packages': ['marriage', 'wedding', 'bundles', 'combos'],
+    '/admin/inventory': ['stock', 'warehouses', 'levels', 'storage', 'depot'],
+    '/admin/leads': ['inquiries', 'inbox', 'consultations', 'messages', 'contact'],
+    '/admin/warranty': ['claims', 'portal', 'rma', 'repairs', 'coverage'],
+    '/admin/cms': ['campaigns', 'banners', 'promotions', 'marketing'],
+    '/admin/settings?tab=company': ['legal', 'gstin', 'pan', 'invoice settings', 'bank'],
+    '/admin/settings?tab=care': ['support', 'care', 'customer service'],
+    '/admin/settings?tab=showroom': ['store location', 'experience centre'],
+    '/admin/settings?tab=consultation': ['capacity', 'slots', 'appointments'],
+    '/admin/settings?tab=story': ['about', 'proof', 'milestones']
+  };
+
   // Filter navigation links locally
   const qLower = query.toLowerCase().trim();
   const matchedNav = [];
-  ADMIN_NAV_CONFIG.forEach((group) => {
-    group.items.forEach((item) => {
-      if (!qLower || item.label.toLowerCase().includes(qLower) || group.title.toLowerCase().includes(qLower)) {
+
+  ADMIN_NAV_CONFIG.forEach((node) => {
+    if (node.type === 'link') {
+      const aliases = NAV_ALIASES[node.href] || [];
+      const matches =
+        !qLower ||
+        node.label.toLowerCase().includes(qLower) ||
+        aliases.some((a) => a.includes(qLower));
+
+      if (matches) {
         matchedNav.push({
-          group: group.title,
-          label: item.label,
-          href: item.href
+          group: 'Main',
+          label: node.label,
+          href: node.href
         });
       }
-    });
+    } else if (node.type === 'group' && Array.isArray(node.items)) {
+      node.items.forEach((item) => {
+        const aliases = NAV_ALIASES[item.href] || [];
+        const matches =
+          !qLower ||
+          item.label.toLowerCase().includes(qLower) ||
+          node.title.toLowerCase().includes(qLower) ||
+          aliases.some((a) => a.includes(qLower));
+
+        if (matches) {
+          matchedNav.push({
+            group: node.title,
+            label: item.label,
+            href: item.href
+          });
+        }
+      });
+    }
   });
 
   const handleSelect = (href) => {
@@ -116,7 +159,7 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
           <input
             ref={inputRef}
             className={styles.searchInput}
-            placeholder="Search orders, catalogue pieces, inquiries, or navigate..."
+            placeholder="Search orders, products, customers…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -241,7 +284,7 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
             <span><kbd>↵</kbd> Select</span>
             <span><kbd>ESC</kbd> Close</span>
           </div>
-          <span>RF Riddhy · Operations CRM</span>
+          <span>RF Riddhy · Admin Console</span>
         </div>
       </div>
     </div>

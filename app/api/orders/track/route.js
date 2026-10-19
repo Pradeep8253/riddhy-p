@@ -1,8 +1,14 @@
 import { connectDB } from '@/lib/db';
-import { Order } from '@/models/index';
+import { Order, Invoice } from '@/models/index';
 import { ok, fail } from '@/lib/http';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function GET(request) {
+  const ip = getClientIp(request);
+  if (!rateLimit(`track:ip:${ip}`, { limit: 20, windowMs: 60000 }).allowed) {
+    return fail('Too many tracking requests. Please wait a moment before trying again.', 429);
+  }
+
   const { searchParams } = new URL(request.url);
   const orderNumber = (searchParams.get('orderNumber') || '').trim();
   const phone = (searchParams.get('phone') || '').trim().replace(/[^0-9]/g, '');
@@ -47,7 +53,11 @@ export async function GET(request) {
       });
     }
 
+    // Check for generated tax invoice
+    const invoice = await Invoice.findOne({ orderId: order._id }).select('invoiceNumber createdAt').lean();
+
     const safeData = {
+      orderId: String(order._id),
       orderNumber: order.orderNumber,
       createdAt: order.createdAt,
       status: order.status || 'confirmed',
@@ -63,7 +73,11 @@ export async function GET(request) {
       shippingState: order.shippingAddress?.state || 'Delhi',
       carrier: order.tracking?.carrier || 'Delhivery Express Logistics',
       trackingNumber: order.tracking?.trackingNumber || `TRK${order.orderNumber?.replace(/[^0-9]/g, '') || '987654'}`,
-      timeline: order.timeline && order.timeline.length > 0 ? order.timeline : defaultTimeline
+      timeline: order.timeline && order.timeline.length > 0 ? order.timeline : defaultTimeline,
+      invoice: invoice ? {
+        invoiceNumber: invoice.invoiceNumber,
+        downloadUrl: `/api/orders/${order._id}/invoice.pdf?orderNumber=${encodeURIComponent(order.orderNumber)}&phone=${encodeURIComponent(phone)}`
+      } : null
     };
 
     return ok(safeData);

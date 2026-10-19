@@ -1,46 +1,69 @@
 /**
  * Centralized Admin CRM Navigation Configuration
- * Defines all primary navigation groups, sub-menus, icon identifiers,
- * route paths, role-based permission requirements, and live badge keys.
+ * Defines all primary navigation groups, flat links, section dividers,
+ * icon identifiers, route paths, role-based permission requirements, and live badge keys.
+ *
+ * Supported node types:
+ * - 'section': Uppercase divider header (OPERATIONS / CATALOGUE / GROWTH / SYSTEM)
+ * - 'link': Flat standalone link (no accordion dropdown)
+ * - 'group': Multi-item accordion dropdown (2+ items)
  */
 
 export const ADMIN_NAV_CONFIG = [
   {
-    id: 'dashboard',
-    title: 'Dashboard',
-    icon: 'dashboard',
-    roles: ['admin', 'super-admin', 'support', 'warehouse', 'marketing', 'finance'],
-    items: [
-      {
-        id: 'overview',
-        label: 'Executive Overview',
-        href: '/admin',
-        roles: ['admin', 'super-admin', 'support', 'warehouse', 'marketing', 'finance']
-      }
-    ]
+    type: 'section',
+    id: 'sec-operations',
+    title: 'Operations',
+    roles: ['admin', 'super-admin', 'support', 'warehouse', 'marketing', 'finance']
   },
   {
+    type: 'link',
+    id: 'dashboard',
+    label: 'Dashboard',
+    href: '/admin',
+    icon: 'dashboard',
+    roles: ['admin', 'super-admin', 'support', 'warehouse', 'marketing', 'finance']
+  },
+  {
+    type: 'group',
     id: 'sales',
-    title: 'Sales & Revenue',
+    title: 'Sales',
     icon: 'sales',
     roles: ['admin', 'super-admin', 'finance', 'warehouse', 'support'],
     items: [
       {
         id: 'orders',
-        label: 'Orders & Shipments',
+        label: 'Orders',
         href: '/admin/orders',
         badgeKey: 'pendingOrders',
         roles: ['admin', 'super-admin', 'finance', 'warehouse', 'support']
       },
       {
         id: 'invoices',
-        label: 'GST Invoices',
+        label: 'Invoices',
         href: '/admin/invoices',
         roles: ['admin', 'super-admin', 'finance']
       }
     ]
   },
   {
+    type: 'link',
+    id: 'inventory',
+    label: 'Inventory',
+    href: '/admin/inventory',
+    icon: 'inventory',
+    badgeKey: 'lowStock',
+    roles: ['admin', 'super-admin', 'warehouse', 'support']
+  },
+
+  {
+    type: 'section',
+    id: 'sec-catalogue',
+    title: 'Catalogue',
+    roles: ['admin', 'super-admin', 'marketing', 'warehouse']
+  },
+  {
+    type: 'group',
     id: 'catalogue',
     title: 'Catalogue',
     icon: 'catalogue',
@@ -48,110 +71,104 @@ export const ADMIN_NAV_CONFIG = [
     items: [
       {
         id: 'products',
-        label: 'Products & SKUs',
+        label: 'Products',
         href: '/admin/catalogue',
         roles: ['admin', 'super-admin', 'marketing', 'warehouse']
       },
       {
         id: 'merchandising',
-        label: 'Merchandising Rails',
+        label: 'Collections',
         href: '/admin/merchandising',
+        tooltip: 'Homepage product rows and tag collections',
         roles: ['admin', 'super-admin', 'marketing']
       },
       {
         id: 'packages',
-        label: 'Marriage Packages',
+        label: 'Wedding Packages',
         href: '/admin/packages',
-        badge: 'Special',
         roles: ['admin', 'super-admin', 'marketing']
       }
     ]
   },
+
   {
-    id: 'inventory',
-    title: 'Inventory & Supply',
-    icon: 'inventory',
-    roles: ['admin', 'super-admin', 'warehouse', 'support'],
-    items: [
-      {
-        id: 'stock',
-        label: 'Stock Levels & Warehouses',
-        href: '/admin/inventory',
-        badgeKey: 'lowStock',
-        roles: ['admin', 'super-admin', 'warehouse', 'support']
-      }
-    ]
+    type: 'section',
+    id: 'sec-customers',
+    title: 'Growth & Care',
+    roles: ['admin', 'super-admin', 'support', 'marketing']
   },
   {
+    type: 'group',
     id: 'customers',
-    title: 'Customers & Care',
+    title: 'Customers',
     icon: 'customers',
     roles: ['admin', 'super-admin', 'support', 'marketing'],
     items: [
       {
         id: 'inquiries',
-        label: 'Customer Inquiries & Leads',
+        label: 'Enquiries',
         href: '/admin/leads',
         badgeKey: 'newLeads',
         roles: ['admin', 'super-admin', 'support', 'marketing']
       },
       {
         id: 'warranty',
-        label: 'Warranty & Claims',
+        label: 'Warranty Claims',
         href: '/admin/warranty',
-        badge: 'Portal',
         badgeKey: 'openClaims',
         roles: ['admin', 'super-admin', 'support']
       }
     ]
   },
   {
-    id: 'marketing',
-    title: 'Marketing & CMS',
+    type: 'link',
+    id: 'cms',
+    label: 'Banners & Offers',
+    href: '/admin/cms',
     icon: 'marketing',
-    roles: ['admin', 'super-admin', 'marketing'],
-    items: [
-      {
-        id: 'cms',
-        label: 'CMS & Campaigns',
-        href: '/admin/cms',
-        roles: ['admin', 'super-admin', 'marketing']
-      }
-    ]
+    roles: ['admin', 'super-admin', 'marketing']
+  },
+
+  {
+    type: 'section',
+    id: 'sec-system',
+    title: 'System',
+    roles: ['admin', 'super-admin']
   },
   {
+    type: 'group',
     id: 'settings',
-    title: 'Settings & Config',
+    title: 'Settings',
     icon: 'settings',
     roles: ['admin', 'super-admin'],
     items: [
       {
         id: 'company',
-        label: 'Company & Invoice',
+        label: 'Company & Billing',
         href: '/admin/settings?tab=company',
         roles: ['admin', 'super-admin']
       },
       {
-        id: 'store',
-        label: 'Store & Customer Care',
+        id: 'care',
+        label: 'Store & Support',
         href: '/admin/settings?tab=care',
         roles: ['admin', 'super-admin']
       },
       {
         id: 'showroom',
-        label: 'Showroom Location',
+        label: 'Showroom',
         href: '/admin/settings?tab=showroom',
         roles: ['admin', 'super-admin']
       },
       {
         id: 'consultation',
-        label: 'Consultation Capacity',
+        label: 'Consultation Slots',
         href: '/admin/settings?tab=consultation',
         roles: ['admin', 'super-admin']
       },
       {
-        id: 'brandStory',
-        label: 'Brand Story & Proof',
+        id: 'story',
+        label: 'Brand Story',
         href: '/admin/settings?tab=story',
         roles: ['admin', 'super-admin']
       }

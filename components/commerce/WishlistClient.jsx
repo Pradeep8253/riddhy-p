@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeWishlistItem } from '@/store/wishlistSlice';
 import ProductGrid from '@/components/ui/ProductGrid';
@@ -14,6 +15,24 @@ export default function WishlistClient() {
   const authChecked = useSelector((state) => state.auth?.checked);
   const locale = useSelector((state) => state.ui?.locale || 'en');
   const dispatch = useDispatch();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className={styles.empty}>
+        <div className={styles.heart}>
+          <Icon name="heart" size={44} />
+        </div>
+        <h2>{tr(locale, 'wishlistTitle')}</h2>
+        <p>{tr(locale, 'wishlistSubtitle')}</p>
+        <Button href="/furniture">{tr(locale, 'browseFurniture')}</Button>
+      </div>
+    );
+  }
 
   if (authChecked && !isAuthenticated) {
     return (

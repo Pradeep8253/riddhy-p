@@ -222,9 +222,55 @@ riddhy-pradeep/
 4. Set Razorpay webhook target to `https://your-domain.com/api/webhooks/razorpay`.
 
 ### Docker
-The repository includes a ready-to-run `Dockerfile` and `docker-compose.yml`:
+The repository includes a production multi-stage `Dockerfile` and `docker-compose.yml` with replica-set MongoDB:
 ```bash
 docker compose up --build -d
+```
+
+### System Health Check
+The application provides an unauthenticated container health check endpoint:
+```bash
+curl http://localhost:3000/api/health
+```
+Returns system uptime, memory usage, MongoDB latency, and readyState.
+
+---
+
+## 🧾 Statutory GST Invoicing Architecture
+
+The platform implements statutory Indian Goods and Services Tax (GST) invoicing according to CBIC guidelines:
+
+1. **Gap-Free Sequential Numbering**:
+   - Financial year derived strictly from invoice issuance date (`April 1 – March 31`).
+   - Format: `INV-{PREFIX}-{YY}-{YY+1}-{SEQ:6}` (e.g. `INV-RF-26-27-000001`).
+   - Atomic sequence counter powered by MongoDB `$inc` prevents numbering gaps under concurrency.
+2. **Paise-Integer Tax Arithmetic**:
+   - Internal math converts amounts to integer paise (`Math.round(amount * 100)`).
+   - Intra-state (Seller state = Buyer state): 50% CGST + 50% SGST with odd-paise absorption on the last line.
+   - Inter-state (Seller state ≠ Buyer state): 100% IGST based on official 36 State/UT codes.
+3. **Multi-Rate GST & Service Tax**:
+   - Standard products inherit category rates (Furniture 18%, ACs 28%, Electronics 18%).
+   - Delivery (`SAC 9965`) and Installation (`SAC 9987`) services are fully taxable lines.
+4. **Credit Notes**:
+   - Itemized or lump-sum tax reversals tied to original invoice reference.
+   - Cumulative credit limit guard prevents issuing credit exceeding original invoice grand total.
+5. **GSTR-1 & Tally Integration**:
+   - Admin Invoices console provides instant GSTR-1 Excel/CSV exports formatted for direct portal upload and Tally ERP import.
+
+---
+
+## 💾 MongoDB Backup & Restore Runbook
+
+### Hot Backup (mongodump)
+```bash
+# Dump complete rf-riddhy database with replica-set oplog
+mongodump --uri="mongodb://localhost:27017/rf-riddhy?replicaSet=rs0" --gzip --archive="./backup-$(date +%F).archive"
+```
+
+### Point-in-Time Restore (mongorestore)
+```bash
+# Restore from archive into target database
+mongorestore --uri="mongodb://localhost:27017/rf-riddhy?replicaSet=rs0" --drop --gzip --archive="./backup-YYYY-MM-DD.archive"
 ```
 
 ---

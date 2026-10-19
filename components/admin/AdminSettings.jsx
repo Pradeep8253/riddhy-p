@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Icon from '@/components/ui/Icon';
+import { GST_STATES, getStateCode } from '@/lib/gst-states';
+import { validateGSTIN, validatePAN } from '@/config/gstConfig';
 import styles from './AdminSettings.module.css';
 
 const GSTIN_REGEX = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/;
@@ -23,6 +25,7 @@ export default function AdminSettings() {
   const [toast, setToast] = useState(null);
   const [source, setSource] = useState('database');
   const [warehouses, setWarehouses] = useState([]);
+  const [companyValidation, setCompanyValidation] = useState({ valid: true, errors: [] });
 
   const [formData, setFormData] = useState({
     company: {
@@ -32,6 +35,7 @@ export default function AdminSettings() {
       pan: '',
       state: 'Delhi',
       stateCode: '07',
+      jurisdictionCity: 'New Delhi',
       addressLine1: '',
       addressLine2: '',
       city: 'New Delhi',
@@ -39,16 +43,22 @@ export default function AdminSettings() {
       phone: '',
       email: '',
       invoicePrefix: 'RF',
+      creditNotePrefix: 'CN',
       invoiceTiming: 'paid',
       defaultWarehouseCode: 'DELHI-01',
       currency: 'INR',
       logoUrl: '',
+      signatureUrl: '',
       website: 'https://rfriddhy.com',
-      bankName: 'HDFC Bank Ltd',
-      accountNo: '50200012345678',
-      ifsc: 'HDFC0001234',
-      upiId: 'rfriddhy@hdfcbank',
-      invoiceTerms: '1. Goods once sold are covered under RF Riddhy Care Warranty Policy.\n2. Interest @ 18% p.a. will be charged if payment is delayed beyond due date.\n3. Subject to Delhi jurisdiction.',
+      bankName: '',
+      accountNo: '',
+      ifsc: '',
+      upiId: '',
+      defaultGstRate: 18,
+      deliverySac: '9965',
+      installationSac: '9987',
+      returnPolicyText: 'Returns accepted within 7 days in original packaging subject to inspection.',
+      invoiceTerms: '1. Goods once sold are covered under RF Riddhy Care Warranty Policy.\n2. Interest @ 18% p.a. will be charged if payment is delayed beyond due date.\n3. All disputes subject to local jurisdiction.',
       invoiceFooterNote: 'Thank you for choosing RF Riddhy. For support & warranty, email care@riddhy.in or WhatsApp +91 99342 08035.',
       nextInvoiceNumber: 1
     },
@@ -114,6 +124,9 @@ export default function AdminSettings() {
       if (companyData?.success && companyData.data?.warehouses) {
         setWarehouses(companyData.data.warehouses);
       }
+      if (companyData?.data?.validation) {
+        setCompanyValidation(companyData.data.validation);
+      }
 
       if (data.success && data.data) {
         const d = data.data.settings || data.data;
@@ -124,27 +137,34 @@ export default function AdminSettings() {
           company: {
             legalName: comp.legalName || 'RF Riddhy Furniture & Appliances Pvt Ltd',
             tradeName: comp.tradeName || 'RF Riddhy',
-            gstin: comp.gstin || '07AAAAA0000A1Z5',
-            pan: comp.pan || 'AAAAA0000A',
+            gstin: comp.gstin || '',
+            pan: comp.pan || '',
             state: comp.state || 'Delhi',
             stateCode: comp.stateCode || '07',
-            addressLine1: comp.addressLine1 || 'Plot 42, Okhla Industrial Area Phase III',
+            jurisdictionCity: comp.jurisdictionCity || 'New Delhi',
+            addressLine1: comp.addressLine1 || '',
             addressLine2: comp.addressLine2 || '',
             city: comp.city || 'New Delhi',
-            pincode: comp.pincode || '110020',
+            pincode: comp.pincode || '',
             phone: comp.phone || '+91 98765 43210',
             email: comp.email || 'billing@rfriddhy.com',
             invoicePrefix: comp.invoicePrefix || 'RF',
+            creditNotePrefix: comp.creditNotePrefix || 'CN',
             invoiceTiming: comp.invoiceTiming || 'paid',
             defaultWarehouseCode: comp.defaultWarehouseCode || 'DELHI-01',
             currency: comp.currency || 'INR',
             logoUrl: comp.logoUrl || '',
+            signatureUrl: comp.signatureUrl || '',
             website: comp.website || 'https://rfriddhy.com',
-            bankName: comp.bankName || 'HDFC Bank Ltd',
-            accountNo: comp.accountNo || '50200012345678',
-            ifsc: comp.ifsc || 'HDFC0001234',
-            upiId: comp.upiId || 'rfriddhy@hdfcbank',
-            invoiceTerms: comp.invoiceTerms || '1. Goods once sold are covered under RF Riddhy Care Warranty Policy.\n2. Interest @ 18% p.a. will be charged if payment is delayed beyond due date.\n3. Subject to Delhi jurisdiction.',
+            bankName: comp.bankName || '',
+            accountNo: comp.accountNo || '',
+            ifsc: comp.ifsc || '',
+            upiId: comp.upiId || '',
+            defaultGstRate: comp.defaultGstRate ?? 18,
+            deliverySac: comp.deliverySac || '9965',
+            installationSac: comp.installationSac || '9987',
+            returnPolicyText: comp.returnPolicyText || 'Returns accepted within 7 days in original packaging subject to inspection.',
+            invoiceTerms: comp.invoiceTerms || '1. Goods once sold are covered under RF Riddhy Care Warranty Policy.\n2. Interest @ 18% p.a. will be charged if payment is delayed beyond due date.\n3. All disputes subject to local jurisdiction.',
             invoiceFooterNote: comp.invoiceFooterNote || 'Thank you for choosing RF Riddhy. For support & warranty, email care@riddhy.in or WhatsApp +91 99342 08035.',
             nextInvoiceNumber: comp.nextInvoiceNumber || 1
           },
@@ -489,11 +509,32 @@ export default function AdminSettings() {
               <span className={styles.hint}>High-resolution vector or PNG logo for generated PDF invoices.</span>
             </div>
 
+            <div className={styles.field}>
+              <label>Authorized Signatory Digital Signature URL (Optional)</label>
+              <input
+                type="url"
+                className={styles.input}
+                placeholder="https://.../signature.png"
+                value={formData.company.signatureUrl}
+                onChange={(e) => handleCompanyChange('signatureUrl', e.target.value)}
+              />
+              <span className={styles.hint}>Transparent PNG signature image embedded on official PDF tax invoices.</span>
+            </div>
+
             {/* Subsection 2: Tax Credentials */}
             <div className={styles.subSection}>
               <h3 className={styles.subSectionTitle}>2. Tax Credentials (GSTIN & PAN)</h3>
               <p className={styles.subSectionDesc}>Used for Goods & Services Tax calculations, TDS, and credit note issuance.</p>
             </div>
+
+            {!companyValidation.valid && (
+              <div className={styles.gridFull} style={{ background: '#fef2f2', border: '1px solid #f87171', borderRadius: 8, padding: '12px 16px', color: '#991b1b', fontSize: 13, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Icon name="alert-circle" size={18} />
+                <div>
+                  <strong>Missing Tax Requirements:</strong> Invoices cannot be issued until the following are completed: {companyValidation.errors?.join(', ')}.
+                </div>
+              </div>
+            )}
 
             <div className={styles.field}>
               <label>GSTIN (15 characters)</label>
@@ -506,9 +547,9 @@ export default function AdminSettings() {
                 maxLength={15}
               />
               <span className={styles.hint}>Mandatory 15-character Goods & Services Tax Identification Number.</span>
-              {formData.company.gstin && !GSTIN_REGEX.test(formData.company.gstin) && (
+              {formData.company.gstin && (!GSTIN_REGEX.test(formData.company.gstin) || !validateGSTIN(formData.company.gstin)) && (
                 <span className={styles.validationWarning}>
-                  <Icon name="alert-circle" size={13} /> Invalid GSTIN format (must be 15 chars, e.g. 07AAAAA0000A1Z5)
+                  <Icon name="alert-circle" size={13} /> Invalid GSTIN format or checksum. Verify the 15-digit code.
                 </span>
               )}
             </div>
@@ -524,7 +565,7 @@ export default function AdminSettings() {
                 maxLength={10}
               />
               <span className={styles.hint}>10-character corporate PAN for tax withholding and TDS reconciliation.</span>
-              {formData.company.pan && !PAN_REGEX.test(formData.company.pan) && (
+              {formData.company.pan && (!PAN_REGEX.test(formData.company.pan) || !validatePAN(formData.company.pan)) && (
                 <span className={styles.validationWarning}>
                   <Icon name="alert-circle" size={13} /> Invalid PAN format (must be 10 chars, e.g. AAAAA0000A)
                 </span>
@@ -533,13 +574,28 @@ export default function AdminSettings() {
 
             <div className={styles.field}>
               <label>State (Place of Supply Source)</label>
-              <input
-                type="text"
-                className={styles.input}
-                placeholder="e.g. Delhi"
+              <select
+                className={styles.select}
                 value={formData.company.state}
-                onChange={(e) => handleCompanyChange('state', e.target.value)}
-              />
+                onChange={(e) => {
+                  const selectedState = e.target.value;
+                  const code = getStateCode(selectedState);
+                  setFormData((prev) => ({
+                    ...prev,
+                    company: {
+                      ...prev.company,
+                      state: selectedState,
+                      stateCode: code
+                    }
+                  }));
+                }}
+              >
+                {GST_STATES.map((s) => (
+                  <option key={s.code} value={s.name}>
+                    {s.name} ({s.code}) — {s.type}
+                  </option>
+                ))}
+              </select>
               <span className={styles.hint}>Used to evaluate whether delivery is intra-state (CGST+SGST) or inter-state (IGST).</span>
             </div>
 
@@ -559,6 +615,18 @@ export default function AdminSettings() {
                   <Icon name="alert-circle" size={13} /> Mismatch: State code '{formData.company.stateCode}' does not match GSTIN prefix '{gstinPrefix}'
                 </span>
               )}
+            </div>
+
+            <div className={styles.field}>
+              <label>Jurisdiction City</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. New Delhi"
+                value={formData.company.jurisdictionCity}
+                onChange={(e) => handleCompanyChange('jurisdictionCity', e.target.value)}
+              />
+              <span className={styles.hint}>City printed under dispute terms: "Subject to [City] jurisdiction only".</span>
             </div>
 
             {/* Subsection 3: Place of Business Address */}
@@ -636,6 +704,18 @@ export default function AdminSettings() {
             </div>
 
             <div className={styles.field}>
+              <label>Credit Note Prefix</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="e.g. CN"
+                value={formData.company.creditNotePrefix}
+                onChange={(e) => handleCompanyChange('creditNotePrefix', e.target.value.toUpperCase())}
+              />
+              <span className={styles.hint}>Generates format: [Prefix]/YYYY-YY/XXXX (e.g. CN/2026-27/0001).</span>
+            </div>
+
+            <div className={styles.field}>
               <label>Invoice Generation Timing</label>
               <select
                 className={styles.select}
@@ -646,6 +726,57 @@ export default function AdminSettings() {
                 <option value="dispatch">On Dispatch: Generate when warehouse ships order</option>
               </select>
               <span className={styles.hint}>Defines the automated event that triggers invoice creation.</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Default GST Rate (%)</label>
+              <select
+                className={styles.select}
+                value={formData.company.defaultGstRate}
+                onChange={(e) => handleCompanyChange('defaultGstRate', Number(e.target.value))}
+              >
+                <option value={18}>18% (Standard Furniture & Electronics)</option>
+                <option value={28}>28% (Luxury / Air Conditioners)</option>
+                <option value={12}>12% (Specified Wood Products)</option>
+                <option value={5}>5% (Essential Goods)</option>
+              </select>
+              <span className={styles.hint}>Fallback slab used if a product or service has no explicit rate set.</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Delivery / Transport SAC Code</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="9965"
+                value={formData.company.deliverySac}
+                onChange={(e) => handleCompanyChange('deliverySac', e.target.value)}
+              />
+              <span className={styles.hint}>Services Accounting Code for delivery/shipping charges (default 9965).</span>
+            </div>
+
+            <div className={styles.field}>
+              <label>Installation Service SAC Code</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="9987"
+                value={formData.company.installationSac}
+                onChange={(e) => handleCompanyChange('installationSac', e.target.value)}
+              />
+              <span className={styles.hint}>Services Accounting Code for assembly and installation (default 9987).</span>
+            </div>
+
+            <div className={`${styles.field} ${styles.gridFull}`}>
+              <label>Return &amp; Refund Policy Note</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="Returns accepted within 7 days in original packaging..."
+                value={formData.company.returnPolicyText}
+                onChange={(e) => handleCompanyChange('returnPolicyText', e.target.value)}
+              />
+              <span className={styles.hint}>Printed under the terms section of generated invoices and credit notes.</span>
             </div>
 
             <div className={`${styles.field} ${styles.gridFull}`}>
@@ -803,11 +934,22 @@ export default function AdminSettings() {
               {/* Invoice Header */}
               <div className={styles.previewHeader}>
                 <div className={styles.previewSeller}>
-                  <h3>{formData.company.tradeName || 'RF Riddhy'}</h3>
+                  {formData.company.logoUrl ? (
+                    <img
+                      src={formData.company.logoUrl}
+                      alt="Company Logo"
+                      style={{ maxHeight: 40, marginBottom: 8, objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <h3>{formData.company.tradeName || 'RF Riddhy'}</h3>
+                  )}
                   <p><strong>{formData.company.legalName || 'RF Riddhy Furniture & Appliances Pvt Ltd'}</strong></p>
-                  <p>{formData.company.addressLine1 || 'Plot 42, Okhla Industrial Area Phase III'}{formData.company.addressLine2 ? `, ${formData.company.addressLine2}` : ''}</p>
-                  <p>{formData.company.city || 'New Delhi'}, {formData.company.state || 'Delhi'} - {formData.company.pincode || '110020'}</p>
-                  <p>GSTIN: <strong>{formData.company.gstin || '07AAAAA0000A1Z5'}</strong> | PAN: <strong>{formData.company.pan || 'AAAAA0000A'}</strong></p>
+                  <p>{formData.company.addressLine1 || <span style={{ color: '#dc2626' }}>[Address Line 1 Required]</span>}{formData.company.addressLine2 ? `, ${formData.company.addressLine2}` : ''}</p>
+                  <p>{formData.company.city || 'New Delhi'}, {formData.company.state || 'Delhi'} - {formData.company.pincode || <span style={{ color: '#dc2626' }}>[Pincode Required]</span>}</p>
+                  <p>
+                    GSTIN: <strong>{formData.company.gstin || <span style={{ color: '#dc2626' }}>[Not Set — Required]</span>}</strong>
+                    {' '}| PAN: <strong>{formData.company.pan || <span style={{ color: '#dc2626' }}>[Not Set — Required]</span>}</strong>
+                  </p>
                   <p>Phone: {formData.company.phone || '+91 98765 43210'} | Email: {formData.company.email || 'billing@rfriddhy.com'}</p>
                 </div>
 
@@ -835,8 +977,8 @@ export default function AdminSettings() {
                   <b>{formData.company.state || 'Delhi'} ({formData.company.stateCode || '07'})</b>
                 </div>
                 <div className={styles.previewMetaItem}>
-                  <span>Warehouse Hub:</span>
-                  <b>{formData.company.defaultWarehouseCode || 'DELHI-01'}</b>
+                  <span>Jurisdiction:</span>
+                  <b>{formData.company.jurisdictionCity || 'New Delhi'}</b>
                 </div>
               </div>
 
@@ -845,11 +987,11 @@ export default function AdminSettings() {
                 <thead>
                   <tr>
                     <th>Item Description</th>
-                    <th>HSN</th>
+                    <th>HSN/SAC</th>
                     <th>Qty</th>
                     <th>Unit Price</th>
                     <th>Taxable Val</th>
-                    <th>GST (18%)</th>
+                    <th>GST ({formData.company.defaultGstRate || 18}%)</th>
                     <th>Total</th>
                   </tr>
                 </thead>
@@ -866,6 +1008,18 @@ export default function AdminSettings() {
                     <td>₹7,627.12 (9% CGST + 9% SGST)</td>
                     <td><strong>₹50,000.00</strong></td>
                   </tr>
+                  <tr>
+                    <td>
+                      <b>Standard Assembly &amp; Installation</b>
+                      <div style={{ fontSize: 9, color: '#777' }}>White-glove room assembly service</div>
+                    </td>
+                    <td>{formData.company.installationSac || '9987'}</td>
+                    <td>1</td>
+                    <td>₹847.46</td>
+                    <td>₹847.46</td>
+                    <td>₹152.54 (9% CGST + 9% SGST)</td>
+                    <td><strong>₹1,000.00</strong></td>
+                  </tr>
                 </tbody>
               </table>
 
@@ -874,20 +1028,34 @@ export default function AdminSettings() {
                 <div>
                   <div className={styles.previewBankBox}>
                     <h5>Bank Details for NEFT / RTGS / IMPS</h5>
-                    <p>Bank: <strong>{formData.company.bankName || 'HDFC Bank Ltd'}</strong></p>
-                    <p>A/C No: <strong>{formData.company.accountNo || '50200012345678'}</strong></p>
-                    <p>IFSC: <strong>{formData.company.ifsc || 'HDFC0001234'}</strong></p>
-                    <p>UPI ID: <strong>{formData.company.upiId || 'rfriddhy@hdfcbank'}</strong></p>
+                    <p>Bank: <strong>{formData.company.bankName || 'Not configured'}</strong></p>
+                    <p>A/C No: <strong>{formData.company.accountNo || 'Not configured'}</strong></p>
+                    <p>IFSC: <strong>{formData.company.ifsc || 'Not configured'}</strong></p>
+                    <p>UPI ID: <strong>{formData.company.upiId || 'Not configured'}</strong></p>
                   </div>
 
                   <div className={styles.previewTerms} style={{ marginTop: 12 }}>
-                    <h5>Terms & Conditions:</h5>
+                    <h5>Terms &amp; Conditions (Subject to {formData.company.jurisdictionCity || 'New Delhi'} jurisdiction):</h5>
                     <p style={{ whiteSpace: 'pre-line' }}>{formData.company.invoiceTerms || '1. Goods once sold are covered under warranty.'}</p>
+                    {formData.company.returnPolicyText && (
+                      <p style={{ marginTop: 4, fontWeight: 600, color: '#1b5e20' }}>
+                        Return Policy: {formData.company.returnPolicyText}
+                      </p>
+                    )}
                     <p style={{ marginTop: 6, fontStyle: 'italic' }}>{formData.company.invoiceFooterNote}</p>
                   </div>
                 </div>
 
                 <div className={styles.previewSignatory}>
+                  {formData.company.signatureUrl ? (
+                    <img
+                      src={formData.company.signatureUrl}
+                      alt="Digital Signature"
+                      style={{ maxHeight: 45, marginBottom: 4, objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <div style={{ height: 35 }} />
+                  )}
                   <span>For {formData.company.tradeName || 'RF Riddhy'}</span>
                   <b>Authorized Signatory</b>
                   <div style={{ fontSize: 9, color: '#888', marginTop: 4 }}>

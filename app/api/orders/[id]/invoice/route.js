@@ -2,7 +2,6 @@ import { connectDB } from '@/lib/db';
 import { Order, Invoice } from '@/models/index';
 import { getSession } from '@/lib/auth';
 import { fail } from '@/lib/http';
-import { formatINR } from '@/lib/demo-data';
 import { generateInvoiceForOrder } from '@/lib/invoice-generator';
 import { generateInvoicePdfBuffer } from '@/lib/invoice-pdf';
 
@@ -16,6 +15,13 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function formatInr(num) {
+  return 'Rs. ' + Number(num || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
 export async function GET(request, { params }) {
   const session = await getSession();
   if (!session) return fail('Sign in to view this invoice.', 401);
@@ -23,6 +29,7 @@ export async function GET(request, { params }) {
   const { id } = await params;
   const url = new URL(request.url);
   const format = url.searchParams.get('format');
+  const download = url.searchParams.get('download') === '1';
 
   try {
     await connectDB();
@@ -39,17 +46,21 @@ export async function GET(request, { params }) {
     // Ensure formal GST Invoice is generated
     let invoice = await Invoice.findOne({ orderId: id }).lean();
     if (!invoice) {
-      invoice = await generateInvoiceForOrder(id);
+      invoice = await generateInvoiceForOrder(id, { actor: session });
     }
 
     // PDF format response
     if (format === 'pdf') {
       const pdfBuffer = await generateInvoicePdfBuffer(invoice);
+      const cleanNumber = (invoice.invoiceNumber || 'INV').replace(/[\/\\?%*:|"<>]/g, '_');
+      const filename = `Invoice_${cleanNumber}.pdf`;
+      const dispositionType = download ? 'attachment' : 'inline';
+
       return new Response(pdfBuffer, {
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `inline; filename="Invoice-${invoice.invoiceNumber.replace(/\//g, '-')}.pdf"`,
-          'Cache-Control': 'no-store'
+          'Content-Disposition': `${dispositionType}; filename="${filename}"`,
+          'Cache-Control': 'private, no-transform, max-age=86400'
         }
       });
     }
@@ -67,10 +78,10 @@ export async function GET(request, { params }) {
         <td>${idx + 1}</td>
         <td><strong>${escapeHtml(item.name)}</strong><small>SKU: ${escapeHtml(item.sku)} | HSN: ${escapeHtml(item.hsn)}</small></td>
         <td>${item.qty}</td>
-        <td>${escapeHtml(formatINR(item.unitPrice))}</td>
-        <td>${escapeHtml(formatINR(item.taxableValue))}</td>
-        <td>${isInterState ? `IGST 18%<br>${escapeHtml(formatINR(item.igstAmount))}` : `GST 18%<br>${escapeHtml(formatINR((item.cgstAmount || 0) + (item.sgstAmount || 0)))}`}</td>
-        <td style="text-align: right;">${escapeHtml(formatINR(item.lineTotal))}</td>
+        <td>${escapeHtml(formatInr(item.unitPrice))}</td>
+        <td>${escapeHtml(formatInr(item.taxableValue))}</td>
+        <td>${isInterState ? `IGST ${item.gstRate || 18}%<br>${escapeHtml(formatInr(item.igstAmount))}` : `CGST+SGST ${item.gstRate || 18}%<br>${escapeHtml(formatInr((item.cgstAmount || 0) + (item.sgstAmount || 0)))}`}</td>
+        <td style="text-align: right;">${escapeHtml(formatInr(item.lineTotal))}</td>
       </tr>
     `).join('');
 
@@ -127,27 +138,27 @@ export async function GET(request, { params }) {
         <p><strong>Invoice No:</strong> ${escapeHtml(invoice.invoiceNumber)}</p>
         <p><strong>Invoice Date:</strong> ${formattedDate}</p>
         <p><strong>Order No:</strong> ${escapeHtml(invoice.orderNumber)}</p>
-        <p><strong>Place of Supply:</strong> ${escapeHtml(invoice.placeOfSupply || 'West Bengal')}</p>
+        <p><strong>Place of Supply:</strong> ${escapeHtml(invoice.placeOfSupply || seller?.state)}</p>
       </div>
     </div>
 
     <div class="parties">
       <div class="party-box">
         <h3>Sold By / Supplier</h3>
-        <p><strong>${escapeHtml(seller?.name || 'RF Riddhy Living Solutions Private Limited')}</strong></p>
-        <p>${escapeHtml(seller?.address || 'Plot 42, Salt Lake Sector V')}</p>
-        <p>${escapeHtml(seller?.city || 'Kolkata')}, ${escapeHtml(seller?.state || 'West Bengal')} - ${escapeHtml(seller?.pincode || '700091')}</p>
-        <p><strong>GSTIN:</strong> ${escapeHtml(seller?.gstin || '19AABCR1234F1Z8')} · <strong>PAN:</strong> ${escapeHtml(seller?.pan || 'AABCR1234F')}</p>
-        <p>State Code: ${escapeHtml(seller?.stateCode || '19')} · Support: ${escapeHtml(seller?.email || 'billing@rfriddhy.com')}</p>
+        <p><strong>${escapeHtml(seller?.name || 'RF Riddhy')}</strong></p>
+        <p>${escapeHtml(seller?.address || '')}</p>
+        <p>${escapeHtml(seller?.city || '')}, ${escapeHtml(seller?.state || '')} - ${escapeHtml(seller?.pincode || '')}</p>
+        <p><strong>GSTIN:</strong> ${escapeHtml(seller?.gstin || '')} · <strong>PAN:</strong> ${escapeHtml(seller?.pan || '')}</p>
+        <p>State Code: ${escapeHtml(seller?.stateCode || '')} · Email: ${escapeHtml(seller?.email || 'billing@rfriddhy.com')}</p>
       </div>
 
       <div class="party-box">
-        <h3>Bill To / Ship To</h3>
-        <p><strong>${escapeHtml(buyer?.name || 'Customer')}</strong></p>
+        <h3>Bill To / Recipient</h3>
+        <p><strong>${escapeHtml(buyer?.isB2B ? buyer.businessName : buyer?.name)}</strong></p>
         <p>${escapeHtml(buyer?.billingAddress?.line1 || '')} ${escapeHtml(buyer?.billingAddress?.line2 || '')}</p>
         <p>${escapeHtml(buyer?.billingAddress?.city || '')}, ${escapeHtml(buyer?.state || '')} - ${escapeHtml(buyer?.billingAddress?.pincode || '')}</p>
         <p>Phone: ${escapeHtml(buyer?.phone || 'N/A')} · Email: ${escapeHtml(buyer?.email || 'N/A')}</p>
-        <p>${buyer?.gstin ? `<strong>Buyer GSTIN:</strong> ${escapeHtml(buyer.gstin)}` : 'Consumer / Unregistered Person'}</p>
+        <p>${buyer?.gstin ? `<strong>Buyer GSTIN:</strong> ${escapeHtml(buyer.gstin)} (B2B)` : 'Consumer / Unregistered Person (B2C)'}</p>
       </div>
     </div>
 
@@ -155,7 +166,7 @@ export async function GET(request, { params }) {
       <thead>
         <tr>
           <th style="width: 30px;">#</th>
-          <th>Description of Goods</th>
+          <th>Description of Goods &amp; Services</th>
           <th style="width: 40px;">Qty</th>
           <th style="width: 90px;">Rate</th>
           <th style="width: 90px;">Taxable</th>
@@ -181,56 +192,56 @@ export async function GET(request, { params }) {
       <table class="totals-table">
         <tr>
           <td>Taxable Amount:</td>
-          <td style="text-align: right;">${escapeHtml(formatINR(taxableAmount))}</td>
+          <td style="text-align: right;">${escapeHtml(formatInr(taxableAmount))}</td>
         </tr>
         ${isInterState ? `
           <tr>
-            <td>Integrated Tax (IGST 18%):</td>
-            <td style="text-align: right;">${escapeHtml(formatINR(igstTotal))}</td>
+            <td>Integrated Tax (IGST):</td>
+            <td style="text-align: right;">${escapeHtml(formatInr(igstTotal))}</td>
           </tr>
         ` : `
           <tr>
-            <td>Central Tax (CGST 9%):</td>
-            <td style="text-align: right;">${escapeHtml(formatINR(cgstTotal))}</td>
+            <td>Central Tax (CGST):</td>
+            <td style="text-align: right;">${escapeHtml(formatInr(cgstTotal))}</td>
           </tr>
           <tr>
-            <td>State Tax (SGST 9%):</td>
-            <td style="text-align: right;">${escapeHtml(formatINR(sgstTotal))}</td>
+            <td>State Tax (SGST):</td>
+            <td style="text-align: right;">${escapeHtml(formatInr(sgstTotal))}</td>
           </tr>
         `}
         ${invoice.deliveryFee > 0 ? `
           <tr>
             <td>Delivery Charges:</td>
-            <td style="text-align: right;">${escapeHtml(formatINR(invoice.deliveryFee))}</td>
+            <td style="text-align: right;">${escapeHtml(formatInr(invoice.deliveryFee))}</td>
           </tr>
         ` : ''}
         ${invoice.installationFee > 0 ? `
           <tr>
             <td>Installation Charges:</td>
-            <td style="text-align: right;">${escapeHtml(formatINR(invoice.installationFee))}</td>
+            <td style="text-align: right;">${escapeHtml(formatInr(invoice.installationFee))}</td>
           </tr>
         ` : ''}
         ${invoice.roundOff !== 0 ? `
           <tr>
             <td>Round Off:</td>
-            <td style="text-align: right;">${escapeHtml(formatINR(invoice.roundOff))}</td>
+            <td style="text-align: right;">${escapeHtml(formatInr(invoice.roundOff))}</td>
           </tr>
         ` : ''}
         <tr class="grand-total">
           <td>Total Amount:</td>
-          <td style="text-align: right;">${escapeHtml(formatINR(totalAmount))}</td>
+          <td style="text-align: right;">${escapeHtml(formatInr(totalAmount))}</td>
         </tr>
       </table>
     </div>
 
     <div class="actions-bar">
       <button class="btn btn-secondary" onclick="window.print()">Print Invoice</button>
-      <a class="btn btn-primary" href="/api/orders/${id}/invoice?format=pdf" target="_blank">Download PDF</a>
+      <a class="btn btn-primary" href="/api/orders/${id}/invoice?format=pdf&download=1">Download PDF</a>
     </div>
 
     <div class="footer">
-      <div>This is a digitally generated tax invoice. Goods are covered under RF Riddhy Care Warranty Policy.</div>
-      <div>Subject to Kolkata jurisdiction only.</div>
+      <div>${escapeHtml(invoice.terms || 'Goods covered under RF Riddhy Warranty Policy.')}</div>
+      <div>Subject to ${escapeHtml(invoice.jurisdictionCity || seller?.jurisdictionCity || 'local')} jurisdiction only.</div>
     </div>
   </div>
 </body>
@@ -244,6 +255,6 @@ export async function GET(request, { params }) {
     });
   } catch (error) {
     console.error('Invoice generation error:', error);
-    return fail('Unable to generate invoice.', 500);
+    return fail(error.message || 'Unable to generate invoice.', 400);
   }
 }

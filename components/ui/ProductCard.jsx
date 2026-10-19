@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -19,6 +19,7 @@ import {
 } from '@/lib/translate-backend';
 import Icon from './Icon';
 import QuickViewModal from './QuickViewModal';
+import { getProductWhatsAppUrl } from '@/lib/site-config';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product, compact = false }) {
@@ -33,7 +34,15 @@ export default function ProductCard({ product, compact = false }) {
   const compared = useSelector((state) =>
     state.compare.items.some((item) => item.slug === product.slug)
   );
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isWishlisted = mounted ? wishlisted : false;
+  const isCompared = mounted ? compared : false;
   const [quickViewOpen, setQuickViewOpen] = useState(false);
+  const waUrl = getProductWhatsAppUrl(product, locale);
 
   const priceFormatted = formatPriceSafe(product.price);
   const mrpFormatted = formatPriceSafe(product.mrp);
@@ -153,23 +162,33 @@ export default function ProductCard({ product, compact = false }) {
           </button>
           <button
             type="button"
-            aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-            aria-pressed={wishlisted}
+            aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            aria-pressed={isWishlisted}
             onClick={handleWishlist}
           >
             <Icon name="heart" size={18} />
           </button>
           <button
             type="button"
-            aria-label={compared ? 'Remove from compare' : 'Add to compare'}
-            aria-pressed={compared}
+            aria-label={isCompared ? 'Remove from compare' : 'Add to compare'}
+            aria-pressed={isCompared}
             onClick={() => {
               dispatch(toggleCompare(product));
-              dispatch(showToast({ message: compared ? 'Removed from compare' : 'Added to compare', kind: 'info' }));
+              dispatch(showToast({ message: isCompared ? 'Removed from compare' : 'Added to compare', kind: 'info' }));
             }}
           >
             <Icon name="compare" size={17} />
           </button>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.waControlBtn}
+            aria-label={locale === 'hi' ? `${product.name} के लिए व्हाट्सएप पर चैट करें` : `Chat on WhatsApp about ${product.name}`}
+            title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Chat on WhatsApp'}
+          >
+            <Icon name="whatsapp" size={17} color="#25D366" />
+          </a>
         </div>
       </div>
 
@@ -213,21 +232,33 @@ export default function ProductCard({ product, compact = false }) {
           </div>
         )}
 
-        <button
-          type="button"
-          className={styles.add}
-          onClick={add}
-          disabled={isOutOfStock || !hasValidPrice}
-        >
-          <span>
-            {!hasValidPrice
-              ? (locale === 'hi' ? 'अनुपलब्ध' : 'Unavailable')
-              : isOutOfStock
-              ? (locale === 'hi' ? 'स्टॉक में नहीं' : 'Out of stock')
-              : (locale === 'hi' ? 'बैग में जोड़ें' : 'Add to bag')}
-          </span>
-          <Icon name="arrow" size={17} />
-        </button>
+        <div className={styles.cardActions}>
+          <button
+            type="button"
+            className={styles.add}
+            onClick={add}
+            disabled={isOutOfStock || !hasValidPrice}
+          >
+            <span>
+              {!hasValidPrice
+                ? (locale === 'hi' ? 'अनुपलब्ध' : 'Unavailable')
+                : isOutOfStock
+                ? (locale === 'hi' ? 'स्टॉक में नहीं' : 'Out of stock')
+                : (locale === 'hi' ? 'बैग में जोड़ें' : 'Add to bag')}
+            </span>
+            <Icon name="arrow" size={17} />
+          </button>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.waCardBtn}
+            aria-label={locale === 'hi' ? `${product.name} के लिए व्हाट्सएप पर चैट करें` : `Inquire about ${product.name} on WhatsApp`}
+            title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
+          >
+            <Icon name="whatsapp" size={18} color="#25D366" />
+          </a>
+        </div>
       </div>
 
       {quickViewOpen && (

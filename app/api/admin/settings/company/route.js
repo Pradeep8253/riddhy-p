@@ -5,8 +5,10 @@ import { requireAdmin } from "@/lib/roles";
 import { ok, fail, jsonBody } from "@/lib/http";
 import {
   getCompanySettings,
+  validateCompanyForInvoicing,
   invalidateCompanySettingsCache,
 } from "@/lib/company-settings";
+import { validateGSTIN, validatePAN } from "@/config/gstConfig";
 
 const GSTIN_REGEX = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/;
 const PAN_REGEX = /^[A-Z]{5}\d{4}[A-Z]$/;
@@ -19,16 +21,19 @@ const companySettingsSchema = z
     gstin: z
       .string()
       .trim()
-      .regex(GSTIN_REGEX, "Invalid GSTIN format (e.g. 07AAAAA0000A1Z5)"),
+      .regex(GSTIN_REGEX, "Invalid GSTIN format (e.g. 07AAAAA0000A1Z5)")
+      .refine(validateGSTIN, "Invalid GSTIN checksum or structure"),
     pan: z
       .string()
       .trim()
-      .regex(PAN_REGEX, "Invalid PAN format (e.g. AAAAA0000A)"),
+      .regex(PAN_REGEX, "Invalid PAN format (e.g. AAAAA0000A)")
+      .refine(validatePAN, "Invalid PAN structure"),
     state: z.string().min(2, "State is required").max(60),
     stateCode: z
       .string()
       .trim()
       .regex(/^\d{2}$/, "State code must be exactly 2 digits (e.g. 07)"),
+    jurisdictionCity: z.string().min(2, "Jurisdiction city is required").max(100).default("New Delhi"),
     addressLine1: z.string().min(5, "Address Line 1 is required").max(250),
     addressLine2: z.string().max(250).optional().default(""),
     city: z.string().min(2, "City is required").max(80),
@@ -39,10 +44,12 @@ const companySettingsSchema = z
     phone: z.string().trim().min(8, "Valid contact phone is required").max(25),
     email: z.string().trim().email("Valid billing email is required"),
     invoicePrefix: z.string().trim().min(1).max(10).default("RF"),
+    creditNotePrefix: z.string().trim().min(1).max(10).default("CN"),
     invoiceTiming: z.enum(["paid", "dispatch"]).default("paid"),
     defaultWarehouseCode: z.string().trim().min(2).max(30).default("DELHI-01"),
     currency: z.string().trim().length(3).default("INR"),
     logoUrl: z.string().trim().url().or(z.literal("")).optional().default(""),
+    signatureUrl: z.string().trim().url().or(z.literal("")).optional().default(""),
     website: z
       .string()
       .trim()
@@ -54,6 +61,10 @@ const companySettingsSchema = z
     accountNo: z.string().trim().max(50).optional().default(""),
     ifsc: z.string().trim().max(20).optional().default(""),
     upiId: z.string().trim().max(50).optional().default(""),
+    defaultGstRate: z.coerce.number().min(0).max(100).default(18),
+    deliverySac: z.string().trim().default("9965"),
+    installationSac: z.string().trim().default("9987"),
+    returnPolicyText: z.string().max(1000).optional().default("Returns accepted within 7 days in original packaging subject to inspection."),
     invoiceTerms: z.string().max(2000).optional().default(""),
     invoiceFooterNote: z.string().max(500).optional().default(""),
     nextInvoiceNumber: z.coerce.number().int().min(1).optional().default(1),
@@ -80,6 +91,7 @@ export async function GET() {
   try {
     await connectDB();
     const settings = await getCompanySettings();
+    const validation = validateCompanyForInvoicing(settings);
     const warehouseDocs = await Warehouse.find({ active: true })
       .select("code name city")
       .lean()
@@ -105,7 +117,7 @@ export async function GET() {
             },
           ];
 
-    return ok({ settings, warehouses });
+    return ok({ settings, validation, warehouses });
   } catch (err) {
     return fail(`Failed to fetch company settings: ${err.message}`, 500);
   }

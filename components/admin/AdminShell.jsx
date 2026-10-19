@@ -1,27 +1,27 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   LayoutDashboard,
   ShoppingBag,
   MessageSquare,
   Layers,
   Boxes,
-  ShieldCheck,
   Megaphone,
   Settings,
   Search,
   ExternalLink,
-  ArrowUpRight,
   ChevronDown,
   Menu,
   X,
   PanelLeftClose,
   PanelLeftOpen,
   Sun,
-  Moon
+  Moon,
+  LogOut,
+  User
 } from 'lucide-react';
 import { ADMIN_NAV_CONFIG } from '@/config/adminNav';
 import AdminCommandPalette from './AdminCommandPalette';
@@ -51,8 +51,14 @@ function NavIcon({ name }) {
   }
 }
 
-export default function AdminShell({ children, session }) {
+function formatBadge(count) {
+  if (!count || count <= 0) return null;
+  return count > 99 ? '99+' : String(count);
+}
+
+function AdminShellInner({ children, session }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [busy, setBusy] = useState(false);
@@ -61,6 +67,9 @@ export default function AdminShell({ children, session }) {
   const [openGroups, setOpenGroups] = useState({});
   const [isCmdOpen, setIsCmdOpen] = useState(false);
   const [theme, setTheme] = useState('light');
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
+
   const [liveBadges, setLiveBadges] = useState({
     pendingOrders: 0,
     lowStock: 0,
@@ -106,27 +115,45 @@ export default function AdminShell({ children, session }) {
     });
   };
 
-  // Fetch live badges once
+  // Real live badges: lightweight endpoint, 60s server cache, 60s visibility-aware polling
   useEffect(() => {
-    const fetchBadges = async () => {
+    let timer = null;
+
+    const fetchCounts = async () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
       try {
-        const res = await fetch('/api/admin/dashboard?range=30d');
-        const json = await res.json();
-        if (res.ok && json.success) {
-          const k = json.data?.kpis || {};
-          setLiveBadges({
-            pendingOrders: k.totalOrders ? Math.round(k.totalOrders * 0.2) : 0,
-            lowStock: k.lowStockCount || 0,
-            openClaims: k.openClaims || 0,
-            newLeads: 0
-          });
+        const res = await fetch('/api/admin/nav-counts');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            setLiveBadges({
+              pendingOrders: json.data.pendingOrders || 0,
+              lowStock: json.data.lowStock || 0,
+              openClaims: json.data.openClaims || 0,
+              newLeads: json.data.newLeads || 0
+            });
+          }
         }
       } catch {
         // silent
       }
     };
 
-    fetchBadges();
+    fetchCounts();
+
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        fetchCounts();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    timer = setInterval(fetchCounts, 60000);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, []);
 
   // Listen for custom palette open event
@@ -139,37 +166,134 @@ export default function AdminShell({ children, session }) {
   // Close mobile drawer on route change
   useEffect(() => {
     setMobileSidebarOpen(false);
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
-  // Filter groups and items by user role
-  const allowedGroups = useMemo(() => {
+  // Lock body scroll and trap Esc key when mobile sidebar is open
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    if (mobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileSidebarOpen) {
+        setMobileSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileSidebarOpen]);
+
+  // Close topbar user menu on outside click or Esc
+  useEffect(() => {
+    if (!userMenuOpen) return;
+
+    const handleClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [userMenuOpen]);
+
+  // Precise active check: pathname AND tab query param
+  const isLinkActive = (href) => {
+    const [targetPath, targetQuery] = href.split('?');
+    if (pathname !== targetPath) return false;
+
+    if (targetPath === '/admin/settings') {
+      const currentTab = searchParams?.get('tab') || 'company';
+      const targetTab = new URLSearchParams(targetQuery || '').get('tab') || 'company';
+      return currentTab === targetTab;
+    }
+
+    const targetParams = new URLSearchParams(targetQuery || '');
+    const targetTab = targetParams.get('tab');
+    if (targetTab) {
+      return searchParams?.get('tab') === targetTab;
+    }
+
+    return true;
+  };
+
+  // Filter nodes by role and clean empty sections
+  const allowedNodes = useMemo(() => {
     const userRole = session?.role || 'admin';
-    return ADMIN_NAV_CONFIG.filter((g) => {
-      if (g.roles && !g.roles.includes(userRole)) return false;
-      return true;
-    }).map((g) => ({
-      ...g,
-      items: g.items.filter((item) => {
-        if (item.roles && !item.roles.includes(userRole)) return false;
-        return true;
-      })
-    })).filter((g) => g.items.length > 0);
+
+    const filtered = [];
+    for (const node of ADMIN_NAV_CONFIG) {
+      if (node.roles && !node.roles.includes(userRole)) continue;
+
+      if (node.type === 'section') {
+        filtered.push({ ...node });
+      } else if (node.type === 'link') {
+        filtered.push({ ...node });
+      } else if (node.type === 'group') {
+        const allowedItems = (node.items || []).filter(
+          (item) => !item.roles || item.roles.includes(userRole)
+        );
+        if (allowedItems.length > 0) {
+          filtered.push({ ...node, items: allowedItems });
+        }
+      }
+    }
+
+    // Remove sections that have no links/groups before the next section
+    const result = [];
+    for (let i = 0; i < filtered.length; i++) {
+      const current = filtered[i];
+      if (current.type === 'section') {
+        let hasChildren = false;
+        for (let j = i + 1; j < filtered.length; j++) {
+          if (filtered[j].type === 'section') break;
+          if (filtered[j].type === 'link' || filtered[j].type === 'group') {
+            hasChildren = true;
+            break;
+          }
+        }
+        if (hasChildren) {
+          result.push(current);
+        }
+      } else {
+        result.push(current);
+      }
+    }
+
+    return result;
   }, [session?.role]);
 
-  // Auto-expand group that matches active path
+  // Auto-expand group containing the active item
   useEffect(() => {
     const newOpen = {};
-    allowedGroups.forEach((group) => {
-      const hasActive = group.items.some((item) => {
-        const itemPath = item.href.split('?')[0];
-        return pathname === itemPath;
-      });
-      if (hasActive) {
-        newOpen[group.id] = true;
+    allowedNodes.forEach((node) => {
+      if (node.type === 'group' && Array.isArray(node.items)) {
+        const hasActive = node.items.some((item) => isLinkActive(item.href));
+        if (hasActive) {
+          newOpen[node.id] = true;
+        }
       }
     });
     setOpenGroups((prev) => ({ ...prev, ...newOpen }));
-  }, [pathname, allowedGroups]);
+  }, [pathname, searchParams, allowedNodes]);
 
   const toggleGroup = (groupId) => {
     setOpenGroups((prev) => ({
@@ -204,17 +328,31 @@ export default function AdminShell({ children, session }) {
     );
   }
 
-  // Find active label for breadcrumb
-  let activePageName = 'Executive Overview';
-  for (const group of allowedGroups) {
-    for (const item of group.items) {
-      const itemBase = item.href.split('?')[0];
-      if (pathname === itemBase) {
-        activePageName = item.label;
-        break;
+  // Derive active label for breadcrumb (with smart fallback, never 'Executive Overview')
+  let activePageName = '';
+  for (const node of allowedNodes) {
+    if (node.type === 'link' && isLinkActive(node.href)) {
+      activePageName = node.label;
+      break;
+    }
+    if (node.type === 'group' && Array.isArray(node.items)) {
+      for (const item of node.items) {
+        if (isLinkActive(item.href)) {
+          activePageName = item.label;
+          break;
+        }
       }
     }
+    if (activePageName) break;
   }
+
+  if (!activePageName) {
+    const segments = pathname.split('/').filter(Boolean);
+    const lastSeg = segments[segments.length - 1] || 'dashboard';
+    activePageName = lastSeg.charAt(0).toUpperCase() + lastSeg.slice(1).replace(/[-_]/g, ' ');
+  }
+
+  const userInitials = (session?.name || session?.email || 'AD').slice(0, 2).toUpperCase();
 
   return (
     <div className={styles.crmContainer}>
@@ -234,7 +372,7 @@ export default function AdminShell({ children, session }) {
             <div className={styles.brandMark}>RF</div>
             <div className={styles.brandText}>
               <span className={styles.brandName}>RF RIDDHY</span>
-              <span className={styles.brandSubtitle}>Operations CRM</span>
+              <span className={styles.brandSubtitle}>Admin Console</span>
             </div>
           </Link>
 
@@ -258,116 +396,127 @@ export default function AdminShell({ children, session }) {
           </button>
         </div>
 
-        {/* Collapsible Accordion Navigation */}
-        <nav className={styles.sidebarNav} aria-label="Admin CRM navigation">
-          {allowedGroups.map((group) => {
-            const isGroupOpen = Boolean(openGroups[group.id]);
-            const hasActiveChild = group.items.some((item) => {
-              const itemBase = item.href.split('?')[0];
-              return pathname === itemBase;
-            });
+        {/* Structured Navigation */}
+        <nav className={styles.sidebarNav} aria-label="Admin console navigation">
+          {allowedNodes.map((node) => {
+            // Section Divider
+            if (node.type === 'section') {
+              return (
+                <div key={node.id} className={styles.navSectionHeader}>
+                  {node.title}
+                </div>
+              );
+            }
 
-            return (
-              <div key={group.id} className={styles.navGroup}>
-                <button
-                  type="button"
-                  className={`${styles.groupHeaderBtn} ${hasActiveChild ? styles.groupHeaderBtnActive : ''}`}
-                  onClick={() => {
-                    if (isMini && group.items.length === 1) {
-                      router.push(group.items[0].href);
-                    } else {
-                      toggleGroup(group.id);
-                    }
-                  }}
-                  aria-expanded={isGroupOpen}
-                  title={group.title}
+            // Flat Link (No accordion dropdown)
+            if (node.type === 'link') {
+              const isActive = isLinkActive(node.href);
+              const badgeText = node.badgeKey ? formatBadge(liveBadges[node.badgeKey]) : null;
+
+              return (
+                <Link
+                  key={node.id}
+                  href={node.href}
+                  className={`${styles.flatNavLink} ${isActive ? styles.flatNavLinkActive : ''}`}
+                  onClick={() => setMobileSidebarOpen(false)}
+                  aria-current={isActive ? 'page' : undefined}
+                  data-tooltip={node.label}
+                  title={node.label}
                 >
-                  <div className={styles.groupHeaderLeft}>
+                  <div className={styles.flatNavLinkLeft}>
                     <span className={styles.navIcon}>
-                      <NavIcon name={group.icon} />
+                      <NavIcon name={node.icon} />
                     </span>
-                    <span className={styles.groupTitleText}>{group.title}</span>
+                    <span className={styles.flatNavLinkText}>{node.label}</span>
                   </div>
-                  <ChevronDown
-                    size={14}
-                    className={`${styles.chevronIcon} ${isGroupOpen ? styles.chevronRotated : ''}`}
-                  />
-                </button>
+                  {badgeText && (
+                    <span className={`${styles.liveCountBadge} ${node.badgeKey === 'lowStock' ? styles.liveCountBadgeAlert : ''}`}>
+                      {badgeText}
+                    </span>
+                  )}
+                </Link>
+              );
+            }
 
-                {/* Sub-menu Items */}
-                {(isGroupOpen || isMini) && (
-                  <div className={`${styles.subMenuList} ${isMini ? styles.miniFlyout : ''}`}>
-                    {isMini && (
-                      <div className={styles.miniFlyoutTitle}>
-                        {group.title}
-                      </div>
-                    )}
-                    {group.items.map((item) => {
-                      const itemBase = item.href.split('?')[0];
-                      const isActive = pathname === itemBase;
-                      const badgeCount = item.badgeKey ? liveBadges[item.badgeKey] : null;
+            // Group (Multi-item accordion)
+            if (node.type === 'group') {
+              const isGroupOpen = Boolean(openGroups[node.id]);
+              const hasActiveChild = node.items.some((item) => isLinkActive(item.href));
 
-                      return (
-                        <Link
-                          key={item.id}
-                          href={item.href}
-                          className={`${styles.subNavLink} ${isActive ? styles.subNavLinkActive : ''}`}
-                          onClick={() => setMobileSidebarOpen(false)}
-                          aria-current={isActive ? 'page' : undefined}
-                          title={item.label}
-                        >
-                          <span>{item.label}</span>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                            {item.badge && <span className={styles.navBadge}>{item.badge}</span>}
-                            {badgeCount > 0 && (
-                              <span className={`${styles.liveCountBadge} ${item.badgeKey === 'lowStock' ? styles.liveCountBadgeAlert : ''}`}>
-                                {badgeCount}
-                              </span>
-                            )}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
+              return (
+                <div key={node.id} className={styles.navGroup}>
+                  <button
+                    type="button"
+                    className={`${styles.groupHeaderBtn} ${hasActiveChild ? styles.groupHeaderBtnActive : ''}`}
+                    onClick={() => toggleGroup(node.id)}
+                    aria-expanded={isGroupOpen}
+                    data-tooltip={node.title}
+                    title={node.title}
+                  >
+                    <div className={styles.groupHeaderLeft}>
+                      <span className={styles.navIcon}>
+                        <NavIcon name={node.icon} />
+                      </span>
+                      <span className={styles.groupTitleText}>{node.title}</span>
+                    </div>
+                    <ChevronDown
+                      size={14}
+                      className={`${styles.chevronIcon} ${isGroupOpen ? styles.chevronRotated : ''}`}
+                    />
+                  </button>
+
+                  {/* Sub-menu Items */}
+                  {(isGroupOpen || isMini) && (
+                    <div className={`${styles.subMenuList} ${isMini ? styles.miniFlyout : ''}`}>
+                      {isMini && (
+                        <div className={styles.miniFlyoutTitle}>
+                          {node.title}
+                        </div>
+                      )}
+                      {node.items.map((item) => {
+                        const isActive = isLinkActive(item.href);
+                        const badgeText = item.badgeKey ? formatBadge(liveBadges[item.badgeKey]) : null;
+
+                        return (
+                          <Link
+                            key={item.id}
+                            href={item.href}
+                            className={`${styles.subNavLink} ${isActive ? styles.subNavLinkActive : ''}`}
+                            onClick={() => setMobileSidebarOpen(false)}
+                            aria-current={isActive ? 'page' : undefined}
+                            title={item.tooltip || item.label}
+                          >
+                            <span>{item.label}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                              {badgeText && (
+                                <span className={`${styles.liveCountBadge} ${item.badgeKey === 'lowStock' ? styles.liveCountBadgeAlert : ''}`}>
+                                  {badgeText}
+                                </span>
+                              )}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return null;
           })}
         </nav>
 
-        {/* Sidebar Footer: Profile & Action Buttons (Non-Overlapping) */}
+        {/* Sidebar Footer: Compact status block */}
         <div className={styles.sidebarFooter}>
           <div className={styles.adminProfile} title={`${session?.name || 'Store Administrator'} (${session?.role || 'Admin'})`}>
             <div className={styles.avatar}>
-              {(session?.name || session?.email || 'AD').slice(0, 2).toUpperCase()}
+              {userInitials}
             </div>
             <div className={styles.profileInfo}>
               <b>{session?.name || 'Store Administrator'}</b>
               <span>{session?.role ? `${session.role} · Live` : 'Admin · Live'}</span>
             </div>
-          </div>
-
-          <div className={styles.sidebarActionBtns}>
-            <a
-              href="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.storeLinkBtn}
-              title="View live store in new tab"
-            >
-              <ExternalLink size={14} />
-              <span>Store</span>
-            </a>
-            <button
-              type="button"
-              className={styles.signOutBtn}
-              disabled={busy}
-              onClick={signOut}
-              title="Sign out of administration"
-            >
-              <X size={14} />
-              <span>{busy ? '...' : 'Sign out'}</span>
-            </button>
           </div>
         </div>
       </aside>
@@ -387,7 +536,7 @@ export default function AdminShell({ children, session }) {
             </button>
 
             <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-              <Link href="/admin">CRM</Link>
+              <Link href="/admin">Admin</Link>
               <span className={styles.breadcrumbSep}>/</span>
               <span className={styles.breadcrumbActive}>{activePageName}</span>
             </nav>
@@ -404,58 +553,94 @@ export default function AdminShell({ children, session }) {
             <Search size={14} strokeWidth={2} />
             <input
               type="text"
-              placeholder="Search catalogue, orders, inquiries..."
+              placeholder="Search orders, products, customers…"
               aria-label="Quick search"
               readOnly
             />
             <kbd className={styles.quickSearchKbd}>⌘K</kbd>
           </div>
 
+          {/* Topbar User Menu with Avatar Dropdown */}
           <div className={styles.topbarRight}>
-            <button
-              type="button"
-              className={styles.toolBtn || styles.topbarStoreLink}
-              onClick={toggleTheme}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                background: 'rgba(31, 95, 46, 0.06)',
-                border: '1px solid rgba(31, 95, 46, 0.15)',
-                borderRadius: '999px',
-                padding: '6px 12px',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                color: 'inherit'
-              }}
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              aria-label="Toggle dark mode"
-            >
-              {theme === 'dark' ? <Sun size={13} color="#e0a040" /> : <Moon size={13} color="#1b5e20" />}
-              <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
-            </button>
+            <div className={styles.userMenuContainer} ref={userMenuRef}>
+              <button
+                type="button"
+                className={styles.userAvatarBtn}
+                onClick={() => setUserMenuOpen((prev) => !prev)}
+                aria-expanded={userMenuOpen}
+                aria-haspopup="true"
+                aria-label="User account and settings menu"
+              >
+                <div className={styles.topbarAvatar}>
+                  {userInitials}
+                </div>
+                <span className={styles.topbarRoleBadge}>
+                  {session?.role || 'Admin'}
+                </span>
+                <ChevronDown size={13} color="#5d7565" />
+              </button>
 
-            <a
-              href="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.topbarStoreLink}
-              title="View live store in new tab"
-            >
-              <span>View Store</span>
-              <ExternalLink size={12} strokeWidth={2} />
-            </a>
+              {userMenuOpen && (
+                <div className={styles.userMenuDropdown} role="menu">
+                  <div className={styles.userMenuHeader}>
+                    <div className={styles.userMenuName}>
+                      {session?.name || session?.email || 'Administrator'}
+                    </div>
+                    <div className={styles.userMenuRole}>
+                      {session?.role ? `Role: ${session.role}` : 'Role: Admin'}
+                    </div>
+                  </div>
 
-            <button
-              type="button"
-              className={styles.signOutBtn}
-              style={{ padding: '6px 14px', borderRadius: '999px', fontSize: '11px' }}
-              disabled={busy}
-              onClick={signOut}
-            >
-              {busy ? '...' : 'Sign out'}
-            </button>
+                  <a
+                    href="/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.userMenuItem}
+                    role="menuitem"
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <div className={styles.userMenuItemLeft}>
+                      <ExternalLink size={14} />
+                      <span>View Store</span>
+                    </div>
+                    <span style={{ fontSize: 10, color: '#7b857d' }}>Tab ↗</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    className={styles.userMenuItem}
+                    role="menuitem"
+                    onClick={() => {
+                      toggleTheme();
+                      setUserMenuOpen(false);
+                    }}
+                  >
+                    <div className={styles.userMenuItemLeft}>
+                      {theme === 'dark' ? <Sun size={14} color="#d99a32" /> : <Moon size={14} color="#1b5e20" />}
+                      <span>{theme === 'dark' ? 'Light Theme' : 'Dark Theme'}</span>
+                    </div>
+                  </button>
+
+                  <div className={styles.userMenuDivider} />
+
+                  <button
+                    type="button"
+                    className={`${styles.userMenuItem} ${styles.userMenuSignOut}`}
+                    role="menuitem"
+                    disabled={busy}
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      signOut();
+                    }}
+                  >
+                    <div className={styles.userMenuItemLeft}>
+                      <LogOut size={14} />
+                      <span>{busy ? 'Signing out…' : 'Sign out'}</span>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -469,5 +654,13 @@ export default function AdminShell({ children, session }) {
       {/* Command Palette Modal */}
       <AdminCommandPalette isOpen={isCmdOpen} onClose={() => setIsCmdOpen(false)} />
     </div>
+  );
+}
+
+export default function AdminShell(props) {
+  return (
+    <Suspense fallback={null}>
+      <AdminShellInner {...props} />
+    </Suspense>
   );
 }

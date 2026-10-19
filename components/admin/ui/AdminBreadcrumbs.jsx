@@ -6,17 +6,17 @@ import Icon from '@/components/ui/Icon';
 import styles from './AdminBreadcrumbs.module.css';
 
 const ROUTE_LABELS = {
-  admin: 'Operations CRM',
-  orders: 'Orders & Shipments',
-  invoices: 'GST Invoices',
-  catalogue: 'Products & SKUs',
-  merchandising: 'Merchandising Rails',
-  packages: 'Marriage Packages',
-  inventory: 'Stock Levels',
-  leads: 'Customer Inquiries',
-  warranty: 'Warranty & Claims',
-  cms: 'CMS & Campaigns',
-  settings: 'Store Settings'
+  admin: 'Admin',
+  orders: 'Orders',
+  invoices: 'Invoices',
+  catalogue: 'Products',
+  merchandising: 'Collections',
+  packages: 'Wedding Packages',
+  inventory: 'Inventory',
+  leads: 'Enquiries',
+  warranty: 'Warranty Claims',
+  cms: 'Banners & Offers',
+  settings: 'Settings'
 };
 
 export default function AdminBreadcrumbs({ extraSegments = [] }) {

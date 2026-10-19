@@ -12,7 +12,17 @@ import { ok,fail,jsonBody } from '@/lib/http';
 import { releaseExpiredReservations } from '@/lib/inventory';
 import { rateLimit } from '@/lib/rate-limit';
 
-const reservationSchema=checkoutQuoteSchema.extend({address:addressSchema,email:z.string().email(),phone:z.string().regex(/^[6-9]\d{9}$/),notes:z.string().max(500).optional(),paymentMethod:z.enum(['razorpay','cod']).default('razorpay'),idempotencyKey:z.string().min(16).max(100).optional()});
+const reservationSchema=checkoutQuoteSchema.extend({
+  address:addressSchema,
+  email:z.string().email(),
+  phone:z.string().regex(/^[6-9]\d{9}$/),
+  notes:z.string().max(500).optional(),
+  paymentMethod:z.enum(['razorpay','cod']).default('razorpay'),
+  idempotencyKey:z.string().min(16).max(100).optional(),
+  buyerGstin:z.string().trim().max(15).optional(),
+  buyerBusinessName:z.string().trim().max(150).optional(),
+  isB2B:z.boolean().optional()
+});
 async function replayOrder(order,email,session,paymentMethod,fingerprint){
   if(String(order.email).toLowerCase()!==email.toLowerCase())return fail('This checkout key is already associated with a different email.',409);
   if(order.paymentMethod!==paymentMethod||order.checkoutFingerprint!==fingerprint)return fail('This checkout key is associated with different order details or a different payment method. Refresh checkout to continue.',409);
@@ -42,7 +52,32 @@ export async function POST(request){
       const snapshots=quote.lines.map((line,index)=>{const item=items[index];return {productId:item.productId||item._id,variantId:item.variantId||undefined,name:item.name,slug:item.slug,image:item.image,variant:item.variant,sku:item.sku,qty:line.qty,unitPrice:line.unitPrice,tax:line.tax,discount:couponDiscount?Math.round(couponDiscount*line.unitPrice*line.qty/Math.max(1,subtotal)):0,lineTotal:line.lineTotal,warrantySnapshot:item.warranty}});
       if(couponCode){const now=new Date(),coupon=await Coupon.findOne({code:couponCode,active:true}).session(dbSession);if(!coupon||coupon.startsAt&&coupon.startsAt>now||coupon.endsAt&&coupon.endsAt<=now||subtotal<Number(coupon.minCartValue||0))throw new Error('Coupon terms changed during checkout. Please review your bag.');let verifiedDiscount=coupon.kind==='percentage'?Math.round(subtotal*coupon.value/100):Number(coupon.value);if(coupon.maxDiscount)verifiedDiscount=Math.min(verifiedDiscount,coupon.maxDiscount);if(verifiedDiscount!==couponDiscount)throw new Error('Coupon discount changed during checkout. Please review your bag.');const useQuery={_id:coupon._id,active:true};if(coupon.usageLimit!=null)useQuery.usageCount={$lt:coupon.usageLimit};if(coupon.startsAt)useQuery.startsAt={$lte:now};if(coupon.endsAt)useQuery.endsAt={$gt:now};const used=await Coupon.updateOne(useQuery,{$inc:{usageCount:1}},{session:dbSession});if(!used.matchedCount)throw new Error('This coupon has reached its usage limit.');}
       const initialStatus=parsed.data.paymentMethod==='cod'?'confirmed':'reserved';
-      const [order]=await Order.create([{orderNumber:`RF${Date.now()}${randomBytes(2).toString('hex').toUpperCase()}`,checkoutKey,checkoutFingerprint,userId:account?.sub,email:parsed.data.email.toLowerCase(),phone:parsed.data.phone,paymentMethod:parsed.data.paymentMethod,status:initialStatus,paymentStatus:parsed.data.paymentMethod==='cod'?'unpaid':'pending',items:snapshots,shippingAddress:parsed.data.address,billingAddress:parsed.data.address,subtotal:quote.subtotal,tax:quote.tax,deliveryFee:quote.deliveryFee,installationFee:quote.installationFee,discount:couponDiscount,total:quote.total,couponCode,notes:parsed.data.notes,timeline:[{status:initialStatus,at:new Date(),note:parsed.data.paymentMethod==='cod'?'Cash on delivery accepted under sample pincode and order-value rules.':'Stock temporarily reserved for checkout.'}]}],{session:dbSession});
+      const [order]=await Order.create([{
+        orderNumber:`RF${Date.now()}${randomBytes(2).toString('hex').toUpperCase()}`,
+        checkoutKey,
+        checkoutFingerprint,
+        userId:account?.sub,
+        email:parsed.data.email.toLowerCase(),
+        phone:parsed.data.phone,
+        paymentMethod:parsed.data.paymentMethod,
+        status:initialStatus,
+        paymentStatus:parsed.data.paymentMethod==='cod'?'unpaid':'pending',
+        items:snapshots,
+        shippingAddress:parsed.data.address,
+        billingAddress:parsed.data.address,
+        buyerGstin:parsed.data.buyerGstin,
+        buyerBusinessName:parsed.data.buyerBusinessName,
+        isB2B:Boolean(parsed.data.buyerGstin && parsed.data.isB2B),
+        subtotal:quote.subtotal,
+        tax:quote.tax,
+        deliveryFee:quote.deliveryFee,
+        installationFee:quote.installationFee,
+        discount:couponDiscount,
+        total:quote.total,
+        couponCode,
+        notes:parsed.data.notes,
+        timeline:[{status:initialStatus,at:new Date(),note:parsed.data.paymentMethod==='cod'?'Cash on delivery accepted under sample pincode and order-value rules.':'Stock temporarily reserved for checkout.'}]
+      }],{session:dbSession});
       for(const item of items){
         const variant=await Variant.findOne({sku:item.sku,active:true}).session(dbSession);if(!variant)throw new Error(`SKU ${item.sku} is no longer available.`);
         const warehouseStocks=await Inventory.find({variantId:variant._id,available:{$gt:0}}).sort({available:-1}).session(dbSession).lean();let remaining=item.qty;

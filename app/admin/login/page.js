@@ -5,7 +5,7 @@ import { IMG } from '@/lib/images';
 import styles from './login.module.css';
 
 export const metadata = {
-  title: 'Admin sign in',
+  title: 'Admin Sign In · RF Riddhy Admin',
   robots: { index: false, follow: false }
 };
 

@@ -10,13 +10,16 @@ import { formatPriceSafe } from '@/lib/pricing';
 import { formatINR } from '@/lib/demo-data';
 import { IMG } from '@/lib/images';
 import Icon from './Icon';
+import { getProductWhatsAppUrl } from '@/lib/site-config';
 import styles from './QuickViewModal.module.css';
 
 export default function QuickViewModal({ product, onClose }) {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
+  const locale = useSelector((state) => state.ui?.locale || 'en');
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [qty, setQty] = useState(1);
+  const waUrl = getProductWhatsAppUrl(product, locale);
 
   // Gallery items
   const gallery =
@@ -131,6 +134,18 @@ export default function QuickViewModal({ product, onClose }) {
                 <span>Add to Bag</span>
                 <Icon name="bag" size={16} />
               </button>
+
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.waBtn}
+                title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
+                aria-label={locale === 'hi' ? `${product.name} के लिए व्हाट्सएप पर पूछें` : `Inquire about ${product.name} on WhatsApp`}
+              >
+                <Icon name="whatsapp" size={17} color="#ffffff" />
+                <span>{locale === 'hi' ? 'व्हाट्सएप' : 'WhatsApp'}</span>
+              </a>
             </div>
 
             <Link href={`/product/${product.slug}`} className={styles.fullDetailsLink} onClick={onClose}>

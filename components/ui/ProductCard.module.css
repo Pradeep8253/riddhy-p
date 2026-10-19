@@ -11,8 +11,11 @@
 .lowStockBadge { position:absolute; top:13px; left:13px; z-index:2; padding:5px 9px; border-radius:999px; color:#fff; background:#c25900; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; box-shadow:0 2px 6px rgba(194,89,0,0.3); }
 .demoBadge { position:absolute; left:12px; bottom:12px; padding:5px 8px; border:1px solid rgba(30,36,32,.08); border-radius:99px; color:#4a524c; background:rgba(251,248,242,.86); font-size:9px; font-weight:700; }
 .controls { position:absolute; top:12px; right:12px; display:grid; gap:7px; }
-.controls button { display:grid; width:36px; height:36px; place-items:center; border:1px solid rgba(30,36,32,.06); border-radius:50%; color:var(--rf-charcoal-900); background:rgba(255,254,250,.92); cursor:pointer; transition:color .2s,background .2s,transform .2s; }
-.controls button:hover { transform:scale(1.07); color:var(--rf-green-800); }.controls button[aria-pressed="true"] { color:#a33e34; background:#fff; }
+.controls button, .controls a { display:grid; width:36px; height:36px; place-items:center; border:1px solid rgba(30,36,32,.06); border-radius:50%; color:var(--rf-charcoal-900); background:rgba(255,254,250,.92); cursor:pointer; text-decoration:none; transition:color .2s,background .2s,transform .2s; }
+.controls button:hover, .controls a:hover { transform:scale(1.07); color:var(--rf-green-800); }
+.controls button[aria-pressed="true"] { color:#a33e34; background:#fff; }
+.controls a.waControlBtn { color:#25d366; }
+.controls a.waControlBtn:hover { background:#25d366; color:#ffffff; }
 .details { padding:16px 17px 17px; }
 .meta { overflow:hidden; color:var(--rf-green-800); font-size:9px; font-weight:900; letter-spacing:.1em; text-overflow:ellipsis; text-transform:uppercase; white-space:nowrap; }.meta span{color:var(--rf-gold-600);padding:0 3px}
 .name { display:block; margin-top:7px; font:600 17px/1.22 var(--font-ui); letter-spacing:-.035em; }
@@ -26,4 +29,10 @@
 .emiSnippet strong { color:var(--rf-forest-deep); font-weight:800; }
 .controls button.quickViewBtn { color:var(--rf-charcoal-700); }
 .controls button.quickViewBtn:hover { color:var(--rf-gold-600); background:#ffffff; }
-@media(max-width:600px){.details{padding:12px}.name{font-size:14px}.priceRow strong{font-size:14px}.tagline{display:none}.emiSnippet{display:none}.demoBadge{font-size:8px;padding:4px 7px}.controls button{width:32px;height:32px}}
+.cardActions { display:flex; align-items:stretch; gap:8px; margin-top:14px; }
+.add { flex:1; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 14px; border:1px solid var(--rf-forest-deep, #1f5f2e); border-radius:var(--radius-sm, 8px); background:var(--rf-forest-deep, #1f5f2e); color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:background .2s,transform .15s; }
+.add:hover:not(:disabled) { background:#164722; transform:translateY(-1px); }
+.add:disabled { opacity:.55; cursor:not-allowed; border-color:rgba(30,36,32,.12); background:#e8e3da; color:#767f76; }
+.waCardBtn { display:inline-flex; align-items:center; justify-content:center; width:42px; border-radius:var(--radius-sm, 8px); background:rgba(37,211,102,0.12); color:#128c7e; border:1px solid rgba(37,211,102,0.35); text-decoration:none; cursor:pointer; transition:background .2s,color .2s,transform .15s; flex-shrink:0; }
+.waCardBtn:hover { background:#25d366; color:#fff; border-color:#25d366; transform:translateY(-1px); }
+@media(max-width:600px){.details{padding:12px}.name{font-size:14px}.priceRow strong{font-size:14px}.tagline{display:none}.emiSnippet{display:none}.demoBadge{font-size:8px;padding:4px 7px}.controls button, .controls a{width:32px;height:32px}.waCardBtn{width:38px}}

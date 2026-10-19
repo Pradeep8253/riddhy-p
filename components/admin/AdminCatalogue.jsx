@@ -1,6 +1,6 @@
 "use client";
 
-import { CATEGORY_SEED } from "@/lib/demo-data";
+import { CATEGORY_SEED } from "@/config/categories";
 import { formatPriceSafe } from "@/lib/pricing";
 import {
   AlertCircle,
@@ -17,13 +17,22 @@ import {
   Upload,
   X
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./AdminCatalogue.module.css";
-import AdminImportModal from "./AdminImportModal";
 import AdminPagination from "./AdminPagination";
-import AdminProductDrawer from "./AdminProductDrawer";
 import ExportDropdown from "./ExportDropdown";
+
+const AdminProductDrawer = dynamic(() => import("./AdminProductDrawer"), {
+  ssr: false,
+  loading: () => null
+});
+
+const AdminImportModal = dynamic(() => import("./AdminImportModal"), {
+  ssr: false,
+  loading: () => null
+});
 
 const DEFAULT_COLUMNS = {
   select: true,
@@ -912,9 +921,16 @@ export default function AdminCatalogue() {
                               >
                                 {product.name}
                               </span>
-                              <span className={styles.productSku}>
-                                {product.sku || "NO-SKU"}
-                              </span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span className={styles.productSku}>
+                                  {product.sku || "NO-SKU"}
+                                </span>
+                                {!product.hsnCode && (
+                                  <span style={{ fontSize: '10px', background: '#fef3c7', color: '#92400e', padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>
+                                    Missing HSN
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </td>

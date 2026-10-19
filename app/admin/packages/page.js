@@ -1,7 +1,7 @@
 import AdminPackages from '@/components/admin/AdminPackages';
 
 export const metadata = {
-  title: 'Marriage Packages Management — Operations',
+  title: 'Wedding Packages · RF Riddhy Admin',
   robots: { index: false, follow: false }
 };
 

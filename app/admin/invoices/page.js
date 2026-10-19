@@ -1,7 +1,7 @@
 import AdminInvoices from '@/components/admin/AdminInvoices';
 
 export const metadata = {
-  title: 'GST Tax Invoices | RF Riddhy Operations',
+  title: 'Invoices · RF Riddhy Admin',
   robots: { index: false, follow: false }
 };
 

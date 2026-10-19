@@ -2,7 +2,7 @@
 
 import { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { ContactShadows, Environment, Float, PerformanceMonitor, RoundedBox } from '@react-three/drei';
+import { ContactShadows, Float, PerformanceMonitor, RoundedBox } from '@react-three/drei';
 import { MathUtils } from 'three';
 import usePerformanceTier from './usePerformanceTier';
 import CameraRail from './CameraRail';
@@ -10,6 +10,7 @@ import MonogramRF from './MonogramRF';
 import OrbitSwoosh from './OrbitSwoosh';
 import GoldDust from './GoldDust';
 import Effects from './Effects';
+import StudioEnvironment from './StudioEnvironment';
 
 function HeroDiorama() {
   const group = useRef();
@@ -48,7 +49,7 @@ export default function SceneRoot() {
     <Canvas dpr={dpr} frameloop="always" eventSource={document.body} camera={{ position: [0,0,8], fov: 37 }} gl={{ alpha: true, antialias: tier !== 'low', powerPreference: 'high-performance' }}>
       <ambientLight intensity={1.1} /><directionalLight position={[2,5,6]} intensity={2.1} color="#fff2d8" castShadow /><pointLight position={[-3,2,2]} intensity={1.3} color="#edb95e" />
       <Suspense fallback={null}>
-        <Environment preset="studio" />
+        <StudioEnvironment />
         <HeroDiorama />
         <group position={[-2.4,.18,-2]} scale={.76}><MonogramRF scale={.76} /><OrbitSwoosh position={[0,0,-.06]} scale={.88} /></group>
         <GoldDust count={particleCount} spread={5.6} />

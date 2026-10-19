@@ -24,6 +24,7 @@ import {
 } from '@/lib/translate-backend';
 import MaterialConfigurator from '@/components/three/MaterialConfigurator';
 import ExplodeView from '@/components/three/ExplodeView';
+import { getProductWhatsAppUrl } from '@/lib/site-config';
 import styles from './ProductDetailClient.module.css';
 
 const ProductModelCanvas = dynamic(() => import('./ProductModelCanvas'), {
@@ -40,6 +41,13 @@ export default function ProductDetailClient({ product, related = [] }) {
   const locale = useSelector((state) => state.ui?.locale || 'en');
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const wishlisted = useSelector((state) => Boolean(state.auth?.isAuthenticated && state.wishlist.items.some((item) => item.slug === product.slug)));
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isWishlisted = mounted ? wishlisted : false;
+  const waUrl = getProductWhatsAppUrl(product, locale);
 
   const [activeMedia, setActiveMedia] = useState(0);
   const [view, setView] = useState('photo');
@@ -316,6 +324,52 @@ export default function ProductDetailClient({ product, related = [] }) {
                   ))}
                 </div>
               )}
+
+              {/* Craftsmanship & Quality Highlights under Gallery (Fills vertical space with trust) */}
+              <div className={styles.galleryTrust}>
+                <div className={styles.galleryTrustHeading}>
+                  <span className={styles.artisanBadge}>
+                    <Icon name="check" size={14} color="#1b5e20" />
+                    {locale === 'hi' ? 'कारीगरी एवं गुणवत्ता प्रमाण' : 'Craftsmanship & Quality Assurance'}
+                  </span>
+                  <span className={styles.artisanSub}>
+                    {locale === 'hi'
+                      ? 'प्रत्येक पीस हमारी वर्कशॉप में अनुभवी बढ़इयों द्वारा जाँचा जाता है'
+                      : 'Hand-inspected in workshop before white-glove dispatch'}
+                  </span>
+                </div>
+
+                <div className={styles.trustBadges}>
+                  <div className={styles.trustBadgeItem}>
+                    <div className={styles.trustBadgeIcon}>🛡️</div>
+                    <div className={styles.trustBadgeText}>
+                      <b>{locale === 'hi' ? '10-वर्षीय वारंटी' : '10-Year Solid Warranty'}</b>
+                      <span>{locale === 'hi' ? 'सॉलिड शीशम और स्ट्रक्चरल कवरेज' : 'Comprehensive frame & structure'}</span>
+                    </div>
+                  </div>
+                  <div className={styles.trustBadgeItem}>
+                    <div className={styles.trustBadgeIcon}>🚚</div>
+                    <div className={styles.trustBadgeText}>
+                      <b>{locale === 'hi' ? 'व्हाइट-ग्लोव इंस्टॉलेशन' : 'White-Glove Assembly'}</b>
+                      <span>{locale === 'hi' ? 'रूम प्लेसमेंट और असेंबली मुफ़्त' : 'Zero-effort on-site setup'}</span>
+                    </div>
+                  </div>
+                  <div className={styles.trustBadgeItem}>
+                    <div className={styles.trustBadgeIcon}>🔄</div>
+                    <div className={styles.trustBadgeText}>
+                      <b>{locale === 'hi' ? '10-दिन ट्रांजिट गारंटी' : '10-Day Safe Transit'}</b>
+                      <span>{locale === 'hi' ? 'क्षतिमुक्त रिप्लेसमेंट सुरक्षा' : 'Zero-risk transit protection'}</span>
+                    </div>
+                  </div>
+                  <div className={styles.trustBadgeItem}>
+                    <div className={styles.trustBadgeIcon}>💳</div>
+                    <div className={styles.trustBadgeText}>
+                      <b>{locale === 'hi' ? 'नो-कॉस्ट ईएमआई' : 'No-Cost EMI Options'}</b>
+                      <span>{locale === 'hi' ? 'आसान मासिक किस्तों में उपलब्ध' : 'Available across major banks'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Product Info Section */}
@@ -437,12 +491,83 @@ export default function ProductDetailClient({ product, related = [] }) {
                   type="button"
                   className={styles.wishlistBtn}
                   onClick={handleWishlist}
-                  aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
-                  aria-pressed={wishlisted}
-                  title={wishlisted ? 'Saved in wishlist' : 'Save to wishlist'}
+                  aria-label={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+                  aria-pressed={isWishlisted}
+                  title={isWishlisted ? 'Saved in wishlist' : 'Save to wishlist'}
                 >
                   <Icon name="heart" size={20} />
                 </button>
+              </div>
+
+              {/* Premium WhatsApp VIP Concierge Card */}
+              <div className={styles.waConciergeCard}>
+                <div className={styles.waConciergeTop}>
+                  <div className={styles.waAvatarWrap}>
+                    <Icon name="whatsapp" size={24} color="#ffffff" />
+                    <span className={styles.waLiveDot} />
+                  </div>
+                  <div className={styles.waConciergeMeta}>
+                    <div className={styles.waTitleRow}>
+                      <span className={styles.waMainTitle}>
+                        {locale === 'hi' ? 'व्हाट्सएप सहायता एवं सीधा ऑर्डर' : 'Direct WhatsApp Order & Assistance'}
+                      </span>
+                      <span className={styles.waStatusBadge}>
+                        <span className={styles.waStatusGlow} />
+                        {locale === 'hi' ? 'ऑनलाइन · 5 मिनट में जवाब' : 'Online · Replies in ~5m'}
+                      </span>
+                    </div>
+                    <p className={styles.waDesc}>
+                      {locale === 'hi'
+                        ? 'असली शोरूम तस्वीरें, कस्टमाइजेशन या सीधे ऑर्डर के लिए हमारे विशेषज्ञ से बात करें।'
+                        : 'Get live showroom video, custom dimensions, fabric swatches or order directly.'}
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.waCtaBtn}
+                  aria-label={locale === 'hi' ? 'व्हाट्सएप पर चैट करें' : 'Chat & Order on WhatsApp'}
+                >
+                  <Icon name="whatsapp" size={19} color="#ffffff" />
+                  <span>{locale === 'hi' ? 'व्हाट्सएप पर ऑर्डर / बातचीत करें' : 'Order or Inquire via WhatsApp'}</span>
+                  <Icon name="arrow" size={15} color="#ffffff" />
+                </a>
+
+                <div className={styles.waPillsList}>
+                  <span className={styles.waPillPrompt}>
+                    {locale === 'hi' ? 'त्वरित प्रश्न:' : 'Quick Questions:'}
+                  </span>
+                  <a
+                    href={getProductWhatsAppUrl(product, locale, 'photos')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.waChip}
+                    title="Ask for real showroom photos"
+                  >
+                    📸 {locale === 'hi' ? 'असली तस्वीरें' : 'Real Photos / Video'}
+                  </a>
+                  <a
+                    href={getProductWhatsAppUrl(product, locale, 'custom')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.waChip}
+                    title="Ask about custom dimensions"
+                  >
+                    📐 {locale === 'hi' ? 'कस्टम साइज़' : 'Custom Dimensions'}
+                  </a>
+                  <a
+                    href={getProductWhatsAppUrl(product, locale, 'discount')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.waChip}
+                    title="Ask for best festive offer"
+                  >
+                    🏷️ {locale === 'hi' ? 'बेस्ट ऑफ़र' : 'Best Offer'}
+                  </a>
+                </div>
               </div>
 
               <p className={styles.stock}>
@@ -490,37 +615,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                 )}
               </div>
 
-              {/* Trust & Heritage Badges */}
-              <div className={styles.trustBadges}>
-                <div className={styles.trustBadgeItem}>
-                  <div className={styles.trustBadgeIcon}>🛡️</div>
-                  <div className={styles.trustBadgeText}>
-                    <b>{locale === 'hi' ? '10-वर्षीय वारंटी' : '10-Year Solid Warranty'}</b>
-                    <span>{locale === 'hi' ? 'सॉलिड शीशम और स्ट्रक्चरल कवरेज' : 'Comprehensive frame & structure'}</span>
-                  </div>
-                </div>
-                <div className={styles.trustBadgeItem}>
-                  <div className={styles.trustBadgeIcon}>🚚</div>
-                  <div className={styles.trustBadgeText}>
-                    <b>{locale === 'hi' ? 'व्हाइट-ग्लोव इंस्टॉलेशन' : 'White-Glove Assembly'}</b>
-                    <span>{locale === 'hi' ? 'रूम प्लेसमेंट और असेंबली मुफ़्त' : 'Zero-effort on-site setup'}</span>
-                  </div>
-                </div>
-                <div className={styles.trustBadgeItem}>
-                  <div className={styles.trustBadgeIcon}>🔄</div>
-                  <div className={styles.trustBadgeText}>
-                    <b>{locale === 'hi' ? '10-दिन ट्रांजिट गारंटी' : '10-Day Safe Transit'}</b>
-                    <span>{locale === 'hi' ? 'क्षतिमुक्त रिप्लेसमेंट सुरक्षा' : 'Zero-risk transit protection'}</span>
-                  </div>
-                </div>
-                <div className={styles.trustBadgeItem}>
-                  <div className={styles.trustBadgeIcon}>💳</div>
-                  <div className={styles.trustBadgeText}>
-                    <b>{locale === 'hi' ? 'नो-कॉस्ट ईएमआई' : 'No-Cost EMI Options'}</b>
-                    <span>{locale === 'hi' ? '₹1,840/माह से शुरू' : 'Available across major banks'}</span>
-                  </div>
-                </div>
-              </div>
+
 
               <div style={{
                 margin: '14px 0',
@@ -627,13 +722,23 @@ export default function ProductDetailClient({ product, related = [] }) {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.stickyWaBtn}
+            aria-label={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
+            title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
+          >
+            <Icon name="whatsapp" size={19} color="#ffffff" />
+          </a>
           <button
             type="button"
             className={styles.stickyWishlistBtn}
             onClick={handleWishlist}
-            aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
-            aria-pressed={wishlisted}
-            title={wishlisted ? 'Saved in wishlist' : 'Save to wishlist'}
+            aria-label={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+            aria-pressed={isWishlisted}
+            title={isWishlisted ? 'Saved in wishlist' : 'Save to wishlist'}
           >
             <Icon name="heart" size={18} />
           </button>

@@ -3,9 +3,9 @@ import { getLivePackages } from '@/lib/packages-data';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata = {
-  title: 'Marriage Packages & Complete Home Setups — RF Riddhy',
+  title: 'Wedding Packages & Complete Home Setups — RF Riddhy',
   description:
-    'Curated wedding furniture and home appliance packages for newly married couples. Essential, Premium, and Luxury collections with transparent pricing and customizable selections.',
+    'Curated wedding furniture and home appliance packages for newlyweds and new homes. Essential, Premium, and Luxury collections with transparent pricing, interactive package builder and customizable selections.',
   alternates: {
     canonical: `${siteConfig.siteUrl}/packages`
   }

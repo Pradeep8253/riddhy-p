@@ -304,6 +304,55 @@ export default function AdminOrderDrawer({ isOpen, order, onClose, onUpdated }) 
                     <span>Total Amount:</span>
                     <span>{formatINR(order.total)}</span>
                   </div>
+
+                  {/* Statutory Invoice Row */}
+                  <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px dashed #d5cec2', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                    <div>
+                      <div style={{ fontSize: '11px', fontWeight: 700, color: '#647065', textTransform: 'uppercase' }}>
+                        Statutory Tax Invoice
+                      </div>
+                      <div style={{ fontSize: '13px', fontWeight: 700, marginTop: 2 }}>
+                        {order.invoiceNumber ? (
+                          <span style={{ color: '#17632a' }}>{order.invoiceNumber}</span>
+                        ) : (
+                          <span style={{ color: '#925400' }}>Not Yet Generated</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      {order.invoiceNumber ? (
+                        <>
+                          <a
+                            href={`/api/orders/${orderId}/invoice.pdf`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.btnSecondary}
+                            style={{ padding: '6px 12px', fontSize: '12px' }}
+                          >
+                            <FileText size={13} /> View PDF
+                          </a>
+                          <a
+                            href={`/api/orders/${orderId}/invoice.pdf?download=1`}
+                            className={styles.btnPrimary}
+                            style={{ padding: '6px 12px', fontSize: '12px' }}
+                          >
+                            <Download size={13} /> Download
+                          </a>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          className={styles.btnPrimary}
+                          style={{ padding: '6px 12px', fontSize: '12px' }}
+                          onClick={handleGenerateInvoice}
+                          disabled={busy}
+                        >
+                          <FileText size={13} /> Generate Invoice
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 

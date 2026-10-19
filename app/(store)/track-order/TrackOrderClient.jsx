@@ -112,6 +112,30 @@ export default function TrackOrderClient() {
               <span className={styles.statusBadge}>{trackingData.status.toUpperCase()}</span>
               <h2>Order #{trackingData.orderNumber}</h2>
               <p>Placed on {new Date(trackingData.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · Total: {formatINR(trackingData.total)}</p>
+              {trackingData.invoice?.downloadUrl && (
+                <div style={{ marginTop: 10 }}>
+                  <a
+                    href={trackingData.invoice.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '7px 14px',
+                      background: '#1f5f2e',
+                      color: '#ffffff',
+                      borderRadius: 6,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      textDecoration: 'none'
+                    }}
+                  >
+                    <Icon name="receipt" size={14} />
+                    <span>Download GST Invoice ({trackingData.invoice.invoiceNumber})</span>
+                  </a>
+                </div>
+              )}
             </div>
             <div className={styles.carrierInfo}>
               <span>Carrier: <strong>{trackingData.carrier}</strong></span>

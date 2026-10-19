@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import AdminSettings from "@/components/admin/AdminSettings";
 
 export const metadata = {
-  title: "Company & Store Settings — Operations CRM",
+  title: "Settings · RF Riddhy Admin",
   robots: { index: false, follow: false },
 };
 

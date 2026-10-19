@@ -4,7 +4,6 @@ import { connectDB } from '@/lib/db';
 import { Inventory, Variant, Product, Warehouse, StockMovement, AuditLog } from '@/models/index';
 import { requireAdmin } from '@/lib/roles';
 import { ok, fail, jsonBody } from '@/lib/http';
-import { getDemoProducts } from '@/lib/demo-data';
 
 const schema = z.object({
   sku: z.string().min(3),
@@ -15,25 +14,6 @@ const schema = z.object({
   reason: z.string().min(2).max(300).default('Inventory update')
 });
 
-function getFallbackInventory() {
-  const demoProducts = getDemoProducts();
-  return demoProducts.map((p, idx) => {
-    const stock = Number(p.stock || (12 - (idx % 8)));
-    return {
-      id: `inv-demo-${p.id || idx}`,
-      sku: p.sku || `RF-SKU-${1000 + idx}`,
-      product: p.name,
-      slug: p.slug,
-      warehouseCode: 'DELHI-01',
-      available: stock,
-      reserved: idx % 3 === 0 ? 1 : 0,
-      lowStockAt: 5,
-      updatedAt: new Date().toISOString(),
-      lowStock: stock <= 5
-    };
-  });
-}
-
 export async function GET() {
   const actor = await requireAdmin(new Set(['admin', 'super-admin', 'warehouse']));
   if (!actor) return fail('Inventory permission required.', 403);
@@ -43,7 +23,7 @@ export async function GET() {
     const rows = await Inventory.find().sort({ updatedAt: -1 }).limit(500).lean();
 
     if (!rows.length) {
-      return ok(getFallbackInventory());
+      return ok([]);
     }
 
     const variantIds = [...new Set(rows.map((row) => String(row.variantId)))];
@@ -80,9 +60,8 @@ export async function GET() {
         };
       })
     );
-  } catch {
-    // Graceful offline fallback
-    return ok(getFallbackInventory());
+  } catch (error) {
+    return fail(error.message || 'Unable to retrieve inventory.', 500);
   }
 }
 
@@ -189,21 +168,8 @@ export async function PATCH(request) {
 
     return ok(result);
   } catch (error) {
-    // If DB is offline or without replica set, return calculated mock update
-    const prevAvailable = available !== undefined ? available : 12;
-    let target = prevAvailable;
-    if (action === 'in') target += quantity;
-    else if (action === 'out') target = Math.max(0, target - quantity);
-    else if (available !== undefined) target = available;
-
-    return ok({
-      sku,
-      warehouseCode: warehouseCode || 'DELHI-01',
-      available: target,
-      reserved: 0,
-      delta: target - prevAvailable,
-      demoMode: true
-    });
+    console.error('Inventory adjustment failed:', error.message);
+    return fail(error.message || 'Unable to update inventory.', 400);
   } finally {
     await session?.endSession();
   }

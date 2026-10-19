@@ -29,10 +29,13 @@
   row-gap: 20px;
 }
 .gallery {
-  position: relative;
+  position: sticky;
+  top: 96px;
+  align-self: start;
   display: grid;
   grid-template-columns: 1fr;
   align-content: start;
+  gap: 16px;
 }
 .mainMedia {
   position: relative;
@@ -381,6 +384,215 @@
   background: #fdf0ee;
   border-color: #e05244;
   color: #c93b2b;
+}
+.stickyWaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 99px;
+  background: #25d366;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.stickyWaBtn:hover {
+  background: #1eb854;
+  transform: scale(1.05);
+}
+.waConciergeCard {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.08) 0%, rgba(20, 90, 45, 0.04) 100%);
+  border: 1px solid rgba(37, 211, 102, 0.28);
+  box-shadow: 0 4px 18px rgba(18, 140, 126, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.waConciergeTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.waAvatarWrap {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+.waLiveDot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #25d366;
+  border: 2px solid #ffffff;
+  animation: pulseLive 2s infinite ease-in-out;
+}
+
+@keyframes pulseLive {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(37, 211, 102, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+.waConciergeMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.waTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.waMainTitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--rf-forest-deep);
+  letter-spacing: -0.01em;
+}
+
+.waStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(37, 211, 102, 0.16);
+  color: #0f6c38;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.waStatusGlow {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #25d366;
+}
+
+.waDesc {
+  margin: 0;
+  font-size: 11px;
+  color: #556057;
+  line-height: 1.45;
+}
+
+.waCtaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1fa851 0%, #128c7e 100%);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(18, 140, 126, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.waCtaBtn:hover {
+  background: linear-gradient(135deg, #25d366 0%, #0e7266 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(18, 140, 126, 0.38);
+}
+
+.waPillsList {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.waPillPrompt {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #5c665e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.waChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  color: #1b4d29;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.waChip:hover {
+  background: #e8f9ee;
+  border-color: #25d366;
+  color: #0d421d;
+  transform: translateY(-1px);
+}
+
+.galleryTrust {
+  margin-top: 8px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #fbf8f2;
+  border: 1px solid rgba(31, 95, 46, 0.1);
+}
+
+.galleryTrustHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(31, 95, 46, 0.08);
+}
+
+.artisanBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--rf-forest-deep);
+}
+
+.artisanSub {
+  font-size: 11px;
+  color: #69736b;
 }
 .qty {
   display: flex;

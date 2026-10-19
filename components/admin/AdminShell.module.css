@@ -728,3 +728,240 @@
   }
 }
 
+/* SECTION DIVIDERS */
+.navSectionHeader {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5d7565;
+  padding: 12px 10px 4px;
+  margin-top: 4px;
+  user-select: none;
+}
+
+.sidebarMini .navSectionHeader {
+  display: none !important;
+}
+
+/* FLAT NAV LINK (Direct link, no accordion) */
+.flatNavLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: #a7baa9;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.flatNavLink:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f7f3ea;
+}
+
+.flatNavLinkActive {
+  background: rgba(217, 154, 50, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.flatNavLinkActive .navIcon {
+  color: #d99a32 !important;
+}
+
+.flatNavLinkLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.sidebarMini .flatNavLink {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.sidebarMini .flatNavLinkLeft {
+  gap: 0;
+  justify-content: center;
+}
+
+.sidebarMini .flatNavLinkText {
+  display: none !important;
+}
+
+.sidebarMini .flatNavLinkActive {
+  background: rgba(217, 154, 50, 0.2) !important;
+  box-shadow: 0 0 0 1px rgba(217, 154, 50, 0.4);
+}
+
+.sidebarMini .flatNavLink:hover .navIcon {
+  color: #d99a32;
+}
+
+/* MINI SIDEBAR TOOLTIPS */
+.sidebarMini [data-tooltip] {
+  position: relative;
+}
+
+.sidebarMini [data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #091810;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid rgba(217, 154, 50, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  pointer-events: none;
+  animation: flyoutSlide 0.15s ease;
+}
+
+/* TOPBAR USER MENU & DROPDOWN */
+.userMenuContainer {
+  position: relative;
+}
+
+.userAvatarBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(23, 77, 53, 0.08);
+  border: 1px solid rgba(23, 77, 53, 0.16);
+  border-radius: 999px;
+  padding: 3px 10px 3px 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  color: inherit;
+}
+
+.userAvatarBtn:hover {
+  background: rgba(23, 77, 53, 0.14);
+  border-color: rgba(23, 77, 53, 0.3);
+}
+
+.topbarAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #174d35;
+  color: #f7cb7a;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 800;
+  border: 1px solid rgba(217, 154, 50, 0.3);
+}
+
+.topbarRoleBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #174d35;
+  text-transform: capitalize;
+}
+
+.userMenuDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 230px;
+  background: #ffffff;
+  border: 1px solid #e2ddd3;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 100;
+  animation: flyoutSlide 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.userMenuHeader {
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid #f0ede6;
+  margin-bottom: 4px;
+}
+
+.userMenuName {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1b2e23;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userMenuRole {
+  font-size: 10px;
+  font-weight: 700;
+  color: #7b857d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.userMenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #2e3b33;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: all 0.12s ease;
+}
+
+.userMenuItem:hover {
+  background: #f4f0e6;
+  color: #174d35;
+}
+
+.userMenuItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userMenuDivider {
+  height: 1px;
+  background: #f0ede6;
+  margin: 4px 0;
+}
+
+.userMenuSignOut {
+  color: #c9302c !important;
+}
+
+.userMenuSignOut:hover {
+  background: rgba(201, 48, 44, 0.08) !important;
+  color: #a9201c !important;
+}
+

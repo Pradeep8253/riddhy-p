@@ -89,9 +89,10 @@
 
 @media (max-width: 768px) {
   .pillWrap {
-    bottom: 74px;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
     left: 14px;
     max-width: calc(100vw - 80px);
+    z-index: 55;
   }
 }
 

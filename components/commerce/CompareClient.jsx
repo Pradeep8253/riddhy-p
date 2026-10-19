@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +38,12 @@ export default function CompareClient() {
   const locale = useSelector((state) => state.ui?.locale || "en");
   const dispatch = useDispatch();
 
-  if (!items.length) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !items.length) {
     return (
       <div className={styles.empty}>
         <h2>{locale === "hi" ? "आपकी तुलना सूची खाली है।" : "Your comparison is waiting."}</h2>

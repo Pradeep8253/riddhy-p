@@ -44,6 +44,8 @@ const AdminUserSchema = new Schema(
     },
     active: { type: Boolean, default: true },
     lastLoginAt: Date,
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockoutUntil: Date,
     savedViews: [
       {
         name: { type: String, required: true },

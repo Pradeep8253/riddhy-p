@@ -12,11 +12,28 @@ export async function POST(request){
   try {
     await connectDB();
     const admin = await AdminUser.findOne({ email: parsed.data.email.toLowerCase(), active: true });
+
+    if (admin?.lockoutUntil && admin.lockoutUntil > new Date()) {
+      const waitMin = Math.max(1, Math.ceil((admin.lockoutUntil.getTime() - Date.now()) / 60000));
+      return fail(`Account temporarily locked due to multiple failed attempts. Please retry in ${waitMin} minute(s).`, 429);
+    }
+
     if (!admin || !await verifyPassword(parsed.data.password, admin.passwordHash)) {
+      if (admin) {
+        admin.failedLoginAttempts = (admin.failedLoginAttempts || 0) + 1;
+        if (admin.failedLoginAttempts >= 5) {
+          admin.lockoutUntil = new Date(Date.now() + 15 * 60000);
+        }
+        await admin.save();
+      }
       return fail('Email or password is incorrect.', 401);
     }
+
+    admin.failedLoginAttempts = 0;
+    admin.lockoutUntil = null;
     admin.lastLoginAt = new Date();
     await admin.save();
+
     const token = await signSession(admin);
     const response = ok({ id: String(admin._id), name: admin.name, email: admin.email, role: admin.role });
     response.cookies.set(SESSION_COOKIE, token, sessionCookieOptions());
