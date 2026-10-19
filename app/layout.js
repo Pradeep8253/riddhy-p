@@ -1,4 +1,4 @@
-import { Fraunces, Manrope, Noto_Sans_Devanagari } from 'next/font/google';
+import localFont from 'next/font/local';
 import './styles/globals.css';
 import StoreProvider from '@/components/providers/StoreProvider';
 import LocaleSync from '@/components/providers/LocaleSync';
@@ -7,9 +7,26 @@ import IntroPreloader from '@/components/motion/IntroPreloader';
 import SceneRootLoader from '@/components/three/SceneRootLoader';
 import { IMG } from '@/lib/images';
 
-const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-fraunces', display: 'swap' });
-const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope', display: 'swap' });
-const noto = Noto_Sans_Devanagari({ subsets: ['devanagari'], variable: '--font-noto', display: 'swap' });
+const fraunces = localFont({
+  src: './fonts/fraunces.woff2',
+  variable: '--font-fraunces',
+  display: 'swap',
+  weight: '100 900'
+});
+
+const manrope = localFont({
+  src: './fonts/manrope.woff2',
+  variable: '--font-manrope',
+  display: 'swap',
+  weight: '200 800'
+});
+
+const noto = localFont({
+  src: './fonts/noto-sans-devanagari.woff2',
+  variable: '--font-noto',
+  display: 'swap',
+  weight: '100 900'
+});
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
