@@ -3,12 +3,15 @@
   --rf-gold-500: #e0a040;
   --rf-gold-400: #edb95e;
   --rf-gold-600: #c48620;
+  --rf-gold-700: #a86f18;
   --rf-green-700: #2e7d32;
   --rf-green-800: #1f5f2e;
+  --rf-green-900: #144621;
   --rf-green-500: #6b8f5e;
   --rf-cream-50: #fbf8f2;
   --rf-cream-100: #f3eee6;
   --rf-charcoal-900: #1e2420;
+  --rf-charcoal-700: #353c37;
   --rf-charcoal-600: #4a524c;
   --rf-forest-deep: #10261a;
   --rf-white: #fffefa;
@@ -57,6 +60,7 @@
   --rf-line: rgba(224, 160, 64, 0.18);
   --rf-cream-50: #0b140f;
   --rf-white: #111d16;
+  --rf-green-900: #0f4017;
 }
 
 @media (max-width: 720px) {

@@ -133,45 +133,16 @@ export const ADMIN_NAV_CONFIG = [
     type: 'section',
     id: 'sec-system',
     title: 'System',
-    roles: ['admin', 'super-admin']
+    permission: 'settings.view',
+    roles: ['admin', 'super-admin', 'finance']
   },
   {
-    type: 'group',
+    type: 'link',
     id: 'settings',
-    title: 'Settings',
+    label: 'Settings',
+    href: '/admin/settings',
     icon: 'settings',
-    roles: ['admin', 'super-admin'],
-    items: [
-      {
-        id: 'company',
-        label: 'Company & Billing',
-        href: '/admin/settings?tab=company',
-        roles: ['admin', 'super-admin']
-      },
-      {
-        id: 'care',
-        label: 'Store & Support',
-        href: '/admin/settings?tab=care',
-        roles: ['admin', 'super-admin']
-      },
-      {
-        id: 'showroom',
-        label: 'Showroom',
-        href: '/admin/settings?tab=showroom',
-        roles: ['admin', 'super-admin']
-      },
-      {
-        id: 'consultation',
-        label: 'Consultation Slots',
-        href: '/admin/settings?tab=consultation',
-        roles: ['admin', 'super-admin']
-      },
-      {
-        id: 'story',
-        label: 'Brand Story',
-        href: '/admin/settings?tab=story',
-        roles: ['admin', 'super-admin']
-      }
-    ]
+    permission: 'settings.view',
+    roles: ['admin', 'super-admin', 'finance']
   }
 ];

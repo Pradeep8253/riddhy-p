@@ -50,6 +50,7 @@ export default function AdminInvoices() {
   const [hasCreditNote, setHasCreditNote] = useState('all');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+  const [dateRangeError, setDateRangeError] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
@@ -68,6 +69,11 @@ export default function AdminInvoices() {
   };
 
   const fetchInvoices = useCallback(async () => {
+    if (fromDate && toDate && fromDate > toDate) {
+      showToast('From date cannot be after To date', 'error');
+      setDateRangeError('From date cannot be after To date');
+      return;
+    }
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -123,6 +129,7 @@ export default function AdminInvoices() {
     setHasCreditNote('all');
     setFromDate('');
     setToDate('');
+    setDateRangeError('');
     setPage(1);
   };
 
@@ -449,27 +456,88 @@ export default function AdminInvoices() {
               <option value="no">No Credit Note</option>
             </select>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#647065' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#647065', position: 'relative' }}>
               <span>From:</span>
               <input
                 type="date"
-                className={styles.dateInput}
+                className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ''}`}
                 value={fromDate}
+                max={toDate || undefined}
                 onChange={(e) => {
-                  setFromDate(e.target.value);
+                  const val = e.target.value;
+                  setFromDate(val);
                   setPage(1);
+                  if (toDate && val && val > toDate) {
+                    setDateRangeError('From date cannot be after To date');
+                  } else {
+                    setDateRangeError('');
+                  }
                 }}
+                title="Filter invoices from date"
               />
               <span>To:</span>
               <input
                 type="date"
-                className={styles.dateInput}
+                className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ''}`}
                 value={toDate}
+                min={fromDate || undefined}
                 onChange={(e) => {
-                  setToDate(e.target.value);
+                  const val = e.target.value;
+                  setToDate(val);
                   setPage(1);
+                  if (fromDate && val && val < fromDate) {
+                    setDateRangeError('To date cannot be earlier than From date');
+                  } else {
+                    setDateRangeError('');
+                  }
                 }}
+                title="Filter invoices to date"
               />
+              {(fromDate || toDate) && (
+                <button
+                  type="button"
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#c62828',
+                    cursor: 'pointer',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    textDecoration: 'underline',
+                    padding: '0 4px'
+                  }}
+                  onClick={() => {
+                    setFromDate('');
+                    setToDate('');
+                    setDateRangeError('');
+                    setPage(1);
+                  }}
+                  title="Clear date filter"
+                >
+                  Clear
+                </button>
+              )}
+              {dateRangeError && (
+                <span
+                  role="alert"
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 4px)',
+                    left: 0,
+                    background: '#991b1b',
+                    color: '#fff',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    padding: '3px 8px',
+                    borderRadius: '5px',
+                    whiteSpace: 'nowrap',
+                    zIndex: 20,
+                    boxShadow: '0 2px 8px rgba(153,27,27,0.2)'
+                  }}
+                >
+                  ⚠ {dateRangeError}
+                </span>
+              )}
             </div>
           </div>
         )}

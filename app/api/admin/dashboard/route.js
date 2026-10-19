@@ -37,9 +37,25 @@ export async function GET(request) {
     } else if (range === '7d') {
       durationMs = 7 * 86400000;
       startDate = new Date(now.getTime() - durationMs);
-    } else if (range === 'custom' && fromParam) {
+    } else if (range === 'custom') {
+      if (!fromParam) {
+        return fail('Start date is required for custom date range.', 400);
+      }
       startDate = new Date(fromParam);
       endDate = toParam ? new Date(toParam) : now;
+      if (isNaN(startDate.getTime())) {
+        return fail('Invalid start date provided.', 400);
+      }
+      if (isNaN(endDate.getTime())) {
+        return fail('Invalid end date provided.', 400);
+      }
+      if (startDate > endDate) {
+        return fail('Start date cannot be after end date.', 400);
+      }
+      // If end date is YYYY-MM-DD, set to 23:59:59.999 to cover full day
+      if (toParam && toParam.length === 10) {
+        endDate.setHours(23, 59, 59, 999);
+      }
       durationMs = Math.max(86400000, endDate.getTime() - startDate.getTime());
     } else {
       // Default 30d

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
@@ -157,7 +158,16 @@ export default function Header() {
         </button>
 
         <Link href="/" className={styles.brand} aria-label="RF Riddhy home">
-          <BrandMark size={50} />
+          <div className={styles.logoBadge}>
+            <Image
+              src="/riddhy-logo.jpeg"
+              alt="RF Riddhy Furniture & Appliances"
+              width={46}
+              height={46}
+              priority
+              className={styles.logoImg}
+            />
+          </div>
           <span>
             <b>RF | RIDDHY</b>
             <small>FURNITURE & HOME APPLIANCES</small>

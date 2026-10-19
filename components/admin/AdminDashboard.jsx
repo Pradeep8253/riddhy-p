@@ -52,15 +52,47 @@ export default function AdminDashboard() {
   const [range, setRange] = useState('30d');
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
+  const [customDateError, setCustomDateError] = useState('');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
 
+  const isCustomInvalid = Boolean(customFrom && customTo && customFrom > customTo);
+
+  const handleFromChange = (val) => {
+    setCustomFrom(val);
+    if (customTo && val && val > customTo) {
+      setCustomDateError('Start date cannot be after end date.');
+    } else {
+      setCustomDateError('');
+    }
+  };
+
+  const handleToChange = (val) => {
+    setCustomTo(val);
+    if (customFrom && val && customFrom > val) {
+      setCustomDateError('Start date cannot be after end date.');
+    } else {
+      setCustomDateError('');
+    }
+  };
+
   const loadData = async (selectedRange = range, from = customFrom, to = customTo) => {
+    if (selectedRange === 'custom') {
+      if (!from) {
+        setCustomDateError('Please choose a start date.');
+        return;
+      }
+      if (to && from > to) {
+        setCustomDateError('Start date cannot be after end date.');
+        return;
+      }
+    }
     setLoading(true);
     setRefreshing(true);
     setError('');
+    setCustomDateError('');
     try {
       let query = `/api/admin/dashboard?range=${selectedRange}`;
       if (selectedRange === 'custom') {
@@ -91,9 +123,16 @@ export default function AdminDashboard() {
 
   const handleCustomApply = (e) => {
     e.preventDefault();
-    if (customFrom) {
-      loadData('custom', customFrom, customTo);
+    if (!customFrom) {
+      setCustomDateError('Please choose a start date.');
+      return;
     }
+    if (customTo && customFrom > customTo) {
+      setCustomDateError('Start date cannot be after end date.');
+      return;
+    }
+    setCustomDateError('');
+    loadData('custom', customFrom, customTo);
   };
 
   const kpis = data?.kpis || {};
@@ -130,7 +169,10 @@ export default function AdminDashboard() {
                 key={tab.id}
                 type="button"
                 className={`${styles.rangeBtn} ${range === tab.id ? styles.rangeBtnActive : ''}`}
-                onClick={() => setRange(tab.id)}
+                onClick={() => {
+                  setRange(tab.id);
+                  setCustomDateError('');
+                }}
               >
                 {tab.label}
               </button>
@@ -138,29 +180,63 @@ export default function AdminDashboard() {
           </div>
 
           {range === 'custom' && (
-            <form onSubmit={handleCustomApply} className={styles.customDateBar}>
-              <input
-                type="date"
-                value={customFrom}
-                onChange={(e) => setCustomFrom(e.target.value)}
-                required
-              />
-              <span>to</span>
-              <input
-                type="date"
-                value={customTo}
-                onChange={(e) => setCustomTo(e.target.value)}
-              />
-              <button type="submit" className={styles.rangeBtn} style={{ background: '#1b5e20', color: '#fff' }}>
-                Apply
-              </button>
-            </form>
+            <div className={styles.customDateContainer}>
+              <form
+                onSubmit={handleCustomApply}
+                className={`${styles.customDateBar} ${isCustomInvalid || customDateError ? styles.customDateBarError : ''}`}
+              >
+                <input
+                  type="date"
+                  value={customFrom}
+                  max={customTo || undefined}
+                  onChange={(e) => handleFromChange(e.target.value)}
+                  className={isCustomInvalid || customDateError ? styles.dateInputError : ''}
+                  aria-invalid={Boolean(isCustomInvalid || customDateError)}
+                  title="Start Date (From)"
+                  required
+                />
+                <span className={styles.dateSep}>to</span>
+                <input
+                  type="date"
+                  value={customTo}
+                  min={customFrom || undefined}
+                  onChange={(e) => handleToChange(e.target.value)}
+                  className={isCustomInvalid || customDateError ? styles.dateInputError : ''}
+                  aria-invalid={Boolean(isCustomInvalid || customDateError)}
+                  title="End Date (To)"
+                />
+                <button
+                  type="submit"
+                  className={styles.rangeBtn}
+                  disabled={Boolean(isCustomInvalid || !customFrom)}
+                  style={{
+                    background: isCustomInvalid ? '#9ca3af' : '#1b5e20',
+                    color: '#fff',
+                    cursor: isCustomInvalid ? 'not-allowed' : 'pointer',
+                    opacity: isCustomInvalid ? 0.6 : 1
+                  }}
+                >
+                  Apply
+                </button>
+              </form>
+              {(isCustomInvalid || customDateError) && (
+                <div className={styles.dateErrorBadge} role="alert">
+                  <span>⚠ {customDateError || 'Start date cannot be after end date.'}</span>
+                </div>
+              )}
+            </div>
           )}
 
           <button
             type="button"
             className={styles.refreshBtn}
-            onClick={() => loadData(range, customFrom, customTo)}
+            onClick={() => {
+              if (range === 'custom' && isCustomInvalid) {
+                setCustomDateError('Start date cannot be after end date.');
+                return;
+              }
+              loadData(range, customFrom, customTo);
+            }}
             disabled={refreshing}
             title="Refresh dashboard metrics"
           >

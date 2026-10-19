@@ -221,6 +221,7 @@ function AdminShellInner({ children, session }) {
     if (pathname !== targetPath) return false;
 
     if (targetPath === '/admin/settings') {
+      if (!targetQuery) return true;
       const currentTab = searchParams?.get('tab') || 'company';
       const targetTab = new URLSearchParams(targetQuery || '').get('tab') || 'company';
       return currentTab === targetTab;

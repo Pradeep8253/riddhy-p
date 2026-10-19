@@ -190,7 +190,7 @@
 }
 
 .submitBtn:hover {
-  background: var(--rf-green-900);
+  background: var(--rf-green-900, #144621);
 }
 
 /* List section */

@@ -110,9 +110,24 @@ export async function GET(request) {
     }
 
     if (from || to) {
+      const fromD = from ? new Date(from) : null;
+      const toD = to ? new Date(to) : null;
+      if (fromD && isNaN(fromD.getTime())) {
+        return fail('Invalid from date provided.', 400);
+      }
+      if (toD && isNaN(toD.getTime())) {
+        return fail('Invalid to date provided.', 400);
+      }
+      if (fromD && toD && fromD > toD) {
+        return fail('From date cannot be after To date.', 400);
+      }
+
       filter.invoiceDate = {};
-      if (from) filter.invoiceDate.$gte = new Date(from);
-      if (to) filter.invoiceDate.$lte = new Date(to);
+      if (fromD) filter.invoiceDate.$gte = fromD;
+      if (toD) {
+        if (to.length === 10) toD.setHours(23, 59, 59, 999);
+        filter.invoiceDate.$lte = toD;
+      }
     }
 
     const [invoices, total, totalsAgg, creditNotesAgg] = await Promise.all([

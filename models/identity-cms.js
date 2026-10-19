@@ -32,17 +32,10 @@ const AdminUserSchema = new Schema(
     passwordHash: { type: String, required: true },
     role: {
       type: String,
-      enum: [
-        "admin",
-        "super-admin",
-        "support",
-        "warehouse",
-        "marketing",
-        "finance",
-      ],
       default: "admin",
     },
     active: { type: Boolean, default: true },
+    tokenVersion: { type: Number, default: 1 },
     lastLoginAt: Date,
     failedLoginAttempts: { type: Number, default: 0 },
     lockoutUntil: Date,
@@ -57,15 +50,21 @@ const AdminUserSchema = new Schema(
       },
     ],
   },
-  { timestamps: true },
+  { timestamps: true, strict: false },
 );
 const RoleSchema = new Schema(
   {
-    name: { type: String, unique: true },
-    permissions: [String],
+    key: { type: String, unique: true, lowercase: true, trim: true, sparse: true },
+    name: { type: String, sparse: true },
+    label: { type: String, required: true, trim: true },
+    description: { type: String, default: "" },
+    permissions: [{ type: String }],
+    isSystem: { type: Boolean, default: false },
     system: { type: Boolean, default: false },
+    updatedBy: { type: Schema.Types.ObjectId, ref: "AdminUser" },
+    updatedByEmail: { type: String, default: "" },
   },
-  { timestamps: true },
+  { timestamps: true, strict: false },
 );
 const BannerSchema = new Schema(
   {

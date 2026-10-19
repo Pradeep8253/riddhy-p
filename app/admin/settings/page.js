@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { getSession } from "@/lib/auth";
 import AdminSettings from "@/components/admin/AdminSettings";
 
 export const metadata = {
@@ -6,7 +7,9 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function AdminSettingsPage() {
+export default async function AdminSettingsPage() {
+  const session = await getSession();
+
   return (
     <Suspense
       fallback={
@@ -15,7 +18,7 @@ export default function AdminSettingsPage() {
         </div>
       }
     >
-      <AdminSettings />
+      <AdminSettings session={session} />
     </Suspense>
   );
 }

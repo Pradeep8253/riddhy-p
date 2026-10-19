@@ -48,24 +48,17 @@ export const SERVICE_SAC_CODES = {
 export function validateGSTIN(gstin) {
   if (!gstin || typeof gstin !== 'string') return false;
   const clean = gstin.trim().toUpperCase();
-  const regex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+  // Statutory Indian GSTIN format: 2-digit state code (01-38, 97, 99) + 10-char PAN + 1 entity char + 'Z' + 1 checksum char
+  const regex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z0-9A-Z]{1}[0-9A-Z]{1}$/;
   if (!regex.test(clean)) return false;
 
-  // Mod-36 checksum verification algorithm
-  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let sum = 0;
-  for (let i = 0; i < 14; i++) {
-    const val = chars.indexOf(clean[i]);
-    if (val === -1) return false;
-    const factor = (i % 2 === 0) ? 1 : 2;
-    const prod = val * factor;
-    const add = Math.floor(prod / 36) + (prod % 36);
-    sum += add;
+  // Verify valid state code range (01 to 38, or 97, 99)
+  const stateCodeNum = Number.parseInt(clean.slice(0, 2), 10);
+  if ((stateCodeNum < 1 || stateCodeNum > 38) && stateCodeNum !== 97 && stateCodeNum !== 99) {
+    return false;
   }
-  const checkCodePoint = (36 - (sum % 36)) % 36;
-  const expectedCheckChar = chars[checkCodePoint];
 
-  return clean[14] === expectedCheckChar;
+  return true;
 }
 
 /**

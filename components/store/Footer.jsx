@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocale } from '@/store/uiSlice';
@@ -54,8 +55,16 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.footerTop}>
         <div className={styles.brandCol}>
-          <Link href="/" className={styles.brand}>
-            <span className={styles.mark}>RF</span>
+          <Link href="/" className={styles.brand} aria-label="RF Riddhy home">
+            <div className={styles.footerLogoBadge}>
+              <Image
+                src="/riddhy-logo.jpeg"
+                alt="RF Riddhy Furniture & Appliances"
+                width={52}
+                height={52}
+                className={styles.footerLogoImg}
+              />
+            </div>
             <span>
               <b>RIDDHY</b>
               <small>FURNITURE & HOME APPLIANCES</small>

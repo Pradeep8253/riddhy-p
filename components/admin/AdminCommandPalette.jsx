@@ -93,12 +93,29 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
     '/admin/leads': ['inquiries', 'inbox', 'consultations', 'messages', 'contact'],
     '/admin/warranty': ['claims', 'portal', 'rma', 'repairs', 'coverage'],
     '/admin/cms': ['campaigns', 'banners', 'promotions', 'marketing'],
-    '/admin/settings?tab=company': ['legal', 'gstin', 'pan', 'invoice settings', 'bank'],
-    '/admin/settings?tab=care': ['support', 'care', 'customer service'],
-    '/admin/settings?tab=showroom': ['store location', 'experience centre'],
-    '/admin/settings?tab=consultation': ['capacity', 'slots', 'appointments'],
-    '/admin/settings?tab=story': ['about', 'proof', 'milestones']
+    '/admin/settings': ['config', 'configuration', 'preferences', 'system', 'options'],
+    '/admin/settings?tab=company': ['legal', 'gstin', 'pan', 'invoice settings', 'bank', 'billing', 'taxes'],
+    '/admin/settings?tab=care': ['support', 'care', 'customer service', 'helpdesk', 'whatsapp'],
+    '/admin/settings?tab=showroom': ['store location', 'experience centre', 'hours', 'map', 'directions'],
+    '/admin/settings?tab=consultation': ['capacity', 'slots', 'appointments', 'home visit', 'booking'],
+    '/admin/settings?tab=story': ['about', 'proof', 'milestones', 'founders', 'metrics'],
+    '/admin/settings?tab=team': ['admins', 'users', 'staff', 'invite', 'accounts', 'colleagues'],
+    '/admin/settings?tab=roles': ['access', 'privileges', 'matrix', 'rbac', 'security roles', 'permissions'],
+    '/admin/settings?tab=security': ['2fa', 'totp', 'password policy', 'session', 'lockout', 'authentication'],
+    '/admin/settings?tab=audit': ['history', 'events', 'logs', 'activity', 'compliance', 'trail']
   };
+
+  const SETTINGS_SEARCH_ITEMS = [
+    { label: 'Company & Billing', href: '/admin/settings?tab=company' },
+    { label: 'Store & Support', href: '/admin/settings?tab=care' },
+    { label: 'Showroom Location', href: '/admin/settings?tab=showroom' },
+    { label: 'Consultation Capacity', href: '/admin/settings?tab=consultation' },
+    { label: 'Brand Story & Proof', href: '/admin/settings?tab=story' },
+    { label: 'Team Members', href: '/admin/settings?tab=team' },
+    { label: 'Roles & Permissions', href: '/admin/settings?tab=roles' },
+    { label: 'Security & 2FA', href: '/admin/settings?tab=security' },
+    { label: 'Audit Log', href: '/admin/settings?tab=audit' }
+  ];
 
   // Filter navigation links locally
   const qLower = query.toLowerCase().trim();
@@ -114,7 +131,7 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
 
       if (matches) {
         matchedNav.push({
-          group: 'Main',
+          group: node.href.startsWith('/admin/settings') ? 'Settings' : 'Navigation',
           label: node.label,
           href: node.href
         });
@@ -135,6 +152,24 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
             href: item.href
           });
         }
+      });
+    }
+  });
+
+  // Always include specific Settings tabs in search
+  SETTINGS_SEARCH_ITEMS.forEach((tab) => {
+    const aliases = NAV_ALIASES[tab.href] || [];
+    const matches =
+      !qLower ||
+      tab.label.toLowerCase().includes(qLower) ||
+      'settings'.includes(qLower) ||
+      aliases.some((a) => a.includes(qLower));
+
+    if (matches) {
+      matchedNav.push({
+        group: 'Settings',
+        label: tab.label,
+        href: tab.href
       });
     }
   });

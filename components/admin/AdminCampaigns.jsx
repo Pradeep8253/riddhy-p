@@ -142,6 +142,11 @@ export default function AdminCampaigns() {
     event.preventDefault();
     setMessage("");
 
+    if (form.startsAt && form.endsAt && new Date(form.startsAt) > new Date(form.endsAt)) {
+      setMessage("Campaign end date/time must be after the start date/time.");
+      return;
+    }
+
     try {
       const payload = {
         ...form,
@@ -381,6 +386,7 @@ export default function AdminCampaigns() {
               type="datetime-local"
               className={styles.input}
               value={form.startsAt}
+              max={form.endsAt || undefined}
               onChange={(e) => update("startsAt", e.target.value)}
             />
           </div>
@@ -392,6 +398,7 @@ export default function AdminCampaigns() {
               type="datetime-local"
               className={styles.input}
               value={form.endsAt}
+              min={form.startsAt || undefined}
               onChange={(e) => update("endsAt", e.target.value)}
             />
           </div>

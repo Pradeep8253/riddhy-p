@@ -383,3 +383,39 @@
   border-radius: 8px;
   background: #525659;
 }
+
+.dateInput {
+  border: 1px solid #d5cec2;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #2b3b2f;
+  background: #ffffff;
+  transition: border-color 0.15s;
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: #1b5e20;
+}
+
+.dateInputError {
+  border-color: #dc2626 !important;
+  background: #fef2f2 !important;
+  color: #991b1b !important;
+}
+
+.filterSelect {
+  border: 1px solid #d5cec2;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #2b3b2f;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #1b5e20;
+}
