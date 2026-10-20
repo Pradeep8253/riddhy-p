@@ -159,39 +159,50 @@ export default function Header() {
 
         <Link href="/" className={styles.brand} aria-label="RF Riddhy home">
           <div className={styles.logoBadge}>
-            <Image
-              src="/riddhy-logo.jpeg"
+            <img
+              src="/logo.jpeg"
               alt="RF Riddhy Furniture & Appliances"
-              width={46}
-              height={46}
+              width={140}
+              height={51}
               priority
               className={styles.logoImg}
             />
           </div>
-          <span>
+          {/* <span>
             <b>RF | RIDDHY</b>
             <small>FURNITURE & HOME APPLIANCES</small>
-          </span>
+          </span> */}
         </Link>
 
         <div className={styles.searchWrapper} ref={searchRef}>
-          <form
-            className={`${styles.search} ${searchOpen ? styles.searchActive : ''}`}
-            onSubmit={submitSearch}
-            role="search"
-          >
-            <Icon name="search" size={19} />
-            <input
-              aria-label={tr(locale, 'search')}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setSearchFocused(true)}
-              placeholder={tr(locale, 'search')}
-            />
-            <button type="submit" aria-label="Submit search">
-              {locale === 'hi' ? 'खोजें' : 'Search'}
-            </button>
-          </form>
+          <div className={styles.searchRow}>
+            <form
+              className={`${styles.search} ${searchOpen ? styles.searchActive : ''}`}
+              onSubmit={submitSearch}
+              role="search"
+            >
+              <Icon name="search" size={19} />
+              <input
+                aria-label={tr(locale, 'search')}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                placeholder={tr(locale, 'search')}
+              />
+              <button type="submit" aria-label="Submit search">
+                {locale === 'hi' ? 'खोजें' : 'Search'}
+              </button>
+            </form>
+
+            <div className={styles.miniLogoWrap} aria-hidden="true">
+              <Image
+                src="/vastu.jpeg"
+                alt=""
+                fill
+                className={styles.miniLogo}
+              />
+            </div>
+          </div>
 
           {/* Live Search Dropdown */}
           {searchFocused && (

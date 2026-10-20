@@ -251,7 +251,7 @@ export default function MarriagePackagesClient({ packages = [] }) {
               {/* If in customization mode */}
               {isCustomizing ? (
                 <div>
-                  <h3 style={{ margin: '0 0 16px', fontSize: 18, color: 'var(--rf-forest-deep)' }}>
+                  <h3 style={{ fontFamily: 'var(--font-display)', margin: '0 0 16px', fontSize: 18, color: 'var(--rf-forest-deep)' }}>
                     Optional Add-ons & Upgrades
                   </h3>
                   <div style={{ display: 'grid', gap: 12 }}>

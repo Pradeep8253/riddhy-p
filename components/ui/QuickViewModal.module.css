@@ -80,7 +80,13 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   padding-bottom: 4px;
+}
+
+.thumbsRow::-webkit-scrollbar {
+  display: none;
 }
 
 .thumbBtn {
@@ -286,7 +292,39 @@
 }
 
 @media (max-width: 680px) {
+  .backdrop {
+    padding: 12px 8px;
+  }
+  .modal {
+    max-height: 94vh;
+    border-radius: 20px;
+  }
   .grid {
     grid-template-columns: 1fr;
+    padding: 20px 16px;
+    gap: 18px;
+  }
+  .actionsRow {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .addBtn {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .actionsRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .qtyPicker {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .addBtn,
+  .waBtn {
+    width: 100%;
+    justify-content: center;
   }
 }

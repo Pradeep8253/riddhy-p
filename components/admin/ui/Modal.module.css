@@ -34,7 +34,7 @@
 
 .title {
   margin: 0;
-  font: 600 18px var(--font-display, serif);
+  font: 600 18px var(--font-display);
   color: var(--admin-text-main, #10261a);
 }
 

@@ -27,7 +27,7 @@
 
 .title {
   margin: 0;
-  font: 600 18px var(--font-display, serif);
+  font: 600 18px var(--font-display);
   letter-spacing: -0.02em;
   color: var(--admin-text-main, #10261a);
 }

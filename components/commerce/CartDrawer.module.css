@@ -416,3 +416,19 @@
 .viewBagLink:hover {
   color: var(--rf-gold-600);
 }
+
+@media (max-width: 480px) {
+  .header {
+    padding: 16px 18px;
+  }
+  .items {
+    padding: 12px 14px;
+  }
+  .footer {
+    padding: 16px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+  .checkoutBtn {
+    min-height: 46px;
+    font-size: 13px;
+  }
+}

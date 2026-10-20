@@ -308,3 +308,24 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .portalCard {
+    border-radius: 16px;
+  }
+  .formBody {
+    padding: 18px 14px;
+    gap: 16px;
+  }
+  .tabBtn {
+    padding: 13px 8px;
+    font-size: 11px;
+    gap: 5px;
+  }
+  .certCard {
+    padding: 18px 14px;
+  }
+  .meterNumbers b {
+    font-size: 22px;
+  }
+}

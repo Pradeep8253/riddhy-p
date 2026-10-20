@@ -13,6 +13,7 @@
 
 .titleArea h1 {
   margin: 0 0 6px 0;
+  font-family: var(--font-display);
   font-size: 1.85rem;
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -290,6 +291,74 @@
 
 .tableWrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Toast message */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 110;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@media (max-width: 768px) {
+  .head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .titleArea h1 {
+    font-size: 1.5rem;
+  }
+  .toolbar {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .toolbarLeft {
+    min-width: 100%;
+  }
+  .searchBox {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  .toolbarRight {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .bulkBar {
+    width: calc(100% - 24px);
+    border-radius: 14px;
+    bottom: 12px;
+    gap: 8px;
+    padding: 10px 14px;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .headActions {
+    width: 100%;
+  }
+  .btnPrimary,
+  .btnSecondary {
+    flex: 1;
+    justify-content: center;
+  }
+  .toast {
+    left: 14px;
+    right: 14px;
+    top: 14px;
+    text-align: center;
+  }
 }
 
 .table {

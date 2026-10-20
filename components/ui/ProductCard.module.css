@@ -36,3 +36,4 @@
 .waCardBtn { display:inline-flex; align-items:center; justify-content:center; width:42px; border-radius:var(--radius-sm, 8px); background:rgba(37,211,102,0.12); color:#128c7e; border:1px solid rgba(37,211,102,0.35); text-decoration:none; cursor:pointer; transition:background .2s,color .2s,transform .15s; flex-shrink:0; }
 .waCardBtn:hover { background:#25d366; color:#fff; border-color:#25d366; transform:translateY(-1px); }
 @media(max-width:600px){.details{padding:12px}.name{font-size:14px}.priceRow strong{font-size:14px}.tagline{display:none}.emiSnippet{display:none}.demoBadge{font-size:8px;padding:4px 7px}.controls button, .controls a{width:32px;height:32px}.waCardBtn{width:38px}}
+@media(max-width:480px){.details{padding:10px 9px 12px}.cardActions{gap:6px;margin-top:10px}.add{padding:8px 6px;font-size:11.5px;gap:4px}.waCardBtn{width:34px}.priceRow{gap:5px}.priceRow strong{font-size:13px}}

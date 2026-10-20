@@ -90,7 +90,7 @@ export default function HomeHero() {
           <span>{locale === 'hi' ? 'फ़र्नीचर + उपकरण' : 'FURNITURE + APPLIANCES'}</span>
         </div>
       </div>
-      <div className={styles.bottom}>
+      {/* <div className={styles.bottom}>
         <span>{tr(locale, 'curatedForRealHomes')}</span>
         <span>
           {tr(locale, 'scrollToExplore')}{' '}
@@ -100,7 +100,7 @@ export default function HomeHero() {
             style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 4 }}
           />
         </span>
-      </div>
+      </div> */}
       <Link className={styles.mobileJump} href="/appliances" aria-label="Explore home appliances">
         {tr(locale, 'powerYourHome')} <Icon name="arrow" size={16} />
       </Link>

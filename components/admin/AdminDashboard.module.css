@@ -755,7 +755,30 @@
 }
 
 @media (max-width: 480px) {
+  .headerLeft h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
   .kpiGrid {
     grid-template-columns: 1fr;
+  }
+  .controls {
+    width: 100%;
+  }
+  .rangeGroup {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .rangeBtn {
+    flex: 1;
+    padding: 6px 4px;
+    font-size: 11px;
+    text-align: center;
+  }
+  .panel {
+    padding: 16px 12px;
+    border-radius: 12px;
+  }
+  .chartContainer {
+    height: 190px;
   }
 }

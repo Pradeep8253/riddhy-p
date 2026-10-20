@@ -334,3 +334,19 @@
   color: var(--rf-green-900, #0d3813);
   text-decoration: underline;
 }
+
+.forgotHeader h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--rf-forest-deep, #142217);
+  letter-spacing: -0.02em;
+}
+
+.forgotHeader p {
+  margin: 0 0 16px;
+  color: #6a746c;
+  font-size: 13px;
+  line-height: 1.5;
+}

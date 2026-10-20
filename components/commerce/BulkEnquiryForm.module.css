@@ -373,3 +373,16 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 440px) {
+  .submitBtn {
+    width: 100%;
+  }
+  .chipsContainer {
+    gap: 6px;
+  }
+  .chip {
+    font-size: 11px;
+    padding: 7px 11px;
+  }
+}

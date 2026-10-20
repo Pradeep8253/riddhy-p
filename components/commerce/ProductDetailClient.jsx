@@ -16,21 +16,13 @@ import Icon from '@/components/ui/Icon';
 import ServiceabilityChecker from '@/components/store/ServiceabilityChecker';
 import ProductRail from '@/components/store/ProductRail';
 import DimensionDiagram from './DimensionDiagram';
-import dynamic from 'next/dynamic';
 import {
   getLocalizedProductName,
   getLocalizedProductTagline,
   getLocalizedCategoryName
 } from '@/lib/translate-backend';
-import MaterialConfigurator from '@/components/three/MaterialConfigurator';
-import ExplodeView from '@/components/three/ExplodeView';
 import { getProductWhatsAppUrl } from '@/lib/site-config';
 import styles from './ProductDetailClient.module.css';
-
-const ProductModelCanvas = dynamic(() => import('./ProductModelCanvas'), {
-  ssr: false,
-  loading: () => <div className={styles.viewerLoading}>Preparing the 3D view…</div>
-});
 
 const defaultSwatches = ['#6b8f5e', '#c4a47d', '#e7e2d7', '#28553a'];
 
@@ -53,9 +45,6 @@ export default function ProductDetailClient({ product, related = [] }) {
   const [view, setView] = useState('photo');
   const [qty, setQty] = useState(1);
   const [finish, setFinish] = useState(defaultSwatches[0]);
-  const [open, setOpen] = useState(false);
-  const [explode, setExplode] = useState(0);
-  const [rotation, setRotation] = useState([0, 0, 0]);
 
   // Live Pincode Estimator State
   const [pincode, setPincode] = useState('');
@@ -121,14 +110,6 @@ export default function ProductDetailClient({ product, related = [] }) {
     }
   };
 
-  const handleKeys = (e) => {
-    if (view !== '3d') return;
-    if (e.key === 'ArrowLeft') setRotation(([x, y, z]) => [x, y - 0.2, z]);
-    if (e.key === 'ArrowRight') setRotation(([x, y, z]) => [x, y + 0.2, z]);
-    if (e.key === 'ArrowUp') setRotation(([x, y, z]) => [x - 0.15, y, z]);
-    if (e.key === 'ArrowDown') setRotation(([x, y, z]) => [x + 0.15, y, z]);
-    if (e.key === 'Enter') setOpen((v) => !v);
-  };
 
   const priceFormatted = formatPriceSafe(product.price);
   const mrpFormatted = formatPriceSafe(product.mrp);
@@ -223,9 +204,7 @@ export default function ProductDetailClient({ product, related = [] }) {
             <div className={styles.gallery}>
               <div
                 className={styles.mainMedia}
-                tabIndex={0}
-                onKeyDown={handleKeys}
-                aria-label={view === '3d' ? "Product gallery and 3D viewer; arrow keys rotate model; plus and minus zoom; Enter opens moving parts." : `Product media gallery for ${product.name}`}
+                aria-label={`Product media gallery for ${product.name}`}
               >
                 {view === 'photo' && (
                   <Image
@@ -236,18 +215,6 @@ export default function ProductDetailClient({ product, related = [] }) {
                     sizes="(max-width: 900px) 100vw, 52vw"
                     placeholder="blur"
                     blurDataURL={IMG.blurDataURL}
-                  />
-                )}
-
-                {view === '3d' && (
-                  <ProductModelCanvas
-                    type={product.modelType || product.category?.replace(/s$/, '') || 'sofa'}
-                    dims={dims}
-                    colorway={finish}
-                    open={open}
-                    explode={explode}
-                    rotation={rotation}
-                    showHotspots
                   />
                 )}
 
@@ -270,14 +237,6 @@ export default function ProductDetailClient({ product, related = [] }) {
                   <button
                     type="button"
                     role="tab"
-                    aria-selected={view === '3d'}
-                    onClick={() => setView('3d')}
-                  >
-                    {locale === 'hi' ? '3D दृश्य' : '3D view'}
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
                     aria-selected={view === 'dimensions'}
                     onClick={() => setView('dimensions')}
                   >
@@ -285,23 +244,6 @@ export default function ProductDetailClient({ product, related = [] }) {
                   </button>
                 </div>
               </div>
-
-              {view === '3d' && (
-                <div className={styles.modelTools}>
-                  <MaterialConfigurator value={finish} onChange={setFinish} />
-                  {['refrigerator', 'washer', 'wardrobe', 'microwave'].includes(product.modelType || product.category?.replace(/s$/, '')) && (
-                    <button
-                      className={styles.openToggle}
-                      type="button"
-                      onClick={() => setOpen(!open)}
-                    >
-                      {open ? 'Close' : 'Open'} {(product.categoryLabel || product.category || 'unit').toLowerCase()}
-                    </button>
-                  )}
-                  <ExplodeView value={explode} onChange={setExplode} />
-                  <small>Drag to rotate · arrow keys also work · interactive 3D model</small>
-                </div>
-              )}
 
               {view === 'photo' && (
                 <div className={styles.thumbs}>

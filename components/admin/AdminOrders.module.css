@@ -113,6 +113,7 @@
 /* Orders Table */
 .table {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--rf-line, rgba(31, 95, 46, 0.15));
   border-radius: 16px;
   background: #fffefa;
@@ -267,5 +268,18 @@
   .filterBar {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .head h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .searchWrapper {
+    min-width: 100%;
+  }
+  .tools {
+    width: 100%;
+    flex-wrap: wrap;
   }
 }

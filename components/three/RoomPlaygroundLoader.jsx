@@ -18,7 +18,7 @@ export default function RoomPlaygroundLoader() {
     return (
       <div className="container" style={{ padding: '36px 20px', textAlign: 'center', background: '#fbf9f4', borderRadius: 16, border: '1px solid #e7ded2', margin: '24px auto', maxWidth: 900 }}>
         <p style={{ fontSize: 12, fontWeight: 700, color: '#1f5f2e', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Interactive 3D Planner</p>
-        <h3 style={{ fontSize: 22, margin: '8px 0 12px', color: '#1e2420' }}>Interactive 3D is paused for reduced motion or data saver</h3>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 22, margin: '8px 0 12px', color: '#1e2420' }}>Interactive 3D is paused for reduced motion or data saver</h3>
         <p style={{ color: '#555', maxWidth: 520, margin: '0 auto 20px', fontSize: 14 }}>
           To conserve battery, memory and network bandwidth on your device, the 3D physics environment is paused. You can enable it below or browse furniture directly.
         </p>

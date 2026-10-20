@@ -338,8 +338,15 @@
   display: none;
   gap: 10px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   padding-top: 16px;
+  padding-bottom: 8px;
   scroll-snap-type: x mandatory;
+}
+
+.mobileList::-webkit-scrollbar {
+  display: none;
 }
 
 .mobileCard {

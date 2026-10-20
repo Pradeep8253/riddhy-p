@@ -49,6 +49,7 @@
 }
 
 .titleArea h2 {
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
   color: #0f172a;
@@ -421,5 +422,28 @@
   }
   .drawer {
     max-width: 100%;
+  }
+  .header {
+    padding: 14px 16px;
+  }
+  .content {
+    padding: 16px 14px;
+  }
+  .footer {
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
+    flex-direction: column-reverse;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .footerLeft,
+  .footerRight {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  .footerLeft button,
+  .footerRight button {
+    flex: 1;
+    justify-content: center;
   }
 }

@@ -480,6 +480,7 @@
 
 .previewSeller h3 {
   margin: 0 0 4px;
+  font-family: var(--font-display);
   font-size: 20px;
   font-weight: 800;
   color: #0d1e15;
@@ -499,6 +500,7 @@
 
 .previewDocTitle h4 {
   margin: 0 0 4px;
+  font-family: var(--font-display);
   font-size: 18px;
   font-weight: 900;
   color: #1b5e20;
@@ -581,6 +583,7 @@
 
 .previewBankBox h5 {
   margin: 0 0 8px;
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -600,6 +603,7 @@
 
 .previewTerms h5 {
   margin: 0 0 4px;
+  font-family: var(--font-display);
   font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
@@ -1055,5 +1059,40 @@
 .permItemCardDisabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .head h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .card {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+  .stickySaveBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
+    bottom: 10px;
+  }
+  .stickyBarActions {
+    width: 100%;
+    display: flex;
+  }
+  .stickyBarActions button {
+    flex: 1;
+    justify-content: center;
+  }
+  .invoicePaper {
+    padding: 16px 12px;
+  }
+  .permGrid {
+    grid-template-columns: 1fr;
+  }
+  .permMatrixToolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 

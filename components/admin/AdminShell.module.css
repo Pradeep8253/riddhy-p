@@ -728,6 +728,41 @@
   }
 }
 
+@media (max-width: 600px) {
+  .topbar {
+    padding: 0 14px;
+    height: 52px;
+  }
+  .topbarLeft {
+    gap: 8px;
+  }
+  .breadcrumb {
+    display: none;
+  }
+  .quickSearch {
+    width: 150px;
+    padding: 5px 10px;
+  }
+  .quickSearchKbd {
+    display: none;
+  }
+  .main {
+    padding: 14px 12px;
+  }
+}
+
+@media (max-width: 440px) {
+  .quickSearch {
+    display: none;
+  }
+  .topbarStoreLink span {
+    display: none;
+  }
+  .topbarRoleBadge {
+    display: none;
+  }
+}
+
 /* SECTION DIVIDERS */
 .navSectionHeader {
   font-size: 9.5px;

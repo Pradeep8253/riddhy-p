@@ -46,6 +46,7 @@
 }
 
 .headerTitle h2 {
+  font-family: var(--font-display);
   font-size: 18px;
   font-weight: 800;
   color: #1b2e23;
@@ -137,6 +138,7 @@
 }
 
 .infoBox h4 {
+  font-family: var(--font-display);
   margin: 0 0 6px;
   font-size: 11px;
   text-transform: uppercase;
@@ -325,4 +327,30 @@
 
 .btnDanger:hover {
   background: #8e1414;
+}
+
+@media (max-width: 640px) {
+  .drawer {
+    max-width: 100%;
+  }
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  .header {
+    padding: 14px 16px;
+  }
+  .content {
+    padding: 16px 14px;
+  }
+  .footer {
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .btnPrimary,
+  .btnSecondary,
+  .btnDanger {
+    justify-content: center;
+    width: 100%;
+  }
 }

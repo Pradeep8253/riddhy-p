@@ -269,3 +269,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .head h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .createBtn {
+    width: 100%;
+    justify-content: center;
+  }
+  .modalFooter {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  .saveBtn,
+  .cancelBtn {
+    justify-content: center;
+    width: 100%;
+  }
+  .modalBody {
+    padding: 16px 14px;
+  }
+}

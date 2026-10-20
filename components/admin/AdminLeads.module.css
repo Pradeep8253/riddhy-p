@@ -377,10 +377,10 @@
 
 .drawerSection h4 {
   margin: 0 0 10px;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   color: var(--rf-gold-600);
 }
 
@@ -489,5 +489,31 @@
   .filterBar {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+
+@media (max-width: 500px) {
+  .heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .heading h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .headerActions {
+    width: 100%;
+  }
+  .csvBtn {
+    width: 100%;
+    justify-content: center;
+  }
+  .assignRow {
+    grid-template-columns: 1fr;
+  }
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+  .drawer {
+    width: 100vw;
   }
 }

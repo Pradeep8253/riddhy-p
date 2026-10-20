@@ -301,3 +301,23 @@
     gap: 12px;
   }
 }
+
+@media (max-width: 500px) {
+  .head h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .form {
+    padding: 18px 14px;
+    border-radius: 16px;
+  }
+  .submitBtn {
+    width: 100%;
+  }
+  .actionBtns {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .previewBox {
+    padding: 16px 14px;
+  }
+}

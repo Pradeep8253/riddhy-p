@@ -419,7 +419,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
               <p><b>GSTIN:</b> {comp.gstin || 'NOT CONFIGURED'} | <b>PAN:</b> {comp.pan || 'NOT CONFIGURED'}</p>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <h4 style={{ margin: '0 0 4px', color: '#10261a' }}>TAX INVOICE</h4>
+              <h4 style={{ fontFamily: 'var(--font-display)', margin: '0 0 4px', color: '#10261a' }}>TAX INVOICE</h4>
               <p><b>Invoice No:</b> {comp.invoicePrefix || 'RF'}/2026-27/000142</p>
               <p><b>Place of Supply:</b> {comp.state} ({comp.stateCode})</p>
               <p><b>Disputes:</b> {comp.jurisdictionCity || comp.city} Jurisdiction</p>

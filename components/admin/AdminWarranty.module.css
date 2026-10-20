@@ -137,5 +137,21 @@
   .table {
     display: block;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 500px) {
+  .head h1 {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .controls {
+    width: 100%;
+  }
+  .searchInput {
+    min-width: 100%;
+  }
+  .filterSelect {
+    width: 100%;
   }
 }

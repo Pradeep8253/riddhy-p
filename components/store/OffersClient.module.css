@@ -1,5 +1,5 @@
 .intro {
-  padding: clamp(60px, 9vw, 125px) var(--page-gutter);
+  padding: clamp(38px, 6vw, 95px) var(--page-gutter);
   color: #f7f2e9;
   background:
     radial-gradient(
@@ -10,10 +10,11 @@
     #10261a;
 }
 .intro h1 {
-  margin: 15px 0;
+  margin: 14px 0;
   color: #fff;
-  font: 500 clamp(62px, 9vw, 110px)/0.88 var(--font-display);
-  letter-spacing: -0.075em;
+  font: 500 clamp(32px, 8vw, 108px)/0.96 var(--font-display);
+  letter-spacing: -0.045em;
+  word-break: break-word;
 }
 .intro h1 em {
   color: #edb95e;
@@ -22,8 +23,8 @@
 .intro p {
   max-width: 600px;
   color: #d2ddd3;
-  font-size: 14px;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.7;
 }
 .grid {
   display: grid;

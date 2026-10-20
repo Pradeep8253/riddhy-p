@@ -67,7 +67,7 @@
 
 .stepTitle {
   margin: 0 0 8px;
-  font: 500 18px/1.25 var(--font-display, serif);
+  font: 500 18px/1.25 var(--font-display);
   letter-spacing: -0.02em;
   color: var(--rf-forest-deep, #142217);
 }
@@ -139,7 +139,7 @@
 
 .pincodeHead h4 {
   margin: 0 0 4px;
-  font: 500 18px/1.25 var(--font-display, serif);
+  font: 500 18px/1.25 var(--font-display);
   color: var(--rf-forest-deep, #142217);
   letter-spacing: -0.02em;
 }
@@ -300,7 +300,7 @@
 
 .guaranteesHead h4 {
   margin: 0;
-  font: 500 18px/1.25 var(--font-display, serif);
+  font: 500 18px/1.25 var(--font-display);
   color: var(--rf-forest-deep, #142217);
   letter-spacing: -0.02em;
 }

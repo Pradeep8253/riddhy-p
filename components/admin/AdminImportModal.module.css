@@ -34,6 +34,7 @@
 
 .titleArea h3 {
   margin: 0 0 4px 0;
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
   color: #0f172a;
@@ -116,7 +117,37 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   max-height: 280px;
+}
+
+@media (max-width: 600px) {
+  .overlay {
+    padding: 12px;
+  }
+  .modal {
+    max-height: 92vh;
+    border-radius: 12px;
+  }
+  .header,
+  .body {
+    padding: 14px 16px;
+  }
+  .summaryBar {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .footer {
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    flex-direction: column-reverse;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .btnPrimary,
+  .btnSecondary {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .previewTable {

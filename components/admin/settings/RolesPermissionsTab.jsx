@@ -327,7 +327,7 @@ export default function RolesPermissionsTab({ session }) {
           <div className={styles.permMatrixToolbar}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <h3 style={{ margin: 0, fontSize: 16, color: 'var(--rf-forest-deep)' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', margin: 0, fontSize: 16, color: 'var(--rf-forest-deep)' }}>
                   Permissions for: <span style={{ color: 'var(--rf-green-800)' }}>{currentRole.label}</span>
                 </h3>
                 <Badge variant={currentRole.isSystem ? 'neutral' : 'info'}>

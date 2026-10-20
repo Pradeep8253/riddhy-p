@@ -349,3 +349,12 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 440px) {
+  .topicPillsGrid {
+    grid-template-columns: 1fr;
+  }
+  .submitBtn {
+    width: 100%;
+  }
+}
