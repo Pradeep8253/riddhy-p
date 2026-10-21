@@ -3,7 +3,7 @@ import { connectDB } from '@/lib/db';
 import { MarriagePackage, AuditLog } from '@/models/index';
 import { requireAdmin } from '@/lib/roles';
 import { ok, fail, jsonBody } from '@/lib/http';
-import { getLivePackages } from '@/lib/packages-data';
+import { getLivePackages, serializePackage, defaultPackages } from '@/lib/packages-data';
 
 const packageSchema = z.object({
   name: z.string().min(2),
@@ -40,7 +40,22 @@ const packageSchema = z.object({
   active: z.boolean().default(true)
 });
 
-export async function GET() {
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const includeAll = searchParams.get('all') === 'true' || searchParams.get('admin') === 'true';
+
+  try {
+    await connectDB();
+    const count = await MarriagePackage.countDocuments();
+    if (count > 0) {
+      const query = includeAll ? {} : { active: true };
+      const docs = await MarriagePackage.find(query).sort({ sortOrder: 1, price: 1 }).lean();
+      return ok((docs || []).map(serializePackage));
+    }
+  } catch (err) {
+    // Database unconfigured or error -> fallback to default packages
+  }
+
   const packages = await getLivePackages();
   return ok(packages);
 }

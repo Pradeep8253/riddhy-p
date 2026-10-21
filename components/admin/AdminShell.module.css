@@ -1,23 +1,32 @@
 /* Modern Professional CRM Layout */
 .crmContainer {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow: hidden;
   background: #f7f5ee;
   color: #1e2420;
   font-family: inherit;
+  width: 100%;
 }
 
 /* SIDEBAR */
 .sidebar {
   width: 260px;
   min-width: 260px;
+  max-width: 260px;
+  flex-shrink: 0;
   background: #0d1e15;
   color: #f7f3ea;
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: relative;
   top: 0;
+  bottom: 0;
   height: 100vh;
+  height: 100dvh;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 100;
   transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -28,6 +37,7 @@
 .sidebarMini {
   width: 76px;
   min-width: 76px;
+  max-width: 76px;
 }
 
 .sidebarHeader {
@@ -549,7 +559,33 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow-y: auto;
   overflow-x: hidden;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #d1c7b7 transparent;
+}
+
+.contentArea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.contentArea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.contentArea::-webkit-scrollbar-thumb {
+  background: #d1c7b7;
+  border-radius: 4px;
+}
+
+.contentArea::-webkit-scrollbar-thumb:hover {
+  background: #b5a894;
 }
 
 /* Topbar Header */
@@ -565,6 +601,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .topbarLeft {
@@ -704,6 +741,8 @@
     left: 0;
     top: 0;
     bottom: 0;
+    height: 100vh;
+    height: 100dvh;
     transform: translateX(-100%);
   }
 

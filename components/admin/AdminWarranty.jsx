@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import ExportDropdown from './ExportDropdown';
 import AdminPagination from './AdminPagination';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import styles from './AdminWarranty.module.css';
 
 export default function AdminWarranty() {
@@ -96,8 +97,8 @@ export default function AdminWarranty() {
     { label: 'SKU', key: 'sku' },
     { label: 'Serial Number', key: 'serialNumber' },
     { label: 'Order Ref', key: 'orderNumber' },
-    { label: 'Purchase Date', key: 'purchaseDate', getValue: (r) => r.purchaseDate ? new Date(r.purchaseDate).toLocaleDateString('en-IN') : '—' },
-    { label: 'Expiry Date', key: 'expiryDate', getValue: (r) => r.expiryDate ? new Date(r.expiryDate).toLocaleDateString('en-IN') : '—' },
+    { label: 'Purchase Date', key: 'purchaseDate', getValue: (r) => formatDateDDMMYYYY(r.purchaseDate) },
+    { label: 'Expiry Date', key: 'expiryDate', getValue: (r) => formatDateDDMMYYYY(r.expiryDate) },
     { label: 'Remaining Days', key: 'remainingDays' },
     { label: 'Warranty Status', key: 'currentStatus' }
   ];
@@ -233,7 +234,7 @@ export default function AdminWarranty() {
               {items.map((c) => (
                 <tr key={c.id}>
                   <td><strong>{c.claimNumber || c.id.slice(-8)}</strong></td>
-                  <td>{new Date(c.createdAt).toLocaleDateString('en-IN')}</td>
+                  <td>{formatDateDDMMYYYY(c.createdAt)}</td>
                   <td>{c.issue}</td>
                   <td>{c.preferredContact || 'Phone'}</td>
                   <td>{c.assignedToEmail || 'Unassigned'}</td>
@@ -275,8 +276,8 @@ export default function AdminWarranty() {
                   </td>
                   <td>{r.orderNumber || 'Offline'}</td>
                   <td>
-                    <div>Bought: {r.purchaseDate ? new Date(r.purchaseDate).toLocaleDateString('en-IN') : '—'}</div>
-                    <div style={{ color: '#7b857d' }}>Expires: {r.expiryDate ? new Date(r.expiryDate).toLocaleDateString('en-IN') : '—'}</div>
+                    <div>Bought: {formatDateDDMMYYYY(r.purchaseDate)}</div>
+                    <div style={{ color: '#7b857d' }}>Expires: {formatDateDDMMYYYY(r.expiryDate)}</div>
                   </td>
                   <td>
                     <b style={{ color: r.remainingDays <= 30 ? '#c62828' : 'var(--rf-forest-deep)' }}>

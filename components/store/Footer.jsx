@@ -13,8 +13,7 @@ const groups = [
       ['Furniture', '/furniture'],
       ['Home appliances', '/appliances'],
       ['Marriage packages', '/packages'],
-      ['Shop by room', '/rooms/living'],
-      ['Current offers', '/offers']
+      ['Shop by room', '/rooms/living']
     ]
   },
   {

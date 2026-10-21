@@ -29,17 +29,26 @@ export async function GET(request) {
         status: 'active',
         tags: tag
       })
-        .select('name slug sku brand category price mrp stock image gallery tags tagOverrides sales30d badgeText')
+        .select('name slug sku brand category categoryLabel type price mrp stock image gallery tags tagOverrides sales30d badgeText status')
         .sort({ sales30d: -1, createdAt: -1 })
-        .limit(20)
+        .limit(100)
         .lean();
 
-      rails[tag] = items.map((p) => ({
+      const mapped = items.map((p) => ({
         ...p,
         id: String(p._id),
         isPinned: (p.tagOverrides?.pin || []).includes(tag),
         isExcluded: (p.tagOverrides?.hide || []).includes(tag)
       }));
+
+      // Sort pinned items to the top
+      mapped.sort((a, b) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        return (b.sales30d || 0) - (a.sales30d || 0);
+      });
+
+      rails[tag] = mapped;
     }
 
     return ok({ rails });

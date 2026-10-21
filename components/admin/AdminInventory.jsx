@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Search, Plus, Minus, Settings2, RefreshCw, X, AlertTriangle, CheckCircle, Package } from 'lucide-react';
 import ExportDropdown from './ExportDropdown';
 import AdminPagination from './AdminPagination';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import styles from './AdminInventory.module.css';
 
 export default function AdminInventory() {
@@ -85,7 +86,7 @@ export default function AdminInventory() {
       {
         key: 'updatedAt',
         label: 'Last Updated',
-        getValue: (r) => (r.updatedAt ? new Date(r.updatedAt).toLocaleDateString('en-IN') : '—')
+        getValue: (r) => formatDateDDMMYYYY(r.updatedAt)
       }
     ],
     []

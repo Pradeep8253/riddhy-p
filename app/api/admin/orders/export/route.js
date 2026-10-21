@@ -4,6 +4,7 @@ import { connectDB } from '@/lib/db';
 import { Order } from '@/models/index';
 import { requireAdmin } from '@/lib/roles';
 import { fail, apiError } from '@/lib/http';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 
 function sanitizeCell(val) {
   if (val === null || val === undefined) return '';
@@ -70,7 +71,7 @@ export async function GET(request) {
     orders.forEach((o) => {
       const row = sheet.addRow({
         orderNumber: sanitizeCell(o.orderNumber),
-        date: new Date(o.createdAt).toLocaleDateString('en-IN'),
+        date: formatDateDDMMYYYY(o.createdAt),
         customerName: sanitizeCell(o.shippingAddress?.name || o.billingAddress?.name || 'Customer'),
         phone: sanitizeCell(o.phone || o.shippingAddress?.phone || ''),
         city: sanitizeCell(o.shippingAddress?.city || ''),

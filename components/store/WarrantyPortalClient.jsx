@@ -643,6 +643,7 @@ export default function WarrantyPortalClient() {
                       <input
                         id="regDate"
                         type="date"
+                        lang="en-IN"
                         max={new Date().toISOString().split("T")[0]}
                         className={styles.input}
                         value={regForm.purchaseDate}

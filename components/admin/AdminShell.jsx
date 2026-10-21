@@ -356,7 +356,7 @@ function AdminShellInner({ children, session }) {
   const userInitials = (session?.name || session?.email || 'AD').slice(0, 2).toUpperCase();
 
   return (
-    <div className={styles.crmContainer}>
+    <div className={styles.crmContainer} data-lenis-prevent="true">
       {/* Mobile Drawer Backdrop */}
       {mobileSidebarOpen && (
         <div
@@ -523,7 +523,7 @@ function AdminShellInner({ children, session }) {
       </aside>
 
       {/* RIGHT CONTENT AREA */}
-      <div className={styles.contentArea}>
+      <div className={styles.contentArea} data-lenis-prevent="true">
         {/* Topbar */}
         <header className={styles.topbar}>
           <div className={styles.topbarLeft}>

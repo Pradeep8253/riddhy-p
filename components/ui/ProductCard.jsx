@@ -7,7 +7,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '@/store/cartSlice';
 import { toggleWishlist } from '@/store/wishlistSlice';
-import { toggleCompare } from '@/store/compareSlice';
 import { showToast, setCartDrawer } from '@/store/uiSlice';
 import { formatPriceSafe } from '@/lib/pricing';
 import { IMG } from '@/lib/images';
@@ -31,16 +30,12 @@ export default function ProductCard({ product, compact = false }) {
   const wishlisted = useSelector((state) =>
     Boolean(state.auth?.isAuthenticated && state.wishlist.items.some((item) => item.slug === product.slug))
   );
-  const compared = useSelector((state) =>
-    state.compare.items.some((item) => item.slug === product.slug)
-  );
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const isWishlisted = mounted ? wishlisted : false;
-  const isCompared = mounted ? compared : false;
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const waUrl = getProductWhatsAppUrl(product, locale);
 
@@ -167,17 +162,6 @@ export default function ProductCard({ product, compact = false }) {
             onClick={handleWishlist}
           >
             <Icon name="heart" size={18} />
-          </button>
-          <button
-            type="button"
-            aria-label={isCompared ? 'Remove from compare' : 'Add to compare'}
-            aria-pressed={isCompared}
-            onClick={() => {
-              dispatch(toggleCompare(product));
-              dispatch(showToast({ message: isCompared ? 'Removed from compare' : 'Added to compare', kind: 'info' }));
-            }}
-          >
-            <Icon name="compare" size={17} />
           </button>
           <a
             href={waUrl}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/Icon';
 import { Badge, Modal, ConfirmDialog } from '@/components/admin/ui';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import styles from '../AdminSettings.module.css';
 
 export default function TeamMembersTab({ session }) {
@@ -364,7 +365,7 @@ export default function TeamMembersTab({ session }) {
                       </button>
                     </td>
                     <td style={{ color: '#777', fontSize: 12 }}>
-                      {m.lastLoginAt ? new Date(m.lastLoginAt).toLocaleDateString('en-IN') : 'Pending Invite'}
+                      {m.lastLoginAt ? formatDateDDMMYYYY(m.lastLoginAt) : 'Pending Invite'}
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>

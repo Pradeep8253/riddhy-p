@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/db';
 import { Invoice, CreditNote } from '@/models/index';
 import { requireAdmin } from '@/lib/roles';
 import { fail, apiError } from '@/lib/http';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,7 +79,7 @@ export async function GET(request) {
       const isB2B = Boolean(inv.buyer?.isB2B || (inv.buyer?.gstin && inv.buyer.gstin.length >= 15));
       const row = masterSheet.addRow({
         invoiceNumber: sanitizeCell(inv.invoiceNumber),
-        invoiceDate: new Date(inv.invoiceDate).toLocaleDateString('en-IN'),
+        invoiceDate: formatDateDDMMYYYY(inv.invoiceDate),
         orderNumber: sanitizeCell(inv.orderNumber),
         buyerName: sanitizeCell(isB2B ? (inv.buyer?.businessName || inv.buyer?.name) : inv.buyer?.name),
         buyerGstin: sanitizeCell(inv.buyer?.gstin || 'URP'),
@@ -132,7 +133,7 @@ export async function GET(request) {
           gstin: sanitizeCell(inv.buyer.gstin),
           name: sanitizeCell(inv.buyer.businessName || inv.buyer.name),
           invNo: sanitizeCell(inv.invoiceNumber),
-          invDate: new Date(inv.invoiceDate).toLocaleDateString('en-IN'),
+          invDate: formatDateDDMMYYYY(inv.invoiceDate),
           invValue: Number(inv.totalAmount || 0),
           pos: `${inv.buyer.stateCode || '07'}-${sanitizeCell(inv.placeOfSupply)}`,
           revCharge: 'N',
@@ -261,9 +262,9 @@ export async function GET(request) {
     creditNotes.forEach((cn) => {
       const row = cnSheet.addRow({
         cnNo: sanitizeCell(cn.creditNoteNumber),
-        cnDate: new Date(cn.issuedAt).toLocaleDateString('en-IN'),
+        cnDate: formatDateDDMMYYYY(cn.issuedAt),
         invNo: sanitizeCell(cn.invoiceNumber),
-        invDate: cn.invoiceDate ? new Date(cn.invoiceDate).toLocaleDateString('en-IN') : '',
+        invDate: cn.invoiceDate ? formatDateDDMMYYYY(cn.invoiceDate) : '',
         name: sanitizeCell(cn.buyer?.name || 'Customer'),
         gstin: sanitizeCell(cn.buyer?.gstin || 'URP'),
         taxable: Number(cn.taxableAmount || 0),
@@ -298,7 +299,7 @@ export async function GET(request) {
 
     invoices.forEach((inv) => {
       const row = tallySheet.addRow({
-        vchDate: new Date(inv.invoiceDate).toLocaleDateString('en-IN'),
+        vchDate: formatDateDDMMYYYY(inv.invoiceDate),
         vchType: 'Sales',
         vchNo: sanitizeCell(inv.invoiceNumber),
         party: sanitizeCell(inv.buyer?.isB2B ? (inv.buyer.businessName || inv.buyer.name) : (inv.buyer?.name || 'Cash Customer')),

@@ -42,7 +42,9 @@ import {
   Palette,
   Lightbulb,
   Headphones,
-  ExternalLink
+  ExternalLink,
+  Tag,
+  Copy
 } from 'lucide-react';
 
 function WhatsApp({ size = 20, className, color = 'currentColor', style }) {
@@ -130,7 +132,9 @@ const iconMap = {
   building: Building2,
   palette: Palette,
   lightbulb: Lightbulb,
-  headphones: Headphones
+  headphones: Headphones,
+  tag: Tag,
+  copy: Copy
 };
 
 export default function Icon({

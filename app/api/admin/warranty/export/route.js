@@ -4,6 +4,7 @@ import { ProductRegistration, WarrantyClaim } from '@/models/index';
 import { requireAdmin } from '@/lib/roles';
 import { fail, apiError } from '@/lib/http';
 import { daysRemaining } from '@/lib/warranty';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 
 function sanitizeCell(val) {
   if (val === null || val === undefined) return '';
@@ -67,8 +68,8 @@ export async function GET(request) {
         serialNumber: sanitizeCell(r.serialNumber || 'N/A'),
         customerName: sanitizeCell(r.customerName),
         customerPhone: sanitizeCell(r.customerPhone),
-        purchaseDate: r.purchaseDate ? new Date(r.purchaseDate).toLocaleDateString('en-IN') : '',
-        expiryDate: r.expiryDate ? new Date(r.expiryDate).toLocaleDateString('en-IN') : '',
+        purchaseDate: formatDateDDMMYYYY(r.purchaseDate),
+        expiryDate: formatDateDDMMYYYY(r.expiryDate),
         daysLeft: daysRemaining(r.expiryDate),
         status: (r.status || 'active').toUpperCase(),
         verified: r.verified ? 'YES' : 'NO',
@@ -94,7 +95,7 @@ export async function GET(request) {
     claims.forEach((c) => {
       claimSheet.addRow({
         claimNumber: sanitizeCell(c.claimNumber || String(c._id).slice(-8)),
-        date: new Date(c.createdAt).toLocaleDateString('en-IN'),
+        date: formatDateDDMMYYYY(c.createdAt),
         issue: sanitizeCell(c.issue),
         contact: sanitizeCell(c.preferredContact),
         assignedTo: sanitizeCell(c.assignedToEmail || 'Unassigned'),

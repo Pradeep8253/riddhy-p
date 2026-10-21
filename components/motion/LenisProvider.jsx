@@ -1,10 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function LenisProvider({ children }) {
+  const pathname = usePathname();
+  const isAdmin = pathname ? pathname.startsWith('/admin') : false;
+
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (isAdmin) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let lenis;
     let raf = 0;
     let gsap;
@@ -23,8 +28,12 @@ export default function LenisProvider({ children }) {
       raf = requestAnimationFrame(tick);
     }).catch(() => {});
 
-    return () => { alive = false; cancelAnimationFrame(raf); lenis?.destroy(); };
-  }, []);
+    return () => {
+      alive = false;
+      cancelAnimationFrame(raf);
+      lenis?.destroy();
+    };
+  }, [isAdmin]);
 
   return children;
 }

@@ -86,7 +86,17 @@ const StockMovementSchema = new Schema(
     orderId: Schema.Types.ObjectId,
     kind: {
       type: String,
-      enum: ["opening", "reserve", "release", "sale", "return", "adjustment"],
+      enum: [
+        "opening",
+        "reserve",
+        "release",
+        "sale",
+        "return",
+        "adjustment",
+        "purchase",
+        "damage",
+        "transfer",
+      ],
     },
     quantity: Number,
     reference: String,
@@ -278,7 +288,7 @@ const InvoiceSchema = new Schema(
       upiId: String,
       jurisdictionCity: String,
       logoUrl: String,
-      signatureUrl: String
+      signatureUrl: String,
     },
     buyer: {
       name: { type: String, required: true },
@@ -311,7 +321,7 @@ const InvoiceSchema = new Schema(
         igstRate: { type: Number, default: 0 },
         igstAmount: { type: Number, default: 0 },
         lineTotal: { type: Number, required: true },
-        isService: { type: Boolean, default: false }
+        isService: { type: Boolean, default: false },
       },
     ],
     taxableAmount: { type: Number, required: true },
@@ -342,7 +352,11 @@ const InvoiceSchema = new Schema(
     },
     paymentMode: { type: String, default: "online" },
     paymentReference: String,
-    status: { type: String, enum: ["issued", "cancelled", "void"], default: "issued" },
+    status: {
+      type: String,
+      enum: ["issued", "cancelled", "void"],
+      default: "issued",
+    },
     creditNoteId: Schema.Types.ObjectId,
     creditNotes: [{ type: Schema.Types.ObjectId, ref: "CreditNote" }],
     hsnSummary: [
@@ -354,8 +368,8 @@ const InvoiceSchema = new Schema(
         cgstAmount: Number,
         sgstAmount: Number,
         igstAmount: Number,
-        totalTax: Number
-      }
+        totalTax: Number,
+      },
     ],
     events: [
       {
@@ -363,8 +377,8 @@ const InvoiceSchema = new Schema(
         at: { type: Date, default: Date.now },
         by: String,
         byEmail: String,
-        note: String
-      }
+        note: String,
+      },
     ],
     terms: String,
     notes: String,
@@ -422,6 +436,9 @@ export const Warehouse =
   mongoose.models.Warehouse || mongoose.model("Warehouse", WarehouseSchema);
 export const Inventory =
   mongoose.models.Inventory || mongoose.model("Inventory", InventorySchema);
+if (mongoose.models?.StockMovement) {
+  delete mongoose.models.StockMovement;
+}
 export const StockMovement =
   mongoose.models.StockMovement ||
   mongoose.model("StockMovement", StockMovementSchema);

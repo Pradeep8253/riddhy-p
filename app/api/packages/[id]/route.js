@@ -34,11 +34,17 @@ export async function PUT(request, { params }) {
 
   try {
     await connectDB();
-    const existing = await MarriagePackage.findById(id);
+    let existing = null;
+    if (id && id.match(/^[0-9a-fA-F]{24}$/)) {
+      existing = await MarriagePackage.findById(id);
+    }
+    if (!existing) {
+      existing = await MarriagePackage.findOne({ slug: id });
+    }
     if (!existing) return fail('Package not found.', 404);
 
     const updated = await MarriagePackage.findByIdAndUpdate(
-      id,
+      existing._id,
       { $set: body },
       { new: true, runValidators: true }
     ).lean();
@@ -48,7 +54,7 @@ export async function PUT(request, { params }) {
       actorEmail: actor.email,
       action: 'UPDATE_MARRIAGE_PACKAGE',
       entity: 'MarriagePackage',
-      entityId: id,
+      entityId: String(existing._id),
       before: existing.toObject(),
       after: body
     }).catch(() => {});
@@ -67,7 +73,13 @@ export async function DELETE(request, { params }) {
 
   try {
     await connectDB();
-    const deleted = await MarriagePackage.findByIdAndDelete(id).lean();
+    let query = {};
+    if (id && id.match(/^[0-9a-fA-F]{24}$/)) {
+      query = { _id: id };
+    } else {
+      query = { slug: id };
+    }
+    const deleted = await MarriagePackage.findOneAndDelete(query).lean();
     if (!deleted) return fail('Package not found.', 404);
 
     await AuditLog.create({
@@ -75,7 +87,7 @@ export async function DELETE(request, { params }) {
       actorEmail: actor.email,
       action: 'DELETE_MARRIAGE_PACKAGE',
       entity: 'MarriagePackage',
-      entityId: id,
+      entityId: String(deleted._id),
       before: deleted
     }).catch(() => {});
 

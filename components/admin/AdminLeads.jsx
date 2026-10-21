@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import Icon from '@/components/ui/Icon';
 import ExportDropdown from './ExportDropdown';
 import AdminPagination from './AdminPagination';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import styles from './AdminLeads.module.css';
 
 const STATUS_OPTIONS = [
@@ -350,7 +351,7 @@ export default function AdminLeads() {
 
                 {item.kind === 'consultation' && (
                   <div className={styles.consultationMeta}>
-                    <b>Slot:</b> {item.preferredDate ? new Date(item.preferredDate).toLocaleDateString('en-IN') : '—'} ({item.timeWindow})
+                    <b>Slot:</b> {item.preferredDate ? formatDateDDMMYYYY(item.preferredDate) : '—'} ({item.timeWindow})
                     {item.mode && ` · Mode: ${item.mode.toUpperCase()}`}
                     {item.roomType && ` · Room: ${item.roomType}`}
                   </div>
@@ -499,12 +500,12 @@ export default function AdminLeads() {
                     </div>
                     <div>
                       <dt>Preferred Slot:</dt>
-                      <dd>{activeLead.preferredDate ? new Date(activeLead.preferredDate).toLocaleDateString('en-IN') : '—'} ({activeLead.timeWindow})</dd>
+                      <dd>{activeLead.preferredDate ? formatDateDDMMYYYY(activeLead.preferredDate) : '—'} ({activeLead.timeWindow})</dd>
                     </div>
                     {activeLead.altDate && (
                       <div>
                         <dt>Alt Slot:</dt>
-                        <dd>{new Date(activeLead.altDate).toLocaleDateString('en-IN')} ({activeLead.altTimeWindow || '—'})</dd>
+                        <dd>{formatDateDDMMYYYY(activeLead.altDate)} ({activeLead.altTimeWindow || '—'})</dd>
                       </div>
                     )}
                     <div>
@@ -569,7 +570,7 @@ export default function AdminLeads() {
                     {activeLead.preferredDate && (
                       <div>
                         <dt>Preferred Date:</dt>
-                        <dd>{new Date(activeLead.preferredDate).toLocaleDateString('en-IN')}</dd>
+                        <dd>{formatDateDDMMYYYY(activeLead.preferredDate)}</dd>
                       </div>
                     )}
                     {activeLead.preferredContactMethod && (

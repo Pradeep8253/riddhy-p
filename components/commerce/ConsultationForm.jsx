@@ -672,6 +672,7 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
                 <input
                   id="c_date"
                   type="date"
+                  lang="en-IN"
                   required
                   min={minDate}
                   max={maxDate}
@@ -719,6 +720,7 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
                 <input
                   id="c_altDate"
                   type="date"
+                  lang="en-IN"
                   min={minDate}
                   max={maxDate}
                   value={form.altDate}

@@ -19,6 +19,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { formatINR } from '@/lib/demo-data';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import { ALLOWED_TRANSITIONS } from '@/lib/order-state';
 import styles from './AdminOrderDrawer.module.css';
 
@@ -657,7 +658,7 @@ export default function AdminOrderDrawer({ isOpen, order, onClose, onUpdated }) 
         {/* Footer */}
         <div className={styles.footer}>
           <div style={{ fontSize: '12px', color: '#68736a' }}>
-            Created {new Date(order.createdAt).toLocaleDateString('en-IN')}
+            Created {formatDateDDMMYYYY(order.createdAt)}
           </div>
           <button type="button" className={styles.btnSecondary} onClick={onClose}>
             Close Drawer

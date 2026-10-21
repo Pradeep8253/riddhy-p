@@ -17,6 +17,7 @@ import {
   Copy
 } from 'lucide-react';
 import { formatINR } from '@/lib/demo-data';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import ExportDropdown from './ExportDropdown';
 import AdminPagination from './AdminPagination';
 import { Badge, Modal, ConfirmDialog, EmptyState, Skeleton } from './ui';
@@ -229,7 +230,7 @@ export default function AdminInvoices() {
 
   const exportColumns = [
     { label: 'Invoice No', key: 'invoiceNumber' },
-    { label: 'Date', key: 'invoiceDate', getValue: (i) => new Date(i.invoiceDate).toLocaleDateString('en-IN') },
+    { label: 'Date', key: 'invoiceDate', getValue: (i) => formatDateDDMMYYYY(i.invoiceDate) },
     { label: 'Order No', key: 'orderNumber' },
     { label: 'Buyer', key: 'buyer', getValue: (i) => i.buyer?.businessName || i.buyer?.name || 'Customer' },
     { label: 'Buyer GSTIN', key: 'gstin', getValue: (i) => i.buyer?.gstin || 'URP' },
@@ -460,6 +461,7 @@ export default function AdminInvoices() {
               <span>From:</span>
               <input
                 type="date"
+                lang="en-IN"
                 className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ''}`}
                 value={fromDate}
                 max={toDate || undefined}
@@ -473,11 +475,12 @@ export default function AdminInvoices() {
                     setDateRangeError('');
                   }
                 }}
-                title="Filter invoices from date"
+                title="Filter invoices from date (DD/MM/YYYY)"
               />
               <span>To:</span>
               <input
                 type="date"
+                lang="en-IN"
                 className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ''}`}
                 value={toDate}
                 min={fromDate || undefined}
@@ -491,7 +494,7 @@ export default function AdminInvoices() {
                     setDateRangeError('');
                   }
                 }}
-                title="Filter invoices to date"
+                title="Filter invoices to date (DD/MM/YYYY)"
               />
               {(fromDate || toDate) && (
                 <button
@@ -604,7 +607,7 @@ export default function AdminInvoices() {
                         </div>
                       </td>
                       <td>
-                        {new Date(inv.invoiceDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        <strong>{formatDateDDMMYYYY(inv.invoiceDate)}</strong>
                         <div style={{ fontSize: '10px', color: '#727e74' }}>FY {inv.financialYear}</div>
                       </td>
                       <td>
@@ -652,16 +655,7 @@ export default function AdminInvoices() {
                             className={styles.btnAction}
                             title="Download PDF"
                           >
-                            <Download size={12} />
-                          </a>
-                          <a
-                            href={`/api/orders/${inv.orderId}/invoice`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={styles.btnAction}
-                            title="Print HTML"
-                          >
-                            <Printer size={12} />
+                            <Download size={12} /> Download
                           </a>
                           <button
                             type="button"
@@ -674,46 +668,8 @@ export default function AdminInvoices() {
                               isSending: false
                             })}
                           >
-                            <Mail size={12} />
+                            <Mail size={12} /> Email
                           </button>
-                          <button
-                            type="button"
-                            className={styles.btnAction}
-                            title="Copy WhatsApp share link"
-                            onClick={() => handleCopyWhatsApp(inv)}
-                          >
-                            <Share2 size={12} />
-                          </button>
-                          {!isVoid && (
-                            <button
-                              type="button"
-                              className={styles.btnAction}
-                              title="Issue credit note for refund"
-                              onClick={() => setCreditNoteModal({
-                                isOpen: true,
-                                invoice: inv,
-                                amount: String(inv.totalAmount),
-                                reason: '',
-                                isSubmitting: false
-                              })}
-                            >
-                              <RotateCcw size={12} /> CN
-                            </button>
-                          )}
-                          {!isVoid && !hasCN && (
-                            <button
-                              type="button"
-                              className={`${styles.btnAction} ${styles.btnActionDanger}`}
-                              title="Void invoice"
-                              onClick={() => setVoidConfirm({
-                                isOpen: true,
-                                invoice: inv,
-                                reason: 'Cancelled before payment capture'
-                              })}
-                            >
-                              <Ban size={12} />
-                            </button>
-                          )}
                         </div>
                       </td>
                     </tr>
@@ -778,7 +734,7 @@ export default function AdminInvoices() {
                         <strong>{cn.creditNoteNumber}</strong>
                         <div style={{ fontSize: '10px', color: '#727e74' }}>FY {cn.financialYear}</div>
                       </td>
-                      <td>{new Date(cn.issuedAt || cn.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                      <td><strong>{formatDateDDMMYYYY(cn.issuedAt || cn.createdAt)}</strong></td>
                       <td><strong>{cn.invoiceNumber}</strong></td>
                       <td>
                         <Link href="/admin/orders" style={{ color: '#1b5e20', fontWeight: 600 }}>

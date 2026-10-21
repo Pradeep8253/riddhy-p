@@ -16,8 +16,7 @@ import styles from './Header.module.css';
 const nav = [
   { key: 'furniture', href: '/furniture', children: ['sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables'] },
   { key: 'appliances', href: '/appliances', children: ['refrigerators', 'washing-machines', 'air-conditioners', 'televisions'] },
-  { key: 'rooms', href: '/rooms/living', children: ['living', 'bedroom', 'dining', 'study', 'kitchen'] },
-  { key: 'offers', href: '/offers' }
+  { key: 'rooms', href: '/rooms/living', children: ['living', 'bedroom', 'dining', 'study', 'kitchen'] }
 ];
 
 const labels = {

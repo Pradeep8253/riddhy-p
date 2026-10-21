@@ -4,6 +4,7 @@ const initialState = {
   locale: 'en',
   liteMode: false,
   cartDrawerOpen: false,
+  offersModalOpen: false,
   toast: null
 };
 
@@ -31,6 +32,9 @@ const uiSlice = createSlice({
     setCartDrawer(state, { payload }) {
       state.cartDrawerOpen = Boolean(payload);
     },
+    setOffersModal(state, { payload }) {
+      state.offersModalOpen = Boolean(payload);
+    },
     showToast(state, { payload }) {
       state.toast = { ...payload, id: Date.now() };
     },
@@ -40,6 +44,14 @@ const uiSlice = createSlice({
   }
 });
 
-export const { setLocale, setLiteMode, toggleLiteMode, setCartDrawer, showToast, clearToast } = uiSlice.actions;
+export const {
+  setLocale,
+  setLiteMode,
+  toggleLiteMode,
+  setCartDrawer,
+  setOffersModal,
+  showToast,
+  clearToast
+} = uiSlice.actions;
 export default uiSlice.reducer;
 

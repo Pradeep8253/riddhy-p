@@ -359,7 +359,7 @@ export default function ListingClient({
             className={styles.mobileFilter}
             onClick={() => setFiltersOpen(!filtersOpen)}
           >
-            <Icon name="compare" size={14} />
+            <Icon name="sliders" size={14} />
             {filtersOpen ? "Close filters" : "Filters & sort"}
           </button>
 

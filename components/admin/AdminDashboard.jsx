@@ -187,23 +187,25 @@ export default function AdminDashboard() {
               >
                 <input
                   type="date"
+                  lang="en-IN"
                   value={customFrom}
                   max={customTo || undefined}
                   onChange={(e) => handleFromChange(e.target.value)}
                   className={isCustomInvalid || customDateError ? styles.dateInputError : ''}
                   aria-invalid={Boolean(isCustomInvalid || customDateError)}
-                  title="Start Date (From)"
+                  title="Start Date (From) - DD/MM/YYYY"
                   required
                 />
                 <span className={styles.dateSep}>to</span>
                 <input
                   type="date"
+                  lang="en-IN"
                   value={customTo}
                   min={customFrom || undefined}
                   onChange={(e) => handleToChange(e.target.value)}
                   className={isCustomInvalid || customDateError ? styles.dateInputError : ''}
                   aria-invalid={Boolean(isCustomInvalid || customDateError)}
-                  title="End Date (To)"
+                  title="End Date (To) - DD/MM/YYYY"
                 />
                 <button
                   type="submit"

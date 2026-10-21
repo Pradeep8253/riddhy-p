@@ -4,6 +4,7 @@ import { getSession } from '@/lib/auth';
 import { fail } from '@/lib/http';
 import { generateInvoiceForOrder } from '@/lib/invoice-generator';
 import { generateInvoicePdfBuffer } from '@/lib/invoice-pdf';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (char) => ({
@@ -67,11 +68,7 @@ export async function GET(request, { params }) {
 
     // HTML Print View
     const { seller, buyer, items, taxableAmount, cgstTotal, sgstTotal, igstTotal, totalAmount, isInterState, totalInWords } = invoice;
-    const formattedDate = new Date(invoice.invoiceDate).toLocaleDateString('en-IN', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
+    const formattedDate = formatDateDDMMYYYY(invoice.invoiceDate);
 
     const rows = (items || []).map((item, idx) => `
       <tr>

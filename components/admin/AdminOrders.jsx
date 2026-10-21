@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { formatINR } from '@/lib/demo-data';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import {
   Search,
   X,
@@ -91,7 +92,7 @@ export default function AdminOrders() {
 
   const exportColumns = [
     { label: 'Order Number', key: 'orderNumber' },
-    { label: 'Date', key: 'createdAt', getValue: (o) => new Date(o.createdAt).toLocaleDateString('en-IN') },
+    { label: 'Date', key: 'createdAt', getValue: (o) => formatDateDDMMYYYY(o.createdAt) },
     { label: 'Customer Name', key: 'customer', getValue: (o) => o.shippingAddress?.name || 'Customer' },
     { label: 'City', key: 'city', getValue: (o) => o.shippingAddress?.city || '' },
     { label: 'Phone', key: 'phone' },
@@ -231,7 +232,7 @@ export default function AdminOrders() {
             >
               <div>
                 <b>{order.orderNumber}</b>
-                <small>{new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</small>
+                <small>{formatDateDDMMYYYY(order.createdAt)}</small>
                 {order.invoiceNumber && (
                   <span style={{ fontSize: '10px', color: '#1b5e20', fontWeight: 700 }}>
                     Inv: {order.invoiceNumber}
@@ -269,7 +270,7 @@ export default function AdminOrders() {
                 </span>
                 {order.deliveredAt && (
                   <small style={{ color: '#17632a' }}>
-                    Delivered {new Date(order.deliveredAt).toLocaleDateString('en-IN')}
+                    Delivered {formatDateDDMMYYYY(order.deliveredAt)}
                   </small>
                 )}
               </div>

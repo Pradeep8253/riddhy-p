@@ -147,6 +147,74 @@
   background: #ffebee;
 }
 
+.resumeBtn {
+  color: #1b5e20;
+  border-color: #a5d6a7;
+  background: #f4fbf5;
+}
+
+.resumeBtn:hover {
+  background: #e8f5e9;
+  border-color: #81c784;
+}
+
+.pausedRow {
+  background: #fafaf8;
+  border-color: #e5e5dc;
+  opacity: 0.92;
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.filterTab {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--rf-line);
+  background: #ffffff;
+  color: var(--rf-forest-deep);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.filterTab:hover {
+  background: var(--rf-cream-100);
+}
+
+.filterTabActive {
+  background: var(--rf-green-800);
+  color: #ffffff;
+  border-color: var(--rf-green-800);
+}
+
+.filterTabActive:hover {
+  background: var(--rf-green-900, #144621);
+}
+
+.filterCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.filterTabActive .filterCount {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
 /* Modal Form */
 .modalOverlay {
   position: fixed;

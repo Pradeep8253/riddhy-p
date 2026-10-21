@@ -5,6 +5,7 @@ import StickyConsultationPill from '@/components/store/StickyConsultationPill';
 import FloatingContactWidget from '@/components/ui/FloatingContactWidget';
 import CartDrawer from '@/components/commerce/CartDrawer';
 import MobileBottomNav from '@/components/store/MobileBottomNav';
+import OffersModal from '@/components/store/OffersModal';
 
 export default function StoreLayout({ children }) {
   return (
@@ -14,6 +15,7 @@ export default function StoreLayout({ children }) {
       <Footer />
       <ToastViewport />
       <CartDrawer />
+      <OffersModal />
       <StickyConsultationPill />
       <FloatingContactWidget />
       <MobileBottomNav />

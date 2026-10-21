@@ -6,6 +6,7 @@ import { generateCreditNoteForRefund } from '@/lib/invoice-generator';
 import { generateInvoicePdfBuffer } from '@/lib/invoice-pdf';
 import { sendMail } from '@/lib/mailer';
 import { getCompanySettings, validateCompanyForInvoicing } from '@/lib/company-settings';
+import { formatDateDDMMYYYY } from '@/lib/date-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -244,7 +245,7 @@ export async function POST(request) {
       const filename = `Invoice_${cleanNumber}.pdf`;
 
       const subject = `Your Tax Invoice from RF Riddhy: ${invoice.invoiceNumber}`;
-      const text = `Dear ${invoice.buyer?.name || 'Customer'},\n\nPlease find attached your official GST Tax Invoice (${invoice.invoiceNumber}) for order ${invoice.orderNumber}.\n\nTotal Amount: Rs. ${invoice.totalAmount}\nDate: ${new Date(invoice.invoiceDate).toLocaleDateString('en-IN')}\n\nThank you for choosing RF Riddhy.\nhttps://rfriddhy.com`;
+      const text = `Dear ${invoice.buyer?.name || 'Customer'},\n\nPlease find attached your official GST Tax Invoice (${invoice.invoiceNumber}) for order ${invoice.orderNumber}.\n\nTotal Amount: Rs. ${invoice.totalAmount}\nDate: ${formatDateDDMMYYYY(invoice.invoiceDate)}\n\nThank you for choosing RF Riddhy.\nhttps://rfriddhy.com`;
       const html = `<div style="font-family: sans-serif; color: #1e2420; max-width: 600px; padding: 20px;">
         <h2 style="color: #1b5e20;">Tax Invoice ${invoice.invoiceNumber}</h2>
         <p>Dear ${invoice.buyer?.name || 'Customer'},</p>

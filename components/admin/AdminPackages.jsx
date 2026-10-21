@@ -20,6 +20,7 @@ const emptyPackage = {
 
 export default function AdminPackages() {
   const [packages, setPackages] = useState([]);
+  const [filter, setFilter] = useState("all"); // 'all' | 'active' | 'paused'
   const [isLoading, setIsLoading] = useState(true);
   const [editingPackage, setEditingPackage] = useState(null);
   const [formData, setFormData] = useState(emptyPackage);
@@ -29,7 +30,7 @@ export default function AdminPackages() {
   const loadPackages = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/packages");
+      const res = await fetch("/api/packages?all=true");
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setPackages(json.data);
@@ -74,19 +75,35 @@ export default function AdminPackages() {
   };
 
   const handleToggle = async (pkg) => {
-    const id = pkg.id || pkg._id;
+    const id = pkg.id || pkg._id || pkg.slug;
     if (!id) return;
+    const nextActive = !pkg.active;
+
+    // Optimistic UI update so the item never disappears
+    setPackages((prev) =>
+      prev.map((p) =>
+        (p.id === id || p._id === id || (p.slug && p.slug === pkg.slug))
+          ? { ...p, active: nextActive }
+          : p
+      )
+    );
+
     try {
       const res = await fetch(`/api/packages/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ active: !pkg.active }),
+        body: JSON.stringify({ active: nextActive }),
       });
       const json = await res.json();
       if (json.success) {
+        setMessage(`✓ "${pkg.name}" is now ${nextActive ? "Active" : "Paused"}.`);
         loadPackages();
+      } else {
+        loadPackages();
+        setMessage(json.error?.message || "Failed to update package status.");
       }
     } catch (err) {
+      loadPackages();
       setMessage("Failed to update package status.");
     }
   };
@@ -157,97 +174,144 @@ export default function AdminPackages() {
       </div>
 
       {message && (
-        <div style={{ color: "#c62828", fontSize: 13 }}>{message}</div>
+        <div style={{ color: message.startsWith("✓") ? "#1b5e20" : "#c62828", fontSize: 13, fontWeight: 600 }}>{message}</div>
       )}
 
+      {/* Filter Tabs */}
+      <div className={styles.filterBar}>
+        <button
+          type="button"
+          className={`${styles.filterTab} ${filter === "all" ? styles.filterTabActive : ""}`}
+          onClick={() => setFilter("all")}
+        >
+          All Packages <span className={styles.filterCount}>{packages.length}</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.filterTab} ${filter === "active" ? styles.filterTabActive : ""}`}
+          onClick={() => setFilter("active")}
+        >
+          ● Active <span className={styles.filterCount}>{packages.filter((p) => p.active).length}</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.filterTab} ${filter === "paused" ? styles.filterTabActive : ""}`}
+          onClick={() => setFilter("paused")}
+        >
+          ⏸ Paused <span className={styles.filterCount}>{packages.filter((p) => !p.active).length}</span>
+        </button>
+      </div>
+
       <div className={styles.cardList}>
-        {packages.map((pkg) => {
-          const itemCount = (pkg.items || []).length;
-          return (
-            <div key={pkg.slug || pkg.id} className={styles.packageRow}>
-              <div className={styles.packageInfo}>
-                <div className={styles.titleRow}>
-                  <span className={styles.badge}>{pkg.tier}</span>
-                  <b>{pkg.name}</b>
-                  <span
-                    className={`${styles.statusPill} ${
-                      pkg.active ? styles.activeStatus : styles.inactiveStatus
-                    }`}
+        {packages
+          .filter((pkg) => {
+            if (filter === "active") return pkg.active;
+            if (filter === "paused") return !pkg.active;
+            return true;
+          })
+          .map((pkg) => {
+            const itemCount = (pkg.items || []).length;
+            return (
+              <div
+                key={pkg.slug || pkg.id || pkg._id}
+                className={`${styles.packageRow} ${!pkg.active ? styles.pausedRow : ""}`}
+              >
+                <div className={styles.packageInfo}>
+                  <div className={styles.titleRow}>
+                    <span className={styles.badge}>{pkg.tier}</span>
+                    <b>{pkg.name}</b>
+                    <span
+                      className={`${styles.statusPill} ${
+                        pkg.active ? styles.activeStatus : styles.inactiveStatus
+                      }`}
+                    >
+                      {pkg.active ? "● Active" : "⏸ Paused"}
+                    </span>
+                  </div>
+                  <div className={styles.priceText}>
+                    {formatINR(pkg.price)}
+                    {pkg.originalPrice && pkg.originalPrice > pkg.price && (
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "#888",
+                          textDecoration: "line-through",
+                          marginLeft: 6,
+                        }}
+                      >
+                        {formatINR(pkg.originalPrice)}
+                      </span>
+                    )}
+                    {pkg.highlightBadge && (
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: "var(--rf-green-800)",
+                          marginLeft: 10,
+                          fontWeight: 700,
+                        }}
+                      >
+                        [{pkg.highlightBadge}]
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.metaText}>
+                    Slug: <code>{pkg.slug}</code> · {itemCount} items included ·
+                    Order: #{pkg.sortOrder || 0}
+                  </div>
+                </div>
+
+                <div className={styles.actions}>
+                  <button
+                    type="button"
+                    className={`${styles.actionBtn} ${!pkg.active ? styles.resumeBtn : ""}`}
+                    onClick={() => handleToggle(pkg)}
+                    title={
+                      pkg.active
+                        ? "Pause this package from live store"
+                        : "Resume and show package on live store"
+                    }
                   >
-                    {pkg.active ? "● Active" : "○ Paused"}
-                  </span>
-                </div>
-                <div className={styles.priceText}>
-                  {formatINR(pkg.price)}
-                  {pkg.originalPrice && pkg.originalPrice > pkg.price && (
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#888",
-                        textDecoration: "line-through",
-                        marginLeft: 6,
-                      }}
-                    >
-                      {formatINR(pkg.originalPrice)}
-                    </span>
-                  )}
-                  {pkg.highlightBadge && (
-                    <span
-                      style={{
-                        fontSize: 11,
-                        color: "var(--rf-green-800)",
-                        marginLeft: 10,
-                        fontWeight: 700,
-                      }}
-                    >
-                      [{pkg.highlightBadge}]
-                    </span>
-                  )}
-                </div>
-                <div className={styles.metaText}>
-                  Slug: <code>{pkg.slug}</code> · {itemCount} items included ·
-                  Order: #{pkg.sortOrder || 0}
+                    {pkg.active ? "Pause" : "Resume"}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.actionBtn}
+                    onClick={() => openEdit(pkg)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                    onClick={() => handleDelete(pkg)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
+            );
+          })}
 
-              <div className={styles.actions}>
-                <button
-                  type="button"
-                  className={styles.actionBtn}
-                  onClick={() => handleToggle(pkg)}
-                >
-                  {pkg.active ? "Pause" : "Activate"}
-                </button>
-                <button
-                  type="button"
-                  className={styles.actionBtn}
-                  onClick={() => openEdit(pkg)}
-                >
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                  onClick={() => handleDelete(pkg)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          );
-        })}
-
-        {!isLoading && packages.length === 0 && (
+        {!isLoading && packages.filter((pkg) => {
+          if (filter === "active") return pkg.active;
+          if (filter === "paused") return !pkg.active;
+          return true;
+        }).length === 0 && (
           <div
             style={{
               padding: 32,
               textAlign: "center",
               background: "#fff",
               borderRadius: 16,
+              color: "#7b857d",
             }}
           >
-            No packages configured. Click "+ Create Marriage Package" to add
-            one.
+            {filter === "paused"
+              ? "No paused packages. All packages are currently active."
+              : filter === "active"
+              ? "No active packages found."
+              : 'No packages configured. Click "+ Create Marriage Package" to add one.'}
           </div>
         )}
       </div>
