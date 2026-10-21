@@ -15,10 +15,11 @@
 }
 
 .heroTitle {
-  margin: 14px 0 16px;
-  font: 500 clamp(48px, 7.5vw, 92px) / 0.88 var(--font-display);
-  letter-spacing: -0.06em;
+  margin: 8px 0 12px;
+  font: 600 clamp(36px, 5.8vw, 74px) / 1.02 var(--font-display);
+  letter-spacing: -0.035em;
   color: var(--rf-forest-deep);
+  text-wrap: balance;
 }
 
 .heroTitle em {
@@ -29,10 +30,10 @@
 
 .heroSubtitle {
   max-width: 520px;
-  margin: 0 0 28px;
-  color: var(--rf-charcoal-600);
-  font-size: clamp(14px, 1.4vw, 16px);
-  line-height: 1.8;
+  margin: 0 0 20px;
+  color: var(--rf-charcoal-700);
+  font-size: clamp(13.5px, 1.2vw, 15px);
+  line-height: 1.5;
 }
 
 .heroLogoWrap {

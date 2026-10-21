@@ -10,21 +10,22 @@
     #10261a;
 }
 .intro h1 {
-  margin: 14px 0;
+  margin: 8px 0 10px;
   color: #fff;
-  font: 500 clamp(32px, 8vw, 108px)/0.96 var(--font-display);
-  letter-spacing: -0.045em;
+  font: 600 clamp(28px, 5.5vw, 68px)/1.08 var(--font-display);
+  letter-spacing: -0.035em;
   word-break: break-word;
+  text-wrap: balance;
 }
 .intro h1 em {
   color: #edb95e;
   font-weight: 400;
 }
 .intro p {
-  max-width: 600px;
+  max-width: 580px;
   color: #d2ddd3;
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.5;
 }
 .grid {
   display: grid;

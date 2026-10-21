@@ -1,71 +1,32 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOffersModal, showToast } from '@/store/uiSlice';
 import Icon from '@/components/ui/Icon';
-import Countdown from '@/components/ui/Countdown';
+import { getWhatsAppUrl } from '@/lib/site-config';
+import { IMG } from '@/lib/images';
 import styles from './OffersModal.module.css';
 
-const END_AT = '2026-11-30T18:29:59+05:30';
+const DEFAULT_OFFER_CODE = 'DIWALI10';
+const DEFAULT_OFFER_TEXT =
+  'Hello RF Riddhy! 🪔 I saw your Diwali Dhamaka Offer on the website. I want to avail offer code "DIWALI10" for furniture & home appliances. Please share the exclusive Diwali discounts, offers and package pricing!';
 
-const COUPONS = [
-  {
-    code: 'WELCOME10',
-    discount: '10% OFF',
-    type: 'Instant Cart Discount',
-    condition: 'On min. bag value ₹5,000 (Max discount ₹1,500)',
-  },
-  {
-    code: 'RIDDHY500',
-    discount: '₹500 OFF',
-    type: 'Flat Festive Voucher',
-    condition: 'On all orders above ₹10,000 across furniture & appliances',
-  },
-  {
-    code: 'WEDDING15',
-    discount: 'EXTRA 15%',
-    type: 'Package Privilege',
-    condition: 'Valid on complete 2-3 BHK Marriage & Appliance Packages',
-  },
-];
-
-const CAMPAIGNS = [
-  {
-    tag: 'Marriage Season',
-    title: 'Complete Wedding Packages',
-    desc: 'Handcrafted bedroom, hall & inverter appliances from ₹89,999.',
-    href: '/packages',
-    cta: 'View Packages',
-  },
-  {
-    tag: 'Appliance Carnival',
-    title: 'Inverter Refrigerators & ACs',
-    desc: '5-Star certified efficiency with complimentary installation.',
-    href: '/appliances',
-    cta: 'Shop Appliances',
-  },
-  {
-    tag: 'Solid Wood Heritage',
-    title: 'Living & Dining Sets',
-    desc: 'Teak & Sheesham furniture crafted for generations with 5-Yr warranty.',
-    href: '/furniture',
-    cta: 'Shop Furniture',
-  },
-];
-
-function OffersModalInner() {
+function OffersModalInner({
+  offerCode = DEFAULT_OFFER_CODE,
+  offerMessage = DEFAULT_OFFER_TEXT,
+  bannerImage = IMG?.banners?.diwaliBanner || '/images/diwali-dhamaka-banner.jpg',
+  altText = 'RF Riddhy Diwali Dhamaka Offer - Luxury Teak Furniture & Smart Home Appliances',
+}) {
   const dispatch = useDispatch();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const isOpen = useSelector((state) => state.ui?.offersModalOpen);
-  const [copiedCode, setCopiedCode] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   // Auto-open on initial website load (once per session)
   useEffect(() => {
-    // If explicitly opened via query parameter (e.g. ?offers=1)
+    // If explicitly opened via query parameter (e.g. ?offers=1 or ?openOffers=true)
     if (searchParams?.get('offers') === '1' || searchParams?.get('openOffers') === 'true') {
       dispatch(setOffersModal(true));
       return;
@@ -80,8 +41,8 @@ function OffersModalInner() {
             if (!sessionStorage.getItem('rf_offer_dismissed')) {
               dispatch(setOffersModal(true));
             }
-          } catch {}
-        }, 850);
+          } catch { }
+        }, 900);
 
         return () => clearTimeout(timer);
       }
@@ -90,12 +51,44 @@ function OffersModalInner() {
     }
   }, [searchParams, dispatch]);
 
-  const handleClose = () => {
-    try {
-      sessionStorage.setItem('rf_offer_dismissed', 'true');
-    } catch {}
-    dispatch(setOffersModal(false));
-  };
+  const handleClose = useCallback(
+    (e) => {
+      if (e) e.stopPropagation();
+      try {
+        sessionStorage.setItem('rf_offer_dismissed', 'true');
+      } catch { }
+      dispatch(setOffersModal(false));
+    },
+    [dispatch]
+  );
+
+  // Redirect to WhatsApp with pre-filled Diwali Dhamaka message
+  const handleBannerClick = useCallback(() => {
+    const waUrl = getWhatsAppUrl(offerMessage);
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+  }, [offerMessage]);
+
+  // Copy offer code with instant visual feedback and toast
+  const handleCopyCode = useCallback(
+    (e) => {
+      if (e) e.stopPropagation();
+      try {
+        navigator.clipboard.writeText(offerCode);
+        setCopied(true);
+        dispatch(
+          showToast({
+            message: `Diwali coupon code "${offerCode}" copied to clipboard!`,
+            kind: 'success',
+          })
+        );
+        setTimeout(() => setCopied(false), 2500);
+      } catch {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    },
+    [offerCode, dispatch]
+  );
 
   // Lock body scroll & close on Escape
   useEffect(() => {
@@ -115,31 +108,9 @@ function OffersModalInner() {
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = prevOverflow;
     };
-  }, [isOpen]);
+  }, [isOpen, handleClose]);
 
   if (!isOpen) return null;
-
-  const handleCopyCode = (code) => {
-    try {
-      navigator.clipboard.writeText(code);
-      setCopiedCode(code);
-      dispatch(
-        showToast({
-          message: `Coupon code "${code}" copied to clipboard!`,
-          kind: 'success',
-        })
-      );
-      setTimeout(() => setCopiedCode(null), 2500);
-    } catch {
-      setCopiedCode(code);
-      setTimeout(() => setCopiedCode(null), 2000);
-    }
-  };
-
-  const handleNavigate = (href) => {
-    handleClose();
-    router.push(href);
-  };
 
   return (
     <div
@@ -147,167 +118,117 @@ function OffersModalInner() {
       onClick={handleClose}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="offers-modal-title"
+      aria-label="Diwali Dhamaka Offer"
     >
-      <div
-        className={styles.modal}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        {/* Cross sign to close */}
         <button
           type="button"
           className={styles.closeBtn}
           onClick={handleClose}
-          aria-label="Close offers pop-up"
+          aria-label="Close offer pop-up"
         >
-          <Icon name="close" size={18} />
+          <Icon name="close" size={17} />
         </button>
 
-        {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.kicker}>
-            <span>✨ Seasonal Deals & Store Offers</span>
-          </div>
-          <h2 id="offers-modal-title" className={styles.title}>
-            Exclusive Deals & Instant Coupons
-          </h2>
-          <p className={styles.subtitle}>
-            Use verified discount codes at checkout or explore current festive campaign collections.
-          </p>
-        </div>
+        {/* Clickable Image Banner -> Redirects to WhatsApp */}
+        <div
+          className={styles.bannerWrapper}
+          onClick={handleBannerClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleBannerClick();
+            }
+          }}
+          title="Click banner to chat on WhatsApp and claim Diwali Dhamaka Deals"
+        >
+          <div className={styles.imageContainer}>
+            <img
+              src={bannerImage}
+              alt={altText}
+              className={styles.bannerImage}
+              loading="eager"
+            />
 
-        {/* Hero Featured Campaign Banner */}
-        <div className={styles.heroBanner}>
-          <div className={styles.heroTag}>
-            <span className={styles.heroTagDot} />
-            <span>The Golden Hour Celebration · Limited Time</span>
-          </div>
-          <h3 className={styles.heroTitle}>
-            Up to 40% Off Handcrafted Living & <em>Smart Appliances</em>
-          </h3>
-          <p className={styles.heroDesc}>
-            Warm Sheesham textures, solid teak dining, and 5-star inverter technology curated for complete homes.
-          </p>
+            {/* Radiant festive gradient overlay */}
+            <div className={styles.bannerOverlay} />
 
-          <Countdown endsAt={END_AT} />
+            {/* Banner Content / Callouts */}
+            <div className={styles.bannerContent}>
+              <div className={styles.topBadge}>
+                <span className={styles.badgePulse} />
+                <span>🪔 DIWALI DHAMAKA SALE</span>
+              </div>
 
-          <div className={styles.heroActions}>
-            <button
-              type="button"
-              className={styles.heroPrimaryBtn}
-              onClick={() => handleNavigate('/furniture')}
-            >
-              Shop Furniture Deals <Icon name="arrow" size={14} />
-            </button>
-            <button
-              type="button"
-              className={styles.heroSecondaryBtn}
-              onClick={() => handleNavigate('/appliances')}
-            >
-              Shop Appliances <Icon name="arrowUpRight" size={13} />
-            </button>
-          </div>
-        </div>
+              <div className={styles.bannerBottom}>
+                <h2 className={styles.bannerTitle}>
+                  Diwali Dhamaka <em>Offer</em>
+                </h2>
+                <p className={styles.bannerSubtitle}>
+                  Celebrate with Up to 40% OFF Handcrafted Teak & Smart Inverter Tech
+                </p>
 
-        {/* Discount Coupons Grid */}
-        <div className={styles.couponsSection}>
-          <div className={styles.sectionHeader}>
-            <h4 className={styles.sectionTitle}>
-              <Icon name="tag" size={15} />
-              <span>Available Coupon Codes</span>
-            </h4>
-          </div>
-
-          <div className={styles.couponsGrid}>
-            {COUPONS.map((coupon) => (
-              <div key={coupon.code} className={styles.couponCard}>
-                <div>
-                  <div className={styles.couponDiscount}>
-                    {coupon.discount}
-                    <small>{coupon.type}</small>
-                  </div>
-                  <p className={styles.couponCondition}>{coupon.condition}</p>
-                </div>
-
-                <div className={styles.couponFooter}>
-                  <span className={styles.couponCode}>{coupon.code}</span>
-                  <button
-                    type="button"
-                    className={`${styles.copyBtn} ${
-                      copiedCode === coupon.code ? styles.copiedText : ''
-                    }`}
-                    onClick={() => handleCopyCode(coupon.code)}
-                  >
-                    {copiedCode === coupon.code ? (
-                      <>✓ Copied</>
-                    ) : (
-                      <>
-                        <Icon name="copy" size={13} />
-                        Copy Code
-                      </>
-                    )}
-                  </button>
+                <div className={styles.waPill}>
+                  <Icon name="whatsapp" size={16} color="#25D366" />
+                  <span>Tap to Claim on WhatsApp</span>
+                  <Icon name="arrowRight" size={13} className={styles.waPillArrow} />
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
-        {/* Curated Campaign Tiles */}
-        <div className={styles.campaignsRow}>
-          {CAMPAIGNS.map((item) => (
-            <div
-              key={item.title}
-              className={styles.campaignCard}
-              onClick={() => handleNavigate(item.href)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div>
-                <span className={styles.campaignCardTag}>{item.tag}</span>
-                <h5 className={styles.campaignCardTitle}>{item.title}</h5>
-                <p className={styles.campaignCardDesc}>{item.desc}</p>
-              </div>
-              <span className={styles.campaignCardLink}>
-                {item.cta} <Icon name="arrow" size={12} />
+        {/* Fancy Strip below the banner */}
+        <div className={styles.fancyStrip}>
+          <div className={styles.stripLeft}>
+            <span className={styles.stripIconWrap}>
+              <Icon name="sparkles" size={17} />
+            </span>
+            <div className={styles.stripText}>
+              <span className={styles.stripLabel}>Diwali Dhamaka Code</span>
+              <span className={styles.stripDesc}>
+                Instant 10% OFF + Free Delivery & Setup in Prayagraj
               </span>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Trust assurance bar */}
-        <div className={styles.trustBar}>
-          <span className={styles.trustItem}>
-            🚚 Free Delivery & Setup in Delhi-NCR
-          </span>
-          <span className={styles.trustItem}>
-            🛡️ 5-Year Structural Warranty
-          </span>
-          <span className={styles.trustItem}>
-            💳 0% Easy EMI Available
-          </span>
-          <span className={styles.trustItem}>
-            💬 Certified Expert Advice
-          </span>
-        </div>
+          <div className={styles.stripRight}>
+            <div className={styles.codeContainer} title="Diwali Coupon Code">
+              <span className={styles.offerCode}>{offerCode}</span>
+            </div>
 
-        <div className={styles.dismissRow}>
-          <button
-            type="button"
-            className={styles.dismissBtn}
-            onClick={handleClose}
-          >
-            <span>Close & Continue Shopping</span>
-            <Icon name="arrow" size={13} className={styles.dismissIcon} />
-          </button>
+            <button
+              type="button"
+              className={`${styles.copyBtn} ${copied ? styles.copied : ''}`}
+              onClick={handleCopyCode}
+              aria-label="Copy Diwali offer code"
+            >
+              {copied ? (
+                <>
+                  <Icon name="check" size={13} />
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Icon name="copy" size={13} />
+                  <span>Copy Code</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default function OffersModal() {
+export default function OffersModal(props) {
   return (
     <Suspense fallback={null}>
-      <OffersModalInner />
+      <OffersModalInner {...props} />
     </Suspense>
   );
 }

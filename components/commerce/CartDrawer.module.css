@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--rf-line);
 }
 
@@ -52,7 +52,8 @@
 }
 
 .headerTitle h2 {
-  font: 500 20px var(--font-display);
+  font: 600 17.5px var(--font-display);
+  letter-spacing: -0.02em;
   color: var(--rf-forest-deep);
   margin: 0;
 }
@@ -164,17 +165,17 @@
 
 .itemCategory {
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--rf-gold-600);
 }
 
 .itemName {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--rf-forest-deep);
-  line-height: 1.35;
+  line-height: 1.3;
   text-decoration: none;
 }
 

@@ -52,7 +52,7 @@ export default function HomeHero() {
             <b>{tr(locale, 'dealEndsIn')}</b>
             <Countdown endsAt={endAt} compact />
           </div>
-          <span className="kicker">{tr(locale, 'curatedLiving')}</span>
+          <span className={`kicker kicker-hero ${styles.kicker}`}>{tr(locale, 'curatedLiving')}</span>
           <h1 id="hero-title">
             Furnish your<br />
             <em>story.</em>

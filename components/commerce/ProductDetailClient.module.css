@@ -176,9 +176,9 @@
 }
 .brand {
   color: var(--rf-green-800);
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.15em;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .brand span {
@@ -186,27 +186,29 @@
   padding: 0 4px;
 }
 .info h1 {
-  margin: 12px 0 7px;
+  margin: 8px 0 6px;
   color: var(--rf-forest-deep);
-  font: 500 clamp(36px, 4vw, 54px)/0.99 var(--font-display);
-  letter-spacing: -0.055em;
+  font: 600 clamp(28px, 3.4vw, 44px)/1.08 var(--font-display);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 .tagline {
   margin: 0;
-  color: #5c665d;
+  color: #525a53;
   font-size: 13px;
+  line-height: 1.45;
 }
 .rating {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin: 15px 0 17px;
+  margin: 10px 0 13px;
   font-size: 10px;
 }
 .rating > span:first-child {
   color: #8a682d;
-  font-weight: 900;
+  font-weight: 800;
 }
 .rating a {
   color: var(--rf-green-800);
@@ -226,11 +228,12 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  padding: 15px 0;
+  padding: 11px 0;
   border-block: 1px solid var(--rf-line);
 }
 .price strong {
-  font-size: 25px;
+  font-size: 22px;
+  font-weight: 700;
 }
 .price del {
   color: #879087;

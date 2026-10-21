@@ -81,16 +81,17 @@
 }
 
 .legend h3 {
-  margin: 6px 0 4px;
-  font: 500 clamp(22px, 3vw, 30px) / 1.15 var(--font-display);
-  letter-spacing: -0.03em;
+  margin: 4px 0 3px;
+  font: 600 clamp(19px, 2.4vw, 25px) / 1.2 var(--font-display);
+  letter-spacing: -0.025em;
   color: var(--rf-forest-deep);
 }
 
 .legend p {
   margin: 0;
   color: var(--rf-charcoal-600);
-  font-size: 13px;
+  font-size: 12.5px;
+  line-height: 1.45;
 }
 
 /* Inputs & grid */
@@ -102,13 +103,13 @@
 
 .fieldGroup {
   display: grid;
-  gap: 7px;
+  gap: 6px;
 }
 
 .fieldGroup label {
   color: var(--rf-forest-deep);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .fieldGroup input,

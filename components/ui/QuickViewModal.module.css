@@ -116,27 +116,29 @@
 .details {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 11px;
 }
 
 .categoryTag {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--rf-gold-600);
 }
 
 .productName {
-  font: 500 clamp(22px, 3vw, 28px) / 1.15 var(--font-display);
+  font: 600 clamp(19px, 2.5vw, 24px) / 1.18 var(--font-display);
+  letter-spacing: -0.025em;
   color: var(--rf-forest-deep);
   margin: 0;
+  text-wrap: balance;
 }
 
 .tagline {
-  font-size: 13.5px;
+  font-size: 12.5px;
   color: var(--rf-charcoal-600);
-  line-height: 1.6;
+  line-height: 1.45;
   margin: 0;
 }
 
@@ -144,13 +146,13 @@
   display: flex;
   align-items: baseline;
   gap: 10px;
-  padding-block: 8px;
+  padding-block: 7px;
   border-top: 1px solid var(--rf-line);
   border-bottom: 1px solid var(--rf-line);
 }
 
 .price {
-  font: 500 24px var(--font-display);
+  font: 600 21px var(--font-display);
   color: var(--rf-forest-deep);
 }
 

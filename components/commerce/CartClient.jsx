@@ -37,9 +37,13 @@ export default function CartClient() {
     const code = couponCode.trim().toUpperCase();
     if (!code) return;
 
-    if (code === "WELCOME10" || code === "RIDDHY10") {
+    if (code === "WELCOME10" || code === "RIDDHY10" || code === "DIWALI10") {
       const discount = Math.round(subtotal * 0.1);
-      setAppliedCoupon({ code, discount, label: "10% Welcome Discount" });
+      setAppliedCoupon({ code, discount, label: "10% Diwali Dhamaka Discount" });
+      setCouponCode("");
+    } else if (code === "DIWALIDHAMAKA") {
+      const discount = Math.round(subtotal * 0.15);
+      setAppliedCoupon({ code, discount, label: "15% Mega Diwali Dhamaka" });
       setCouponCode("");
     } else if (code === "FESTIVE5") {
       const discount = Math.round(subtotal * 0.05);
