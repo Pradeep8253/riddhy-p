@@ -232,7 +232,7 @@ export default function CartDrawer() {
                       rel="noopener noreferrer"
                       className={styles.itemWaBtn}
                       aria-label={`Ask about ${item.name} on WhatsApp`}
-                      title={locale === "hi" ? "व्हाट्सएप पर पूछें" : "Inquire on WhatsApp"}
+                      title="Inquire on WhatsApp"
                     >
                       <Icon name="whatsapp" size={15} color="#25D366" />
                     </a>

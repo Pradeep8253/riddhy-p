@@ -5,7 +5,7 @@ import Icon from '@/components/ui/Icon';
 import { CONSULTATION_FAQS } from '@/lib/consultation-faq-data';
 import styles from './ConsultationFaq.module.css';
 
-export default function ConsultationFaq({ locale = 'en' }) {
+export default function ConsultationFaq() {
   const [openIndex, setOpenIndex] = useState(0);
 
   const toggle = (idx) => {
@@ -16,8 +16,8 @@ export default function ConsultationFaq({ locale = 'en' }) {
     <div className={styles.faqList}>
       {CONSULTATION_FAQS.map((item, idx) => {
         const isOpen = openIndex === idx;
-        const question = locale === 'hi' ? item.qHi : item.q;
-        const answer = locale === 'hi' ? item.aHi : item.a;
+        const question = item.q;
+        const answer = item.a;
 
         return (
           <div key={item.q} className={`${styles.item} ${isOpen ? styles.open : ''}`}>

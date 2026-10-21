@@ -18,7 +18,6 @@ export default function ListingClient({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const locale = useSelector((state) => state.ui?.locale || "en");
 
   // Search & Filter State from URL
   const [query, setQuery] = useState(params.get("q") || "");
@@ -198,27 +197,23 @@ export default function ListingClient({
       {/* Sidebar Filters */}
       <aside className={`${styles.sidebar} ${filtersOpen ? styles.show : ""}`}>
         <div className={styles.filterTop}>
-          <b>{locale === "hi" ? "फ़िल्टर और खोज" : "Refine your search"}</b>
+          <b>Refine your search</b>
           <button type="button" onClick={clear}>
-            {locale === "hi" ? "सभी हटाएं" : "Clear all"}
+            Clear all
           </button>
         </div>
 
         {/* Search Input */}
         <label className={styles.field}>
           <span>
-            {locale === "hi" ? "कलेक्शन में खोजें" : "Search in collection"}
+            Search in collection
           </span>
           <div className={styles.inputWithIcon}>
             <Icon name="search" size={14} />
             <input
               value={query}
               onChange={(e) => setQueryAndSync(e.target.value)}
-              placeholder={
-                locale === "hi"
-                  ? "उदा. सोफ़ा, टीक, इन्वर्टर"
-                  : "e.g. Sofa, teak, inverter"
-              }
+              placeholder="e.g. Sofa, teak, inverter"
             />
             {query && (
               <button
@@ -247,14 +242,10 @@ export default function ListingClient({
             />
             <span className={styles.checkboxText}>
               <b>
-                {locale === "hi"
-                  ? "केवल स्टॉक में उपलब्ध"
-                  : "In-Stock Pieces Only"}
+                In-Stock Pieces Only
               </b>
               <small>
-                {locale === "hi"
-                  ? "बिक चुके आइटम छुपाएं"
-                  : "Hide sold out and backordered items"}
+                Hide sold out and backordered items
               </small>
             </span>
           </label>
@@ -262,7 +253,7 @@ export default function ListingClient({
 
         {/* Brand Filter */}
         <label className={styles.field}>
-          <span>{locale === "hi" ? "ब्रांड" : "Brand"}</span>
+          <span>Brand</span>
           <select
             value={brand}
             onChange={(e) => {
@@ -273,9 +264,7 @@ export default function ListingClient({
             }}
           >
             <option value="">
-              {locale === "hi"
-                ? `सभी ब्रांड (${brands.length})`
-                : `All Brands (${brands.length})`}
+              {`All Brands (${brands.length})`}
             </option>
             {brands.map((name) => (
               <option key={name} value={name}>
@@ -288,13 +277,11 @@ export default function ListingClient({
         {/* Price Slider */}
         <label className={styles.field}>
           <span>
-            {locale === "hi" ? "अधिकतम मूल्य:" : "Price up to:"}{" "}
+            Price up to:{" "}
             <strong>
               {maxPrice
                 ? formatINR(maxPrice)
-                : locale === "hi"
-                  ? "कोई भी बजट"
-                  : "Any budget"}
+                : "Any budget"}
             </strong>
           </span>
           <input
@@ -311,14 +298,14 @@ export default function ListingClient({
             }}
           />
           <span className={styles.rangeEnds}>
-            <span>{locale === "hi" ? "कोई भी" : "Any"}</span>
+            <span>Any</span>
             <span>₹1,50,000</span>
           </span>
         </label>
 
         {/* Rating Filter */}
         <label className={styles.field}>
-          <span>{locale === "hi" ? "ग्राहक रेटिंग" : "Customer Rating"}</span>
+          <span>Customer Rating</span>
           <select
             value={minRating}
             onChange={(e) => {
@@ -329,20 +316,16 @@ export default function ListingClient({
             }}
           >
             <option value="0">
-              {locale === "hi" ? "सभी रेटिंग" : "All Customer Ratings"}
+              All Customer Ratings
             </option>
             <option value="4.5">
-              {locale === "hi"
-                ? "★ 4.5 एवं ऊपर (उत्कृष्ट)"
-                : "★ 4.5 & Above (Exceptional)"}
+              ★ 4.5 & Above (Exceptional)
             </option>
             <option value="4.0">
-              {locale === "hi"
-                ? "★ 4.0 एवं ऊपर (शीर्ष रेटेड)"
-                : "★ 4.0 & Above (Top Rated)"}
+              ★ 4.0 & Above (Top Rated)
             </option>
             <option value="3.5">
-              {locale === "hi" ? "★ 3.5 एवं ऊपर" : "★ 3.5 & Above"}
+              ★ 3.5 & Above
             </option>
           </select>
         </label>
@@ -350,27 +333,19 @@ export default function ListingClient({
         {/* Value Badges */}
         <div className={styles.checks}>
           <b>
-            {locale === "hi"
-              ? "पारदर्शिता एवं गारंटी"
-              : "Crafted For Transparency"}
+            Crafted For Transparency
           </b>
           <span>
             <Icon name="check" size={13} />{" "}
-            {locale === "hi"
-              ? "रियल-टाइम लाइव इन्वेंटरी"
-              : "Real-time live inventory"}
+            Real-time live inventory
           </span>
           <span>
             <Icon name="check" size={13} />{" "}
-            {locale === "hi"
-              ? "5-वर्षीय सॉलिड वुड वारंटी"
-              : "5-year solid wood warranty"}
+            5-year solid wood warranty
           </span>
           <span>
             <Icon name="check" size={13} />{" "}
-            {locale === "hi"
-              ? "मुफ़्त इंस्टॉलेशन एवं सेटअप"
-              : "Free white-glove setup"}
+            Free white-glove setup
           </span>
         </div>
       </aside>
@@ -385,40 +360,21 @@ export default function ListingClient({
             onClick={() => setFiltersOpen(!filtersOpen)}
           >
             <Icon name="compare" size={14} />
-            {filtersOpen
-              ? locale === "hi"
-                ? "फ़िल्टर बंद करें"
-                : "Close filters"
-              : locale === "hi"
-                ? "फ़िल्टर और सॉर्ट"
-                : "Filters & sort"}
+            {filtersOpen ? "Close filters" : "Filters & sort"}
           </button>
 
           <span className={styles.resultCount}>
-            {locale === "hi" ? (
-              <>
-                <b>{filtered.length}</b> में से{" "}
-                <b>
-                  {filtered.length === 0 ? 0 : (page - 1) * pageSize + 1}–
-                  {Math.min(page * pageSize, filtered.length)}
-                </b>{" "}
-                उत्पाद
-              </>
-            ) : (
-              <>
-                Showing{" "}
-                <b>
-                  {filtered.length === 0 ? 0 : (page - 1) * pageSize + 1}–
-                  {Math.min(page * pageSize, filtered.length)}
-                </b>{" "}
-                of <b>{filtered.length}</b> handcrafted finds
-              </>
-            )}
+            Showing{" "}
+            <b>
+              {filtered.length === 0 ? 0 : (page - 1) * pageSize + 1}–
+              {Math.min(page * pageSize, filtered.length)}
+            </b>{" "}
+            of <b>{filtered.length}</b> handcrafted finds
           </span>
 
           <div className={styles.sortControls}>
             <label>
-              {locale === "hi" ? "क्रमबद्ध करें:" : "Sort by:"}
+              Sort by:
               <select
                 value={sort}
                 onChange={(e) => {
@@ -428,32 +384,16 @@ export default function ListingClient({
                   syncUrl({ sort: value, page: "" });
                 }}
               >
-                <option value="featured">
-                  {locale === "hi" ? "विशेष कलेक्शन" : "Featured Collection"}
-                </option>
-                <option value="price-asc">
-                  {locale === "hi"
-                    ? "मूल्य: कम से ज़्यादा"
-                    : "Price: Low to High"}
-                </option>
-                <option value="price-desc">
-                  {locale === "hi"
-                    ? "मूल्य: ज़्यादा से कम"
-                    : "Price: High to Low"}
-                </option>
-                <option value="rating">
-                  {locale === "hi" ? "सर्वोच्च रेटेड" : "Highest Rated"}
-                </option>
-                <option value="stock">
-                  {locale === "hi"
-                    ? "उपलब्ध स्टॉक पहले"
-                    : "Stock Available First"}
-                </option>
+                <option value="featured">Featured Collection</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+                <option value="stock">Stock Available First</option>
               </select>
             </label>
 
             <label className={styles.pageSizeSelect}>
-              {locale === "hi" ? "प्रति पृष्ठ:" : "Per page:"}
+              Per page:
               <select
                 value={pageSize}
                 onChange={(e) => {
@@ -473,7 +413,7 @@ export default function ListingClient({
                 type="button"
                 className={`${styles.gridSwitchBtn} ${gridCols === 2 ? styles.activeGrid : ''}`}
                 onClick={() => setGridCols(2)}
-                title={locale === "hi" ? "2 कॉलम दृश्य (बड़ा)" : "2 Columns (Large)"}
+                title="2 Columns (Large)"
                 aria-label="2 columns"
               >
                 2 Col
@@ -482,7 +422,7 @@ export default function ListingClient({
                 type="button"
                 className={`${styles.gridSwitchBtn} ${gridCols === 3 ? styles.activeGrid : ''}`}
                 onClick={() => setGridCols(3)}
-                title={locale === "hi" ? "3 कॉलम दृश्य (मानक)" : "3 Columns (Standard)"}
+                title="3 Columns (Standard)"
                 aria-label="3 columns"
               >
                 3 Col
@@ -491,7 +431,7 @@ export default function ListingClient({
                 type="button"
                 className={`${styles.gridSwitchBtn} ${gridCols === 4 ? styles.activeGrid : ''}`}
                 onClick={() => setGridCols(4)}
-                title={locale === "hi" ? "4 कॉलम दृश्य (संक्षिप्त)" : "4 Columns (Compact)"}
+                title="4 Columns (Compact)"
                 aria-label="4 columns"
               >
                 4 Col
@@ -516,7 +456,7 @@ export default function ListingClient({
                 }}
                 type="button"
               >
-                {locale === "hi" ? "केवल स्टॉक में" : "In Stock Only"}{" "}
+                In Stock Only{" "}
                 <Icon name="close" size={12} />
               </button>
             )}
@@ -528,7 +468,7 @@ export default function ListingClient({
                 }}
                 type="button"
               >
-                {locale === "hi" ? `ब्रांड: ${brand}` : `Brand: ${brand}`}{" "}
+                {`Brand: ${brand}`}{" "}
                 <Icon name="close" size={12} />
               </button>
             )}
@@ -540,9 +480,7 @@ export default function ListingClient({
                 }}
                 type="button"
               >
-                {locale === "hi"
-                  ? `${formatINR(maxPrice)} तक`
-                  : `Up to ${formatINR(maxPrice)}`}{" "}
+                {`Up to ${formatINR(maxPrice)}`}{" "}
                 <Icon name="close" size={12} />
               </button>
             )}
@@ -562,7 +500,7 @@ export default function ListingClient({
               className={styles.clearAllChip}
               type="button"
             >
-              {locale === "hi" ? "सभी हटाएं" : "Clear All"}
+              Clear All
             </button>
           </div>
         )}
@@ -583,10 +521,10 @@ export default function ListingClient({
                   className={styles.pageArrow}
                   onClick={() => handlePageChange(page - 1)}
                   disabled={page <= 1}
-                  aria-label={locale === "hi" ? "पिछला पृष्ठ" : "Previous page"}
+                  aria-label="Previous page"
                 >
                   <Icon name="arrowLeft" size={14} />{" "}
-                  {locale === "hi" ? "पिछला" : "Previous"}
+                  Previous
                 </button>
 
                 <div className={styles.pageNumbers}>
@@ -614,9 +552,9 @@ export default function ListingClient({
                   className={styles.pageArrow}
                   onClick={() => handlePageChange(page + 1)}
                   disabled={page >= totalPages}
-                  aria-label={locale === "hi" ? "अगला पृष्ठ" : "Next page"}
+                  aria-label="Next page"
                 >
-                  {locale === "hi" ? "अगला" : "Next"}{" "}
+                  Next{" "}
                   <Icon name="arrow" size={14} />
                 </button>
               </nav>
@@ -624,18 +562,12 @@ export default function ListingClient({
           </>
         ) : (
           <div className={styles.empty}>
-            <h3>
-              {locale === "hi"
-                ? "कोई उत्पाद नहीं मिला।"
-                : "No exact matches just yet."}
-            </h3>
+            <h3>No exact matches just yet.</h3>
             <p>
-              {locale === "hi"
-                ? "फ़िल्टर बदलकर या अलग शब्द खोजकर देखें।"
-                : "Try a broader search, adjust your budget, or clear one of the filters."}
+              Try a broader search, adjust your budget, or clear one of the filters.
             </p>
             <button onClick={clear} type="button" className={styles.resetBtn}>
-              {locale === "hi" ? "फ़िल्टर रीसेट करें" : "Reset all filters"}
+              Reset all filters
             </button>
           </div>
         )}

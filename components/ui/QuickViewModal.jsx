@@ -140,11 +140,11 @@ export default function QuickViewModal({ product, onClose }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.waBtn}
-                title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
-                aria-label={locale === 'hi' ? `${product.name} के लिए व्हाट्सएप पर पूछें` : `Inquire about ${product.name} on WhatsApp`}
+                title="Inquire on WhatsApp"
+                aria-label={`Inquire about ${product.name} on WhatsApp`}
               >
                 <Icon name="whatsapp" size={17} color="#ffffff" />
-                <span>{locale === 'hi' ? 'व्हाट्सएप' : 'WhatsApp'}</span>
+                <span>WhatsApp</span>
               </a>
             </div>
 

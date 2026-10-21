@@ -521,7 +521,7 @@ export default function AdminLeads() {
                     </div>
                     <div>
                       <dt>Language:</dt>
-                      <dd>{activeLead.language === 'hi' ? 'हिन्दी (Hindi)' : 'English'}</dd>
+                      <dd>{activeLead.language === 'hi' ? 'Hindi' : 'English'}</dd>
                     </div>
                     <div>
                       <dt>WhatsApp Opt-In:</dt>

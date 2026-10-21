@@ -14,9 +14,12 @@ export default function StoreProvider({ children }) {
     const store = storeRef.current;
     try {
       const savedLocale = window.localStorage.getItem('rf-locale');
-      if (savedLocale === 'hi' || savedLocale === 'en') {
-        store.dispatch({ type: 'ui/setLocale', payload: savedLocale });
+      if (savedLocale === 'hi') {
+        window.localStorage.setItem('rf-locale', 'en');
+        document.cookie = 'rf-locale=en; path=/; max-age=31536000; SameSite=Lax';
+        document.cookie = 'rf_locale=en; path=/; max-age=31536000; SameSite=Lax';
       }
+      store.dispatch({ type: 'ui/setLocale', payload: 'en' });
 
       const saved = window.localStorage.getItem('rf-riddhy-state');
       if (saved) {
@@ -29,9 +32,6 @@ export default function StoreProvider({ children }) {
         }
         if (state.compare) {
           store.dispatch({ type: 'compare/rehydrate', payload: state.compare });
-        }
-        if (!savedLocale && state.ui?.locale) {
-          store.dispatch({ type: 'ui/setLocale', payload: state.ui.locale });
         }
       }
     } catch {
@@ -71,7 +71,6 @@ export default function StoreProvider({ children }) {
           window.localStorage.setItem('rf-locale', state.ui.locale);
         }
       } catch {
-        // Ignore quota/serialization issues
       }
     });
 

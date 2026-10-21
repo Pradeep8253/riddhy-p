@@ -54,17 +54,8 @@ export default function HomeHero() {
           </div>
           <span className="kicker">{tr(locale, 'curatedLiving')}</span>
           <h1 id="hero-title">
-            {locale === 'hi' ? (
-              <>
-                अपने घर की कहानी<br />
-                <em>सजाएं।</em>
-              </>
-            ) : (
-              <>
-                Furnish your<br />
-                <em>story.</em>
-              </>
-            )}
+            Furnish your<br />
+            <em>story.</em>
           </h1>
           <p>{tr(locale, 'heroSubtitle')}</p>
           <div className={styles.ctas}>
@@ -87,7 +78,7 @@ export default function HomeHero() {
         <div className={styles.sideNote}>
           <span>01 / 02</span>
           <i />
-          <span>{locale === 'hi' ? 'फ़र्नीचर + उपकरण' : 'FURNITURE + APPLIANCES'}</span>
+          <span>FURNITURE + APPLIANCES</span>
         </div>
       </div>
       {/* <div className={styles.bottom}>

@@ -33,7 +33,7 @@ export const metadata = {
   title: { default: 'RF Riddhy | Furniture & Home Appliances', template: '%s | RF Riddhy' },
   description: 'Thoughtfully chosen furniture and dependable home appliances for a more beautiful, comfortable home.',
   applicationName: 'RF Riddhy',
-  openGraph: { type: 'website', siteName: 'RF Riddhy', title: 'RF Riddhy — Furniture & Home Appliances', description: 'आपके घर की समृद्धि', images: [IMG.og] },
+  openGraph: { type: 'website', siteName: 'RF Riddhy', title: 'RF Riddhy — Furniture & Home Appliances', description: 'Thoughtfully chosen furniture and dependable home appliances for a more beautiful, comfortable home.', images: [IMG.og] },
   icons: { icon: '/icons/favicon.svg', apple: '/icons/favicon.svg' }
 };
 

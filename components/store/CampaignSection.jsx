@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
 import Countdown from '@/components/ui/Countdown';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
@@ -9,43 +8,26 @@ import styles from './CampaignSection.module.css';
 const endAt = '2026-11-30T18:29:59+05:30';
 
 export default function CampaignSection() {
-  const locale = useSelector((state) => state.ui?.locale || 'en');
-
   return (
     <section className={styles.campaign}>
       <div className={styles.dust} aria-hidden="true" />
       <div className={styles.content}>
         <span className="kicker">
-          {locale === 'hi' ? 'विशेष मौसमी ऑफ़र · सीमित समय' : 'Seasonal deal · fixed end date'}
+          Seasonal deal · fixed end date
         </span>
         <h2>
-          {locale === 'hi' ? (
-            <>
-              गोल्डन<br />
-              <em>ऑवर।</em>
-            </>
-          ) : (
-            <>
-              Golden<br />
-              <em>Hour.</em>
-            </>
-          )}
+          Golden<br />
+          <em>Hour.</em>
         </h2>
         <p>
-          {locale === 'hi'
-            ? 'सुंदर बनावट, सही अनुपात और एक सुकून भरा घर जो हर दिन आपको खुशी दे।'
-            : 'Warm textures, considered proportions and the quiet pleasure of a home that works beautifully.'}
+          Warm textures, considered proportions and the quiet pleasure of a home that works beautifully.
         </p>
         <div className={styles.timerLabel}>
-          {locale === 'hi' ? (
-            <>गोल्डन ऑवर डील समाप्त: <strong>30 नवंबर 2026</strong></>
-          ) : (
-            <>The Golden Hour deal ends <strong>30 November 2026</strong></>
-          )}
+          The Golden Hour deal ends <strong>30 November 2026</strong>
         </div>
         <Countdown endsAt={endAt} />
         <Button href="/offers" variant="gold" size="lg">
-          {locale === 'hi' ? 'ऑफ़र देखें' : 'Explore the deal'} <Icon name="arrowUpRight" size={16} />
+          Explore the deal <Icon name="arrowUpRight" size={16} />
         </Button>
       </div>
       <div className={styles.emblem} aria-hidden="true">

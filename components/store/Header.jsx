@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLocale, setCartDrawer } from '@/store/uiSlice';
+import { setCartDrawer } from '@/store/uiSlice';
 import { formatINR } from '@/lib/demo-data';
 import { getLocalizedProductName, getLocalizedCategoryName } from '@/lib/translate-backend';
 import BrandMark from '@/components/ui/BrandMark';
@@ -37,22 +37,6 @@ const labels = {
   kitchen: 'Kitchen & utility'
 };
 
-const labelsHi = {
-  sofas: 'सोफ़ा',
-  beds: 'बिस्तर',
-  wardrobes: 'अलमारी',
-  'dining-sets': 'डाइनिंग',
-  'study-tables': 'स्टडी टेबल',
-  refrigerators: 'रेफ़्रिजरेटर',
-  'washing-machines': 'वॉशिंग मशीन',
-  'air-conditioners': 'एयर कंडीशनर',
-  televisions: 'टीवी',
-  living: 'लिविंग रूम',
-  bedroom: 'बेडरूम',
-  dining: 'डाइनिंग',
-  study: 'स्टडी',
-  kitchen: 'किचन एवं यूटिलिटी'
-};
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -130,19 +114,9 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.announcement}>
-        <span>{locale === 'hi' ? 'आपके घर के लिए सोच-समझकर चुनी चीज़ें' : 'Thoughtful choices for a home that feels like you'}</span>
+        <span>Thoughtful choices for a home that feels like you</span>
         <div className={styles.announceRightGroup}>
-          <span className={styles.announceRight}>{locale === 'hi' ? 'डिलीवरी · इंस्टॉलेशन · देखभाल' : 'Delivery · Installation · Aftercare, made clear'}</span>
-          <button
-            type="button"
-            className={styles.langToggle}
-            onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}
-            aria-label={locale === 'en' ? 'Switch website to Hindi' : 'अंग्रेज़ी में बदलें'}
-          >
-            <span className={locale === 'en' ? styles.langActive : ''}>EN</span>
-            <span className={styles.langSep}>/</span>
-            <span className={locale === 'hi' ? styles.langActive : ''}>हिन्दी</span>
-          </button>
+          <span className={styles.announceRight}>Delivery · Installation · Aftercare, made clear</span>
         </div>
       </div>
 
@@ -190,7 +164,7 @@ export default function Header() {
                 placeholder={tr(locale, 'search')}
               />
               <button type="submit" aria-label="Submit search">
-                {locale === 'hi' ? 'खोजें' : 'Search'}
+                Search
               </button>
             </form>
 
@@ -266,7 +240,7 @@ export default function Header() {
               ) : (
                 <div className={styles.searchDropdownSection}>
                   <div className={styles.searchDropdownHeader}>
-                    {locale === 'hi' ? 'लोकप्रिय खोजें' : 'Popular searches'}
+                    Popular searches
                   </div>
                   <div className={styles.searchTrendingRow}>
                     {['Sofas', 'Storage Beds', 'Refrigerators', 'Dining Sets', 'Marriage Packages'].map((term) => (
@@ -292,15 +266,6 @@ export default function Header() {
         </div>
 
         <div className={styles.actions}>
-          <button
-            type="button"
-            className={styles.langActionBtn}
-            onClick={() => dispatch(setLocale(locale === 'en' ? 'hi' : 'en'))}
-            title={locale === 'en' ? 'वेबसाइट हिन्दी में देखें' : 'Switch to English'}
-            aria-label={locale === 'en' ? 'Switch website to Hindi' : 'Switch to English'}
-          >
-            {locale === 'en' ? 'हिन्दी' : 'EN'}
-          </button>
 
           <Link href="/consultation" className={styles.consultationBtn}>
             <Icon name="calendar" size={15} />
@@ -362,7 +327,7 @@ export default function Header() {
                       href={item.href.startsWith('/rooms') ? `/rooms/${slug}` : `${item.href}/${slug}`}
                       onClick={() => setMenuOpen(false)}
                     >
-                      {locale === 'hi' ? labelsHi[slug] : labels[slug]}
+                      {labels[slug]}
                     </Link>
                   ))}
                 </div>
@@ -375,7 +340,7 @@ export default function Header() {
             className={pathname === '/packages' || pathname === '/marriage-packages' ? styles.active : ''}
             onClick={() => setMenuOpen(false)}
           >
-            {locale === 'hi' ? 'शादी पैकेज' : 'Marriage Packages'}
+            Marriage Packages
           </Link>
 
           <Link
@@ -393,33 +358,6 @@ export default function Header() {
           >
             {tr(locale, 'freeConsultation')}
           </Link>
-
-          {/* Mobile menu Language Selector */}
-          <div className={styles.mobileLangRow}>
-            <span>{locale === 'hi' ? 'भाषा (Language)' : 'Language (भाषा)'}</span>
-            <div className={styles.mobileLangPills}>
-              <button
-                type="button"
-                className={locale === 'en' ? styles.activeLangPill : ''}
-                onClick={() => {
-                  dispatch(setLocale('en'));
-                  setMenuOpen(false);
-                }}
-              >
-                English
-              </button>
-              <button
-                type="button"
-                className={locale === 'hi' ? styles.activeLangPill : ''}
-                onClick={() => {
-                  dispatch(setLocale('hi'));
-                  setMenuOpen(false);
-                }}
-              >
-                हिन्दी
-              </button>
-            </div>
-          </div>
         </div>
       </nav>
 
@@ -429,10 +367,10 @@ export default function Header() {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={locale === 'hi' ? 'संग्रह में खोजें' : 'Search the collection'}
+            placeholder="Search the collection"
             aria-label={tr(locale, 'search')}
           />
-          <button type="submit">{locale === 'hi' ? 'खोजें' : 'Find it'}</button>
+          <button type="submit">Find it</button>
         </form>
       )}
     </header>

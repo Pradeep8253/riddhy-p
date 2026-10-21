@@ -10,7 +10,6 @@ import { IMG } from "@/lib/images";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
 import { getProductWhatsAppUrl } from "@/lib/site-config";
-import { tr } from "@/lib/i18n";
 import styles from "./CartClient.module.css";
 
 const FREE_SHIPPING_THRESHOLD = 50000;
@@ -19,7 +18,6 @@ export default function CartClient() {
   const items = useSelector((state) => state.cart.items);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const authChecked = useSelector((state) => state.auth?.checked);
-  const locale = useSelector((state) => state.ui?.locale || "en");
   const dispatch = useDispatch();
 
   const [mounted, setMounted] = useState(false);
@@ -70,12 +68,12 @@ export default function CartClient() {
     return (
       <div className={styles.empty}>
         <span>RF</span>
-        <h2>{tr(locale, "emptyCartTitle")}</h2>
-        <p>{tr(locale, "emptyCartSubtitle")}</p>
+        <h2>Your shopping bag is empty.</h2>
+        <p>Explore our curated furniture and appliances crafted for enduring comfort.</p>
         <div>
-          <Button href="/furniture">{tr(locale, "shopFurniture")}</Button>
+          <Button href="/furniture">Explore furniture</Button>
           <Button href="/appliances" variant="outline">
-            {tr(locale, "shopAppliances")}
+            Explore appliances
           </Button>
         </div>
       </div>
@@ -86,14 +84,14 @@ export default function CartClient() {
     return (
       <div className={styles.empty}>
         <span>RF</span>
-        <h2>{tr(locale, "signInToViewBag")}</h2>
-        <p>{tr(locale, "signInBagSubtitle")}</p>
+        <h2>Sign in to view your bag</h2>
+        <p>Sign in to access your saved pieces and synchronize your bag across devices.</p>
         <div>
           <Button href="/account?redirect=/cart">
-            {tr(locale, "signInToContinue")}
+            Sign in to continue
           </Button>
           <Button href="/furniture" variant="outline">
-            {tr(locale, "shopFurniture")}
+            Explore furniture
           </Button>
         </div>
       </div>
@@ -104,12 +102,12 @@ export default function CartClient() {
     return (
       <div className={styles.empty}>
         <span>RF</span>
-        <h2>{tr(locale, "emptyCartTitle")}</h2>
-        <p>{tr(locale, "emptyCartSubtitle")}</p>
+        <h2>Your shopping bag is empty.</h2>
+        <p>Explore our curated furniture and appliances crafted for enduring comfort.</p>
         <div>
-          <Button href="/furniture">{tr(locale, "shopFurniture")}</Button>
+          <Button href="/furniture">Explore furniture</Button>
           <Button href="/appliances" variant="outline">
-            {tr(locale, "shopAppliances")}
+            Explore appliances
           </Button>
         </div>
       </div>
@@ -180,10 +178,10 @@ export default function CartClient() {
                       color: '#128c7e',
                       textDecoration: 'none'
                     }}
-                    title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
+                    title="Inquire on WhatsApp"
                   >
                     <Icon name="whatsapp" size={13} color="#25D366" />
-                    <span>{locale === 'hi' ? 'व्हाट्सएप पूछताछ' : 'WhatsApp Inquiry'}</span>
+                    <span>WhatsApp Inquiry</span>
                   </a>
                 </div>
               </div>
@@ -217,10 +215,10 @@ export default function CartClient() {
       </div>
 
       <aside className={styles.summary}>
-        <span className={styles.kicker}>{tr(locale, "yourOrder")}</span>
-        <h2>{tr(locale, "cartSummary")}</h2>
+        <span className={styles.kicker}>Your Order</span>
+        <h2>Order Summary</h2>
         <div className={styles.line}>
-          <span>{tr(locale, "itemsSubtotal")}</span>
+          <span>Items Subtotal</span>
           <b>{formatINR(subtotal)}</b>
         </div>
 
@@ -232,21 +230,21 @@ export default function CartClient() {
         )}
 
         <div className={styles.line}>
-          <span>{tr(locale, "deliveryInstallation")}</span>
+          <span>White-Glove Delivery & Assembly</span>
           <span>
             {shippingRemaining === 0 ? (
               <strong style={{ color: "#1b5e20" }}>FREE</strong>
             ) : (
-              tr(locale, "calculatedAtCheckout")
+              "Calculated at checkout"
             )}
           </span>
         </div>
         <div className={styles.line}>
-          <span>{tr(locale, "taxes")}</span>
-          <span>{tr(locale, "calculatedAtCheckout")}</span>
+          <span>Taxes (GST)</span>
+          <span>Calculated at checkout</span>
         </div>
         <div className={`${styles.line} ${styles.total}`}>
-          <span>{tr(locale, "estimatedTotal")}</span>
+          <span>Estimated Total</span>
           <b>{formatINR(estimatedTotal)}</b>
         </div>
 
@@ -283,12 +281,12 @@ export default function CartClient() {
           )}
         </div>
 
-        <p>{tr(locale, "checkoutNotice")}</p>
+        <p>Delivery and assembly schedule confirmed after checkout.</p>
         <Button href="/checkout" size="lg" className={styles.checkout}>
-          {tr(locale, "continueToCheckout")} <Icon name="arrow" size={16} />
+          Continue to Checkout <Icon name="arrow" size={16} />
         </Button>
         <div className={styles.secure}>
-          {tr(locale, "securePaymentWarranty")}
+          100% Secure Checkout · Direct Manufacturer Warranty
         </div>
       </aside>
     </div>

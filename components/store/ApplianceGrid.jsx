@@ -2,10 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
 import { CATEGORY_SEED } from '@/lib/demo-data';
 import { IMG } from '@/lib/images';
-import { getLocalizedCategoryName } from '@/lib/translate-backend';
 import Icon from '@/components/ui/Icon';
 import styles from './ApplianceGrid.module.css';
 
@@ -20,7 +18,6 @@ const models = {
 };
 
 export default function ApplianceGrid() {
-  const locale = useSelector((state) => state.ui?.locale || 'en');
   const categories = CATEGORY_SEED.filter((item) => item.type === 'appliance');
 
   return (
@@ -42,8 +39,8 @@ export default function ApplianceGrid() {
           </div>
           <div className={styles.details}>
             <div>
-              <b>{getLocalizedCategoryName(category.name, locale)}</b>
-              <small>{locale === 'hi' ? 'श्रेणी देखें' : 'Explore range'}</small>
+              <b>{category.name}</b>
+              <small>Explore range</small>
             </div>
             <Icon name="arrow" size={16} />
           </div>

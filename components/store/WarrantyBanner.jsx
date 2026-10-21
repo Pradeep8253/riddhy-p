@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
 import { ShieldCheck, ArrowRight, Clock } from 'lucide-react';
 import styles from './WarrantyBanner.module.css';
 
@@ -10,7 +9,6 @@ export default function WarrantyBanner() {
   const [loading, setLoading] = useState(true);
   const [activeWarranty, setActiveWarranty] = useState(null);
   const [cmsConfig, setCmsConfig] = useState(null);
-  const locale = useSelector((state) => state.ui?.locale || 'en');
 
   useEffect(() => {
     let isMounted = true;
@@ -62,9 +60,7 @@ export default function WarrantyBanner() {
   }, []);
 
   // Default copy
-  const defaultText = locale === 'hi'
-    ? 'हमसे ख़रीदा? वारंटी ख़रीद के दिन से ही शुरू होती है।'
-    : 'Bought from us? Your warranty starts the day you buy.';
+  const defaultText = 'Bought from us? Your warranty starts the day you buy.';
   const displayText = cmsConfig?.title || defaultText;
 
   return (
@@ -79,26 +75,26 @@ export default function WarrantyBanner() {
             <div className={styles.skeleton} />
           ) : activeWarranty ? (
             <span className={styles.message}>
-              {locale === 'hi' ? 'आपका ' : 'Your '}<strong>{activeWarranty.productName || activeWarranty.sku}</strong>:{' '}
+              Your <strong>{activeWarranty.productName || activeWarranty.sku}</strong>:{' '}
               <span className={styles.liveHighlight}>
-                {activeWarranty.daysRemaining} {locale === 'hi' ? 'दिन की वारंटी शेष' : 'days of warranty left'}
+                {activeWarranty.daysRemaining} days of warranty left
               </span>
             </span>
           ) : (
             <span className={styles.message}>
-              <strong>{displayText}</strong> {locale === 'hi' ? 'प्राथमिकता के साथ पारदर्शी कवरेज।' : 'Transparent coverage with priority care.'}
+              <strong>{displayText}</strong> Transparent coverage with priority care.
             </span>
           )}
         </div>
 
         <div className={styles.actions}>
           <Link href="/warranty" className={styles.btnPrimary}>
-            <span>{locale === 'hi' ? 'वारंटी जांचें' : 'Check my warranty'}</span>
+            <span>Check my warranty</span>
             <ArrowRight size={13} />
           </Link>
 
           <Link href="/warranty?tab=register" className={styles.btnSecondary}>
-            <span>{locale === 'hi' ? 'नया उत्पाद रजिस्टर करें' : 'Register a purchase'}</span>
+            <span>Register a purchase</span>
           </Link>
         </div>
       </div>

@@ -5,11 +5,12 @@ import { useSelector } from 'react-redux';
 export default function LocaleSync() {
   const locale = useSelector((state) => state.ui?.locale || 'en');
   useEffect(() => {
-    document.documentElement.lang = locale === 'hi' ? 'hi' : 'en';
+    document.documentElement.lang = 'en';
     try {
-      window.localStorage.setItem('rf-locale', locale);
-      document.cookie = `rf-locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+      window.localStorage.setItem('rf-locale', 'en');
+      document.cookie = 'rf-locale=en; path=/; max-age=31536000; SameSite=Lax';
+      document.cookie = 'rf_locale=en; path=/; max-age=31536000; SameSite=Lax';
     } catch {}
-  }, [locale]);
+  }, []);
   return null;
 }

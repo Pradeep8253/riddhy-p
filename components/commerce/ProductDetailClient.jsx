@@ -65,12 +65,12 @@ export default function ProductDetailClient({ product, related = [] }) {
     e?.preventDefault?.();
     if (!/^\d{6}$/.test(pincode)) {
       setPinStatus('error');
-      setPinMessage(locale === 'hi' ? 'कृपया 6-अंकों का मान्य पिनकोड दर्ज करें' : 'Please enter a valid 6-digit PIN code');
+      setPinMessage('Please enter a valid 6-digit PIN code');
       setPinPerks([]);
       return;
     }
     setPinStatus('loading');
-    setPinMessage(locale === 'hi' ? 'डिलीवरी और स्थापना की जांच हो रही है...' : 'Checking delivery & installation slots...');
+    setPinMessage('Checking delivery & installation slots...');
     try {
       const res = await fetch('/api/serviceability/check', {
         method: 'POST',
@@ -81,31 +81,27 @@ export default function ProductDetailClient({ product, related = [] }) {
       if (data.success) {
         const date = new Date();
         date.setDate(date.getDate() + 3);
-        const dateStr = date.toLocaleDateString(locale === 'hi' ? 'hi-IN' : 'en-IN', {
+        const dateStr = date.toLocaleDateString('en-IN', {
           weekday: 'short',
           month: 'short',
           day: 'numeric'
         });
         setPinStatus('success');
-        setPinMessage(
-          locale === 'hi'
-            ? `✓ पिनकोड ${pincode} पर डिलीवरी उपलब्ध है`
-            : `✓ Delivery available to ${pincode}`
-        );
+        setPinMessage(`✓ Delivery available to ${pincode}`);
         setPinPerks([
-          locale === 'hi' ? `अनुमानित डिलीवरी: ${dateStr} तक` : `Fastest Delivery by ${dateStr}`,
-          locale === 'hi' ? 'मुफ़्त ऑन-साइट इंस्टॉलेशन और रूम प्लेसमेंट' : 'Free White-Glove Installation & Room Placement Included',
-          locale === 'hi' ? '10-दिन की सुरक्षित ट्रांजिट गारंटी' : '10-Day Safe Transit Guarantee'
+          `Fastest Delivery by ${dateStr}`,
+          'Free White-Glove Installation & Room Placement Included',
+          '10-Day Safe Transit Guarantee'
         ]);
         try { localStorage.setItem('rf_pincode', pincode); } catch {}
       } else {
         setPinStatus('error');
-        setPinMessage(data.error?.message || (locale === 'hi' ? 'इस पिनकोड पर अभी सेवा उपलब्ध नहीं है' : 'Delivery not yet available for this PIN code'));
+        setPinMessage(data.error?.message || 'Delivery not yet available for this PIN code');
         setPinPerks([]);
       }
     } catch {
       setPinStatus('error');
-      setPinMessage(locale === 'hi' ? 'कृपया कुछ देर बाद प्रयास करें' : 'Could not check pincode at this moment');
+      setPinMessage('Could not check pincode at this moment');
       setPinPerks([]);
     }
   };
@@ -232,7 +228,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                     aria-selected={view === 'photo'}
                     onClick={() => setView('photo')}
                   >
-                    {locale === 'hi' ? 'तस्वीरें' : 'Photos'}
+                    Photos
                   </button>
                   <button
                     type="button"
@@ -240,7 +236,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                     aria-selected={view === 'dimensions'}
                     onClick={() => setView('dimensions')}
                   >
-                    {locale === 'hi' ? 'माप' : 'Dimensions'}
+                    Dimensions
                   </button>
                 </div>
               </div>
@@ -272,12 +268,10 @@ export default function ProductDetailClient({ product, related = [] }) {
                 <div className={styles.galleryTrustHeading}>
                   <span className={styles.artisanBadge}>
                     <Icon name="check" size={14} color="#1b5e20" />
-                    {locale === 'hi' ? 'कारीगरी एवं गुणवत्ता प्रमाण' : 'Craftsmanship & Quality Assurance'}
+                    Craftsmanship & Quality Assurance
                   </span>
                   <span className={styles.artisanSub}>
-                    {locale === 'hi'
-                      ? 'प्रत्येक पीस हमारी वर्कशॉप में अनुभवी बढ़इयों द्वारा जाँचा जाता है'
-                      : 'Hand-inspected in workshop before white-glove dispatch'}
+                    Hand-inspected in workshop before white-glove dispatch
                   </span>
                 </div>
 
@@ -285,29 +279,29 @@ export default function ProductDetailClient({ product, related = [] }) {
                   <div className={styles.trustBadgeItem}>
                     <div className={styles.trustBadgeIcon}>🛡️</div>
                     <div className={styles.trustBadgeText}>
-                      <b>{locale === 'hi' ? '10-वर्षीय वारंटी' : '10-Year Solid Warranty'}</b>
-                      <span>{locale === 'hi' ? 'सॉलिड शीशम और स्ट्रक्चरल कवरेज' : 'Comprehensive frame & structure'}</span>
+                      <b>10-Year Solid Warranty</b>
+                      <span>Comprehensive frame & structure</span>
                     </div>
                   </div>
                   <div className={styles.trustBadgeItem}>
                     <div className={styles.trustBadgeIcon}>🚚</div>
                     <div className={styles.trustBadgeText}>
-                      <b>{locale === 'hi' ? 'व्हाइट-ग्लोव इंस्टॉलेशन' : 'White-Glove Assembly'}</b>
-                      <span>{locale === 'hi' ? 'रूम प्लेसमेंट और असेंबली मुफ़्त' : 'Zero-effort on-site setup'}</span>
+                      <b>White-Glove Assembly</b>
+                      <span>Zero-effort on-site setup</span>
                     </div>
                   </div>
                   <div className={styles.trustBadgeItem}>
                     <div className={styles.trustBadgeIcon}>🔄</div>
                     <div className={styles.trustBadgeText}>
-                      <b>{locale === 'hi' ? '10-दिन ट्रांजिट गारंटी' : '10-Day Safe Transit'}</b>
-                      <span>{locale === 'hi' ? 'क्षतिमुक्त रिप्लेसमेंट सुरक्षा' : 'Zero-risk transit protection'}</span>
+                      <b>10-Day Safe Transit</b>
+                      <span>Zero-risk transit protection</span>
                     </div>
                   </div>
                   <div className={styles.trustBadgeItem}>
                     <div className={styles.trustBadgeIcon}>💳</div>
                     <div className={styles.trustBadgeText}>
-                      <b>{locale === 'hi' ? 'नो-कॉस्ट ईएमआई' : 'No-Cost EMI Options'}</b>
-                      <span>{locale === 'hi' ? 'आसान मासिक किस्तों में उपलब्ध' : 'Available across major banks'}</span>
+                      <b>No-Cost EMI Options</b>
+                      <span>Available across major banks</span>
                     </div>
                   </div>
                 </div>
@@ -326,14 +320,14 @@ export default function ProductDetailClient({ product, related = [] }) {
               <div className={styles.rating}>
                 {product.rating && product.reviewCount ? (
                   <span>
-                    <Icon name="star" size={13} style={{ fill: '#d99726', color: '#d99726' }} /> {product.rating} · {product.reviewCount} {locale === 'hi' ? 'समीक्षाएं' : 'reviews'}
+                    <Icon name="star" size={13} style={{ fill: '#d99726', color: '#d99726' }} /> {product.rating} · {product.reviewCount} reviews
                   </span>
                 ) : (
                   <span>
-                    4.8 <Icon name="star" size={13} style={{ fill: '#d99726', color: '#d99726' }} /> · {locale === 'hi' ? 'सत्यापित ग्राहक रेटिंग' : 'Verified Customer Rating'}
+                    4.8 <Icon name="star" size={13} style={{ fill: '#d99726', color: '#d99726' }} /> · Verified Customer Rating
                   </span>
                 )}
-                <a href="#reviews">{locale === 'hi' ? 'विवरण देखें' : 'View details'}</a>
+                <a href="#reviews">View details</a>
               </div>
 
               <div className={styles.price}>
@@ -343,29 +337,29 @@ export default function ProductDetailClient({ product, related = [] }) {
                     {product.mrp > product.price && mrpFormatted && (
                       <>
                         <del>{mrpFormatted}</del>
-                        {product.discount > 0 && <span>{product.discount}% {locale === 'hi' ? 'छूट' : 'off'}</span>}
+                        {product.discount > 0 && <span>{product.discount}% off</span>}
                       </>
                     )}
-                    <small>{locale === 'hi' ? 'लागू कर और डिलीवरी शुल्क चेकआउट पर जोड़े जाएंगे।' : 'Applicable taxes and delivery charges calculated at checkout.'}</small>
+                    <small>Applicable taxes and delivery charges calculated at checkout.</small>
                   </>
                 ) : (
-                  <span style={{ color: '#64748b' }}>{locale === 'hi' ? 'पूछताछ पर मूल्य · वर्तमान में ऑनलाइन अनुपलब्ध' : 'Price on inquiry · Currently not available online'}</span>
+                  <span style={{ color: '#64748b' }}>Price on inquiry · Currently not available online</span>
                 )}
               </div>
 
               <div className={styles.dimensionFirst}>
                 <div>
-                  <span className={styles.label}>{locale === 'hi' ? 'आयाम (माप)' : 'DIMENSIONS'}</span>
+                  <span className={styles.label}>DIMENSIONS</span>
                   <b>{dims.width} × {dims.depth} × {dims.height} cm</b>
-                  <small>{locale === 'hi' ? 'चौड़ाई × गहराई × ऊंचाई · ऑर्डर से पहले दरवाज़े और लिफ्ट की माप जांच लें' : 'W × D × H · verify entryway clearances before ordering'}</small>
+                  <small>W × D × H · verify entryway clearances before ordering</small>
                 </div>
                 <button type="button" onClick={() => setView('dimensions')}>
-                  {locale === 'hi' ? 'माप आरेख देखें' : 'View diagram'} <Icon name="arrow" size={15} />
+                  View diagram <Icon name="arrow" size={15} />
                 </button>
               </div>
 
               <div className={styles.variants}>
-                <b>{locale === 'hi' ? 'फ़िनिश / रंग' : 'Finish / Colour'}</b>
+                <b>Finish / Colour</b>
                 <div>
                   {defaultSwatches.map((color) => (
                     <button
@@ -383,17 +377,17 @@ export default function ProductDetailClient({ product, related = [] }) {
               <div className={styles.warranty}>
                 <Icon name="check" size={17} />
                 <div>
-                  <b>{locale === 'hi' ? 'विश्वसनीय कवरेज' : 'Transparent Coverage'}</b>
+                  <b>Transparent Coverage</b>
                   <span>
                     {product.warranty?.manufacturer ||
                       product.warranty?.seller ||
-                      (locale === 'hi' ? 'फ़्रेम एवं हार्डवेयर पर मानक 2-वर्षीय कवरेज' : 'Standard 2-year comprehensive coverage on frame and hardware')}
+                      'Standard 2-year comprehensive coverage on frame and hardware'}
                   </span>
                   {product.warranty?.compressor && (
                     <span>{product.warranty.compressor}</span>
                   )}
                   <Link href="/policies/warranty" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    {locale === 'hi' ? 'वारंटी नीति पढ़ें' : 'Read warranty policy'} <Icon name="arrow" size={14} />
+                    Read warranty policy <Icon name="arrow" size={14} />
                   </Link>
                 </div>
               </div>
@@ -423,10 +417,10 @@ export default function ProductDetailClient({ product, related = [] }) {
                   disabled={!isAvailable || !hasValidPrice}
                 >
                   {!hasValidPrice
-                    ? (locale === 'hi' ? 'वर्तमान में अनुपलब्ध' : 'Currently Unavailable')
+                    ? 'Currently Unavailable'
                     : isAvailable
-                    ? (locale === 'hi' ? `बैग में जोड़ें · ${formatPriceSafe(product.price * qty)}` : `Add to bag · ${formatPriceSafe(product.price * qty)}`)
-                    : (locale === 'hi' ? 'स्टॉक समाप्त' : 'Out of stock')}
+                    ? `Add to bag · ${formatPriceSafe(product.price * qty)}`
+                    : 'Out of stock'}
                 </Button>
 
                 <button
@@ -451,17 +445,15 @@ export default function ProductDetailClient({ product, related = [] }) {
                   <div className={styles.waConciergeMeta}>
                     <div className={styles.waTitleRow}>
                       <span className={styles.waMainTitle}>
-                        {locale === 'hi' ? 'व्हाट्सएप सहायता एवं सीधा ऑर्डर' : 'Direct WhatsApp Order & Assistance'}
+                        Direct WhatsApp Order & Assistance
                       </span>
                       <span className={styles.waStatusBadge}>
                         <span className={styles.waStatusGlow} />
-                        {locale === 'hi' ? 'ऑनलाइन · 5 मिनट में जवाब' : 'Online · Replies in ~5m'}
+                        Online · Replies in ~5m
                       </span>
                     </div>
                     <p className={styles.waDesc}>
-                      {locale === 'hi'
-                        ? 'असली शोरूम तस्वीरें, कस्टमाइजेशन या सीधे ऑर्डर के लिए हमारे विशेषज्ञ से बात करें।'
-                        : 'Get live showroom video, custom dimensions, fabric swatches or order directly.'}
+                      Get live showroom video, custom dimensions, fabric swatches or order directly.
                     </p>
                   </div>
                 </div>
@@ -471,16 +463,16 @@ export default function ProductDetailClient({ product, related = [] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.waCtaBtn}
-                  aria-label={locale === 'hi' ? 'व्हाट्सएप पर चैट करें' : 'Chat & Order on WhatsApp'}
+                  aria-label="Chat & Order on WhatsApp"
                 >
                   <Icon name="whatsapp" size={19} color="#ffffff" />
-                  <span>{locale === 'hi' ? 'व्हाट्सएप पर ऑर्डर / बातचीत करें' : 'Order or Inquire via WhatsApp'}</span>
+                  <span>Order or Inquire via WhatsApp</span>
                   <Icon name="arrow" size={15} color="#ffffff" />
                 </a>
 
                 <div className={styles.waPillsList}>
                   <span className={styles.waPillPrompt}>
-                    {locale === 'hi' ? 'त्वरित प्रश्न:' : 'Quick Questions:'}
+                    Quick Questions:
                   </span>
                   <a
                     href={getProductWhatsAppUrl(product, locale, 'photos')}
@@ -489,7 +481,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                     className={styles.waChip}
                     title="Ask for real showroom photos"
                   >
-                    📸 {locale === 'hi' ? 'असली तस्वीरें' : 'Real Photos / Video'}
+                    📸 Real Photos / Video
                   </a>
                   <a
                     href={getProductWhatsAppUrl(product, locale, 'custom')}
@@ -498,7 +490,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                     className={styles.waChip}
                     title="Ask about custom dimensions"
                   >
-                    📐 {locale === 'hi' ? 'कस्टम साइज़' : 'Custom Dimensions'}
+                    📐 Custom Dimensions
                   </a>
                   <a
                     href={getProductWhatsAppUrl(product, locale, 'discount')}
@@ -507,7 +499,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                     className={styles.waChip}
                     title="Ask for best festive offer"
                   >
-                    🏷️ {locale === 'hi' ? 'बेस्ट ऑफ़र' : 'Best Offer'}
+                    🏷️ Best Offer
                   </a>
                 </div>
               </div>
@@ -515,8 +507,8 @@ export default function ProductDetailClient({ product, related = [] }) {
               <p className={styles.stock}>
                 <span />
                 {isAvailable
-                  ? (locale === 'hi' ? `शीघ्र डिलीवरी के लिए ${product.stock || 12} इकाइयां उपलब्ध` : `${product.stock || 12} units available for prompt delivery`)
-                  : (locale === 'hi' ? 'वर्तमान में स्टॉक समाप्त' : 'Currently out of stock')}
+                  ? `${product.stock || 12} units available for prompt delivery`
+                  : 'Currently out of stock'}
               </p>
 
               {/* Live Pincode Estimator */}
@@ -524,7 +516,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                 <div className={styles.pincodeHeader}>
                   <div className={styles.pincodeTitle}>
                     <Icon name="pin" size={16} />
-                    <span>{locale === 'hi' ? 'डिलीवरी एवं इंस्टॉलेशन उपलब्धता' : 'Delivery & Assembly Checker'}</span>
+                    <span>Delivery & Assembly Checker</span>
                   </div>
                 </div>
                 <form className={styles.pincodeForm} onSubmit={handlePincodeCheck}>
@@ -534,13 +526,13 @@ export default function ProductDetailClient({ product, related = [] }) {
                     maxLength={6}
                     value={pincode}
                     onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    placeholder={locale === 'hi' ? 'अपना 6-अंकों का पिनकोड दर्ज करें' : 'Enter 6-digit delivery pincode'}
+                    placeholder="Enter 6-digit delivery pincode"
                     className={styles.pincodeInput}
                   />
                   <button type="submit" className={styles.pincodeBtn} disabled={pinStatus === 'loading'}>
                     {pinStatus === 'loading'
-                      ? (locale === 'hi' ? 'जांच जारी...' : 'Checking...')
-                      : (locale === 'hi' ? 'जांचें' : 'Check')}
+                      ? 'Checking...'
+                      : 'Check'}
                   </button>
                 </form>
                 {pinMessage && (
@@ -572,13 +564,13 @@ export default function ProductDetailClient({ product, related = [] }) {
                 fontSize: 13
               }}>
                 <span style={{ color: 'var(--rf-charcoal-600)' }}>
-                  {locale === 'hi' ? 'साइज़िंग या फ़िटिंग में सहायता चाहिए?' : 'Need sizing advice or fit assistance?'}
+                  Need sizing advice or fit assistance?
                 </span>
                 <Link
                   href={`/consultation?interest=${product.type === 'appliance' ? 'appliances' : 'furniture'}&product=${product.slug}`}
                   style={{ color: 'var(--rf-green-800)', fontWeight: 800, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 4 }}
                 >
-                  {locale === 'hi' ? 'मुफ़्त परामर्श बुक करें' : 'Book Free Consultation'} <Icon name="arrow" size={14} />
+                  Book Free Consultation <Icon name="arrow" size={14} />
                 </Link>
               </div>
             </div>
@@ -587,8 +579,8 @@ export default function ProductDetailClient({ product, related = [] }) {
           {/* Specifications and Serviceability */}
           <div className={styles.detailBlocks}>
             <section className={styles.specs}>
-              <span className="kicker">{locale === 'hi' ? 'उत्पाद विनिर्देश' : 'Product Specifications'}</span>
-              <h2>{locale === 'hi' ? 'भारतीय घरों के लिए विशेष रूप से निर्मित।' : 'Designed for Indian Homes.'}</h2>
+              <span className="kicker">Product Specifications</span>
+              <h2>Designed for Indian Homes.</h2>
               <div className={styles.specGrid}>
                 {Object.entries(product.specs || {})
                   .filter(([, val]) => val)
@@ -601,23 +593,21 @@ export default function ProductDetailClient({ product, related = [] }) {
               </div>
 
               <div className={styles.package}>
-                <b>{locale === 'hi' ? 'बॉक्स एवं पैकेज माप' : 'Box & Package Dimensions'}</b>
+                <b>Box & Package Dimensions</b>
                 <span>
                   {product.packageDimensions?.width || dims.width + 10} ×{' '}
                   {product.packageDimensions?.depth || dims.depth + 10} ×{' '}
                   {product.packageDimensions?.height || dims.height + 12} cm
                 </span>
-                <small>{locale === 'hi' ? 'सुनिश्चित करें कि आपकी इमारत की लिफ्ट और दरवाज़े इन मापों के अनुकूल हों।' : 'Ensure your building lift and doorways accommodate these dimensions.'}</small>
+                <small>Ensure your building lift and doorways accommodate these dimensions.</small>
               </div>
             </section>
 
             <section className={styles.service}>
-              <span className="kicker">{locale === 'hi' ? 'डिलीवरी एवं इंस्टॉलेशन' : 'Delivery & Installation'}</span>
-              <h2>{locale === 'hi' ? 'अपना पिनकोड जांचें।' : 'Check your pincode.'}</h2>
+              <span className="kicker">Delivery & Installation</span>
+              <h2>Check your pincode.</h2>
               <p>
-                {locale === 'hi'
-                  ? 'आपके क्षेत्र के लिए डिलीवरी शेड्यूल, इंस्टॉलेशन स्लॉट और विकल्प सुनिश्चित किए जाते हैं।'
-                  : 'Delivery schedules, installation slots and transit options are confirmed for your location.'}
+                Delivery schedules, installation slots and transit options are confirmed for your location.
               </p>
               <ServiceabilityChecker />
             </section>
@@ -625,12 +615,10 @@ export default function ProductDetailClient({ product, related = [] }) {
 
           {/* Customer Reviews Section */}
           <section id="reviews" className={styles.reviews}>
-            <span className="kicker">{locale === 'hi' ? 'ग्राहक समीक्षाएं' : 'Customer Reviews'}</span>
-            <h2>{locale === 'hi' ? 'सत्यापित ग्राहकों की प्रतिक्रिया।' : 'Feedback from Verified Owners.'}</h2>
+            <span className="kicker">Customer Reviews</span>
+            <h2>Feedback from Verified Owners.</h2>
             <p>
-              {locale === 'hi'
-                ? 'इस उत्पाद को ख़रीदने वाले ग्राहकों की वास्तविक समीक्षाएं और रेटिंग पढ़ें।'
-                : 'Read authentic reviews and ratings from customers who purchased this item.'}
+              Read authentic reviews and ratings from customers who purchased this item.
             </p>
           </section>
 
@@ -638,7 +626,7 @@ export default function ProductDetailClient({ product, related = [] }) {
           {related.length > 0 && (
             <section className={styles.related}>
               <div className="container">
-                <h2>{locale === 'hi' ? 'पूरा सेट देखें' : 'Complete the Look'}</h2>
+                <h2>Complete the Look</h2>
                 <ProductRail products={related} />
               </div>
             </section>
@@ -669,8 +657,8 @@ export default function ProductDetailClient({ product, related = [] }) {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.stickyWaBtn}
-            aria-label={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
-            title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
+            aria-label="Inquire on WhatsApp"
+            title="Inquire on WhatsApp"
           >
             <Icon name="whatsapp" size={19} color="#ffffff" />
           </a>
@@ -690,10 +678,10 @@ export default function ProductDetailClient({ product, related = [] }) {
             disabled={!isAvailable || !hasValidPrice}
           >
             {!hasValidPrice
-              ? (locale === 'hi' ? 'अनुपलब्ध' : 'Unavailable')
+              ? 'Unavailable'
               : isAvailable
-              ? (locale === 'hi' ? 'बैग में जोड़ें' : 'Add to bag')
-              : (locale === 'hi' ? 'स्टॉक समाप्त' : 'Out of stock')}
+              ? 'Add to bag'
+              : 'Out of stock'}
           </Button>
         </div>
       </div>

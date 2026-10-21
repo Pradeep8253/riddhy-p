@@ -1,11 +1,5 @@
 'use client';
 
-import { useSelector } from 'react-redux';
-import {
-  getLocalizedCategoryName,
-  getLocalizedEyebrow,
-  getLocalizedCategoryDescription
-} from '@/lib/translate-backend';
 import styles from './ListingHeader.module.css';
 
 export default function ListingHeader({
@@ -14,22 +8,14 @@ export default function ListingHeader({
   description,
   count
 }) {
-  const locale = useSelector((state) => state.ui?.locale || 'en');
-
-  const localizedEyebrow = getLocalizedEyebrow(eyebrow, locale);
-  const localizedTitle = getLocalizedCategoryName(title, locale);
-  const localizedDescription = getLocalizedCategoryDescription(title, description, locale);
-
   return (
     <div className={styles.header}>
-      <span className="kicker">{localizedEyebrow}</span>
-      <h1>{localizedTitle}</h1>
-      <p>{localizedDescription}</p>
+      <span className="kicker">{eyebrow}</span>
+      <h1>{title}</h1>
+      <p>{description}</p>
       {count != null && (
         <div className={styles.count}>
-          {locale === 'hi'
-            ? `${count} उत्पाद · सैंपल कैटलॉग`
-            : `${count} pieces · sample catalogue`}
+          {count} pieces · sample catalogue
         </div>
       )}
     </div>

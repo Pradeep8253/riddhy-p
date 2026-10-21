@@ -148,9 +148,9 @@ export default async function AboutPage() {
         {/* 12. Brand Partners (hidden if unconfigured) */}
         <AboutPartners config={liveConfig} />
 
-        {/* 13. Hindi heritage badge */}
+        {/* 13. Brand motto badge */}
         <div style={{ textAlign: 'center', padding: '32px var(--page-gutter)', background: 'var(--rf-white)', borderTop: '1px solid var(--rf-line)' }}>
-          <p style={{ margin: 0, fontFamily: 'var(--font-hindi)', color: 'var(--rf-green-800)', fontSize: 16, fontWeight: 700 }}>
+          <p style={{ margin: 0, color: 'var(--rf-green-800)', fontSize: 16, fontWeight: 700, letterSpacing: '0.02em' }}>
             {liveConfig.hindiTagline}
           </p>
         </div>

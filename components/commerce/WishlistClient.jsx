@@ -64,7 +64,7 @@ export default function WishlistClient() {
     <div>
       <div className={styles.top}>
         <span>
-          {items.length} {locale === 'hi' ? 'पसंदीदा उत्पाद' : items.length === 1 ? 'saved piece' : 'saved pieces'}
+          {items.length} {items.length === 1 ? 'saved piece' : 'saved pieces'}
         </span>
         <button
           type="button"

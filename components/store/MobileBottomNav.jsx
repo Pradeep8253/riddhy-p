@@ -11,7 +11,6 @@ import styles from './MobileBottomNav.module.css';
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const dispatch = useDispatch();
-  const locale = useSelector((state) => state.ui?.locale || 'en');
   const wishlistCount = useSelector((state) => state.wishlist?.items?.length || 0);
   const cartCount = useSelector((state) =>
     (state.cart?.items || []).reduce((sum, item) => sum + (item.qty || 1), 0)
@@ -53,7 +52,7 @@ export default function MobileBottomNav() {
         <div className={styles.iconWrap}>
           <Icon name="home" size={20} />
         </div>
-        <span>{locale === 'hi' ? 'होम' : 'Home'}</span>
+        <span>Home</span>
       </Link>
 
       {/* 2. Catalog / Explore */}
@@ -65,7 +64,7 @@ export default function MobileBottomNav() {
         <div className={styles.iconWrap}>
           <Icon name="sliders" size={20} />
         </div>
-        <span>{locale === 'hi' ? 'कलेक्शन' : 'Catalog'}</span>
+        <span>Catalog</span>
       </Link>
 
       {/* 3. Wishlist */}
@@ -78,7 +77,7 @@ export default function MobileBottomNav() {
           <Icon name="heart" size={20} />
           {displayWishlistCount > 0 && <span className={styles.badge}>{displayWishlistCount}</span>}
         </div>
-        <span>{locale === 'hi' ? 'विशलिस्ट' : 'Wishlist'}</span>
+        <span>Wishlist</span>
       </Link>
 
       {/* 4. Cart Bag (Opens Cart Drawer) */}
@@ -92,7 +91,7 @@ export default function MobileBottomNav() {
           <Icon name="bag" size={20} />
           {displayCartCount > 0 && <span className={styles.badge}>{displayCartCount}</span>}
         </div>
-        <span>{locale === 'hi' ? 'बैग' : 'Bag'}</span>
+        <span>Bag</span>
       </button>
 
       {/* 5. Account */}
@@ -104,7 +103,7 @@ export default function MobileBottomNav() {
         <div className={styles.iconWrap}>
           <Icon name="user" size={20} />
         </div>
-        <span>{locale === 'hi' ? 'खाता' : 'Account'}</span>
+        <span>Account</span>
       </Link>
     </nav>
   );

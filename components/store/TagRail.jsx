@@ -83,7 +83,7 @@ export default function TagRail({
           </div>
           {viewAllHref && (
             <Link href={viewAllHref} className={styles.viewAllLink}>
-              <span>{locale === 'hi' ? 'सभी देखें' : 'View All'}</span>
+              <span>View All</span>
               <ArrowRight size={14} />
             </Link>
           )}
@@ -148,7 +148,7 @@ export default function TagRail({
                   {/* Soft tinted price strip - Never ₹0 or missing */}
                   <div className={styles.priceStrip}>
                     <span className={styles.priceText}>
-                      {formattedPrice} {locale === 'hi' ? 'से शुरू' : 'onwards'}
+                      {formattedPrice} onwards
                     </span>
                   </div>
 

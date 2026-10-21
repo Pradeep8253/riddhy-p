@@ -36,7 +36,7 @@ export default async function AccountPage() {
               <em>your account.</em>
             </h1>
             <p>Keep orders, delivery updates and registered warranties together in one helpful place.</p>
-            <div>रिद्धि फर्नीचर · आपके घर की समृद्धि</div>
+            <div>Riddhy Furniture · Thoughtfully Crafted for Indian Homes</div>
           </div>
 
           <section className={styles.form}>

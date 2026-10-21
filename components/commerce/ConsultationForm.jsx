@@ -710,7 +710,7 @@ export default function ConsultationForm({ initialProductSlug = '', initialInter
                   onChange={(e) => updateField('language', e.target.value)}
                 >
                   <option value="en">English</option>
-                  <option value="hi">हिन्दी (Hindi)</option>
+                  <option value="hi">Hindi</option>
                 </select>
               </div>
 

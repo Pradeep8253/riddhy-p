@@ -141,12 +141,12 @@ export default function ProductCard({ product, compact = false }) {
 
         {/* Stock / Discount Badges */}
         {isOutOfStock ? (
-          <span className={styles.outOfStockBadge}>{locale === 'hi' ? 'स्टॉक समाप्त' : 'Sold Out'}</span>
+          <span className={styles.outOfStockBadge}>Sold Out</span>
         ) : isLowStock ? (
-          <span className={styles.lowStockBadge}>{locale === 'hi' ? `केवल ${product.stock} शेष` : `Only ${product.stock} left`}</span>
+          <span className={styles.lowStockBadge}>{`Only ${product.stock} left`}</span>
         ) : product.discount > 0 ? (
           <span className={`${styles.discount} ${tagBadge ? styles.discountOffset : ''}`}>
-            {product.discount}% {locale === 'hi' ? 'छूट' : 'off'}
+            {product.discount}% off
           </span>
         ) : null}
 
@@ -184,8 +184,8 @@ export default function ProductCard({ product, compact = false }) {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.waControlBtn}
-            aria-label={locale === 'hi' ? `${product.name} के लिए व्हाट्सएप पर चैट करें` : `Chat on WhatsApp about ${product.name}`}
-            title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Chat on WhatsApp'}
+            aria-label={`Chat on WhatsApp about ${product.name}`}
+            title="Chat on WhatsApp"
           >
             <Icon name="whatsapp" size={17} color="#25D366" />
           </a>
@@ -216,19 +216,19 @@ export default function ProductCard({ product, compact = false }) {
                   <Icon name="star" size={13} /> {product.rating}
                 </>
               ) : (
-                locale === 'hi' ? 'सत्यापित' : 'Verified'
+                'Verified'
               )}
             </span>
           </div>
         ) : (
           <div className={styles.priceRow} style={{ color: '#64748b', fontSize: '0.85rem' }}>
-            <span>{locale === 'hi' ? 'पूछताछ पर मूल्य' : 'Price on inquiry'}</span>
+            <span>Price on inquiry</span>
           </div>
         )}
 
         {hasValidPrice && Number(product.price) >= 8000 && !compact && (
           <div className={styles.emiSnippet}>
-            ⚡ {locale === 'hi' ? 'ईएमआई' : 'EMI'} ₹{Math.round(Number(product.price) / 6).toLocaleString('en-IN')}/mo
+            ⚡ EMI ₹{Math.round(Number(product.price) / 6).toLocaleString('en-IN')}/mo
           </div>
         )}
 
@@ -241,10 +241,10 @@ export default function ProductCard({ product, compact = false }) {
           >
             <span>
               {!hasValidPrice
-                ? (locale === 'hi' ? 'अनुपलब्ध' : 'Unavailable')
+                ? 'Unavailable'
                 : isOutOfStock
-                ? (locale === 'hi' ? 'स्टॉक में नहीं' : 'Out of stock')
-                : (locale === 'hi' ? 'बैग में जोड़ें' : 'Add to bag')}
+                ? 'Out of stock'
+                : 'Add to bag'}
             </span>
             <Icon name="arrow" size={17} />
           </button>
@@ -253,8 +253,8 @@ export default function ProductCard({ product, compact = false }) {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.waCardBtn}
-            aria-label={locale === 'hi' ? `${product.name} के लिए व्हाट्सएप पर चैट करें` : `Inquire about ${product.name} on WhatsApp`}
-            title={locale === 'hi' ? 'व्हाट्सएप पर पूछें' : 'Inquire on WhatsApp'}
+            aria-label={`Inquire about ${product.name} on WhatsApp`}
+            title="Inquire on WhatsApp"
           >
             <Icon name="whatsapp" size={18} color="#25D366" />
           </a>

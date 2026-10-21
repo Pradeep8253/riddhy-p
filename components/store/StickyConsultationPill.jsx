@@ -3,16 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSelector } from 'react-redux';
 import Icon from '@/components/ui/Icon';
-import { tr } from '@/lib/i18n';
 import styles from './StickyConsultationPill.module.css';
 
 const STORAGE_DISMISS_KEY = 'rf_consultation_pill_dismissed';
 
 export default function StickyConsultationPill() {
   const pathname = usePathname();
-  const locale = useSelector((state) => state.ui?.locale || 'en');
   const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
@@ -68,8 +65,8 @@ export default function StickyConsultationPill() {
           <Icon name="calendar" size={16} />
         </div>
         <div className={styles.pillText}>
-          <b>{locale === 'hi' ? 'सलाह चाहिए?' : 'Need help planning?'}</b>
-          <span>{locale === 'hi' ? 'मुफ़्त परामर्श बुक करें' : 'Book free consultation'}</span>
+          <b>Need help planning?</b>
+          <span>Book free consultation</span>
         </div>
       </Link>
       <button
