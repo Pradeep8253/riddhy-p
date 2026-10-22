@@ -98,3 +98,21 @@
   color: #647065;
   text-transform: uppercase;
 }
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .trigger {
+    min-height: 44px;
+  }
+  .option {
+    min-height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .menu {
+    min-width: 160px;
+  }
+}
+

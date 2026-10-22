@@ -1039,3 +1039,115 @@
   color: #a9201c !important;
 }
 
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .mobileOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 30, 21, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    height: 100dvh;
+    transform: translateX(-100%);
+    z-index: 100;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .closeSidebarBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .mobileToggleBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .contentArea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .main {
+    padding: 20px 16px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .topbar {
+    padding: 0 12px;
+    height: 54px;
+  }
+
+  .breadcrumb {
+    display: none;
+  }
+
+  .quickSearch {
+    display: none;
+  }
+
+  .main {
+    padding: 16px 12px;
+  }
+
+  .flatNavLink,
+  .navGroupBtn,
+  .childNavLink {
+    min-height: 44px;
+  }
+
+  .userAvatarBtn {
+    min-height: 44px;
+    padding: 4px 10px 4px 4px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .topbar {
+    padding: 0 10px;
+  }
+
+  .main {
+    padding: 14px 8px;
+  }
+
+  .sidebar {
+    width: 280px;
+    max-width: 85vw;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .sidebar {
+    width: 260px;
+    max-width: 85vw;
+  }
+
+  .main {
+    padding: 12px 6px;
+  }
+}
+
+

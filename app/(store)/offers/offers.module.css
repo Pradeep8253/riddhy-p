@@ -1,2 +1,50 @@
 .intro{padding:clamp(38px,6vw,95px) var(--page-gutter);color:#f7f2e9;background:radial-gradient(ellipse at 85% 20%,rgba(224,160,64,.18),transparent 30%),#10261a}.intro h1{margin:14px 0;color:#fff;font:500 clamp(32px,8vw,108px)/.96 var(--font-display);letter-spacing:-.045em;word-break:break-word}.intro h1 em{color:#edb95e;font-weight:400}.intro p{max-width:600px;color:#d2ddd3;font-size:13px;line-height:1.7}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{overflow:hidden;border:1px solid var(--rf-line);border-radius:20px;background:#fffefa}.image{position:relative;aspect-ratio:16/9;background:#e8e0d2}.image img{object-fit:cover}.cardBody{padding:20px}.cardBody>span{color:#8a6b2c;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.cardBody h2{margin:9px 0;font:500 27px var(--font-display)}.cardBody p{min-height:78px;color:#677067;font-size:11px;line-height:1.7}
 @media(max-width:800px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){.grid{grid-template-columns:1fr}.cardBody p{min-height:0}}
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .intro {
+    padding: 44px var(--page-gutter);
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .intro {
+    padding: 32px var(--page-gutter);
+  }
+  .intro h1 {
+    font-size: 32px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    margin-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .cardBody p {
+    min-height: 0;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .intro h1 {
+    font-size: 26px;
+  }
+  .cardBody h2 {
+    font-size: 20px;
+  }
+  .cardBody {
+    padding: 16px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .intro h1 {
+    font-size: 22px;
+  }
+}
+

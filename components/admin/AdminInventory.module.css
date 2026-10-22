@@ -444,3 +444,47 @@
     padding: 18px 14px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .controlsBar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .tableCard {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filterGroup select {
+    min-height: 44px;
+    flex: 1;
+  }
+  .submitBtn,
+  .cancelBtn {
+    min-height: 44px;
+  }
+  .modalCard {
+    width: 92%;
+    max-width: 420px;
+    margin: auto;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .heading h1 {
+    font-size: 24px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .heading h1 {
+    font-size: 20px;
+  }
+}
+

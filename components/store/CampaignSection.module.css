@@ -44,3 +44,60 @@
     text-align: right;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .content {
+    width: min(500px, 72%);
+  }
+  .emblem {
+    right: 4%;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .campaign {
+    padding: 36px var(--page-gutter);
+    min-height: 420px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .campaign {
+    padding: 28px var(--page-gutter) 40px;
+    min-height: 380px;
+  }
+  .content h2 {
+    font-size: clamp(30px, 9vw, 44px);
+    margin: 12px 0;
+  }
+  .content :global(.countdown) {
+    gap: 6px;
+  }
+  .content :global(.countdown b) {
+    min-width: 44px;
+    padding: 6px 2px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+  .corner {
+    display: none;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .content h2 {
+    font-size: 26px;
+  }
+  .content :global(.countdown b) {
+    min-width: 38px;
+    font-size: 14px;
+  }
+  .emblem {
+    display: none;
+  }
+}
+

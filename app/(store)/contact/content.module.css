@@ -262,3 +262,57 @@
     border-radius: var(--radius-lg);
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .formSectionGrid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .channelsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .formSectionGrid {
+    grid-template-columns: 1fr;
+    margin-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .channelsGrid {
+    grid-template-columns: 1fr;
+  }
+  .consultationBtn {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+  .helpLinks a {
+    min-height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .introHeader h1 {
+    font-size: 28px;
+  }
+  .formHead h2 {
+    font-size: 24px;
+  }
+  .channelCard,
+  .formCard,
+  .consultationPromo,
+  .instantHelpCard {
+    padding: 18px 14px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .introHeader h1 {
+    font-size: 24px;
+  }
+}
+

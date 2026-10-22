@@ -47,3 +47,11 @@
   color: var(--admin-accent-gold, #c48620);
   font-weight: 800;
 }
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .link {
+    min-height: 44px;
+  }
+}
+

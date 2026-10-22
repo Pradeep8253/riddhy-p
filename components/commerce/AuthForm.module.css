@@ -350,3 +350,60 @@
   font-size: 13px;
   line-height: 1.5;
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .authContainer {
+    max-width: 100%;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .passwordToggle {
+    width: 44px;
+    height: 44px;
+    right: 2px;
+  }
+  .switch {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .resendBtn {
+    min-height: 40px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .otpInput {
+    font-size: 16px;
+    min-height: 48px;
+    letter-spacing: 0.25em;
+  }
+  .googleBtn {
+    font-size: 12.5px;
+  }
+  .forgotHeader h3 {
+    font-size: 18px;
+  }
+  .forgotHeader p {
+    font-size: 12px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .input,
+  .passwordInput {
+    font-size: 12px;
+  }
+  .googleBtn {
+    font-size: 11.5px;
+    gap: 8px;
+    padding: 0 10px;
+  }
+}
+

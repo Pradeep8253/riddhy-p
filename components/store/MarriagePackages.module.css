@@ -558,3 +558,78 @@
     padding: clamp(36px, 8vw, 60px) 0;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .btnSecondary {
+    min-height: 44px;
+  }
+  .btnWhatsApp {
+    min-height: 44px;
+  }
+  .closeBtn {
+    width: 44px;
+    height: 44px;
+  }
+  .drawer {
+    width: 100%;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .packageCard {
+    border-radius: 18px;
+  }
+  .cardHeader {
+    padding: 16px;
+  }
+  .priceArea {
+    padding: 10px 14px;
+  }
+  .mainPrice {
+    font-size: 20px;
+  }
+  .itemsList {
+    padding: 14px 16px;
+  }
+  .cardActions {
+    padding: 14px 16px;
+  }
+  .drawerFooter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .drawerFooter button,
+  .drawerFooter a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .hero h1 {
+    font-size: 26px;
+  }
+  .cardHeader h2 {
+    font-size: 18px;
+  }
+  .mainPrice {
+    font-size: 18px;
+  }
+}
+

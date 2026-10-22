@@ -731,54 +731,90 @@
   100% { background-position: -200% 0; }
 }
 
-/* Responsive */
-@media (max-width: 1180px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
   .paymentsSection {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
   .analyticsGrid {
     grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }
 
-@media (max-width: 768px) {
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
   .header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .controls {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .rangeGroup {
+    width: 100%;
+    display: flex;
+  }
+  .rangeBtn {
+    flex: 1;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .refreshBtn {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .kpiGrid {
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
   .paymentMethodCards {
     grid-template-columns: 1fr;
   }
+  .tableWrap,
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
+/* ========== SMALL MOBILE (320px - 480px) ========== */
 @media (max-width: 480px) {
   .headerLeft h1 {
-    font-size: clamp(24px, 7vw, 32px);
+    font-size: 24px;
   }
   .kpiGrid {
     grid-template-columns: 1fr;
   }
-  .controls {
-    width: 100%;
-  }
-  .rangeGroup {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .rangeBtn {
-    flex: 1;
-    padding: 6px 4px;
-    font-size: 11px;
-    text-align: center;
-  }
   .panel {
-    padding: 16px 12px;
+    padding: 14px 10px;
     border-radius: 12px;
   }
   .chartContainer {
-    height: 190px;
+    height: 180px;
   }
 }
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .headerLeft h1 {
+    font-size: 20px;
+  }
+  .kpiValue {
+    font-size: 22px;
+  }
+}
+

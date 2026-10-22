@@ -1,1 +1,42 @@
 .header{padding:clamp(28px,4.5vw,56px) var(--page-gutter) 20px;background:linear-gradient(120deg,#f3eee6,#fbf8f2)}.header h1{max-width:900px;margin:8px 0 8px;color:#10261a;font:600 clamp(26px,5.2vw,58px)/1.1 var(--font-display);letter-spacing:-.03em;word-break:break-word;text-wrap:balance}.header p{max-width:640px;margin:0;color:#4e5850;font-size:13px;line-height:1.5}.count{margin-top:10px;color:#2e7d32;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .header {
+    padding: 24px var(--page-gutter) 16px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .header {
+    padding: 20px var(--page-gutter) 14px;
+  }
+  .header h1 {
+    font-size: clamp(22px, 6vw, 32px);
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .header {
+    padding: 16px var(--page-gutter) 12px;
+  }
+  .header h1 {
+    font-size: clamp(20px, 5.5vw, 26px);
+  }
+  .header p {
+    font-size: 12px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .header h1 {
+    font-size: 18px;
+  }
+  .header p {
+    font-size: 11px;
+  }
+}
+

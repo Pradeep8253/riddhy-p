@@ -672,3 +672,127 @@
     margin-right: 32px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .mainRow {
+    gap: 16px;
+    padding: 8px var(--page-gutter);
+  }
+  .iconLink,
+  .searchToggle,
+  .mobileMenu {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .langActionBtn {
+    height: 34px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .header {
+    width: 100%;
+    max-width: 100vw;
+  }
+  .mainRow {
+    grid-template-columns: auto 1fr auto;
+    min-height: 62px;
+    gap: 10px;
+    padding: 6px var(--page-gutter);
+  }
+  .mobileMenu {
+    margin-right: 0;
+    transform: none;
+  }
+  .brand {
+    padding-left: 0;
+    gap: 8px;
+  }
+  .logoBadge {
+    max-width: 115px;
+    height: 36px;
+  }
+  .brand b {
+    font-size: 14px;
+  }
+  .actions {
+    gap: 8px;
+  }
+  .searchDropdown {
+    position: fixed;
+    top: auto;
+    left: 12px;
+    right: 12px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .announcement {
+    padding: 6px 12px;
+    font-size: 9px;
+  }
+  .mainRow {
+    min-height: 56px;
+    gap: 6px;
+  }
+  .logoBadge {
+    max-width: 98px;
+    height: 32px;
+  }
+  .brand b {
+    font-size: 13px;
+  }
+  .brand small {
+    display: none;
+  }
+  .actions {
+    gap: 4px;
+  }
+  .iconLink,
+  .searchToggle,
+  .mobileMenu {
+    min-width: 40px;
+    min-height: 44px;
+  }
+  .langActionBtn {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+  .dropdown {
+    grid-template-columns: 1fr;
+  }
+  .mobileSearch {
+    padding: 8px var(--page-gutter) 12px;
+  }
+  .mobileSearch input {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .logoBadge {
+    max-width: 82px;
+    height: 28px;
+  }
+  .brand b {
+    font-size: 12px;
+  }
+  .actions {
+    gap: 2px;
+  }
+  .iconLink,
+  .searchToggle,
+  .mobileMenu {
+    min-width: 36px;
+  }
+}
+

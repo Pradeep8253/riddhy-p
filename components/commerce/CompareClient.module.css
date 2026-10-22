@@ -1,1 +1,45 @@
 .empty{max-width:620px;margin:70px auto;padding:45px 24px;border:1px dashed var(--rf-line);border-radius:24px;text-align:center}.empty h2{font:500 clamp(24px, 6vw, 38px) var(--font-display)}.empty p{margin:0 0 24px;color:#69736b;font-size:12px}.compare{padding:25px 0 80px}.top{display:flex;justify-content:space-between;margin-bottom:14px;color:#69736b;font-size:10px}.top button{border:0;color:var(--rf-green-800);background:transparent;font-size:10px;font-weight:800;cursor:pointer}.products{overflow-x:auto;-webkit-overflow-scrolling:touch}.products :global(.grid){grid-template-columns:repeat(4,minmax(190px,1fr));min-width:min(100%,720px);max-width:900px;margin-left:auto}.tableWrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:25px;border:1px solid var(--rf-line);border-radius:15px}.table{width:100%;min-width:700px;border-collapse:collapse;background:#fffefa}.table th,.table td{padding:14px 16px;border-bottom:1px solid var(--rf-line);font-size:11px;text-align:left}.table th{width:170px;color:#536056;background:#f4f0e8;font-weight:800}.table td{color:#3f4941}.table td.diff{background:#f4f5eb;color:var(--rf-green-800);font-weight:800}.action{display:flex;flex-wrap:wrap;gap:8px}.action button{padding:8px 11px;border:1px solid rgba(46,125,50,.2);border-radius:99px;color:var(--rf-green-800);background:transparent;font-size:9px;font-weight:800;cursor:pointer}.action button:first-child{color:white;background:var(--rf-green-700)}.note{color:#7a827b;font-size:9px;line-height:1.6}
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .table th, .table td {
+    padding: 12px 14px;
+    font-size: 11px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .compare {
+    padding: 16px 0 84px;
+  }
+  .action button {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 10px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .empty {
+    margin: 30px auto;
+    padding: 28px 16px;
+    border-radius: 18px;
+  }
+  .table th, .table td {
+    padding: 10px 12px;
+    font-size: 10.5px;
+  }
+  .table th {
+    width: 120px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .empty {
+    padding: 20px 12px;
+  }
+}
+

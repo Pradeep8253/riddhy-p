@@ -1096,3 +1096,44 @@
   }
 }
 
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .grid3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+  .teamTable {
+    min-width: 580px;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filterChip {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .head h1 {
+    font-size: 24px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .head h1 {
+    font-size: 20px;
+  }
+}
+
+

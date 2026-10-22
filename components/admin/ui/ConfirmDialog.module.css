@@ -53,3 +53,21 @@
 .primaryBtn:hover {
   background: #144719;
 }
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .cancelBtn,
+  .confirmBtn {
+    width: 100%;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+

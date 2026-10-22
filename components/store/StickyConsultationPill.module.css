@@ -104,3 +104,49 @@
     font-size: 11px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .pillWrap {
+    bottom: clamp(16px, 2.5vw, 24px);
+    left: clamp(16px, 2.5vw, 24px);
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .closeBtn {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .pillWrap {
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+    left: 10px;
+    padding: 4px 10px 4px 6px;
+    max-width: calc(100vw - 70px);
+  }
+  .iconCircle {
+    width: 30px;
+    height: 30px;
+  }
+  .closeBtn {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .pillWrap {
+    left: 6px;
+    max-width: calc(100vw - 60px);
+  }
+  .pillText span {
+    font-size: 10px;
+  }
+}
+

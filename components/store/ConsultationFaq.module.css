@@ -57,3 +57,43 @@
 .answer p {
   margin: 0;
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .question {
+    padding: 16px 20px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .question {
+    padding: 14px 16px;
+    min-height: 48px;
+  }
+  .answer {
+    padding: 0 16px 14px;
+    font-size: 12.5px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .question {
+    padding: 12px 14px;
+    font-size: 14.5px;
+  }
+  .answer {
+    padding: 0 14px 12px;
+    font-size: 12px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .question {
+    font-size: 13.5px;
+    padding: 10px 12px;
+  }
+}
+

@@ -298,3 +298,59 @@
   }
 }
 
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .fields {
+    gap: 12px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .typeSelectorGrid {
+    grid-template-columns: 1fr;
+  }
+  .fieldGroup input,
+  .fieldGroupFull select {
+    min-height: 44px;
+  }
+  .submitBtn {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .typeCard {
+    padding: 12px;
+  }
+  .typeIconWrap {
+    width: 26px;
+    height: 26px;
+  }
+  .successState h3 {
+    font-size: 20px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .fieldGroup input,
+  .fieldGroupFull select,
+  .fieldGroupFull textarea {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .typeTitle {
+    font-size: 12px;
+  }
+  .typeDesc {
+    font-size: 10.5px;
+  }
+}
+
+

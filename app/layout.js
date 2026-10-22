@@ -37,7 +37,7 @@ export const metadata = {
   icons: { icon: '/icons/favicon.svg', apple: '/icons/favicon.svg' }
 };
 
-export const viewport = { themeColor: '#f3eee6', colorScheme: 'light' };
+export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#f3eee6', colorScheme: 'light' };
 
 export default function RootLayout({ children }) {
   return (

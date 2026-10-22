@@ -417,3 +417,60 @@
     display: flex;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .imageContainer {
+    min-height: 360px;
+  }
+  .pinButton {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .pinButton {
+    width: 44px;
+    height: 44px;
+  }
+  .mobileAdd {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    display: grid;
+    place-items: center;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .imageContainer {
+    min-height: 240px;
+    border-radius: var(--radius-lg);
+  }
+  .mobileCard {
+    flex: 0 0 210px;
+    padding: 8px 10px;
+  }
+  .mobileInfo strong {
+    font-size: 11.5px;
+  }
+  .mobileInfo span {
+    font-size: 10.5px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .imageContainer {
+    min-height: 210px;
+    border-radius: var(--radius-md);
+  }
+  .mobileCard {
+    flex: 0 0 190px;
+  }
+}
+

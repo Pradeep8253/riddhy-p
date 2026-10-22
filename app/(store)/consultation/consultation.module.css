@@ -500,3 +500,74 @@
     justify-content: center;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .cardGrid4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .timelineGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .trustGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .hero {
+    padding: 36px 0;
+  }
+  .heroTitle {
+    font-size: 32px;
+  }
+  .endBanner {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .primaryCta,
+  .whatsappCta,
+  .endBtn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    min-height: 48px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 28px;
+  }
+  .sectionHead h2,
+  .formIntro h2,
+  .endContent h2 {
+    font-size: 26px;
+  }
+  .heroBadges {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .benefitCard,
+  .prepCard {
+    padding: 18px 14px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .heroTitle {
+    font-size: 24px;
+  }
+  .endContent h2 {
+    font-size: 22px;
+  }
+}
+

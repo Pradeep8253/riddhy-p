@@ -131,3 +131,59 @@
     padding-left: 26px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .container {
+    padding: 0 16px;
+    gap: 12px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .btnPrimary {
+    min-height: 38px;
+    padding: 8px 14px;
+  }
+  .btnSecondary {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .strip {
+    padding: 8px 0;
+  }
+  .left {
+    font-size: 11.5px;
+    gap: 8px;
+  }
+  .actions {
+    padding-left: 0;
+    gap: 10px;
+  }
+  .btnPrimary {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .left {
+    font-size: 10.5px;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .btnPrimary {
+    justify-content: center;
+    width: 100%;
+  }
+}

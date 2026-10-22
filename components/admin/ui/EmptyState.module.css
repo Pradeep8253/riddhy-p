@@ -52,3 +52,15 @@
   background: #144719;
   transform: translateY(-1px);
 }
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .emptyState {
+    padding: 32px 16px;
+  }
+  .actionBtn {
+    min-height: 44px;
+    padding: 10px 22px;
+  }
+}
+

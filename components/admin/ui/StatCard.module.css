@@ -117,3 +117,33 @@
   background: #e3f2fd;
   color: #1565c0;
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .statCard {
+    padding: 16px 18px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .statCard {
+    padding: 14px;
+    border-radius: 14px;
+    gap: 8px;
+  }
+  .value {
+    font-size: 24px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .statCard {
+    padding: 12px;
+  }
+  .value {
+    font-size: 22px;
+  }
+}
+

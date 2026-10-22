@@ -8,3 +8,42 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .toast {
+    max-width: min(380px, calc(100vw - 40px));
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .toast button {
+    min-width: 44px;
+    min-height: 44px;
+    display: grid;
+    place-items: center;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .toast {
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    right: 10px;
+    left: 10px;
+    padding: 10px 12px;
+    font-size: 11.5px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .toast {
+    right: 6px;
+    left: 6px;
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+}
+

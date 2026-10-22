@@ -1,3 +1,54 @@
 .wrap{position:relative}.controls{position:absolute;top:-67px;right:0;display:flex;gap:8px}.controls button{display:grid;width:39px;height:39px;place-items:center;border:1px solid var(--rf-line);border-radius:50%;color:var(--rf-green-800);background:transparent;cursor:pointer;transition:background .2s,color .2s}.controls button:hover{color:#fff;background:var(--rf-green-700)}.back{transform:rotate(180deg)}.track{display:flex;gap:17px;overflow:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:5px 1px 20px;scrollbar-width:thin;scrollbar-color:rgba(46,125,50,.24) transparent}.track::-webkit-scrollbar{height:6px}.track::-webkit-scrollbar-thumb{border-radius:99px;background:rgba(46,125,50,.22)}.item{flex:0 0 calc((100% - 51px)/4);min-width:230px;scroll-snap-align:start}
 @media(max-width:800px){.item{flex-basis:38vw;min-width:210px}}
 @media(max-width:560px){.controls{top:-56px}.controls button{width:34px;height:34px}.track{gap:12px;padding-bottom:12px}.item{flex-basis:74vw;min-width:0}}
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .item {
+    flex: 0 0 calc((100% - 34px) / 3);
+    min-width: 200px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .controls button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .item {
+    flex: 0 0 46vw;
+    min-width: 180px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .controls {
+    top: -50px;
+  }
+  .controls button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .item {
+    flex: 0 0 76vw;
+    min-width: 0;
+  }
+  .track {
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .item {
+    flex: 0 0 85vw;
+  }
+}
+

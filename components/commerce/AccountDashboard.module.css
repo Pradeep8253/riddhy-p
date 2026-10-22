@@ -77,3 +77,58 @@
     border-radius: 14px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .sidebar {
+    position: static;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .sidebar nav button,
+  .signout {
+    min-height: 44px;
+  }
+  .formGrid input,
+  .formGrid select,
+  .formGrid textarea {
+    min-height: 44px;
+  }
+  .action {
+    min-height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .heading h2 {
+    font-size: 24px;
+  }
+  .formPanel {
+    padding: 14px;
+  }
+  .formPanel h3 {
+    font-size: 20px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .heading h2 {
+    font-size: 20px;
+  }
+  .card {
+    padding: 10px;
+  }
+  .empty,
+  .profile {
+    padding: 16px 10px;
+  }
+}
+

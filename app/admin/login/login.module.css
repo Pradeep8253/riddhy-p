@@ -109,3 +109,46 @@
   }
 }
 
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    display: none;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .card {
+    padding: 32px 20px;
+  }
+  .card h1 {
+    font-size: 32px;
+  }
+  .back {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .card {
+    padding: 24px 16px;
+  }
+  .card h1 {
+    font-size: 26px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .card h1 {
+    font-size: 22px;
+  }
+}
+
+

@@ -88,3 +88,41 @@
   box-shadow: 0 2px 5px rgba(224, 82, 68, 0.4);
   line-height: 1;
 }
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .bottomNav {
+    min-height: 58px;
+    padding: 4px 6px calc(4px + env(safe-area-inset-bottom, 0px));
+  }
+  .navItem {
+    min-width: 50px;
+    padding: 3px 4px;
+    font-size: 9.5px;
+    gap: 2px;
+  }
+  .iconWrap svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .bottomNav {
+    padding: 3px 2px calc(3px + env(safe-area-inset-bottom, 0px));
+  }
+  .navItem {
+    min-width: 44px;
+    padding: 2px 2px;
+    font-size: 8.5px;
+  }
+  .badge {
+    top: -4px;
+    right: -6px;
+    min-width: 14px;
+    height: 14px;
+    font-size: 8.5px;
+  }
+}
+

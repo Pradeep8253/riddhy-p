@@ -1,1 +1,30 @@
 .shell{padding:18px 0 clamp(70px,8vw,120px);background:var(--rf-cream-50)}
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .shell {
+    padding: 16px 0 60px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .shell {
+    padding: 14px 0 84px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .shell {
+    padding: 10px 0 90px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .shell {
+    padding: 8px 0 96px;
+  }
+}
+

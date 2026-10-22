@@ -386,3 +386,66 @@
     padding: 7px 11px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .fieldsGrid {
+    gap: 12px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .fieldsGrid {
+    grid-template-columns: 1fr;
+  }
+  .b2bPerksGrid {
+    grid-template-columns: 1fr;
+  }
+  .input,
+  .select {
+    min-height: 44px;
+  }
+  .submitBtn {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .wrapper {
+    gap: 16px;
+  }
+  .categoryPillsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .successCard {
+    padding: 24px 14px;
+  }
+  .successTitle {
+    font-size: 22px;
+  }
+  .refBadge {
+    width: 100%;
+    padding: 10px 14px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .categoryPillsGrid {
+    grid-template-columns: 1fr;
+  }
+  .input,
+  .select,
+  .textarea {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .refCode {
+    font-size: 15px;
+  }
+}
+

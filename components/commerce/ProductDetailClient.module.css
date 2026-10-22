@@ -1018,3 +1018,116 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .gallery {
+    position: static;
+  }
+  .mainMedia {
+    min-height: 0;
+    max-height: 520px;
+  }
+  .detailBlocks {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    margin-top: 40px;
+    padding: 30px 0;
+  }
+  .stickyBuy {
+    display: flex;
+    bottom: 0;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .product {
+    padding-top: 14px;
+  }
+  .stickyBuy {
+    bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+    z-index: 55;
+    padding: 8px var(--page-gutter);
+  }
+  .stickyWishlistBtn,
+  .stickyWaBtn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+  .pincodeInput,
+  .pincodeBtn {
+    min-height: 44px;
+  }
+  .waCtaBtn {
+    min-height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .mainMedia {
+    border-radius: 18px;
+    max-height: 380px;
+  }
+  .pincodeForm {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pincodeBtn {
+    width: 100%;
+    min-height: 44px;
+  }
+  .stickyBuy {
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+    padding: 6px var(--page-gutter);
+  }
+  .stickyThumb {
+    width: 36px;
+    height: 36px;
+  }
+  .stickyMeta b {
+    max-width: 110px;
+    font-size: 10.5px;
+  }
+  .stickyMeta span {
+    font-size: 11.5px;
+  }
+  .waConciergeCard {
+    padding: 12px 14px;
+  }
+  .waTitleRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .stickyBuy {
+    bottom: calc(54px + env(safe-area-inset-bottom, 0px));
+  }
+  .stickyThumb {
+    display: none;
+  }
+  .stickyMeta b {
+    max-width: 90px;
+    font-size: 10px;
+  }
+  .stickyMeta span {
+    font-size: 11px;
+  }
+  .info h1 {
+    font-size: 22px;
+  }
+  .price strong {
+    font-size: 18px;
+  }
+}
+

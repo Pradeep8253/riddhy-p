@@ -330,3 +330,78 @@
     justify-content: center;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .modal {
+    max-width: 720px;
+  }
+  .closeBtn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .modal {
+    max-width: 94vw;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    padding: 24px 18px;
+    gap: 20px;
+  }
+  .closeBtn {
+    width: 44px;
+    height: 44px;
+    top: 12px;
+    right: 12px;
+  }
+  .qtyBtn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .backdrop {
+    padding: 8px;
+  }
+  .modal {
+    border-radius: 16px;
+    max-height: 92vh;
+  }
+  .grid {
+    padding: 18px 14px;
+    gap: 16px;
+  }
+  .thumbBtn {
+    width: 50px;
+    height: 50px;
+  }
+  .productName {
+    font-size: 19px;
+  }
+  .price {
+    font-size: 19px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .grid {
+    padding: 14px 10px;
+  }
+  .productName {
+    font-size: 17px;
+  }
+  .price {
+    font-size: 17px;
+  }
+  .mrp {
+    font-size: 12px;
+  }
+}
+

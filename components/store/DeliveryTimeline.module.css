@@ -376,3 +376,89 @@
     align-items: flex-start;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .stepsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .hubWrapper {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .stepsGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .pinBtn {
+    min-height: 44px;
+  }
+  .whatsappBtn {
+    min-height: 44px;
+  }
+  .pincodeBox,
+  .guaranteesBox {
+    padding: 20px 18px;
+    border-radius: 16px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .guaranteeGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .pinInputRow {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pinBtn {
+    width: 100%;
+  }
+  .hotlineRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .whatsappBtn {
+    width: 100%;
+    justify-content: center;
+  }
+  .pincodeBox,
+  .guaranteesBox {
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+  .stepCard {
+    padding: 16px 14px;
+  }
+  .stepTitle {
+    font-size: 16px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .pincodeBox,
+  .guaranteesBox {
+    padding: 12px 10px;
+  }
+  .pincodeHead {
+    gap: 10px;
+  }
+  .pincodeIcon {
+    width: 36px;
+    height: 36px;
+  }
+  .pincodeHead h4,
+  .guaranteesHead h4 {
+    font-size: 16px;
+  }
+}
+

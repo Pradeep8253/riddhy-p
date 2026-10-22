@@ -1,1 +1,41 @@
 .page{max-width:950px;padding-block:clamp(40px,7vw,95px)}.page h1{margin:14px 0;font:500 clamp(32px,7.5vw,68px)/1.05 var(--font-display);letter-spacing:-.045em;word-break:break-word}.intro{max-width:690px;margin:0 0 35px;color:#5f6a61;font-size:clamp(13px,1.4vw,15px);line-height:1.75}.sections{display:grid;gap:0;border-top:1px solid var(--rf-line)}.sections section{padding:21px 0;border-bottom:1px solid var(--rf-line)}.sections h2{margin:0 0 7px;font:500 24px var(--font-display)}.sections p{max-width:760px;margin:0;color:#626d64;font-size:12px;line-height:1.8}.page aside{margin-top:22px;padding:14px 16px;border-left:3px solid var(--rf-gold-500);color:#685528;background:#f7f0df;font-size:10px;line-height:1.6}.updated{display:block;margin-top:15px;color:#879087;font-size:9px}
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .page {
+    padding-block: 48px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .page {
+    padding-top: 32px;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .page h1 {
+    font-size: 30px;
+  }
+  .sections h2 {
+    font-size: 20px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .page h1 {
+    font-size: 24px;
+  }
+  .sections h2 {
+    font-size: 18px;
+  }
+  .sections p {
+    font-size: 13px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .page h1 {
+    font-size: 22px;
+  }
+}

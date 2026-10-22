@@ -283,3 +283,63 @@
     flex-wrap: wrap;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .head {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .searchWrapper {
+    min-width: 100%;
+  }
+  .filtersGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filtersGroup select {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 44px;
+  }
+  .tools {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .row select {
+    min-height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .head h1 {
+    font-size: 24px;
+  }
+  .filtersGroup select {
+    flex: 1 1 100%;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .head h1 {
+    font-size: 20px;
+  }
+}
+

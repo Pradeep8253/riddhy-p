@@ -704,3 +704,99 @@
     gap: 10px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .trustGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .footerTop {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  .brandCol,
+  .promiseCol {
+    grid-column: span 2;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .footer {
+    padding-bottom: 72px; /* clearance for mobile bottom nav */
+  }
+  .trustGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .footerTop {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .brandCol,
+  .promiseCol {
+    grid-column: span 1;
+  }
+  .groupLink {
+    padding: 6px 0;
+    min-height: 36px;
+  }
+  .contactChip {
+    min-height: 44px;
+  }
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .bottomLinks {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .bottomLinks a {
+    display: inline-block;
+    padding: 4px 0;
+  }
+  .ctaPrimary {
+    min-height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .footer {
+    padding-bottom: 80px;
+  }
+  .footerLogoImg {
+    width: 135px;
+  }
+  .promiseCard {
+    padding: 16px;
+    border-radius: 16px;
+  }
+  .promiseHeadline {
+    font-size: 18px;
+  }
+  .trustItem {
+    padding: 10px 12px;
+  }
+  .ambientGlowTop,
+  .ambientGlowRight {
+    display: none; /* remove expensive/overflowing blur orbs on small screens */
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .footerLogoImg {
+    width: 120px;
+  }
+  .brandMission {
+    font-size: 11.5px;
+  }
+  .hindiTagline {
+    font-size: 12px;
+  }
+}
+

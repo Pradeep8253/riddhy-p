@@ -282,3 +282,45 @@ svg {
     padding-block: clamp(36px, 6vw, 52px);
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .container {
+    width: min(calc(100% - 2 * var(--page-gutter)), 100%);
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .section {
+    padding-block: clamp(32px, 5vw, 48px);
+  }
+  .display-title {
+    font-size: clamp(26px, 6vw, 36px);
+  }
+  .kicker {
+    font-size: 9.5px;
+    letter-spacing: .1em;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .section {
+    padding-block: clamp(24px, 4vw, 36px);
+  }
+  .display-title {
+    font-size: clamp(22px, 5.5vw, 28px);
+  }
+  .kicker {
+    font-size: 9px;
+    gap: 6px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .display-title {
+    font-size: 20px;
+  }
+}

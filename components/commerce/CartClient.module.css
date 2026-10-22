@@ -141,3 +141,68 @@
   }
 }
 
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .summary {
+    position: static;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .couponInput,
+  .couponBtn {
+    min-height: 44px;
+  }
+  .qty button {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .couponForm {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .couponBtn {
+    width: 100%;
+    min-height: 44px;
+  }
+  .summary {
+    padding: 16px;
+    border-radius: 16px;
+  }
+  .summary h2 {
+    font-size: 22px;
+    margin: 6px 0 16px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .item {
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px;
+  }
+  .summary {
+    padding: 12px;
+  }
+  .summary h2 {
+    font-size: 20px;
+  }
+  .empty {
+    padding: 30px 14px;
+  }
+  .empty h2 {
+    font-size: 24px;
+  }
+}
+
+

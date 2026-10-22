@@ -268,3 +268,42 @@
   font-variant-numeric: tabular-nums;
   color: var(--admin-text-main, #10261a);
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .toolbar {
+    padding: 12px 16px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .toolBtn {
+    min-height: 44px;
+  }
+  .searchBox {
+    max-width: 100%;
+    min-height: 44px;
+  }
+  .pageNavBtn {
+    width: 44px;
+    height: 44px;
+  }
+  .pageSizeSelect select {
+    min-height: 44px;
+    padding: 6px 10px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .tools {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .toolBtn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+

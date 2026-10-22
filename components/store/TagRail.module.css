@@ -252,3 +252,59 @@
     aspect-ratio: 4 / 4.6;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .card {
+    flex: 0 0 230px;
+    max-width: 230px;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .navBtn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .viewAllLink {
+    min-height: 44px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .section {
+    padding: 28px 0 36px;
+  }
+  .card {
+    flex: 0 0 190px;
+    max-width: 190px;
+  }
+  .rail {
+    gap: 12px;
+  }
+  .title {
+    font-size: 19px;
+  }
+  .productName {
+    font-size: 12px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .card {
+    flex: 0 0 170px;
+    max-width: 170px;
+  }
+  .title {
+    font-size: 17px;
+  }
+  .priceText {
+    font-size: 12px;
+  }
+}
+

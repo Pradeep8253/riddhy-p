@@ -123,3 +123,58 @@
   }
 }
 
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .page {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-block: 48px;
+  }
+  .copy {
+    position: static;
+  }
+  .copy h1 {
+    font-size: 44px;
+  }
+  .formCard {
+    max-width: 100%;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .page {
+    padding-top: 32px;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    gap: 32px;
+  }
+  .copy h1 {
+    font-size: 32px;
+  }
+  .b2bStatGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .copy h1 {
+    font-size: 28px;
+  }
+  .formCard {
+    padding: 18px 14px;
+  }
+  .b2bStatGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .copy h1 {
+    font-size: 24px;
+  }
+}
+
+

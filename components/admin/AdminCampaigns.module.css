@@ -321,3 +321,42 @@
     padding: 16px 14px;
   }
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .submitBtn {
+    min-height: 44px;
+    width: 100%;
+  }
+  .deleteBtn {
+    min-height: 44px;
+  }
+  .bannerCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .head h1 {
+    font-size: 24px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .head h1 {
+    font-size: 20px;
+  }
+}
+
