@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCartDrawer } from '@/store/uiSlice';
 import { formatINR } from '@/lib/demo-data';
 import { getLocalizedProductName, getLocalizedCategoryName } from '@/lib/translate-backend';
-import BrandMark from '@/components/ui/BrandMark';
 import Icon from '@/components/ui/Icon';
+import { siteConfig } from '@/lib/site-config';
 import { tr } from '@/lib/i18n';
 import styles from './Header.module.css';
 
@@ -36,6 +36,41 @@ const labels = {
   kitchen: 'Kitchen & utility'
 };
 
+const furnitureGrid = [
+  { slug: 'sofas', label: 'Sofas & Seating', icon: 'sofa', href: '/furniture/sofas', desc: 'Luxury Sectionals & Sets' },
+  { slug: 'beds', label: 'Designer Beds', icon: 'bed', href: '/furniture/beds', desc: 'Hydraulic, King, Solid Teak' },
+  { slug: 'wardrobes', label: 'Wardrobes', icon: 'layers', href: '/furniture/wardrobes', desc: 'Sliding & Engineered Wood' },
+  { slug: 'dining-sets', label: 'Dining Sets', icon: 'sparkles', href: '/furniture/dining-sets', desc: '4 & 6-Seater Solid Timber' },
+  { slug: 'study-tables', label: 'Study & Work', icon: 'sliders', href: '/furniture/study-tables', desc: 'Ergonomic Tables & Units' },
+  { slug: 'all-furniture', label: 'All Furniture', icon: 'arrow', href: '/furniture', desc: 'Explore Complete Range' }
+];
+
+const appliancesGrid = [
+  { slug: 'refrigerators', label: 'Refrigerators', icon: 'refrigerator', href: '/appliances/refrigerators', desc: 'Double Door & Inverter Tech' },
+  { slug: 'washing-machines', label: 'Washers', icon: 'washer', href: '/appliances/washing-machines', desc: 'Front & Top Load Washers' },
+  { slug: 'air-conditioners', label: 'Air Conditioners', icon: 'wind', href: '/appliances/air-conditioners', desc: 'Smart Inverter Split ACs' },
+  { slug: 'televisions', label: 'Smart TVs', icon: 'tv', href: '/appliances/televisions', desc: '4K Ultra HD & QLED' },
+  { slug: 'all-appliances', label: 'All Appliances', icon: 'arrow', href: '/appliances', desc: 'View Full Appliance Suite' }
+];
+
+const roomLinks = [
+  { slug: 'living', label: 'Living Room', href: '/rooms/living' },
+  { slug: 'bedroom', label: 'Bedroom', href: '/rooms/bedroom' },
+  { slug: 'dining', label: 'Dining Room', href: '/rooms/dining' },
+  { slug: 'study', label: 'Study Room', href: '/rooms/study' },
+  { slug: 'kitchen', label: 'Kitchen & Utility', href: '/rooms/kitchen' }
+];
+
+const servicesLinks = [
+  { label: 'Free Consultation', href: '/consultation', icon: 'calendar', highlight: true },
+  { label: 'Marriage Packages', href: '/packages', icon: 'crown', highlight: true },
+  { label: 'Track Order', href: '/track-order', icon: 'truck' },
+  { label: '5-Yr Warranty', href: '/warranty', icon: 'shield' },
+  { label: 'About Riddhy', href: '/about', icon: 'info' },
+  { label: 'My Account', href: '/account', icon: 'user' },
+  { label: 'Saved Wishlist', href: '/wishlist', icon: 'heart' },
+  { label: 'Store Visit', href: '/contact', icon: 'mapPin' }
+];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,15 +79,124 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth?.user);
-  const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
-  const cartCount = useSelector((state) => state.auth?.isAuthenticated ? state.cart.items.reduce((sum, item) => sum + item.qty, 0) : 0);
-  const wishlistCount = useSelector((state) => state.auth?.isAuthenticated ? state.wishlist.items.length : 0);
+
+  const cartCount = useSelector((state) =>
+    state.auth?.isAuthenticated ? state.cart.items.reduce((sum, item) => sum + item.qty, 0) : 0
+  );
+  const wishlistCount = useSelector((state) =>
+    state.auth?.isAuthenticated ? state.wishlist.items.length : 0
+  );
   const locale = useSelector((state) => state.ui.locale);
 
   const [mounted, setMounted] = useState(false);
   const [dynamicNav, setDynamicNav] = useState(nav);
   const [categoryLabels, setCategoryLabels] = useState(labels);
+
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchRef = useRef(null);
+  const mobileInputRef = useRef(null);
+  const mobileSearchRef = useRef(null);
+
+  // Contact configurations
+  const phoneDisplay = siteConfig.contact?.phone || '+91 99342 08035';
+  const phoneRaw = phoneDisplay.replace(/[^0-9+]/g, '');
+  const whatsappDisplay = siteConfig.contact?.whatsapp || '+91 99342 08035';
+  const whatsappDigits = whatsappDisplay.replace(/[^0-9]/g, '') || '919934208035';
+  const emailDisplay = siteConfig.contact?.email || 'care@riddhy.in';
+  const addressDisplay = siteConfig.showroom?.addressLine1
+    ? `${siteConfig.showroom.addressLine1}, ${siteConfig.showroom.city || 'Prayagraj'}`
+    : 'Civil Lines, Prayagraj, UP (Opp. High Court)';
+
+  const announcementItems = [
+    {
+      icon: 'phone',
+      prefix: 'Call Us:',
+      text: phoneDisplay,
+      href: `tel:${phoneRaw}`,
+      external: false
+    },
+    {
+      icon: 'whatsapp',
+      prefix: 'WhatsApp:',
+      text: `${whatsappDisplay} (Quick Chat)`,
+      href: `https://wa.me/${whatsappDigits}?text=Hello%20RF%20Riddhy%2C%20I%20want%20to%20inquire%20about%20your%20collection`,
+      external: true
+    },
+    {
+      icon: 'mail',
+      prefix: 'Email:',
+      text: emailDisplay,
+      href: `mailto:${emailDisplay}`,
+      external: false
+    },
+    {
+      icon: 'mapPin',
+      prefix: 'Store & Hub:',
+      text: addressDisplay,
+      href: '/contact',
+      external: false
+    },
+    {
+      icon: 'truck',
+      prefix: 'Delivery:',
+      text: 'Free Express Delivery & White-Glove Setup in Prayagraj',
+      href: '/policies/shipping',
+      external: false
+    },
+    {
+      icon: 'shield',
+      prefix: 'Warranty:',
+      text: '5-Year Structural Timber & Appliance Assurance',
+      href: '/warranty',
+      external: false
+    },
+    {
+      icon: 'crown',
+      prefix: 'Wedding Offers:',
+      text: 'Special Marriage Packages Live · Save Up to 40%',
+      href: '/packages',
+      external: false
+    }
+  ];
+
+  // Helper to close slide menu
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+  }, []);
+
+  // Auto-close menu on route changes
+  useEffect(() => {
+    setMenuOpen(false);
+    setSearchOpen(false);
+    setSearchFocused(false);
+  }, [pathname]);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
+  // Handle escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        setSearchOpen(false);
+        setSearchFocused(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -76,14 +220,14 @@ export default function Header() {
             {
               key: 'furniture',
               href: '/furniture',
-              children: furn.length > 0 ? furn.map((c) => c.slug) : nav[0].children,
+              children: furn.length > 0 ? furn.map((c) => c.slug) : nav[0].children
             },
             {
               key: 'appliances',
               href: '/appliances',
-              children: app.length > 0 ? app.map((c) => c.slug) : nav[1].children,
+              children: app.length > 0 ? app.map((c) => c.slug) : nav[1].children
             },
-            nav[2],
+            nav[2]
           ]);
         }
       })
@@ -92,11 +236,6 @@ export default function Header() {
 
   const displayCartCount = mounted ? cartCount : 0;
   const displayWishlistCount = mounted ? wishlistCount : 0;
-
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const searchRef = useRef(null);
 
   // Debounced live search
   useEffect(() => {
@@ -125,7 +264,7 @@ export default function Header() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Click outside to close dropdown
+  // Click outside to close live search dropdown
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -136,52 +275,134 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
+  // Auto-focus mobile search input when opened
+  useEffect(() => {
+    if (searchOpen) {
+      const timer = setTimeout(() => {
+        mobileInputRef.current?.focus();
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [searchOpen]);
+
+  // Click outside to close mobile search
+  useEffect(() => {
+    const handleOutsideMobileClick = (e) => {
+      if (
+        searchOpen &&
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(e.target) &&
+        !e.target.closest?.(`.${styles.searchToggle}`)
+      ) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideMobileClick);
+    document.addEventListener('touchstart', handleOutsideMobileClick, { passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideMobileClick);
+      document.removeEventListener('touchstart', handleOutsideMobileClick);
+    };
+  }, [searchOpen]);
+
   const submitSearch = (event) => {
     event.preventDefault();
     const term = query.trim();
     if (term) {
       router.push(`/search?q=${encodeURIComponent(term)}`);
       setSearchFocused(false);
+      setSearchOpen(false);
+      closeMenu();
     }
   };
 
   return (
     <header className={styles.header}>
-      <div className={styles.announcement}>
-        <span>Thoughtful choices for a home that feels like you</span>
-        <div className={styles.announceRightGroup}>
-          <span className={styles.announceRight}>Delivery · Installation · Aftercare, made clear</span>
+      {/* Moving Announcement Bar with Phone, Email, WhatsApp, Address & Icons */}
+      <div className={styles.announcementBar}>
+        <div className={styles.marqueeTrack}>
+          {/* Main sequence */}
+          <div className={styles.marqueeGroup}>
+            {announcementItems.map((item, idx) => (
+              <a
+                key={`m1-${idx}`}
+                href={item.href}
+                className={styles.marqueeItem}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noopener noreferrer' : undefined}
+              >
+                <span className={styles.marqueeIconWrap}>
+                  <Icon name={item.icon} size={13} />
+                </span>
+                <span className={styles.marqueeLabel}>
+                  {item.prefix && <strong className={styles.marqueePrefix}>{item.prefix}</strong>}
+                  <span>{item.text}</span>
+                </span>
+                <span className={styles.marqueeBullet} aria-hidden="true">
+                  ✦
+                </span>
+              </a>
+            ))}
+          </div>
+
+          {/* Duplicated sequence for endless seamless loop */}
+          <div className={styles.marqueeGroup} aria-hidden="true">
+            {announcementItems.map((item, idx) => (
+              <a
+                key={`m2-${idx}`}
+                href={item.href}
+                className={styles.marqueeItem}
+                tabIndex={-1}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noopener noreferrer' : undefined}
+              >
+                <span className={styles.marqueeIconWrap}>
+                  <Icon name={item.icon} size={13} />
+                </span>
+                <span className={styles.marqueeLabel}>
+                  {item.prefix && <strong className={styles.marqueePrefix}>{item.prefix}</strong>}
+                  <span>{item.text}</span>
+                </span>
+                <span className={styles.marqueeBullet} aria-hidden="true">
+                  ✦
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
+      {/* Main Header Row */}
       <div className={styles.mainRow}>
-        <button
-          className={styles.mobileMenu}
-          type="button"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <Icon name={menuOpen ? 'close' : 'menu'} size={22} />
-        </button>
+        {/* Left Group: Hamburger Menu Button + Clean Logo PNG */}
+        <div className={styles.leftGroup}>
+          <button
+            className={styles.hamburgerBtn}
+            type="button"
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span className={styles.hamburgerIconWrap}>
+              <Icon name={menuOpen ? 'close' : 'menu'} size={22} />
+            </span>
+            <span className={styles.hamburgerText}>Menu</span>
+          </button>
 
-        <Link href="/" className={styles.brand} aria-label="RF Riddhy home">
-          <div className={styles.logoBadge}>
-            <img
-              src="/logo.jpeg"
+          {/* Logo WITHOUT any background, WITHOUT any border, ONLY logo PNG */}
+          <Link href="/" className={styles.brand} aria-label="RF Riddhy home" onClick={closeMenu}>
+            <Image
+              src="/logo.png"
               alt="RF Riddhy Furniture & Appliances"
               width={140}
-              height={51}
+              height={50}
               priority
-              className={styles.logoImg}
+              className={styles.brandLogo}
             />
-          </div>
-          {/* <span>
-            <b>RF | RIDDHY</b>
-            <small>FURNITURE & HOME APPLIANCES</small>
-          </span> */}
-        </Link>
+          </Link>
+        </div>
 
+        {/* Desktop Live Search Bar */}
         <div className={styles.searchWrapper} ref={searchRef}>
           <div className={styles.searchRow}>
             <form
@@ -299,6 +520,7 @@ export default function Header() {
           )}
         </div>
 
+        {/* Right Header Action Icons */}
         <div className={styles.actions}>
           <Link href="/consultation" className={styles.consultationBtn}>
             <Icon name="calendar" size={15} />
@@ -308,11 +530,11 @@ export default function Header() {
           <button
             type="button"
             className={styles.searchToggle}
-            aria-label="Open search"
+            aria-label="Toggle mobile search"
             aria-expanded={searchOpen}
             onClick={() => setSearchOpen(!searchOpen)}
           >
-            <Icon name="search" size={21} />
+            <Icon name={searchOpen ? 'close' : 'search'} size={21} />
           </button>
 
           <Link
@@ -341,14 +563,131 @@ export default function Header() {
         </div>
       </div>
 
-      <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`} aria-label="Main navigation">
+      {/* Mobile Search Input Drawer (When Search Icon is toggled) */}
+      {searchOpen && (
+        <div className={styles.mobileSearchContainer} ref={mobileSearchRef}>
+          <form className={styles.mobileSearchForm} onSubmit={submitSearch} role="search">
+            <div className={styles.mobileSearchInputWrap}>
+              <Icon name="search" size={17} className={styles.mobileSearchIcon} />
+              <input
+                ref={mobileInputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search sofas, beds, appliances, packages…"
+                aria-label={tr(locale, 'search')}
+                className={styles.mobileSearchInput}
+              />
+              {query.length > 0 && (
+                <button
+                  type="button"
+                  className={styles.mobileSearchClearBtn}
+                  onClick={() => setQuery('')}
+                  aria-label="Clear query"
+                >
+                  <Icon name="close" size={13} />
+                </button>
+              )}
+            </div>
+            <button type="submit" className={styles.mobileSearchSubmitBtn}>
+              Search
+            </button>
+          </form>
+
+          {/* Mobile Live Search Dropdown */}
+          <div className={styles.mobileSearchDropdown}>
+            {query.trim().length >= 2 ? (
+              <div className={styles.mobileSearchResultsList}>
+                <div className={styles.mobileSearchHeader}>
+                  {searchLoading
+                    ? 'Searching collection…'
+                    : searchResults.length > 0
+                    ? `Matching pieces (${searchResults.length})`
+                    : `No direct match for "${query}"`}
+                </div>
+
+                {searchResults.map((item) => {
+                  const thumb =
+                    item.gallery?.[0]?.thumbUrl ||
+                    item.gallery?.[0]?.url ||
+                    item.image ||
+                    '/images/product-sofa.webp';
+
+                  return (
+                    <Link
+                      key={item.slug}
+                      href={`/product/${item.slug}`}
+                      className={styles.mobileSearchResultItem}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setQuery('');
+                      }}
+                    >
+                      <div className={styles.mobileSearchThumb}>
+                        <img src={thumb} alt={item.name} />
+                      </div>
+                      <div className={styles.mobileSearchInfo}>
+                        <span className={styles.mobileSearchTitle}>
+                          {getLocalizedProductName(item, locale)}
+                        </span>
+                        <span className={styles.mobileSearchCat}>
+                          {getLocalizedCategoryName(item.categoryLabel || item.category, locale)}
+                        </span>
+                      </div>
+                      <span className={styles.mobileSearchPrice}>
+                        {formatINR(item.price)}
+                      </span>
+                    </Link>
+                  );
+                })}
+
+                <button
+                  type="button"
+                  className={styles.mobileSearchViewAll}
+                  onClick={submitSearch}
+                >
+                  <span>View all results for &ldquo;{query}&rdquo;</span>
+                  <Icon name="arrow" size={13} />
+                </button>
+              </div>
+            ) : (
+              <div className={styles.mobileSearchTrendingBox}>
+                <div className={styles.mobileSearchHeader}>
+                  <Icon name="sparkles" size={12} />
+                  <span>Popular in Prayagraj</span>
+                </div>
+                <div className={styles.mobileTrendingChips}>
+                  {['Sofas', 'Storage Beds', 'Refrigerators', 'Dining Sets', 'Marriage Packages', 'Air Conditioners'].map(
+                    (term) => (
+                      <button
+                        type="button"
+                        key={term}
+                        className={styles.mobileTrendingChip}
+                        onClick={() => {
+                          setQuery(term);
+                          router.push(`/search?q=${encodeURIComponent(term)}`);
+                          setSearchOpen(false);
+                        }}
+                      >
+                        <Icon name="search" size={11} />
+                        <span>{term}</span>
+                      </button>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Main Navigation Bar */}
+      <nav className={styles.desktopNav} aria-label="Main desktop navigation">
         <div className={styles.navInner}>
           {dynamicNav.map((item) => (
             <div className={styles.navItem} key={item.href}>
               <Link
                 className={pathname === item.href ? styles.active : ''}
                 href={item.href}
-                onClick={() => setMenuOpen(false)}
               >
                 {tr(locale, item.key)}
               </Link>
@@ -358,7 +697,6 @@ export default function Header() {
                     <Link
                       key={slug}
                       href={item.href.startsWith('/rooms') ? `/rooms/${slug}` : `${item.href}/${slug}`}
-                      onClick={() => setMenuOpen(false)}
                     >
                       {categoryLabels[slug] || slug.replace(/-/g, ' ')}
                     </Link>
@@ -371,41 +709,242 @@ export default function Header() {
           <Link
             href="/packages"
             className={pathname === '/packages' || pathname === '/marriage-packages' ? styles.active : ''}
-            onClick={() => setMenuOpen(false)}
           >
+            <span className={styles.offerBadge}>Exclusive</span>
             Marriage Packages
           </Link>
 
           <Link
             href="/about"
             className={pathname === '/about' ? styles.active : ''}
-            onClick={() => setMenuOpen(false)}
           >
-            About 
+            About
           </Link>
 
           <Link
             href="/consultation"
             className={pathname === '/consultation' ? styles.active : ''}
-            onClick={() => setMenuOpen(false)}
           >
             Free Consultation
           </Link>
         </div>
       </nav>
 
-      {searchOpen && (
-        <form className={styles.mobileSearch} onSubmit={submitSearch}>
-          <input
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search the collection"
-            aria-label={tr(locale, 'search')}
-          />
-          <button type="submit">Find it</button>
-        </form>
-      )}
+      {/* Mobile Fancy Animated Slide Menu Drawer */}
+      <div
+        className={`${styles.drawerBackdrop} ${menuOpen ? styles.drawerBackdropOpen : ''}`}
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
+
+      <aside
+        className={`${styles.drawer} ${menuOpen ? styles.drawerOpen : ''}`}
+        aria-label="Navigation drawer"
+        aria-modal="true"
+        role="dialog"
+      >
+        <div className={styles.drawerInner}>
+          {/* Top of drawer: Clean Logo PNG without background/border + Close button */}
+          <div className={styles.drawerHeader}>
+            <Link href="/" onClick={closeMenu} className={styles.drawerBrand} aria-label="RF Riddhy home">
+              <Image
+                src="/logo.png"
+                alt="RF Riddhy Furniture & Appliances"
+                width={125}
+                height={45}
+                className={styles.drawerLogoImg}
+              />
+            </Link>
+
+            <button
+              type="button"
+              className={styles.drawerCloseBtn}
+              onClick={closeMenu}
+              aria-label="Close navigation menu"
+            >
+              <Icon name="close" size={20} />
+            </button>
+          </div>
+
+          {/* Showroom Location Pill */}
+          <div className={styles.drawerLocationStrip}>
+            <span className={styles.drawerLocationPulse} />
+            <span>Civil Lines Showroom · Prayagraj</span>
+          </div>
+
+          {/* Drawer Quick Search */}
+          <form className={styles.drawerSearch} onSubmit={submitSearch}>
+            <Icon name="search" size={16} />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search beds, sofas, packages…"
+              aria-label="Search collection"
+            />
+            <button type="submit" aria-label="Search">
+              <Icon name="arrow" size={14} />
+            </button>
+          </form>
+
+          {/* Scrollable Categories in Grids (Text Only, Fancy Animated) */}
+          <div className={styles.drawerScrollArea}>
+            {/* VIP Card: Marriage Packages (Text Only) */}
+            <Link href="/packages" onClick={closeMenu} className={styles.drawerFestiveCard}>
+              <div className={styles.festiveGlow} aria-hidden="true" />
+              <div className={styles.drawerFestiveBadge}>
+                <span>Wedding Festive Sale</span>
+              </div>
+              <strong className={styles.drawerFestiveTitle}>
+                Marriage Furniture & Appliance Combos
+              </strong>
+              <p className={styles.drawerFestiveDesc}>
+                Curated solid wood bedrooms, dining sets & complete home packages up to 40% OFF.
+              </p>
+              <div className={styles.drawerFestiveCta}>
+                <span>Explore Packages →</span>
+              </div>
+            </Link>
+
+            {/* Grid 1: Handcrafted Furniture (Text Only in Grids) */}
+            <div className={styles.drawerSection}>
+              <div className={styles.drawerSectionHeader}>
+                <span className={styles.drawerSectionTitle}>Furniture Collections</span>
+                <Link href="/furniture" onClick={closeMenu} className={styles.drawerSectionAllLink}>
+                  <span>View All →</span>
+                </Link>
+              </div>
+
+              <div className={styles.categoryGrid}>
+                {furnitureGrid.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className={styles.categoryCard}
+                  >
+                    <div className={styles.cardContent}>
+                      <span className={styles.cardTitle}>{item.label}</span>
+                      <span className={styles.cardDesc}>{item.desc}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Grid 2: Smart Home Appliances (Text Only in Grids) */}
+            <div className={styles.drawerSection}>
+              <div className={styles.drawerSectionHeader}>
+                <span className={styles.drawerSectionTitle}>Home Appliances</span>
+                <Link href="/appliances" onClick={closeMenu} className={styles.drawerSectionAllLink}>
+                  <span>View All →</span>
+                </Link>
+              </div>
+
+              <div className={styles.categoryGrid}>
+                {appliancesGrid.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className={styles.categoryCard}
+                  >
+                    <div className={styles.cardContent}>
+                      <span className={styles.cardTitle}>{item.label}</span>
+                      <span className={styles.cardDesc}>{item.desc}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Grid 3: Shop by Room (Text Only in Grids) */}
+            <div className={styles.drawerSection}>
+              <div className={styles.drawerSectionHeader}>
+                <span className={styles.drawerSectionTitle}>Curated by Room</span>
+              </div>
+
+              <div className={styles.roomGrid}>
+                {roomLinks.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className={styles.roomCard}
+                  >
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Grid 4: Services & Quick Links (Text Only in Grids) */}
+            <div className={styles.drawerSection}>
+              <div className={styles.drawerSectionHeader}>
+                <span className={styles.drawerSectionTitle}>Services & Support</span>
+              </div>
+
+              <div className={styles.servicesGrid}>
+                {servicesLinks.map((item, idx) => (
+                  <Link
+                    key={idx}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className={`${styles.serviceCard} ${item.highlight ? styles.serviceCardHighlight : ''}`}
+                  >
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Direct Prayagraj Helplines & Contact Box (Text Only in Grids) */}
+            <div className={styles.drawerContactBox}>
+              <div className={styles.drawerContactHeader}>
+                <strong>Direct Prayagraj Helplines</strong>
+              </div>
+              <p className={styles.drawerContactSub}>
+                Have a question or custom dimension requirement? Connect instantly.
+              </p>
+
+              <div className={styles.drawerContactRow}>
+                <a
+                  href={`tel:${phoneRaw}`}
+                  onClick={closeMenu}
+                  className={`${styles.contactActionBtn} ${styles.callBtn}`}
+                >
+                  <span>Call Us</span>
+                </a>
+
+                <a
+                  href={`https://wa.me/${whatsappDigits}?text=Hello%20RF%20Riddhy%2C%20I%20want%20to%20inquire%20about%20your%20collection`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={closeMenu}
+                  className={`${styles.contactActionBtn} ${styles.whatsappBtn}`}
+                >
+                  <span>WhatsApp</span>
+                </a>
+
+                <Link
+                  href="/contact"
+                  onClick={closeMenu}
+                  className={`${styles.contactActionBtn} ${styles.storeBtn}`}
+                >
+                  <span>Showroom</span>
+                </Link>
+              </div>
+
+              <a
+                href={`mailto:${emailDisplay}`}
+                onClick={closeMenu}
+                className={styles.drawerEmailLink}
+              >
+                <span>Email: {emailDisplay}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </aside>
     </header>
   );
 }

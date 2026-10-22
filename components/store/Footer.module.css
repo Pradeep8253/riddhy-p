@@ -368,14 +368,12 @@
   position: absolute;
   inset: -4px;
   border-radius: 0;
-  background: conic-gradient(
-    from 0deg,
-    rgba(237, 185, 94, 0) 0%,
-    rgba(237, 185, 94, 0.85) 35%,
-    rgba(255, 246, 214, 0.95) 50%,
-    rgba(237, 185, 94, 0.85) 65%,
-    rgba(237, 185, 94, 0) 100%
-  );
+  background: conic-gradient(from 0deg,
+      rgba(237, 185, 94, 0) 0%,
+      rgba(237, 185, 94, 0.85) 35%,
+      rgba(255, 246, 214, 0.95) 50%,
+      rgba(237, 185, 94, 0.85) 65%,
+      rgba(237, 185, 94, 0) 100%);
   animation: vastuAuraSpin 9s linear infinite;
   opacity: 0.85;
   filter: blur(2px);
@@ -414,12 +412,10 @@
 .vastuShimmer {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    115deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.65) 50%,
-    transparent 80%
-  );
+  background: linear-gradient(115deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.65) 50%,
+      transparent 80%);
   background-size: 200% 200%;
   animation: vastuShimmerSweep 4.5s ease-in-out infinite;
   pointer-events: none;
@@ -495,25 +491,33 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
 
 @keyframes vastuFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-3px);
   }
 }
 
 @keyframes vastuShimmerSweep {
-  0%, 20% {
+
+  0%,
+  20% {
     transform: translateX(-100%) rotate(25deg);
   }
-  40%, 100% {
+
+  40%,
+  100% {
     transform: translateX(200%) rotate(25deg);
   }
 }
@@ -711,10 +715,12 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
+
   .footerTop {
     grid-template-columns: repeat(2, 1fr);
     gap: 32px;
   }
+
   .brandCol,
   .promiseCol {
     grid-column: span 2;
@@ -724,40 +730,54 @@
 /* ========== MOBILE (481px - 767px) ========== */
 @media (max-width: 767px) {
   .footer {
-    padding-bottom: 72px; /* clearance for mobile bottom nav */
+    padding-bottom: 72px;
+    /* clearance for mobile bottom nav */
   }
+
   .trustGrid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
+
   .footerTop {
-    grid-template-columns: 1fr;
-    gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
+
+  .footerTop> :last-child {
+    grid-column: 1 / -1;
+  }
+
   .brandCol,
   .promiseCol {
     grid-column: span 1;
   }
+
   .groupLink {
     padding: 6px 0;
     min-height: 36px;
   }
+
   .contactChip {
     min-height: 44px;
   }
+
   .footerBottom {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
   }
+
   .bottomLinks {
     flex-wrap: wrap;
     gap: 12px;
   }
+
   .bottomLinks a {
     display: inline-block;
     padding: 4px 0;
   }
+
   .ctaPrimary {
     min-height: 44px;
   }
@@ -768,22 +788,28 @@
   .footer {
     padding-bottom: 80px;
   }
+
   .footerLogoImg {
-    width: 135px;
+    width: 100%;
   }
+
   .promiseCard {
     padding: 16px;
     border-radius: 16px;
   }
+
   .promiseHeadline {
     font-size: 18px;
   }
+
   .trustItem {
     padding: 10px 12px;
   }
+
   .ambientGlowTop,
   .ambientGlowRight {
-    display: none; /* remove expensive/overflowing blur orbs on small screens */
+    display: none;
+    /* remove expensive/overflowing blur orbs on small screens */
   }
 }
 
@@ -792,11 +818,12 @@
   .footerLogoImg {
     width: 120px;
   }
+
   .brandMission {
     font-size: 11.5px;
   }
+
   .hindiTagline {
     font-size: 12px;
   }
 }
-

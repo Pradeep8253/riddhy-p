@@ -44,7 +44,19 @@ import {
   Headphones,
   ExternalLink,
   Tag,
-  Copy
+  Copy,
+  Sofa,
+  Armchair,
+  Bed,
+  Tv,
+  Refrigerator,
+  WashingMachine,
+  Wind,
+  Package,
+  Store,
+  Layers,
+  Flame,
+  Crown
 } from 'lucide-react';
 
 function WhatsApp({ size = 20, className, color = 'currentColor', style }) {
@@ -134,7 +146,22 @@ const iconMap = {
   lightbulb: Lightbulb,
   headphones: Headphones,
   tag: Tag,
-  copy: Copy
+  copy: Copy,
+  sofa: Sofa,
+  armchair: Armchair,
+  bed: Bed,
+  tv: Tv,
+  refrigerator: Refrigerator,
+  fridge: Refrigerator,
+  washer: WashingMachine,
+  washingMachine: WashingMachine,
+  wind: Wind,
+  package: Package,
+  packages: Package,
+  store: Store,
+  layers: Layers,
+  flame: Flame,
+  crown: Crown
 };
 
 export default function Icon({
