@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getDemoProducts } from '@/lib/demo-data';
+import { getCatalogue } from '@/lib/catalogue';
 import { IMG } from '@/lib/images';
 import RoomPageClient from '@/components/store/RoomPageClient';
 
@@ -23,7 +23,8 @@ export default async function RoomPage({ params }) {
   const { room } = await params;
   if (!titles[room]) notFound();
   const image = IMG.rooms.find((item) => item.slug === room) || IMG.rooms[0];
-  const products = getDemoProducts().filter((item) => item.room === room).slice(0, 12);
+  const allProducts = await getCatalogue();
+  const products = allProducts.filter((item) => item.room === room).slice(0, 24);
 
   return <RoomPageClient room={room} image={image} products={products} />;
 }

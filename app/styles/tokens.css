@@ -97,20 +97,6 @@
   --admin-shadow-lg: 0 16px 48px rgba(16, 38, 26, 0.12);
 }
 
-[data-theme='dark'] {
-  color-scheme: dark;
-  --admin-bg: #0b140f;
-  --admin-card-bg: #111d16;
-  --admin-surface: #15251c;
-  --admin-border: rgba(224, 160, 64, 0.18);
-  --admin-text-main: #f0f7f2;
-  --admin-text-muted: #a1b4a6;
-  --admin-text-subtle: #6c7f72;
-  --rf-line: rgba(224, 160, 64, 0.18);
-  --rf-cream-50: #0b140f;
-  --rf-white: #111d16;
-  --rf-green-900: #0f4017;
-}
 
 @media (max-width: 720px) {
   :root {

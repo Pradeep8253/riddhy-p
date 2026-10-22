@@ -51,8 +51,43 @@ export default function Header() {
   const locale = useSelector((state) => state.ui.locale);
 
   const [mounted, setMounted] = useState(false);
+  const [dynamicNav, setDynamicNav] = useState(nav);
+  const [categoryLabels, setCategoryLabels] = useState(labels);
+
   useEffect(() => {
     setMounted(true);
+
+    fetch('/api/categories')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => {
+        if (json?.success && Array.isArray(json?.data) && json.data.length > 0) {
+          const furn = json.data.filter((c) => c.type === 'furniture' && c.active);
+          const app = json.data.filter((c) => c.type === 'appliance' && c.active);
+
+          const newLabels = { ...labels };
+          json.data.forEach((c) => {
+            if (c.slug && c.name) {
+              newLabels[c.slug] = c.name;
+            }
+          });
+          setCategoryLabels(newLabels);
+
+          setDynamicNav([
+            {
+              key: 'furniture',
+              href: '/furniture',
+              children: furn.length > 0 ? furn.map((c) => c.slug) : nav[0].children,
+            },
+            {
+              key: 'appliances',
+              href: '/appliances',
+              children: app.length > 0 ? app.map((c) => c.slug) : nav[1].children,
+            },
+            nav[2],
+          ]);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const displayCartCount = mounted ? cartCount : 0;
@@ -265,10 +300,9 @@ export default function Header() {
         </div>
 
         <div className={styles.actions}>
-
           <Link href="/consultation" className={styles.consultationBtn}>
             <Icon name="calendar" size={15} />
-            <span>{tr(locale, 'bookConsultation')}</span>
+            <span>Free consultation</span>
           </Link>
 
           <button
@@ -309,7 +343,7 @@ export default function Header() {
 
       <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`} aria-label="Main navigation">
         <div className={styles.navInner}>
-          {nav.map((item) => (
+          {dynamicNav.map((item) => (
             <div className={styles.navItem} key={item.href}>
               <Link
                 className={pathname === item.href ? styles.active : ''}
@@ -326,7 +360,7 @@ export default function Header() {
                       href={item.href.startsWith('/rooms') ? `/rooms/${slug}` : `${item.href}/${slug}`}
                       onClick={() => setMenuOpen(false)}
                     >
-                      {labels[slug]}
+                      {categoryLabels[slug] || slug.replace(/-/g, ' ')}
                     </Link>
                   ))}
                 </div>
@@ -347,7 +381,7 @@ export default function Header() {
             className={pathname === '/about' ? styles.active : ''}
             onClick={() => setMenuOpen(false)}
           >
-            {tr(locale, 'story')}
+            About 
           </Link>
 
           <Link
@@ -355,7 +389,7 @@ export default function Header() {
             className={pathname === '/consultation' ? styles.active : ''}
             onClick={() => setMenuOpen(false)}
           >
-            {tr(locale, 'freeConsultation')}
+            Free Consultation
           </Link>
         </div>
       </nav>

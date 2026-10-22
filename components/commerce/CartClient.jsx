@@ -31,15 +31,45 @@ export default function CartClient() {
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const handleApplyCoupon = (e) => {
+  const handleApplyCoupon = async (e) => {
     e?.preventDefault();
     setCouponError("");
     const code = couponCode.trim().toUpperCase();
     if (!code) return;
 
+    try {
+      const skus = items.map((i) => ({ sku: i.sku, qty: i.qty }));
+      const res = await fetch("/api/checkout/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: skus, coupon: code }),
+      });
+      const data = await res.json();
+      if (data.success && data.data?.couponDiscount > 0) {
+        setAppliedCoupon({
+          code,
+          discount: data.data.couponDiscount,
+          label: data.data.couponMessage || `${code} Applied`,
+        });
+        setCouponCode("");
+        return;
+      } else if (!data.success) {
+        setCouponError(
+          data.error?.message || "Invalid or expired coupon code.",
+        );
+        return;
+      }
+    } catch {
+      // Offline fallback
+    }
+
     if (code === "WELCOME10" || code === "RIDDHY10" || code === "DIWALI10") {
       const discount = Math.round(subtotal * 0.1);
-      setAppliedCoupon({ code, discount, label: "10% Diwali Dhamaka Discount" });
+      setAppliedCoupon({
+        code,
+        discount,
+        label: "10% Diwali Dhamaka Discount",
+      });
       setCouponCode("");
     } else if (code === "DIWALIDHAMAKA") {
       const discount = Math.round(subtotal * 0.15);
@@ -54,9 +84,7 @@ export default function CartClient() {
       setAppliedCoupon({ code, discount, label: "Flat ₹2,000 Off" });
       setCouponCode("");
     } else {
-      setCouponError(
-        "Invalid or expired coupon code. Try WELCOME10 or FLAT2000.",
-      );
+      setCouponError("Invalid or expired coupon code.");
     }
   };
 
@@ -73,7 +101,10 @@ export default function CartClient() {
       <div className={styles.empty}>
         <span>RF</span>
         <h2>Your shopping bag is empty.</h2>
-        <p>Explore our curated furniture and appliances crafted for enduring comfort.</p>
+        <p>
+          Explore our curated furniture and appliances crafted for enduring
+          comfort.
+        </p>
         <div>
           <Button href="/furniture">Explore furniture</Button>
           <Button href="/appliances" variant="outline">
@@ -89,11 +120,12 @@ export default function CartClient() {
       <div className={styles.empty}>
         <span>RF</span>
         <h2>Sign in to view your bag</h2>
-        <p>Sign in to access your saved pieces and synchronize your bag across devices.</p>
+        <p>
+          Sign in to access your saved pieces and synchronize your bag across
+          devices.
+        </p>
         <div>
-          <Button href="/account?redirect=/cart">
-            Sign in to continue
-          </Button>
+          <Button href="/account?redirect=/cart">Sign in to continue</Button>
           <Button href="/furniture" variant="outline">
             Explore furniture
           </Button>
@@ -107,7 +139,10 @@ export default function CartClient() {
       <div className={styles.empty}>
         <span>RF</span>
         <h2>Your shopping bag is empty.</h2>
-        <p>Explore our curated furniture and appliances crafted for enduring comfort.</p>
+        <p>
+          Explore our curated furniture and appliances crafted for enduring
+          comfort.
+        </p>
         <div>
           <Button href="/furniture">Explore furniture</Button>
           <Button href="/appliances" variant="outline">
@@ -165,8 +200,18 @@ export default function CartClient() {
                     ? `${item.dimensions.width} × ${item.dimensions.depth} × ${item.dimensions.height} cm`
                     : ""}
                 </small>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 4 }}>
-                  <button type="button" onClick={() => dispatch(removeItem(key))}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    marginTop: 4,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => dispatch(removeItem(key))}
+                  >
                     Remove
                   </button>
                   <a
@@ -174,13 +219,13 @@ export default function CartClient() {
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
+                      display: "inline-flex",
+                      alignItems: "center",
                       gap: 4,
                       fontSize: 11,
                       fontWeight: 700,
-                      color: '#128c7e',
-                      textDecoration: 'none'
+                      color: "#128c7e",
+                      textDecoration: "none",
                     }}
                     title="Inquire on WhatsApp"
                   >

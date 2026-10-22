@@ -1,56 +1,73 @@
-import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
-import crypto from 'crypto';
-import { v2 as cloudinary } from 'cloudinary';
-import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { NextResponse } from "next/server";
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
+import crypto from "crypto";
+import { v2 as cloudinary } from "cloudinary";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const ALLOWED_MIME_TYPES = new Set([
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-  'application/pdf'
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "application/pdf",
 ]);
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-export const runtime = 'nodejs';
+export const runtime = "nodejs";
 
 export async function POST(request) {
   try {
     const ip = getClientIp(request);
-    const limit = rateLimit(`upload:${ip}`, { limit: 20, windowMs: 15 * 60 * 1000 });
+    const limit = rateLimit(`upload:${ip}`, {
+      limit: 20,
+      windowMs: 15 * 60 * 1000,
+    });
     if (!limit.allowed) {
       return NextResponse.json(
-        { success: false, error: { message: 'Too many upload attempts. Please try again later.' } },
-        { status: 429 }
+        {
+          success: false,
+          error: {
+            message: "Too many upload attempts. Please try again later.",
+          },
+        },
+        { status: 429 },
       );
     }
 
     const formData = await request.formData();
-    const file = formData.get('file');
+    const file = formData.get("file");
 
-    if (!file || typeof file === 'string') {
+    if (!file || typeof file === "string") {
       return NextResponse.json(
-        { success: false, error: { message: 'No file provided.' } },
-        { status: 400 }
+        { success: false, error: { message: "No file provided." } },
+        { status: 400 },
       );
     }
 
     // Validate mime type
     if (!ALLOWED_MIME_TYPES.has(file.type)) {
       return NextResponse.json(
-        { success: false, error: { message: 'Invalid file type. Allowed formats: JPG, PNG, WEBP, GIF, PDF.' } },
-        { status: 400 }
+        {
+          success: false,
+          error: {
+            message:
+              "Invalid file type. Allowed formats: JPG, PNG, WEBP, GIF, PDF.",
+          },
+        },
+        { status: 400 },
       );
     }
 
     // Validate size
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { success: false, error: { message: 'File too large. Maximum allowed size is 10MB.' } },
-        { status: 400 }
+        {
+          success: false,
+          error: { message: "File too large. Maximum allowed size is 10MB." },
+        },
+        { status: 400 },
       );
     }
 
@@ -58,8 +75,10 @@ export async function POST(request) {
     const buffer = Buffer.from(bytes);
 
     // Check if local storage is explicitly requested or Cloudinary is not configured
-    const storageParam = formData.get('storage') || request.nextUrl.searchParams.get('storage');
-    const forceLocal = storageParam === 'local' || process.env.UPLOAD_STORAGE === 'local';
+    const storageParam =
+      formData.get("storage") || request.nextUrl.searchParams.get("storage");
+    const forceLocal =
+      storageParam === "local" || process.env.UPLOAD_STORAGE === "local";
 
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
     const apiKey = process.env.CLOUDINARY_API_KEY;
@@ -70,19 +89,19 @@ export async function POST(request) {
         cloud_name: cloudName,
         api_key: apiKey,
         api_secret: apiSecret,
-        secure: true
+        secure: true,
       });
 
       const uploadResult = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            folder: 'rf-riddhy/customer-uploads',
-            resource_type: file.type.startsWith('image/') ? 'image' : 'raw'
+            folder: "rf-riddhy/customer-uploads",
+            resource_type: file.type.startsWith("image/") ? "image" : "raw",
           },
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
-          }
+          },
         );
         uploadStream.end(buffer);
       });
@@ -92,17 +111,19 @@ export async function POST(request) {
         url: uploadResult.secure_url,
         publicId: uploadResult.public_id,
         bytes: file.size,
-        name: file.name
+        name: file.name,
       });
     }
 
     // Local fallback: write to public/uploads
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    const uploadsDir = path.join(process.cwd(), "public", "uploads");
     await mkdir(uploadsDir, { recursive: true });
 
-    const ext = path.extname(file.name) || (file.type === 'application/pdf' ? '.pdf' : '.jpg');
-    const safeExt = ext.replace(/[^a-zA-Z0-9.]/g, '').toLowerCase();
-    const randomHex = crypto.randomBytes(8).toString('hex');
+    const ext =
+      path.extname(file.name) ||
+      (file.type === "application/pdf" ? ".pdf" : ".jpg");
+    const safeExt = ext.replace(/[^a-zA-Z0-9.]/g, "").toLowerCase();
+    const randomHex = crypto.randomBytes(8).toString("hex");
     const safeFilename = `ref-${Date.now()}-${randomHex}${safeExt}`;
     const filePath = path.join(uploadsDir, safeFilename);
 
@@ -112,13 +133,13 @@ export async function POST(request) {
       success: true,
       url: `/uploads/${safeFilename}`,
       bytes: file.size,
-      name: file.name
+      name: file.name,
     });
   } catch (err) {
-    console.error('File upload error:', err);
+    console.error("File upload error:", err);
     return NextResponse.json(
-      { success: false, error: { message: 'Failed to process file upload.' } },
-      { status: 500 }
+      { success: false, error: { message: "Failed to process file upload." } },
+      { status: 500 },
     );
   }
 }

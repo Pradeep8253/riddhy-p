@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { getWhatsAppUrl, getTelUrl } from '@/lib/site-config';
-import styles from './FloatingContactWidget.module.css';
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import { getWhatsAppUrl, getTelUrl } from "@/lib/site-config";
+import styles from "./FloatingContactWidget.module.css";
 
-function WhatsAppIcon({ size = 20, color = 'currentColor' }) {
+function WhatsAppIcon({ size = 20, color = "currentColor" }) {
   return (
     <svg
       width={size}
@@ -20,7 +20,7 @@ function WhatsAppIcon({ size = 20, color = 'currentColor' }) {
   );
 }
 
-function PhoneIcon({ size = 18, color = 'currentColor' }) {
+function PhoneIcon({ size = 18, color = "currentColor" }) {
   return (
     <svg
       width={size}
@@ -34,7 +34,7 @@ function PhoneIcon({ size = 18, color = 'currentColor' }) {
   );
 }
 
-function CloseIcon({ size = 16, color = 'currentColor' }) {
+function CloseIcon({ size = 16, color = "currentColor" }) {
   return (
     <svg
       width={size}
@@ -58,25 +58,32 @@ export default function FloatingContactWidget() {
   const pathname = usePathname();
 
   // Don't show inside admin console
-  if (pathname?.startsWith('/admin')) {
+  if (pathname?.startsWith("/admin")) {
     return null;
   }
 
   // Predefined contextual WhatsApp messages
-  let waMessage = 'Hello RF Riddhy, I would like to know more about your products.';
+  let waMessage =
+    "Hello RF Riddhy, I would like to know more about your products.";
 
-  if (pathname?.includes('package')) {
-    waMessage = 'Hello RF Riddhy, I am interested in your marriage packages. Please share the details.';
-  } else if (pathname?.includes('bulk')) {
-    waMessage = 'Hello RF Riddhy, I would like to inquire about bulk purchasing.';
-  } else if (pathname?.includes('contact')) {
-    waMessage = 'Hello RF Riddhy, I need help sourcing a specific product or consultation.';
-  } else if (pathname?.includes('warranty')) {
-    waMessage = 'Hello RF Riddhy, I would like to inquire about product warranty registration & coverage.';
-  } else if (pathname?.includes('appliance')) {
-    waMessage = 'Hello RF Riddhy, I would like more information on your home appliances and warranty.';
-  } else if (pathname?.includes('furniture') || pathname?.includes('room')) {
-    waMessage = 'Hello RF Riddhy, I am interested in your handcrafted furniture collection.';
+  if (pathname?.includes("package")) {
+    waMessage =
+      "Hello RF Riddhy, I am interested in your marriage packages. Please share the details.";
+  } else if (pathname?.includes("bulk")) {
+    waMessage =
+      "Hello RF Riddhy, I would like to inquire about bulk purchasing.";
+  } else if (pathname?.includes("contact")) {
+    waMessage =
+      "Hello RF Riddhy, I need help sourcing a specific product or consultation.";
+  } else if (pathname?.includes("warranty")) {
+    waMessage =
+      "Hello RF Riddhy, I would like to inquire about product warranty registration & coverage.";
+  } else if (pathname?.includes("appliance")) {
+    waMessage =
+      "Hello RF Riddhy, I would like more information on your home appliances and warranty.";
+  } else if (pathname?.includes("furniture") || pathname?.includes("room")) {
+    waMessage =
+      "Hello RF Riddhy, I am interested in your handcrafted furniture collection.";
   }
 
   const waUrl = getWhatsAppUrl(waMessage);
@@ -98,7 +105,9 @@ export default function FloatingContactWidget() {
             </span>
             <div>
               <div>Chat on WhatsApp</div>
-              <small style={{ opacity: 0.85, fontSize: '11px', display: 'block' }}>
+              <small
+                style={{ opacity: 0.85, fontSize: "11px", display: "block" }}
+              >
                 Instant response
               </small>
             </div>
@@ -109,12 +118,16 @@ export default function FloatingContactWidget() {
             className={`${styles.menuItem} ${styles.callItem}`}
             onClick={() => setOpen(false)}
           >
-            <span className={`${styles.itemIconCircle} ${styles.callIconCircle}`}>
+            <span
+              className={`${styles.itemIconCircle} ${styles.callIconCircle}`}
+            >
               <PhoneIcon size={18} color="#ffffff" />
             </span>
             <div>
               <div>Call Showroom Care</div>
-              <small style={{ opacity: 0.85, fontSize: '11px', display: 'block' }}>
+              <small
+                style={{ opacity: 0.85, fontSize: "11px", display: "block" }}
+              >
                 Direct telephone assistance
               </small>
             </div>
@@ -127,15 +140,19 @@ export default function FloatingContactWidget() {
         className={styles.mainToggle}
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        aria-label={open ? 'Close contact menu' : 'Open chat and call options'}
+        aria-label={open ? "Close contact menu" : "Open chat and call options"}
       >
         <span
           className={styles.iconCircle}
-          style={{ background: open ? 'var(--rf-charcoal-900)' : '#25d366' }}
+          style={{ background: open ? "var(--rf-charcoal-900)" : "#25d366" }}
         >
-          {open ? <CloseIcon size={15} color="#ffffff" /> : <WhatsAppIcon size={18} color="#ffffff" />}
+          {open ? (
+            <CloseIcon size={15} color="#ffffff" />
+          ) : (
+            <WhatsAppIcon size={18} color="#ffffff" />
+          )}
         </span>
-        <span>{open ? 'Close' : 'Chat & Call'}</span>
+        <span>{open ? "Close" : "Chat & Call"}</span>
       </button>
     </aside>
   );

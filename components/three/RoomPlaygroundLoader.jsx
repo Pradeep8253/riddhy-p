@@ -10,7 +10,7 @@ const RoomPlayground = dynamic(() => import('./RoomPlayground'), {
   loading: () => <div className="container" style={{ padding: 24, textAlign: 'center', color: '#666' }}>Loading 3D room planner…</div>
 });
 
-export default function RoomPlaygroundLoader() {
+export default function RoomPlaygroundLoader({ catalogue }) {
   const { tier, setLiteMode } = usePerformanceTier();
   const [manualEnable, setManualEnable] = useState(false);
 
@@ -41,5 +41,5 @@ export default function RoomPlaygroundLoader() {
     );
   }
 
-  return <RoomPlayground />;
+  return <RoomPlayground catalogue={catalogue} />;
 }

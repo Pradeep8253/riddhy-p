@@ -5,6 +5,25 @@ import { IMG } from '@/lib/images';
 
 export const fallbackBanners = [
   {
+    id: 'banner-diwali-dhamaka',
+    name: 'Diwali Dhamaka Offer',
+    title: 'Diwali Dhamaka Offer',
+    subtitle: 'Celebrate with Up to 40% OFF Handcrafted Teak & Smart Inverter Tech',
+    description: 'Celebrate with Up to 40% OFF + Handcrafted Teak & Smart Inverter Tech in Prayagraj',
+    campaignTag: '🪔 DIWALI DHAMAKA SALE',
+    ctaText: 'Tap to Claim on WhatsApp',
+    href: '/offers',
+    desktopImage: '/images/diwali-dhamaka-banner.jpg',
+    mobileImage: '/images/diwali-dhamaka-banner.jpg',
+    alt: 'RF Riddhy Diwali Dhamaka Offer - Luxury Teak Furniture & Smart Home Appliances',
+    active: true,
+    sortOrder: 1,
+    offerCode: 'DIWALI10',
+    offerDescription: 'Instant 10% OFF + Free Delivery & Setup in Prayagraj',
+    isOfferModal: true,
+    zone: 'all'
+  },
+  {
     id: 'banner-wedding-season',
     name: 'Wedding Season Special',
     title: 'Marriage & Home Packages',
@@ -17,22 +36,10 @@ export const fallbackBanners = [
     mobileImage: IMG.hero.mobile,
     alt: 'RF Riddhy Wedding Furniture & Appliances Collection',
     active: true,
-    sortOrder: 1
-  },
-  {
-    id: 'banner-festive-deal',
-    name: 'The Golden Hour Festive Deal',
-    title: 'Warmth, Comfort & Craft',
-    subtitle: 'Curated for real Indian living rooms',
-    description: 'Solid Sheesham and CP Teak craftsmanship paired with 5-star energy efficient inverter appliances.',
-    campaignTag: '✨ FESTIVAL OF HOME',
-    ctaText: 'Shop Furniture',
-    href: '/furniture',
-    desktopImage: IMG.hero.desktop,
-    mobileImage: IMG.hero.mobile,
-    alt: 'RF Riddhy Living Room Festive Deal',
-    active: true,
-    sortOrder: 2
+    sortOrder: 2,
+    offerCode: 'WEDDING20',
+    offerDescription: 'Flat ₹15,000 OFF on Complete Marriage Furniture & Appliance Suites',
+    zone: 'home-hero'
   },
   {
     id: 'banner-smart-appliances',
@@ -47,7 +54,10 @@ export const fallbackBanners = [
     mobileImage: IMG.hero.mobile,
     alt: 'RF Riddhy Home Appliances Showcase',
     active: true,
-    sortOrder: 3
+    sortOrder: 3,
+    offerCode: 'APPLIANCE15',
+    offerDescription: 'Up to ₹8,000 Exchange Bonus on 5-Star Inverter Appliances',
+    zone: 'home-hero'
   }
 ];
 
@@ -63,16 +73,43 @@ export async function GET(request) {
     await connectDB();
     const now = new Date();
 
-    const query = {
-      zone,
-      active: true,
+    const dateFilter = {
       $and: [
         { $or: [{ startsAt: { $exists: false } }, { startsAt: null }, { startsAt: { $lte: now } }] },
         { $or: [{ endsAt: { $exists: false } }, { endsAt: null }, { endsAt: { $gte: now } }] }
       ]
     };
 
-    const banners = await Banner.find(query).sort({ sortOrder: 1, createdAt: -1 }).limit(10).lean();
+    let zoneFilter;
+    if (zone === 'offers-modal') {
+      zoneFilter = {
+        $or: [
+          { zone: 'offers-modal' },
+          { isOfferModal: true },
+          { zone: 'all' }
+        ]
+      };
+    } else {
+      zoneFilter = {
+        $or: [
+          { zone },
+          { zone: 'all' }
+        ]
+      };
+    }
+
+    const query = {
+      active: true,
+      ...dateFilter,
+      ...zoneFilter
+    };
+
+    let banners = await Banner.find(query).sort({ sortOrder: 1, createdAt: -1 }).limit(10).lean();
+
+    // If query by specific zone gave nothing, but it's offers-modal, try any active banner
+    if ((!banners || banners.length === 0) && zone === 'offers-modal') {
+      banners = await Banner.find({ active: true, ...dateFilter }).sort({ sortOrder: 1, createdAt: -1 }).limit(1).lean();
+    }
 
     if (banners && banners.length > 0) {
       return ok(banners.map((b) => ({ ...b, id: String(b._id) })));

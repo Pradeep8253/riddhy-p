@@ -76,6 +76,13 @@ export const ADMIN_NAV_CONFIG = [
         roles: ['admin', 'super-admin', 'marketing', 'warehouse']
       },
       {
+        id: 'categories',
+        label: 'Categories',
+        href: '/admin/categories',
+        tooltip: 'Manage furniture and appliance categories',
+        roles: ['admin', 'super-admin', 'marketing', 'warehouse']
+      },
+      {
         id: 'merchandising',
         label: 'Collections',
         href: '/admin/merchandising',

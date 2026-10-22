@@ -343,7 +343,7 @@ const InvoiceSchema = new Schema(
     balanceDue: { type: Number, default: 0 },
     totalInWords: String,
     placeOfSupply: String,
-    jurisdictionCity: { type: String, default: "New Delhi" },
+    jurisdictionCity: { type: String, default: "Prayagraj" },
     isInterState: { type: Boolean, default: false },
     paymentStatus: {
       type: String,

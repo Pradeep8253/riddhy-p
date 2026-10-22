@@ -17,35 +17,45 @@ const models = {
   'water-purifiers': 'purifier'
 };
 
-export default function ApplianceGrid() {
-  const categories = CATEGORY_SEED.filter((item) => item.type === 'appliance');
+export default function ApplianceGrid({ categories: propCategories }) {
+  const categories = propCategories && propCategories.length > 0
+    ? propCategories
+    : CATEGORY_SEED.filter((item) => item.type === 'appliance');
 
   return (
     <div className={styles.grid}>
-      {categories.map((category, index) => (
-        <Link key={category.slug} href={`/appliances/${category.slug}`} className={styles.card}>
-          <span className={styles.index}>0{index + 1}</span>
-          <div className={styles.visual}>
-            <Image
-              src={IMG.categories[category.imageKey]}
-              alt={`${category.name} illustration`}
-              fill
-              sizes="(max-width:720px) 42vw, 170px"
-              placeholder="blur"
-              blurDataURL={IMG.blurDataURL}
-              unoptimized
-            />
-            <span>360°</span>
-          </div>
-          <div className={styles.details}>
-            <div>
-              <b>{category.name}</b>
-              <small>Explore range</small>
+      {categories.map((category, index) => {
+        const imgSrc =
+          category.image ||
+          IMG.categories[category.imageKey] ||
+          IMG.categories[category.slug] ||
+          '/images/category-refrigerators.webp';
+
+        return (
+          <Link key={category.slug} href={`/appliances/${category.slug}`} className={styles.card}>
+            <span className={styles.index}>0{index + 1}</span>
+            <div className={styles.visual}>
+              <Image
+                src={imgSrc}
+                alt={`${category.name} illustration`}
+                fill
+                sizes="(max-width:720px) 42vw, 170px"
+                placeholder="blur"
+                blurDataURL={IMG.blurDataURL}
+                unoptimized
+              />
+              <span>360°</span>
             </div>
-            <Icon name="arrow" size={16} />
-          </div>
-        </Link>
-      ))}
+            <div className={styles.details}>
+              <div>
+                <b>{category.name}</b>
+                <small>Explore range</small>
+              </div>
+              <Icon name="arrow" size={16} />
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }

@@ -182,19 +182,23 @@ export default async function ContactPage({ searchParams }) {
             <ContactForm initialTopic={topicParam} />
           </div>
 
-          {/* Quick Help & Consultation Cross-link */}
+          {/* Quick Help & Store Cross-link */}
           <div className={styles.sideHelpCol}>
-            {/* Cross link to consultation */}
+            {/* Prayagraj Store Visit */}
             <div className={styles.consultationPromo}>
-              <span className="kicker" style={{ color: 'var(--rf-gold-600)' }}>Free service</span>
-              <h3>Need guided planning?</h3>
+              <span className="kicker" style={{ color: 'var(--rf-gold-600)' }}>Prayagraj Store</span>
+              <h3>Visit our Prayagraj Store</h3>
               <p>
-                If you are planning an entire room or need advice on appliance capacities and electrical clearances,
-                book a dedicated 20-minute consultation.
+                Explore our full solid wood collection and premium home appliances in person at our Civil Lines, Prayagraj store.
               </p>
-              <Link href="/consultation" className={styles.consultationBtn}>
-                Book Home Consultation <Icon name="arrow" size={16} />
-              </Link>
+              <a
+                href={whatsappUrl || 'https://wa.me/919934208035'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.consultationBtn}
+              >
+                Chat on WhatsApp <Icon name="arrow" size={16} />
+              </a>
             </div>
 
             {/* Instant help shortcuts */}

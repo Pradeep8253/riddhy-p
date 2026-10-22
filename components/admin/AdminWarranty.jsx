@@ -1,29 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import {
-  ShieldCheck,
-  Search,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  Clock,
-  FileText,
-  UserCheck
-} from 'lucide-react';
-import ExportDropdown from './ExportDropdown';
-import AdminPagination from './AdminPagination';
-import { formatDateDDMMYYYY } from '@/lib/date-utils';
-import styles from './AdminWarranty.module.css';
+import { formatDateDDMMYYYY } from "@/lib/date-utils";
+import { CheckCircle, Clock, Search } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import AdminPagination from "./AdminPagination";
+import styles from "./AdminWarranty.module.css";
+import ExportDropdown from "./ExportDropdown";
 
 export default function AdminWarranty() {
-  const [activeTab, setActiveTab] = useState('registrations'); // 'registrations' | 'review_queue' | 'claims'
+  const [activeTab, setActiveTab] = useState("registrations"); // 'registrations' | 'review_queue' | 'claims'
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [updatingId, setUpdatingId] = useState(null);
 
   // Pagination
@@ -32,29 +23,31 @@ export default function AdminWarranty() {
 
   const fetchRecords = useCallback(async () => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const params = new URLSearchParams();
-      params.set('tab', activeTab);
-      if (statusFilter !== 'all') params.set('status', statusFilter);
-      if (search.trim()) params.set('search', search.trim());
-      params.set('page', String(page));
-      params.set('limit', String(pageSize));
+      params.set("tab", activeTab);
+      if (statusFilter !== "all") params.set("status", statusFilter);
+      if (search.trim()) params.set("search", search.trim());
+      params.set("page", String(page));
+      params.set("limit", String(pageSize));
 
       const res = await fetch(`/api/admin/warranty?${params.toString()}`);
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data?.error?.message || 'Failed to load warranty records');
+        throw new Error(
+          data?.error?.message || "Failed to load warranty records",
+        );
       }
 
-      if (activeTab === 'claims') {
+      if (activeTab === "claims") {
         setItems(data.data?.claims || []);
       } else {
         setItems(data.data?.registrations || []);
       }
       setTotal(data.data?.total || 0);
     } catch (err) {
-      setError(err.message || 'Failed to load warranty records');
+      setError(err.message || "Failed to load warranty records");
     } finally {
       setLoading(false);
     }
@@ -70,12 +63,12 @@ export default function AdminWarranty() {
   const handleReviewAction = async (id, action) => {
     setUpdatingId(id);
     try {
-      const res = await fetch('/api/admin/warranty', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, action })
+      const res = await fetch("/api/admin/warranty", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, action }),
       });
-      if (!res.ok) throw new Error('Action failed');
+      if (!res.ok) throw new Error("Action failed");
       fetchRecords();
     } catch (err) {
       alert(err.message);
@@ -85,22 +78,30 @@ export default function AdminWarranty() {
   };
 
   const getBadgeClass = (status) => {
-    if (status === 'active') return styles.statusActive;
-    if (status === 'expiring_soon') return styles.statusExpiring;
+    if (status === "active") return styles.statusActive;
+    if (status === "expiring_soon") return styles.statusExpiring;
     return styles.statusExpired;
   };
 
   const exportColumns = [
-    { label: 'Customer Name', key: 'customerName' },
-    { label: 'Customer Phone', key: 'customerPhone' },
-    { label: 'Product Name', key: 'productName' },
-    { label: 'SKU', key: 'sku' },
-    { label: 'Serial Number', key: 'serialNumber' },
-    { label: 'Order Ref', key: 'orderNumber' },
-    { label: 'Purchase Date', key: 'purchaseDate', getValue: (r) => formatDateDDMMYYYY(r.purchaseDate) },
-    { label: 'Expiry Date', key: 'expiryDate', getValue: (r) => formatDateDDMMYYYY(r.expiryDate) },
-    { label: 'Remaining Days', key: 'remainingDays' },
-    { label: 'Warranty Status', key: 'currentStatus' }
+    { label: "Customer Name", key: "customerName" },
+    { label: "Customer Phone", key: "customerPhone" },
+    { label: "Product Name", key: "productName" },
+    { label: "SKU", key: "sku" },
+    { label: "Serial Number", key: "serialNumber" },
+    { label: "Order Ref", key: "orderNumber" },
+    {
+      label: "Purchase Date",
+      key: "purchaseDate",
+      getValue: (r) => formatDateDDMMYYYY(r.purchaseDate),
+    },
+    {
+      label: "Expiry Date",
+      key: "expiryDate",
+      getValue: (r) => formatDateDDMMYYYY(r.expiryDate),
+    },
+    { label: "Remaining Days", key: "remainingDays" },
+    { label: "Warranty Status", key: "currentStatus" },
   ];
 
   return (
@@ -108,7 +109,10 @@ export default function AdminWarranty() {
       <div className={styles.head}>
         <div>
           <h1>Warranty Care &amp; Review Desk</h1>
-          <p>Automated purchase registrations, offline proof verification queue, and service claim management.</p>
+          <p>
+            Automated purchase registrations, offline proof verification queue,
+            and service claim management.
+          </p>
         </div>
 
         <div className={styles.controls}>
@@ -123,51 +127,76 @@ export default function AdminWarranty() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #d5cec2', marginBottom: '20px' }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          borderBottom: "1px solid #d5cec2",
+          marginBottom: "20px",
+        }}
+      >
         <button
           type="button"
-          onClick={() => { setActiveTab('registrations'); setPage(1); }}
+          onClick={() => {
+            setActiveTab("registrations");
+            setPage(1);
+          }}
           style={{
-            padding: '10px 16px',
-            border: 'none',
-            background: 'none',
+            padding: "10px 16px",
+            border: "none",
+            background: "none",
             fontWeight: 700,
-            fontSize: '13px',
-            cursor: 'pointer',
-            borderBottom: activeTab === 'registrations' ? '2px solid #1b5e20' : '2px solid transparent',
-            color: activeTab === 'registrations' ? '#1b5e20' : '#647065'
+            fontSize: "13px",
+            cursor: "pointer",
+            borderBottom:
+              activeTab === "registrations"
+                ? "2px solid #1b5e20"
+                : "2px solid transparent",
+            color: activeTab === "registrations" ? "#1b5e20" : "#647065",
           }}
         >
           All Registrations
         </button>
         <button
           type="button"
-          onClick={() => { setActiveTab('review_queue'); setPage(1); }}
+          onClick={() => {
+            setActiveTab("review_queue");
+            setPage(1);
+          }}
           style={{
-            padding: '10px 16px',
-            border: 'none',
-            background: 'none',
+            padding: "10px 16px",
+            border: "none",
+            background: "none",
             fontWeight: 700,
-            fontSize: '13px',
-            cursor: 'pointer',
-            borderBottom: activeTab === 'review_queue' ? '2px solid #1b5e20' : '2px solid transparent',
-            color: activeTab === 'review_queue' ? '#1b5e20' : '#647065'
+            fontSize: "13px",
+            cursor: "pointer",
+            borderBottom:
+              activeTab === "review_queue"
+                ? "2px solid #1b5e20"
+                : "2px solid transparent",
+            color: activeTab === "review_queue" ? "#1b5e20" : "#647065",
           }}
         >
           Offline Review Queue
         </button>
         <button
           type="button"
-          onClick={() => { setActiveTab('claims'); setPage(1); }}
+          onClick={() => {
+            setActiveTab("claims");
+            setPage(1);
+          }}
           style={{
-            padding: '10px 16px',
-            border: 'none',
-            background: 'none',
+            padding: "10px 16px",
+            border: "none",
+            background: "none",
             fontWeight: 700,
-            fontSize: '13px',
-            cursor: 'pointer',
-            borderBottom: activeTab === 'claims' ? '2px solid #1b5e20' : '2px solid transparent',
-            color: activeTab === 'claims' ? '#1b5e20' : '#647065'
+            fontSize: "13px",
+            cursor: "pointer",
+            borderBottom:
+              activeTab === "claims"
+                ? "2px solid #1b5e20"
+                : "2px solid transparent",
+            color: activeTab === "claims" ? "#1b5e20" : "#647065",
           }}
         >
           Claims Desk
@@ -175,24 +204,56 @@ export default function AdminWarranty() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #d5cec2', borderRadius: '8px', padding: '0 10px', minHeight: '38px', flex: 1, maxWidth: '380px' }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "12px",
+          alignItems: "center",
+          marginBottom: "16px",
+          flexWrap: "wrap",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            background: "#fff",
+            border: "1px solid #d5cec2",
+            borderRadius: "8px",
+            padding: "0 10px",
+            minHeight: "38px",
+            flex: 1,
+            maxWidth: "380px",
+          }}
+        >
           <Search size={14} color="#727e74" />
           <input
             type="text"
             placeholder="Search customer, phone, serial, order, SKU..."
             className={styles.searchInput}
-            style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '13px' }}
+            style={{
+              border: "none",
+              outline: "none",
+              marginLeft: "8px",
+              width: "100%",
+              fontSize: "13px",
+            }}
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
           />
         </div>
 
-        {activeTab !== 'review_queue' && (
+        {activeTab !== "review_queue" && (
           <select
             className={styles.filterSelect}
             value={statusFilter}
-            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setPage(1);
+            }}
           >
             <option value="all">All Statuses</option>
             <option value="active">Active Only</option>
@@ -203,7 +264,15 @@ export default function AdminWarranty() {
       </div>
 
       {error && (
-        <div style={{ color: '#c62828', background: '#ffebee', padding: '12px 16px', borderRadius: '8px', marginBottom: 16 }}>
+        <div
+          style={{
+            color: "#c62828",
+            background: "#ffebee",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            marginBottom: 16,
+          }}
+        >
           {error}
         </div>
       )}
@@ -214,11 +283,11 @@ export default function AdminWarranty() {
           <div className={styles.emptyState}>Loading warranty records...</div>
         ) : items.length === 0 ? (
           <div className={styles.emptyState}>
-            {activeTab === 'review_queue'
-              ? 'Review queue is clear! All customer registrations have been verified.'
-              : 'No warranty records found matching criteria.'}
+            {activeTab === "review_queue"
+              ? "Review queue is clear! All customer registrations have been verified."
+              : "No warranty records found matching criteria."}
           </div>
-        ) : activeTab === 'claims' ? (
+        ) : activeTab === "claims" ? (
           <table className={styles.table}>
             <thead>
               <tr>
@@ -233,13 +302,18 @@ export default function AdminWarranty() {
             <tbody>
               {items.map((c) => (
                 <tr key={c.id}>
-                  <td><strong>{c.claimNumber || c.id.slice(-8)}</strong></td>
+                  <td>
+                    <strong>{c.claimNumber || c.id.slice(-8)}</strong>
+                  </td>
                   <td>{formatDateDDMMYYYY(c.createdAt)}</td>
                   <td>{c.issue}</td>
-                  <td>{c.preferredContact || 'Phone'}</td>
-                  <td>{c.assignedToEmail || 'Unassigned'}</td>
+                  <td>{c.preferredContact || "Phone"}</td>
+                  <td>{c.assignedToEmail || "Unassigned"}</td>
                   <td>
-                    <span className={styles.statusBadge} style={{ background: '#eaf5ec', color: '#17632a' }}>
+                    <span
+                      className={styles.statusBadge}
+                      style={{ background: "#eaf5ec", color: "#17632a" }}
+                    >
                       {c.status}
                     </span>
                   </td>
@@ -258,64 +332,117 @@ export default function AdminWarranty() {
                 <th>Remaining</th>
                 <th>Status</th>
                 <th>Verification</th>
-                {activeTab === 'review_queue' && <th>Review Action</th>}
+                {activeTab === "review_queue" && <th>Review Action</th>}
               </tr>
             </thead>
             <tbody>
               {items.map((r) => (
                 <tr key={r.id}>
                   <td>
-                    <b style={{ color: 'var(--rf-forest-deep)', display: 'block' }}>{r.customerName}</b>
-                    <span style={{ color: '#7b857d' }}>{r.customerPhone}</span>
+                    <b
+                      style={{
+                        color: "var(--rf-forest-deep)",
+                        display: "block",
+                      }}
+                    >
+                      {r.customerName}
+                    </b>
+                    <span style={{ color: "#7b857d" }}>{r.customerPhone}</span>
                   </td>
                   <td>
-                    <b style={{ display: 'block' }}>{r.productName || r.sku}</b>
-                    <span style={{ color: '#7b857d', fontSize: '11px' }}>
-                      SKU: {r.sku} {r.serialNumber ? `· S/N: ${r.serialNumber}` : ''}
+                    <b style={{ display: "block" }}>{r.productName || r.sku}</b>
+                    <span style={{ color: "#7b857d", fontSize: "11px" }}>
+                      SKU: {r.sku}{" "}
+                      {r.serialNumber ? `· S/N: ${r.serialNumber}` : ""}
                     </span>
                   </td>
-                  <td>{r.orderNumber || 'Offline'}</td>
+                  <td>{r.orderNumber || "Offline"}</td>
                   <td>
                     <div>Bought: {formatDateDDMMYYYY(r.purchaseDate)}</div>
-                    <div style={{ color: '#7b857d' }}>Expires: {formatDateDDMMYYYY(r.expiryDate)}</div>
+                    <div style={{ color: "#7b857d" }}>
+                      Expires: {formatDateDDMMYYYY(r.expiryDate)}
+                    </div>
                   </td>
                   <td>
-                    <b style={{ color: r.remainingDays <= 30 ? '#c62828' : 'var(--rf-forest-deep)' }}>
+                    <b
+                      style={{
+                        color:
+                          r.remainingDays <= 30
+                            ? "#c62828"
+                            : "var(--rf-forest-deep)",
+                      }}
+                    >
                       {r.remainingDays} Days
                     </b>
                   </td>
                   <td>
-                    <span className={`${styles.statusBadge} ${getBadgeClass(r.currentStatus || r.status)}`}>
+                    <span
+                      className={`${styles.statusBadge} ${getBadgeClass(r.currentStatus || r.status)}`}
+                    >
                       {r.currentStatus || r.status}
                     </span>
                   </td>
                   <td>
                     {r.verified ? (
-                      <span style={{ color: '#17632a', fontSize: '11px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                      <span
+                        style={{
+                          color: "#17632a",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "3px",
+                        }}
+                      >
                         <CheckCircle size={12} /> Verified
                       </span>
                     ) : (
-                      <span style={{ color: '#c62828', fontSize: '11px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                      <span
+                        style={{
+                          color: "#c62828",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "3px",
+                        }}
+                      >
                         <Clock size={12} /> Pending Review
                       </span>
                     )}
                   </td>
-                  {activeTab === 'review_queue' && (
+                  {activeTab === "review_queue" && (
                     <td>
-                      <div style={{ display: 'flex', gap: '6px' }}>
+                      <div style={{ display: "flex", gap: "6px" }}>
                         <button
                           type="button"
-                          onClick={() => handleReviewAction(r.id, 'approve')}
+                          onClick={() => handleReviewAction(r.id, "approve")}
                           disabled={updatingId === r.id}
-                          style={{ background: '#1b5e20', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
+                          style={{
+                            background: "#1b5e20",
+                            color: "#fff",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                            cursor: "pointer",
+                          }}
                         >
                           Approve
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleReviewAction(r.id, 'reject')}
+                          onClick={() => handleReviewAction(r.id, "reject")}
                           disabled={updatingId === r.id}
-                          style={{ background: '#b71c1c', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
+                          style={{
+                            background: "#b71c1c",
+                            color: "#fff",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                            cursor: "pointer",
+                          }}
                         >
                           Reject
                         </button>

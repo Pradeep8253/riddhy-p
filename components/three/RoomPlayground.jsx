@@ -24,9 +24,12 @@ function RoomScene({ count }) {
   </Canvas>;
 }
 
-export default function RoomPlayground() {
+export default function RoomPlayground({ catalogue: propCatalogue }) {
   const dispatch = useDispatch();
-  const catalogue = useMemo(() => getDemoProducts().filter((p) => ['sofa','study','decor','storage'].includes(p.modelType)).slice(0,4), []);
+  const catalogue = useMemo(() => {
+    if (propCatalogue && propCatalogue.length > 0) return propCatalogue;
+    return getDemoProducts().filter((p) => ['sofa','study','decor','storage'].includes(p.modelType)).slice(0,4);
+  }, [propCatalogue]);
   const [selected, setSelected] = useState([]);
   const [open, setOpen] = useState(false);
   const total = selected.reduce((sum,item) => sum + item.price, 0);

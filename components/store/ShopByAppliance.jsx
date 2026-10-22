@@ -7,7 +7,7 @@ import Icon from '@/components/ui/Icon';
 import ApplianceGrid from './ApplianceGrid';
 import styles from './ShopByAppliance.module.css';
 
-export default function ShopByAppliance() {
+export default function ShopByAppliance({ categories }) {
   return (
     <section className={styles.section}>
       <div className="container">
@@ -22,7 +22,7 @@ export default function ShopByAppliance() {
             </Button>
           }
         />
-        <ApplianceGrid />
+        <ApplianceGrid categories={categories} />
         <div className={styles.note}>
           <span>
             Every product page puts dimensions and service options upfront.

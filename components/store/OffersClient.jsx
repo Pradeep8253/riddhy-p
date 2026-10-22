@@ -7,31 +7,57 @@ import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import styles from './OffersClient.module.css';
 
-const offers = [
+import { useState, useEffect } from 'react';
+
+const fallbackOffers = [
   {
-    title: 'Golden Hour deal',
-    text: 'A warm seasonal deal across furniture and home appliances. Check item pages for eligible prices and terms.',
-    image: IMG.banners.festive,
-    ends: '30 November 2026',
-    href: '/furniture'
+    title: 'Diwali Dhamaka Offer',
+    text: 'Celebrate with Up to 40% OFF Handcrafted Teak & Smart Inverter Tech in Prayagraj.',
+    image: '/images/diwali-dhamaka-banner.jpg',
+    ends: 'Festive Season',
+    href: '/offers'
   },
   {
-    title: 'Appliance studio',
-    text: 'Explore a considered range. Current product prices and any eligible promotion appear on each product page.',
-    image: IMG.banners.appliances,
-    ends: 'Scheduled campaign',
+    title: 'Marriage & Home Packages',
+    text: 'Everything for your new beginning. Complete 1BHK, 2BHK & luxury bedroom suites.',
+    image: '/images/hero-wedding-package.jpg',
+    ends: 'Wedding Season',
+    href: '/packages'
+  },
+  {
+    title: 'Smart Kitchen & Care Suite',
+    text: 'Convertible inverter refrigerators, AI steam washers & convection microwave suites with extended warranty.',
+    image: '/images/hero-appliances-suite.jpg',
+    ends: 'Appliance Carnival',
     href: '/appliances'
-  },
-  {
-    title: 'Delivery & installation',
-    text: 'See delivery and installation eligibility before paying. Available service depends on product and pincode.',
-    image: IMG.banners.installation,
-    ends: 'Service information',
-    href: '/policies/shipping'
   }
 ];
 
 export default function OffersClient() {
+  const [offersList, setOffersList] = useState(fallbackOffers);
+
+  useEffect(() => {
+    fetch('/api/banners?zone=all')
+      .then((res) => res.json())
+      .then((json) => {
+        const list = Array.isArray(json) ? json : (json?.data || []);
+        if (list.length > 0) {
+          setOffersList(
+            list.map((b) => ({
+              title: b.title || b.name,
+              text: b.subtitle || b.description,
+              image: b.desktopImage || '/images/diwali-dhamaka-banner.jpg',
+              ends: b.endsAt
+                ? `Ends ${new Date(b.endsAt).toLocaleDateString('en-IN')}`
+                : b.campaignTag || 'Active Festival Promotion',
+              href: b.href || '/offers'
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <>
       <section className={styles.intro}>
@@ -56,8 +82,8 @@ export default function OffersClient() {
             description="Campaign cards show our seasonal promotions and package schedules with clear terms."
           />
           <div className={styles.grid}>
-            {offers.map((offer) => (
-              <article className={styles.card} key={offer.title}>
+            {offersList.map((offer, idx) => (
+              <article className={styles.card} key={offer.title + idx}>
                 <div className={styles.image}>
                   <Image
                     src={offer.image}

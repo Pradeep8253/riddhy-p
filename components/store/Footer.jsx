@@ -20,7 +20,7 @@ const groups = [
     title: 'Care & support',
     links: [
       ['Track your order', '/track-order'],
-      ['Free home consultation', '/consultation'],
+      ['Prayagraj Store & Hub', '/contact'],
       ['Warranty', '/warranty'],
       ['Delivery & installation', '/policies/shipping'],
       ['Returns & refunds', '/policies/returns'],
@@ -31,7 +31,7 @@ const groups = [
   {
     title: 'About Riddhy',
     links: [
-      ['About us', '/about'],
+      ['About ', '/about'],
       ['Contact us', '/contact'],
       ['Trade & bulk', '/bulk-enquiry'],
       ['Privacy policy', '/policies/privacy']
@@ -51,9 +51,9 @@ const trustPillars = [
     subtitle: 'Careful white-glove installation'
   },
   {
-    icon: 'home',
-    title: 'Free Home Consultation',
-    subtitle: 'Expert guidance for your space'
+    icon: 'mapPin',
+    title: 'Prayagraj Local Store',
+    subtitle: 'Direct local delivery & showroom support'
   },
   {
     icon: 'award',
@@ -187,14 +187,19 @@ export default function Footer() {
             </p>
 
             <div className={styles.promiseActions}>
-              <Link href="/consultation" className={styles.ctaPrimary}>
-                <span>Book home consultation</span>
+              <Link href="/contact" className={styles.ctaPrimary}>
+                <span>Visit Prayagraj Store</span>
                 <Icon name="arrow" size={14} />
               </Link>
-              <Link href="/contact" className={styles.ctaSecondary}>
-                <span>Talk to our team</span>
+              <a
+                href="https://wa.me/919934208035?text=Hello%20RF%20Riddhy%2C%20I%20want%20to%20inquire%20about%20your%20Prayagraj%20store%20collection"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.ctaSecondary}
+              >
+                <span>Chat on WhatsApp</span>
                 <Icon name="arrowUpRight" size={13} />
-              </Link>
+              </a>
             </div>
           </div>
         </div>

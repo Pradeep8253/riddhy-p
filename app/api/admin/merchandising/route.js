@@ -3,7 +3,7 @@ import { revalidateTag } from 'next/cache';
 import { connectDB } from '@/lib/db';
 import { requireAdmin } from '@/lib/roles';
 import { ok, fail, apiError } from '@/lib/http';
-import { Product, AuditLog } from '@/models/index';
+import { Product, Variant, AuditLog } from '@/models/index';
 import { z } from 'zod';
 
 const patchSchema = z.object({
@@ -29,17 +29,35 @@ export async function GET(request) {
         status: 'active',
         tags: tag
       })
-        .select('name slug sku brand category categoryLabel type price mrp stock image gallery tags tagOverrides sales30d badgeText status')
+        .select('name slug brand category categoryLabel type price mrp stock image gallery tags tagOverrides sales30d badgeText status')
         .sort({ sales30d: -1, createdAt: -1 })
         .limit(100)
         .lean();
 
-      const mapped = items.map((p) => ({
-        ...p,
-        id: String(p._id),
-        isPinned: (p.tagOverrides?.pin || []).includes(tag),
-        isExcluded: (p.tagOverrides?.hide || []).includes(tag)
-      }));
+      const productIds = items.map((p) => p._id);
+      const variants = productIds.length > 0
+        ? await Variant.find({ productId: { $in: productIds } }).sort({ createdAt: 1 }).lean()
+        : [];
+      const variantByPid = {};
+      for (const v of variants) {
+        if (!variantByPid[String(v.productId)]) {
+          variantByPid[String(v.productId)] = v;
+        }
+      }
+
+      const mapped = items.map((p) => {
+        const v = variantByPid[String(p._id)];
+        return {
+          ...p,
+          id: String(p._id),
+          sku: v?.sku || '',
+          price: v?.price ?? p.price,
+          mrp: v?.mrp ?? p.mrp,
+          stock: v?.stock ?? p.stock,
+          isPinned: (p.tagOverrides?.pin || []).includes(tag),
+          isExcluded: (p.tagOverrides?.hide || []).includes(tag)
+        };
+      });
 
       // Sort pinned items to the top
       mapped.sort((a, b) => {

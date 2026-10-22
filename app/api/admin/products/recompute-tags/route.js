@@ -125,6 +125,20 @@ export async function POST(request) {
         if (!hides.has(mt)) computed.add(mt);
       }
 
+      // Ensure every product always has at least 1-2 relevant tags
+      if (computed.size === 0) {
+        if ((p.discount || 0) >= 15) {
+          computed.add('deal');
+          computed.add('popular');
+        } else if ((p.price || 0) >= 40000) {
+          computed.add('featured');
+          computed.add('best-selling');
+        } else {
+          computed.add('popular');
+          computed.add('trending');
+        }
+      }
+
       const finalTags = Array.from(computed);
       p.tags = finalTags;
 

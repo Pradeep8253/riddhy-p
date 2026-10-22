@@ -33,7 +33,11 @@ const companySettingsSchema = z
       .string()
       .trim()
       .regex(/^\d{2}$/, "State code must be exactly 2 digits (e.g. 07)"),
-    jurisdictionCity: z.string().min(2, "Jurisdiction city is required").max(100).default("New Delhi"),
+    jurisdictionCity: z
+      .string()
+      .min(2, "Jurisdiction city is required")
+      .max(100)
+      .default("Prayagraj"),
     addressLine1: z.string().min(5, "Address Line 1 is required").max(250),
     addressLine2: z.string().max(250).optional().default(""),
     city: z.string().min(2, "City is required").max(80),
@@ -49,7 +53,13 @@ const companySettingsSchema = z
     defaultWarehouseCode: z.string().trim().min(2).max(30).default("DELHI-01"),
     currency: z.string().trim().length(3).default("INR"),
     logoUrl: z.string().trim().url().or(z.literal("")).optional().default(""),
-    signatureUrl: z.string().trim().url().or(z.literal("")).optional().default(""),
+    signatureUrl: z
+      .string()
+      .trim()
+      .url()
+      .or(z.literal(""))
+      .optional()
+      .default(""),
     website: z
       .string()
       .trim()
@@ -64,7 +74,13 @@ const companySettingsSchema = z
     defaultGstRate: z.coerce.number().min(0).max(100).default(18),
     deliverySac: z.string().trim().default("9965"),
     installationSac: z.string().trim().default("9987"),
-    returnPolicyText: z.string().max(1000).optional().default("Returns accepted within 7 days in original packaging subject to inspection."),
+    returnPolicyText: z
+      .string()
+      .max(1000)
+      .optional()
+      .default(
+        "Returns accepted within 7 days in original packaging subject to inspection.",
+      ),
     invoiceTerms: z.string().max(2000).optional().default(""),
     invoiceFooterNote: z.string().max(500).optional().default(""),
     nextInvoiceNumber: z.coerce.number().int().min(1).optional().default(1),

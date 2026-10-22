@@ -263,8 +263,8 @@ export async function GET(request) {
         {
           $group: {
             _id: {
-              state: { $ifNull: ['$shippingAddress.state', 'Delhi'] },
-              city: { $ifNull: ['$shippingAddress.city', 'New Delhi'] }
+              state: { $ifNull: ['$shippingAddress.state', 'Uttar Pradesh'] },
+              city: { $ifNull: ['$shippingAddress.city', 'Prayagraj'] }
             },
             revenue: { $sum: '$total' },
             orders: { $sum: 1 }

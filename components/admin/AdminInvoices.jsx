@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   Search,
   Download,
-  Printer,
   FileText,
   Mail,
   Share2,

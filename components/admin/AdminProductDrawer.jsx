@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   X,
   Upload,
@@ -18,7 +18,6 @@ import {
   Boxes,
   Tag,
   ShieldCheck,
-  Search,
 } from "lucide-react";
 import { CATEGORY_SEED } from "@/lib/demo-data";
 import styles from "./AdminProductDrawer.module.css";
@@ -64,6 +63,20 @@ export default function AdminProductDrawer({
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [libraryAssets, setLibraryAssets] = useState([]);
   const [loadingLibrary, setLoadingLibrary] = useState(false);
+  const [availableCategories, setAvailableCategories] = useState(CATEGORY_SEED);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch("/api/admin/categories")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          if (json?.success && Array.isArray(json?.data) && json.data.length > 0) {
+            setAvailableCategories(json.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
 
   const openMediaLibrary = async () => {
     setShowMediaLibrary(true);
@@ -152,20 +165,38 @@ export default function AdminProductDrawer({
         initialData.gallery && initialData.gallery.length > 0
           ? initialData.gallery
           : initialData.image
-            ? [{ url: initialData.image, sortOrder: 0, alt: initialData.name }]
+            ? [{ url: initialData.image, sortOrder: 0, alt: initialData.name || "Product Image" }]
             : [];
+
+      const initialSku =
+        initialData.sku ||
+        initialData.primaryVariant?.sku ||
+        (Array.isArray(initialData.variants) && initialData.variants[0]?.sku) ||
+        (initialData.slug
+          ? `RF-${String(initialData.slug).toUpperCase().replace(/[^A-Z0-9]/g, "-").slice(0, 20)}`
+          : `RF-${Date.now().toString(36).toUpperCase()}`);
 
       setForm({
         ...initialData,
-        price: String(initialData.price ?? ""),
-        mrp: String(initialData.mrp ?? ""),
+        name: initialData.name || "",
+        slug: initialData.slug || "",
+        sku: initialSku,
+        type: initialData.type || "furniture",
+        modelType: initialData.modelType || "sofa",
+        category: initialData.category || "sofas",
+        brand: initialData.brand || "RF Riddhy",
+        description: initialData.description || "",
+        tagline: initialData.tagline || "",
+        status: initialData.status || "draft",
+        price: String(initialData.price ?? initialData.effectivePrice ?? ""),
+        mrp: String(initialData.mrp ?? initialData.effectiveMrp ?? ""),
         discount: String(initialData.discount ?? ""),
-        stock: String(initialData.stock ?? "0"),
+        stock: String(initialData.stock ?? initialData.effectiveStock ?? "10"),
         hsnCode:
           initialData.hsnCode ||
           (initialData.type === "appliance" ? "8516" : "9403"),
         gallery: g,
-        tags: initialData.tags || [],
+        tags: Array.isArray(initialData.tags) ? initialData.tags : [],
         tagOverrides: initialData.tagOverrides || { pin: [], hide: [] },
         badgeText: initialData.badgeText || "",
         warranty: initialData.warranty || {
@@ -216,6 +247,35 @@ export default function AdminProductDrawer({
     setError("");
     setTab("general");
   }, [initialData, isOpen]);
+
+  // Asynchronously hydrate authoritative product data from database when editing
+  useEffect(() => {
+    const prodId = initialData?._id || initialData?.id || initialData?.slug;
+    if (isOpen && prodId) {
+      let isMounted = true;
+      fetch(`/api/admin/products/${prodId}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          if (isMounted && json?.success && json?.data) {
+            const p = json.data;
+            setForm((prev) => ({
+              ...prev,
+              sku: p.sku || prev.sku,
+              price: String(p.price ?? prev.price),
+              mrp: String(p.mrp ?? prev.mrp),
+              stock: String(p.stock ?? prev.stock),
+              gallery: p.gallery && p.gallery.length > 0 ? p.gallery : prev.gallery,
+              warranty: p.warranty || prev.warranty,
+              seo: p.seo || prev.seo,
+            }));
+          }
+        })
+        .catch(() => {});
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [isOpen, initialData?._id, initialData?.id, initialData?.slug]);
 
   // Close on Escape
   useEffect(() => {
@@ -376,9 +436,9 @@ export default function AdminProductDrawer({
   const handleDuplicate = () => {
     setForm((prev) => ({
       ...prev,
-      slug: `${prev.slug}-copy`,
-      sku: `${prev.sku}-COPY`,
-      name: `${prev.name} (Copy)`,
+      slug: `${prev.slug || "product"}-copy`,
+      sku: `${prev.sku || "RF-ITEM"}-COPY`,
+      name: `${prev.name || "Product"} (Copy)`,
       status: "draft",
     }));
     setError("");
@@ -417,17 +477,21 @@ export default function AdminProductDrawer({
     e.preventDefault();
     setError("");
 
-    if (!form.name.trim()) {
+    const name = String(form.name || "").trim();
+    const slug = String(form.slug || "").trim();
+    const sku = String(form.sku || "").trim();
+
+    if (!name) {
       setError("Product name is required.");
       setTab("general");
       return;
     }
-    if (!form.slug.trim()) {
+    if (!slug) {
       setError("Product slug is required.");
       setTab("general");
       return;
     }
-    if (!form.sku.trim()) {
+    if (!sku) {
       setError("SKU is required.");
       setTab("general");
       return;
@@ -446,9 +510,10 @@ export default function AdminProductDrawer({
     setBusy(true);
     try {
       const payload = {
-        name: form.name.trim(),
-        slug: form.slug.trim(),
-        sku: form.sku.trim().toUpperCase(),
+        id: initialData?._id || initialData?.id || undefined,
+        name,
+        slug,
+        sku: sku.toUpperCase(),
         type: form.type,
         modelType: form.modelType,
         category: form.category,
@@ -468,9 +533,12 @@ export default function AdminProductDrawer({
         tagOverrides: form.tagOverrides || { pin: [], hide: [] },
         warranty: form.warranty || {},
         seo: {
-          metaTitle: form.seo?.metaTitle || `${form.name} | RF Riddhy`,
+          metaTitle: form.seo?.metaTitle || `${name} | RF Riddhy`,
           metaDescription:
-            form.seo?.metaDescription || form.description?.slice(0, 160) || "",
+            form.seo?.metaDescription ||
+            (form.description ? form.description.slice(0, 160) : "") ||
+            form.tagline ||
+            `Explore ${name} at RF Riddhy. Premium craftsmanship and doorstep delivery.`,
         },
       };
 
@@ -493,7 +561,17 @@ export default function AdminProductDrawer({
     }
   };
 
-  const categories = CATEGORY_SEED.filter((c) => c.type === form.type);
+  const categories = useMemo(() => {
+    const filtered = availableCategories.filter((c) => c.type === form.type);
+    if (form.category && !filtered.some((c) => c.slug === form.category)) {
+      filtered.push({
+        slug: form.category,
+        name: form.category.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+        type: form.type,
+      });
+    }
+    return filtered;
+  }, [availableCategories, form.type, form.category]);
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -568,13 +646,6 @@ export default function AdminProductDrawer({
           >
             <ShieldCheck size={15} /> Warranty
           </button>
-          <button
-            type="button"
-            className={`${styles.tabBtn} ${tab === "seo" ? styles.activeTab : ""}`}
-            onClick={() => setTab("seo")}
-          >
-            <Search size={15} /> SEO
-          </button>
         </div>
 
         {/* Content Body */}
@@ -601,7 +672,7 @@ export default function AdminProductDrawer({
                 <label>Product Name *</label>
                 <input
                   type="text"
-                  value={form.name}
+                  value={form.name || ""}
                   onChange={(e) => updateField("name", e.target.value)}
                   placeholder="e.g. Mira 3-Seater Premium Sofa"
                   required
@@ -613,7 +684,7 @@ export default function AdminProductDrawer({
                   <label>Slug *</label>
                   <input
                     type="text"
-                    value={form.slug}
+                    value={form.slug || ""}
                     onChange={(e) => updateField("slug", e.target.value)}
                     placeholder="mira-3-seater-sofa"
                     required
@@ -627,13 +698,24 @@ export default function AdminProductDrawer({
                   <label>SKU (Stock Keeping Unit) *</label>
                   <input
                     type="text"
-                    value={form.sku}
+                    value={form.sku || ""}
                     onChange={(e) =>
                       updateField("sku", e.target.value.toUpperCase())
                     }
                     placeholder="SOFA-MIRA-01"
+                    readOnly={Boolean(initialData)}
+                    style={
+                      initialData
+                        ? { background: "#f8fafc", cursor: "not-allowed" }
+                        : undefined
+                    }
                     required
                   />
+                  {initialData && (
+                    <span className={styles.hint}>
+                      Primary SKU is permanent. Use variants to add new SKUs.
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -683,7 +765,7 @@ export default function AdminProductDrawer({
                   <label>Brand</label>
                   <input
                     type="text"
-                    value={form.brand}
+                    value={form.brand || ""}
                     onChange={(e) => updateField("brand", e.target.value)}
                     placeholder="RF Riddhy"
                   />
@@ -692,7 +774,7 @@ export default function AdminProductDrawer({
                 <div className={styles.fieldGroup}>
                   <label>Publication Status</label>
                   <select
-                    value={form.status}
+                    value={form.status || "draft"}
                     onChange={(e) => updateField("status", e.target.value)}
                   >
                     <option value="draft">Draft (Hidden)</option>
@@ -706,7 +788,7 @@ export default function AdminProductDrawer({
                 <label>Tagline</label>
                 <input
                   type="text"
-                  value={form.tagline}
+                  value={form.tagline || ""}
                   onChange={(e) => updateField("tagline", e.target.value)}
                   placeholder="e.g. Ergonomic lumbar comfort with breathable sage fabric"
                 />
@@ -716,7 +798,7 @@ export default function AdminProductDrawer({
                 <label>Description</label>
                 <textarea
                   rows={4}
-                  value={form.description}
+                  value={form.description || ""}
                   onChange={(e) => updateField("description", e.target.value)}
                   placeholder="Detailed material composition, dimensions, and craft description..."
                 />
@@ -1107,65 +1189,6 @@ export default function AdminProductDrawer({
             </div>
           )}
 
-          {/* TAB: SEO */}
-          {tab === "seo" && (
-            <div className={styles.section}>
-              <div className={styles.fieldGroup}>
-                <label>Meta Title</label>
-                <input
-                  type="text"
-                  value={form.seo?.metaTitle || ""}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      seo: { ...prev.seo, metaTitle: e.target.value },
-                    }))
-                  }
-                  placeholder={`${form.name || "Product"} | RF Riddhy`}
-                />
-              </div>
-
-              <div className={styles.fieldGroup}>
-                <label>Meta Description</label>
-                <textarea
-                  rows={3}
-                  value={form.seo?.metaDescription || ""}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      seo: { ...prev.seo, metaDescription: e.target.value },
-                    }))
-                  }
-                  placeholder="Compelling 160-character description for Google search results..."
-                />
-              </div>
-
-              <div className={styles.serpPreview}>
-                <div
-                  style={{
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    color: "#64748b",
-                    marginBottom: 6,
-                  }}
-                >
-                  Google Search Result Preview
-                </div>
-                <div className={styles.serpUrl}>
-                  https://rfriddhy.com/product/{form.slug || "product-slug"}
-                </div>
-                <div className={styles.serpTitle}>
-                  {form.seo?.metaTitle ||
-                    `${form.name || "Product Name"} | RF Riddhy`}
-                </div>
-                <div className={styles.serpDesc}>
-                  {form.seo?.metaDescription ||
-                    form.tagline ||
-                    "Explore dimensions, delivery options and warranty details at RF Riddhy."}
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Footer Controls */}
           <div className={styles.footer}>

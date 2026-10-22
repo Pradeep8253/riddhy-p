@@ -214,9 +214,69 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
         </div>
       </div>
 
+      {/* Store Contact & Helpline */}
+      <div className={styles.sectionDivider} style={{ marginTop: 24 }}>
+        <h4>3. Store Helplines & Prayagraj Customer Care</h4>
+      </div>
+
+      <div className={styles.grid2}>
+        <div className={styles.field}>
+          <label htmlFor="comp-phone">Store Phone / Landline</label>
+          <input
+            id="comp-phone"
+            className={styles.input}
+            value={comp.phone || ''}
+            onChange={(e) => {
+              updateField('company', 'phone', e.target.value);
+              updateField('contact', 'phone', e.target.value);
+            }}
+            placeholder="+91 99342 08035"
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="contact-whatsapp">WhatsApp Support Number</label>
+          <input
+            id="contact-whatsapp"
+            className={styles.input}
+            value={formData.contact?.whatsapp || ''}
+            onChange={(e) => updateField('contact', 'whatsapp', e.target.value)}
+            placeholder="+91 99342 08035"
+          />
+        </div>
+      </div>
+
+      <div className={styles.grid2} style={{ marginTop: 14 }}>
+        <div className={styles.field}>
+          <label htmlFor="comp-email">Store Email Address</label>
+          <input
+            id="comp-email"
+            type="email"
+            className={styles.input}
+            value={comp.email || ''}
+            onChange={(e) => {
+              updateField('company', 'email', e.target.value);
+              updateField('contact', 'email', e.target.value);
+            }}
+            placeholder="care@riddhy.in"
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="contact-hours">Store Working Hours</label>
+          <input
+            id="contact-hours"
+            className={styles.input}
+            value={formData.contact?.hours || ''}
+            onChange={(e) => updateField('contact', 'hours', e.target.value)}
+            placeholder="Mon – Sat: 10:00 AM – 8:00 PM (Sunday Open)"
+          />
+        </div>
+      </div>
+
       {/* Sequencing & Accounting */}
       <div className={styles.sectionDivider} style={{ marginTop: 24 }}>
-        <h4>3. Sequential Invoice & Accounting Parameters</h4>
+        <h4>4. Sequential Invoice & Accounting Parameters</h4>
       </div>
 
       <div className={styles.grid3}>
@@ -269,7 +329,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
 
       {/* Banking & Settlement */}
       <div className={styles.sectionDivider} style={{ marginTop: 24 }}>
-        <h4>4. Bank Account Details & Settlement UPI (Printed on Invoices)</h4>
+        <h4>5. Bank Account Details & Settlement UPI (Printed on Invoices)</h4>
       </div>
 
       <div className={styles.grid2}>
@@ -332,7 +392,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
 
       {/* SAC & Tax Slabs */}
       <div className={styles.sectionDivider} style={{ marginTop: 24 }}>
-        <h4>5. Statutory GST Rates & Service Accounting Codes (SAC)</h4>
+        <h4>6. Statutory GST Rates & Service Accounting Codes (SAC)</h4>
       </div>
 
       <div className={styles.grid3}>
@@ -378,7 +438,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
 
       {/* Policies & Legal Terms */}
       <div className={styles.sectionDivider} style={{ marginTop: 24 }}>
-        <h4>6. Terms, Return Policies & Signatory URL</h4>
+        <h4>7. Terms, Return Policies & Signatory URL</h4>
       </div>
 
       <div className={styles.field}>

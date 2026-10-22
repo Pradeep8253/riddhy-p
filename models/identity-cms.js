@@ -85,6 +85,9 @@ const BannerSchema = new Schema(
     targeting: Schema.Types.Mixed,
     analytics: Schema.Types.Mixed,
     alt: String,
+    offerCode: { type: String, default: "" },
+    offerDescription: { type: String, default: "" },
+    isOfferModal: { type: Boolean, default: true },
   },
   { timestamps: true },
 );

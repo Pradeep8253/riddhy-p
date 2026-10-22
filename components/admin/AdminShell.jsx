@@ -18,8 +18,6 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
-  Sun,
-  Moon,
   LogOut,
   User
 } from 'lucide-react';
@@ -66,7 +64,6 @@ function AdminShellInner({ children, session }) {
   const [isMini, setIsMini] = useState(false);
   const [openGroups, setOpenGroups] = useState({});
   const [isCmdOpen, setIsCmdOpen] = useState(false);
-  const [theme, setTheme] = useState('light');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
 
@@ -77,31 +74,19 @@ function AdminShellInner({ children, session }) {
     newLeads: 0
   });
 
-  // Rehydrate mini state and theme from localStorage
+  // Rehydrate mini state and ensure clean light theme
   useEffect(() => {
     try {
       const savedMini = localStorage.getItem('rf_admin_mini_sidebar');
       if (savedMini === 'true') {
         setIsMini(true);
       }
-      const savedTheme = localStorage.getItem('rf_admin_theme') || 'light';
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      localStorage.removeItem('rf_admin_theme');
+      document.documentElement.removeAttribute('data-theme');
     } catch {
       // silent
     }
   }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    try {
-      localStorage.setItem('rf_admin_theme', nextTheme);
-      document.documentElement.setAttribute('data-theme', nextTheme);
-    } catch {
-      // silent
-    }
-  };
 
   const toggleMini = () => {
     setIsMini((prev) => {
@@ -607,20 +592,6 @@ function AdminShellInner({ children, session }) {
                     <span style={{ fontSize: 10, color: '#7b857d' }}>Tab ↗</span>
                   </a>
 
-                  <button
-                    type="button"
-                    className={styles.userMenuItem}
-                    role="menuitem"
-                    onClick={() => {
-                      toggleTheme();
-                      setUserMenuOpen(false);
-                    }}
-                  >
-                    <div className={styles.userMenuItemLeft}>
-                      {theme === 'dark' ? <Sun size={14} color="#d99a32" /> : <Moon size={14} color="#1b5e20" />}
-                      <span>{theme === 'dark' ? 'Light Theme' : 'Dark Theme'}</span>
-                    </div>
-                  </button>
 
                   <div className={styles.userMenuDivider} />
 

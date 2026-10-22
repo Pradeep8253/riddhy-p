@@ -1,21 +1,22 @@
-import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth';
-import AuthForm from '@/components/commerce/AuthForm';
-import AccountDashboard from '@/components/commerce/AccountDashboard';
-import styles from './account.module.css';
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth";
+import AuthForm from "@/components/commerce/AuthForm";
+import AccountDashboard from "@/components/commerce/AccountDashboard";
+import styles from "./account.module.css";
 
 export const metadata = {
-  title: 'Your Account — RF Riddhy',
-  description: 'Manage your RF Riddhy orders, track live shipments, download tax invoices, and check product warranty coverage.',
-  robots: { index: false, follow: false }
+  title: "Your Account — RF Riddhy",
+  description:
+    "Manage your RF Riddhy orders, track live shipments, download tax invoices, and check product warranty coverage.",
+  robots: { index: false, follow: false },
 };
 
 export default async function AccountPage() {
   const session = await getSession();
-  if (session && session.role !== 'customer') redirect('/admin');
+  if (session && session.role !== "customer") redirect("/admin");
 
   return (
-    <main className="container" style={{ paddingBlock: '35px 90px' }}>
+    <main className="container" style={{ paddingBlock: "35px 90px" }}>
       {session ? (
         <>
           <span className="kicker">Your Riddhy account</span>
@@ -24,7 +25,12 @@ export default async function AccountPage() {
             <br />
             all in one place.
           </h1>
-          <AccountDashboard user={{ name: session.name || 'Welcome back', email: session.email || '' }} />
+          <AccountDashboard
+            user={{
+              name: session.name || "Welcome back",
+              email: session.email || "",
+            }}
+          />
         </>
       ) : (
         <div className={styles.login}>
@@ -35,7 +41,10 @@ export default async function AccountPage() {
               <br />
               <em>your account.</em>
             </h1>
-            <p>Keep orders, delivery updates and registered warranties together in one helpful place.</p>
+            <p>
+              Keep orders, delivery updates and registered warranties together
+              in one helpful place.
+            </p>
             <div>Riddhy Furniture · Thoughtfully Crafted for Indian Homes</div>
           </div>
 

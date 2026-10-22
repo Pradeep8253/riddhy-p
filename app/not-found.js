@@ -12,8 +12,8 @@ export default function NotFound() {
       </p>
       <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
         <Button href="/">Return to home</Button>
-        <Button href="/consultation" variant="gold">Book consultation</Button>
-        <Button href="/contact" variant="outline">Contact support</Button>
+        <Button href="/furniture" variant="gold">Explore collection</Button>
+        <Button href="/contact" variant="outline">Prayagraj Store Support</Button>
       </div>
     </main>
   );
