@@ -100,7 +100,6 @@ export default function ProductCard({ product, compact = false }) {
   const secondaryImage =
     product.gallery?.[1]?.mediumUrl ||
     product.gallery?.[1]?.url ||
-    (product.room && IMG.rooms?.find?.((r) => r.slug === product.room)?.src) ||
     null;
 
   const blurDataURL =

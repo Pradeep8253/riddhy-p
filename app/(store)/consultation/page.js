@@ -139,8 +139,8 @@ export default async function ConsultationPage({ searchParams }) {
                   fallback={
                     <div className={styles.heroImageWrapper}>
                       <Image
-                        src={IMG.rooms[0]?.src || '/images/room-living.webp'}
-                        alt="Warm, curated living space arranged by RF Riddhy"
+                        src={IMG.consultation?.lifestyle || '/images/consultation/consultation-lifestyle.webp'}
+                        alt="Warm, curated modern home interior for furniture and appliance consultation by RF Riddhy"
                         width={560}
                         height={420}
                         className={styles.heroImage}

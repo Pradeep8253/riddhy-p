@@ -126,6 +126,16 @@ export default function AdminProductDrawer({
     });
   };
 
+  const updateImageView = (index, view) => {
+    setForm((prev) => {
+      const copy = [...prev.gallery];
+      if (copy[index]) {
+        copy[index] = { ...copy[index], view };
+      }
+      return { ...prev, gallery: copy };
+    });
+  };
+
   const [form, setForm] = useState({
     name: "",
     slug: "",
@@ -892,6 +902,30 @@ export default function AdminProductDrawer({
                           alt={img.alt || "Thumb"}
                           className={styles.galleryThumb}
                         />
+                        <select
+                          value={img.view || (idx === 0 ? "front" : idx === 1 ? "angle" : idx === 2 ? "detail" : "lifestyle")}
+                          onChange={(e) => updateImageView(idx, e.target.value)}
+                          style={{
+                            width: "100%",
+                            fontSize: "0.72rem",
+                            padding: "4px 6px",
+                            border: "none",
+                            borderTop: "1px solid #e2e8f0",
+                            background: "#f8fafc",
+                            color: "#1e293b",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                          title="Assign view angle type"
+                        >
+                          <option value="front">Front View (Primary)</option>
+                          <option value="angle">Three-Quarter Angle</option>
+                          <option value="detail">Material & Craft Detail</option>
+                          <option value="lifestyle">Styled Room Placement</option>
+                          <option value="interior">Interior & Storage</option>
+                          <option value="back">Rear Architecture</option>
+                          <option value="packaging">Packaging & Accessories</option>
+                        </select>
                         <input
                           type="text"
                           placeholder="Alt text..."

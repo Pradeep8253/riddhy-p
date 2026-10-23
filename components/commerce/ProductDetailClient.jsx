@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -26,6 +26,16 @@ import styles from './ProductDetailClient.module.css';
 
 const defaultSwatches = ['#6b8f5e', '#c4a47d', '#e7e2d7', '#28553a'];
 
+const viewLabels = {
+  front: 'Front View',
+  angle: 'Three-Quarter Angle',
+  detail: 'Material & Craft Detail',
+  lifestyle: 'Styled Room Placement',
+  interior: 'Internal Storage & Structure',
+  back: 'Rear Architecture',
+  packaging: 'Packaging & Accessories',
+};
+
 export default function ProductDetailClient({ product, related = [] }) {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -42,9 +52,11 @@ export default function ProductDetailClient({ product, related = [] }) {
   const waUrl = getProductWhatsAppUrl(product, locale);
 
   const [activeMedia, setActiveMedia] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [view, setView] = useState('photo');
   const [qty, setQty] = useState(1);
   const [finish, setFinish] = useState(defaultSwatches[0]);
+  const touchStartXRef = useRef(null);
 
   // Live Pincode Estimator State
   const [pincode, setPincode] = useState('');
@@ -117,27 +129,55 @@ export default function ProductDetailClient({ product, related = [] }) {
         src: g.large || g.medium || g.url,
         thumb: g.thumbUrl || g.thumb || g.url,
         blurDataURL: g.blurDataURL || IMG.blurDataURL,
-        alt: g.alt || `${product.name} view ${idx + 1}`
+        alt: g.alt || `${product.name} view ${idx + 1}`,
+        view: g.view || (idx === 0 ? 'front' : idx === 1 ? 'angle' : idx === 2 ? 'detail' : idx === 3 ? 'lifestyle' : 'interior'),
+        viewType: g.viewType || 'verified-product',
       }));
     }
     return [
       {
         src: product.image || IMG.products.sofa,
         alt: product.imageAlt || `${product.name} product photo`,
-        blurDataURL: IMG.blurDataURL
+        blurDataURL: IMG.blurDataURL,
+        view: 'front',
+        viewType: 'verified-product',
       },
-      {
-        src: IMG.rooms.find((room) => room.slug === product.room)?.src || IMG.rooms[0].src,
-        alt: `${product.name} styled in room setting`,
-        blurDataURL: IMG.blurDataURL
-      },
-      {
-        src: IMG.categories[product.category] || product.image || IMG.products.sofa,
-        alt: `${product.categoryLabel || 'Collection'} overview`,
-        blurDataURL: IMG.blurDataURL
-      }
     ];
   }, [product]);
+
+  const prevMedia = useCallback(() => {
+    setActiveMedia((prev) => (prev - 1 + media.length) % media.length);
+  }, [media.length]);
+
+  const nextMedia = useCallback(() => {
+    setActiveMedia((prev) => (prev + 1) % media.length);
+  }, [media.length]);
+
+  // Keyboard navigation for image cycling and lightbox
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (view !== 'photo') return;
+      if (e.key === 'ArrowLeft') prevMedia();
+      if (e.key === 'ArrowRight') nextMedia();
+      if (e.key === 'Escape' && lightboxOpen) setLightboxOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [view, lightboxOpen, prevMedia, nextMedia]);
+
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartXRef.current === null) return;
+    const diff = touchStartXRef.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) nextMedia();
+      else prevMedia();
+    }
+    touchStartXRef.current = null;
+  };
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -201,17 +241,63 @@ export default function ProductDetailClient({ product, related = [] }) {
               <div
                 className={styles.mainMedia}
                 aria-label={`Product media gallery for ${product.name}`}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                tabIndex={0}
               >
                 {view === 'photo' && (
-                  <Image
-                    src={media[activeMedia]?.src || product.image}
-                    alt={media[activeMedia]?.alt || product.name}
-                    fill
-                    priority
-                    sizes="(max-width: 900px) 100vw, 52vw"
-                    placeholder="blur"
-                    blurDataURL={IMG.blurDataURL}
-                  />
+                  <>
+                    <Image
+                      src={media[activeMedia]?.src || product.image}
+                      alt={media[activeMedia]?.alt || product.name}
+                      fill
+                      priority
+                      sizes="(max-width: 900px) 100vw, 52vw"
+                      placeholder="blur"
+                      blurDataURL={IMG.blurDataURL}
+                      onClick={() => setLightboxOpen(true)}
+                      style={{ cursor: 'zoom-in' }}
+                    />
+
+                    {/* View Angle Badge */}
+                    <div className={styles.viewAngleBadge}>
+                      <span className={styles.viewAngleBadgeDot} />
+                      <span>{viewLabels[media[activeMedia]?.view] || 'Product View'}</span>
+                    </div>
+
+                    {/* Zoom / Lightbox Trigger */}
+                    <button
+                      type="button"
+                      className={styles.zoomTriggerBtn}
+                      onClick={() => setLightboxOpen(true)}
+                      title="Inspect texture in full zoom"
+                      aria-label="Inspect texture in full zoom"
+                    >
+                      <Icon name="search" size={16} />
+                    </button>
+
+                    {/* Previous & Next Navigation Controls */}
+                    {media.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          className={`${styles.galleryNavBtn} ${styles.galleryNavPrev}`}
+                          onClick={(e) => { e.stopPropagation(); prevMedia(); }}
+                          aria-label="Previous product image"
+                        >
+                          <Icon name="chevronLeft" size={20} />
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.galleryNavBtn} ${styles.galleryNavNext}`}
+                          onClick={(e) => { e.stopPropagation(); nextMedia(); }}
+                          aria-label="Next product image"
+                        >
+                          <Icon name="chevronRight" size={20} />
+                        </button>
+                      </>
+                    )}
+                  </>
                 )}
 
                 {view === 'dimensions' && (
@@ -228,7 +314,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                     aria-selected={view === 'photo'}
                     onClick={() => setView('photo')}
                   >
-                    Photos
+                    Photos ({media.length})
                   </button>
                   <button
                     type="button"
@@ -247,9 +333,10 @@ export default function ProductDetailClient({ product, related = [] }) {
                     <button
                       type="button"
                       className={activeMedia === index ? styles.thumbActive : ''}
-                      aria-label={`Show image ${index + 1}: ${item.alt}`}
+                      aria-label={`Show ${viewLabels[item.view] || `image ${index + 1}`}: ${item.alt}`}
                       key={item.src + index}
                       onClick={() => setActiveMedia(index)}
+                      title={viewLabels[item.view] || `View ${index + 1}`}
                     >
                       <Image
                         src={item.thumb || item.src}
@@ -258,8 +345,87 @@ export default function ProductDetailClient({ product, related = [] }) {
                         height={90}
                         unoptimized={Boolean((item.thumb || item.src)?.startsWith('/api/files/') || (item.thumb || item.src)?.startsWith('/uploads/'))}
                       />
+                      <span className={styles.thumbBadge}>
+                        {item.view || `view ${index + 1}`}
+                      </span>
                     </button>
                   ))}
+                </div>
+              )}
+
+              {/* Fullscreen Lightbox Zoom Modal */}
+              {lightboxOpen && (
+                <div
+                  className={styles.lightboxOverlay}
+                  onClick={() => setLightboxOpen(false)}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Product texture zoom lightbox"
+                >
+                  <button
+                    type="button"
+                    className={styles.lightboxCloseBtn}
+                    onClick={() => setLightboxOpen(false)}
+                    aria-label="Close zoom modal"
+                  >
+                    ✕
+                  </button>
+
+                  <div
+                    className={styles.lightboxDialog}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Image
+                      src={media[activeMedia]?.src || product.image}
+                      alt={media[activeMedia]?.alt || product.name}
+                      fill
+                      priority
+                      sizes="90vw"
+                    />
+
+                    {media.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          className={`${styles.galleryNavBtn} ${styles.galleryNavPrev}`}
+                          onClick={(e) => { e.stopPropagation(); prevMedia(); }}
+                          aria-label="Previous image"
+                        >
+                          <Icon name="chevronLeft" size={20} />
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.galleryNavBtn} ${styles.galleryNavNext}`}
+                          onClick={(e) => { e.stopPropagation(); nextMedia(); }}
+                          aria-label="Next image"
+                        >
+                          <Icon name="chevronRight" size={20} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <div
+                    className={styles.lightboxThumbsStrip}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {media.map((item, index) => (
+                      <button
+                        type="button"
+                        key={'lb-' + item.src + index}
+                        className={`${styles.lightboxThumbBtn} ${activeMedia === index ? styles.lightboxThumbActive : ''}`}
+                        onClick={() => setActiveMedia(index)}
+                        aria-label={`Select ${viewLabels[item.view] || `view ${index + 1}`}`}
+                      >
+                        <Image
+                          src={item.thumb || item.src}
+                          alt=""
+                          width={64}
+                          height={64}
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 

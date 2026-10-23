@@ -47,12 +47,12 @@ export default async function HomePage() {
   const curatedLook = {
     roomName: 'Curated Living Room',
     tagline: 'Balanced warmth, natural woods, and everyday comfort',
-    image: '/images/room-living.webp',
+    image: '/images/room-living.webp?v=20261023',
     hotspots: [
       {
         id: 'sofa-hotspot',
-        top: '64%',
-        left: '46%',
+        top: '60%',
+        left: '50%',
         product: sofaProduct || {
           id: 'demo-mira-3-seater-sofa',
           slug: 'mira-3-seater-sofa',
@@ -62,13 +62,13 @@ export default async function HomePage() {
           categoryLabel: 'Sofas & Sectionals',
           price: 50000,
           mrp: 58800,
-          image: '/images/product-sofa.webp'
+          image: '/images/products/mira-3-seater-sofa/front.webp'
         }
       },
       {
         id: 'decor-hotspot',
-        top: '42%',
-        left: '74%',
+        top: '32%',
+        left: '68%',
         product: lampProduct || {
           id: 'demo-aangan-accent-lamp',
           slug: 'aangan-accent-lamp',
@@ -78,13 +78,13 @@ export default async function HomePage() {
           categoryLabel: 'Home Décor',
           price: 2490,
           mrp: 2990,
-          image: '/images/product-decor.webp'
+          image: '/images/products/aangan-accent-lamp/front.webp'
         }
       },
       {
         id: 'table-hotspot',
-        top: '78%',
-        left: '26%',
+        top: '66%',
+        left: '14%',
         product: consoleProduct || {
           id: 'demo-sajilo-shoe-cabinet',
           slug: 'sajilo-shoe-cabinet',
@@ -93,8 +93,8 @@ export default async function HomePage() {
           tagline: 'Closed storage with warm natural grain',
           categoryLabel: 'Storage & Shelving',
           price: 18990,
-          mrp: 22500,
-          image: '/images/product-storage.webp'
+          mrp: 23990,
+          image: '/images/products/sajilo-shoe-cabinet/front.webp'
         }
       }
     ]

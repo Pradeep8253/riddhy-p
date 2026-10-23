@@ -102,7 +102,7 @@ export default function HomePromotionalBanner({ initialBanners = null }) {
       >
         {banners.map((banner, idx) => {
           const isCurrent = idx === currentIndex;
-          const bgImg = banner.desktopImage || banner.mobileImage || '/hero-desktop.webp';
+          const bgImg = banner.desktopImage || banner.mobileImage || '/images/hero-desktop.webp';
 
           return (
             <div

@@ -13,21 +13,21 @@ const fallbackOffers = [
   {
     title: 'Diwali Dhamaka Offer',
     text: 'Celebrate with Up to 40% OFF Handcrafted Teak & Smart Inverter Tech in Prayagraj.',
-    image: '/images/diwali-dhamaka-banner.jpg',
+    image: '/images/festivals/diwali-dhamaka-banner.webp',
     ends: 'Festive Season',
     href: '/offers'
   },
   {
     title: 'Marriage & Home Packages',
     text: 'Everything for your new beginning. Complete 1BHK, 2BHK & luxury bedroom suites.',
-    image: '/images/hero-wedding-package.jpg',
+    image: '/images/packages/package-premium-marriage.webp',
     ends: 'Wedding Season',
     href: '/packages'
   },
   {
     title: 'Smart Kitchen & Care Suite',
     text: 'Convertible inverter refrigerators, AI steam washers & convection microwave suites with extended warranty.',
-    image: '/images/hero-appliances-suite.jpg',
+    image: '/images/appliances/appliance-suite-hero.webp',
     ends: 'Appliance Carnival',
     href: '/appliances'
   }

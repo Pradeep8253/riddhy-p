@@ -29,6 +29,16 @@ const ProductSchema = new Schema({
     thumbUrl: String,
     blurDataURL: String,
     alt: String,
+    view: {
+      type: String,
+      enum: ['front', 'angle', 'detail', 'lifestyle', 'back', 'interior', 'packaging'],
+      default: 'front'
+    },
+    viewType: {
+      type: String,
+      enum: ['verified-product', 'lifestyle', 'detail', 'diagram'],
+      default: 'verified-product'
+    },
     sortOrder: { type: Number, default: 0 }
   }],
   tags: {
