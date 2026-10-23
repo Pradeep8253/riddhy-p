@@ -16,6 +16,10 @@
   --rf-forest-deep: #10261a;
   --rf-white: #fffefa;
   --rf-line: rgba(31, 95, 46, .14);
+  /* Section Background Themes */
+  --rf-bg-white: #ffffff;
+  --rf-bg-light-green: #f0f5ec;
+  --rf-bg-light-yellow: #fcf7eb;
   --radius-xl: 30px;
   --radius-lg: 22px;
   --radius-md: 14px;

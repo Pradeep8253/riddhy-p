@@ -1,3 +1,4 @@
+import Hero from '@/components/store/Hero';
 import HomePromotionalBanner from '@/components/store/HomePromotionalBanner';
 import WarrantyBanner from '@/components/store/WarrantyBanner';
 import Marquee from '@/components/store/Marquee';
@@ -102,11 +103,14 @@ export default async function HomePage() {
 
   return (
     <>
-      <HomePromotionalBanner initialBanners={heroBanners} />
+      <Hero />
+      {/* Old hero section */}
+      {/* <HomePromotionalBanner initialBanners={heroBanners} /> */}
       <WarrantyBanner />
       <Marquee />
 
-      <section className="section">
+      {/* 1. Shop by room */}
+      <section className="section bg-white">
         <div className="container">
           <SectionHeading
             eyebrow="Shop by room"
@@ -118,27 +122,31 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Target UX Bestsellers Rail */}
+      {/* 2. Target UX Bestsellers Rail */}
       <TagRail
         eyebrow="Bestsellers, thoughtfully picked"
         title="The pieces people come back to."
         tag="best-selling"
         viewAllHref="/collections/best-selling"
         products={bestsellers}
+        className="bg-light-yellow"
       />
 
-      <ShopByAppliance categories={applianceCategories} />
+      {/* 3. ShopByAppliance */}
+      <ShopByAppliance categories={applianceCategories} className="bg-light-green" />
 
-      {/* Trending Rail */}
+      {/* 4. Trending Rail */}
       <TagRail
         eyebrow="Trending this season"
         title="In demand for modern spaces."
         tag="trending"
         viewAllHref="/collections/trending"
         products={trending}
+        className="bg-white"
       />
 
-      <section className="section">
+      {/* 5. Curated Living */}
+      <section className="section bg-light-yellow">
         <div className="container">
           <SectionHeading
             eyebrow="Curated Living"
@@ -150,7 +158,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section">
+      {/* 6. Interactive Room Layout */}
+      <section className="section bg-light-green">
         <div className="container">
           <SectionHeading
             eyebrow="Interactive Room Layout"
@@ -161,20 +170,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <CampaignSection campaign={heroBanners?.[0]} />
+      {/* Golden Hour campaign section */}
+      {/* <CampaignSection campaign={heroBanners?.[0]} /> */}
 
-      {/* New Arrivals Rail */}
+      {/* 7. New Arrivals Rail */}
       <TagRail
         eyebrow="Fresh in the showroom"
         title="New arrivals for your space."
         tag="new-arrival"
         viewAllHref="/collections/new-arrival"
         products={newArrivals}
+        className="bg-white"
       />
 
-      <WarrantyPromise />
+      {/* 8. Warranty Promise */}
+      <WarrantyPromise className="bg-light-yellow" />
 
-      <section className="section" style={{ background: 'linear-gradient(180deg, #f3eee6, #fbf8f2)' }}>
+      {/* 9. Delivery & installation */}
+      <section className="section bg-light-green">
         <div className="container">
           <SectionHeading
             eyebrow="Delivery & installation"
@@ -185,7 +198,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section">
+      {/* 10. Homes, in their own words */}
+      <section className="section bg-white">
         <div className="container">
           <SectionHeading
             eyebrow="Homes, in their own words"
@@ -196,7 +210,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 0 }}>
+      {/* 11. Serviceability Checker */}
+      <section className="section bg-light-yellow">
         <div className="container">
           <ServiceabilityChecker />
         </div>

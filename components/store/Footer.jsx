@@ -12,7 +12,7 @@ const groups = [
     links: [
       ['Furniture', '/furniture'],
       ['Home appliances', '/appliances'],
-      ['Marriage packages', '/packages'],
+      ['Our packages', '/packages'],
       ['Shop by room', '/rooms/living']
     ]
   },

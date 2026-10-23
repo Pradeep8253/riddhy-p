@@ -8,6 +8,7 @@ export default async function sitemap() {
     { path: "", priority: 1.0, freq: "daily" },
     { path: "/furniture", priority: 0.9, freq: "daily" },
     { path: "/appliances", priority: 0.9, freq: "daily" },
+    { path: "/products", priority: 0.9, freq: "daily" },
     { path: "/packages", priority: 0.9, freq: "daily" },
     { path: "/marriage-packages", priority: 0.8, freq: "weekly" },
     { path: "/offers", priority: 0.8, freq: "daily" },

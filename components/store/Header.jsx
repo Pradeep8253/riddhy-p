@@ -63,7 +63,7 @@ const roomLinks = [
 
 const servicesLinks = [
   { label: 'Free Consultation', href: '/consultation', icon: 'calendar', highlight: true },
-  { label: 'Marriage Packages', href: '/packages', icon: 'crown', highlight: true },
+  { label: 'Our Packages', href: '/packages', icon: 'crown', highlight: true },
   { label: 'Track Order', href: '/track-order', icon: 'truck' },
   { label: '5-Yr Warranty', href: '/warranty', icon: 'shield' },
   { label: 'About Riddhy', href: '/about', icon: 'info' },
@@ -154,8 +154,8 @@ export default function Header() {
     },
     {
       icon: 'crown',
-      prefix: 'Wedding Offers:',
-      text: 'Special Marriage Packages Live · Save Up to 40%',
+      prefix: 'Showroom Deals:',
+      text: 'All 5 of Our Packages Live · Save Up to 40%',
       href: '/packages',
       external: false
     }
@@ -498,7 +498,7 @@ export default function Header() {
                     Popular searches
                   </div>
                   <div className={styles.searchTrendingRow}>
-                    {['Sofas', 'Storage Beds', 'Refrigerators', 'Dining Sets', 'Marriage Packages'].map((term) => (
+                    {['Sofas', 'Storage Beds', 'Refrigerators', 'Dining Sets', 'Our Packages'].map((term) => (
                       <button
                         type="button"
                         key={term}
@@ -656,7 +656,7 @@ export default function Header() {
                   <span>Popular in Prayagraj</span>
                 </div>
                 <div className={styles.mobileTrendingChips}>
-                  {['Sofas', 'Storage Beds', 'Refrigerators', 'Dining Sets', 'Marriage Packages', 'Air Conditioners'].map(
+                  {['Sofas', 'Storage Beds', 'Refrigerators', 'Dining Sets', 'Our Packages', 'Air Conditioners'].map(
                     (term) => (
                       <button
                         type="button"
@@ -711,7 +711,7 @@ export default function Header() {
             className={pathname === '/packages' || pathname === '/marriage-packages' ? styles.active : ''}
           >
             <span className={styles.offerBadge}>Exclusive</span>
-            Marriage Packages
+            Our Packages
           </Link>
 
           <Link
@@ -788,20 +788,20 @@ export default function Header() {
 
           {/* Scrollable Categories in Grids (Text Only, Fancy Animated) */}
           <div className={styles.drawerScrollArea}>
-            {/* VIP Card: Marriage Packages (Text Only) */}
+            {/* VIP Card: Our Packages (Text Only) */}
             <Link href="/packages" onClick={closeMenu} className={styles.drawerFestiveCard}>
               <div className={styles.festiveGlow} aria-hidden="true" />
               <div className={styles.drawerFestiveBadge}>
                 <span>Wedding Festive Sale</span>
               </div>
               <strong className={styles.drawerFestiveTitle}>
-                Marriage Furniture & Appliance Combos
+                Our Packages (Furniture & Appliance Combos)
               </strong>
               <p className={styles.drawerFestiveDesc}>
-                Curated solid wood bedrooms, dining sets & complete home packages up to 40% OFF.
+                Complete 5 all-inclusive packages: Shagun, Lagan, Kanyadaan, Griha Lakshmi & Bhagya Shree.
               </p>
               <div className={styles.drawerFestiveCta}>
-                <span>Explore Packages →</span>
+                <span>Explore Our Packages →</span>
               </div>
             </Link>
 

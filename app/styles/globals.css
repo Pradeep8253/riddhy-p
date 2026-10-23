@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import './tokens.css';
 @import './animations.css';
+@import './hero.css';
 
 * {
   box-sizing: border-box;
@@ -190,6 +191,27 @@ svg {
 
 .section {
   padding-block: clamp(48px, 4vw, 96px);
+}
+
+/* ==========================================================================
+   Section Background Color Utilities (Alternating Palette)
+   ========================================================================== */
+.bg-white {
+  background-color: var(--rf-bg-white, #ffffff) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.035);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.035);
+}
+
+.bg-light-green {
+  background-color: var(--rf-bg-light-green, #f0f5ec) !important;
+  border-top: 1px solid rgba(31, 95, 46, 0.07);
+  border-bottom: 1px solid rgba(31, 95, 46, 0.07);
+}
+
+.bg-light-yellow {
+  background-color: var(--rf-bg-light-yellow, #fcf7eb) !important;
+  border-top: 1px solid rgba(224, 160, 64, 0.09);
+  border-bottom: 1px solid rgba(224, 160, 64, 0.09);
 }
 
 .kicker {

@@ -1,0 +1,397 @@
+/* Hero.css */
+
+/* ─── Variables ──────────────────────────────────────────────── */
+:root {
+  --green:  #24341B;
+  --sage:   #c5d3b6;
+  --white:  #ffffff;
+  --radius: 14px;
+  --gap:    18px;
+  --hero-margin: 24px;
+}
+
+/* ─── Section wrapper (DESKTOP — unchanged) ─────────────────── */
+.hero {
+    width: 100%;
+    background: var(--rf-bg-light-green, #f0f5ec);
+    border-bottom: 1px solid rgba(31, 95, 46, 0.08);
+    padding: 50px 50px;
+    margin: 0px 0;
+    height: auto;
+    box-sizing: border-box;
+}
+
+.hero__inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 65fr 35fr;
+  gap: 30px;
+  height: 100%;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LEFT — SLIDER (DESKTOP — unchanged)
+══════════════════════════════════════════════════════════════ */
+.hero__slider {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #111;
+  box-shadow: 0 8px 32px rgba(36, 52, 27, .18);
+  height: 27.2rem;
+}
+
+.slider__track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.52s cubic-bezier(.4,0,.2,1),
+              transform 0.52s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+}
+
+.slide--active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.slide--out-next {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+.slide--out-prev {
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.slide__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--radius);
+}
+
+.slide__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0)    40%,
+    rgba(0,0,0,0.45) 100%
+  );
+  border-radius: var(--radius);
+  pointer-events: none;
+}
+
+.slider__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.82);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  padding: 0;
+}
+
+.slider__arrow svg {
+  width: 14px;
+  height: 14px;
+}
+
+.slider__arrow--prev { left: 10px; }
+.slider__arrow--next { right: 10px; }
+
+.slider__arrow:hover {
+  background: var(--white);
+  box-shadow: 0 4px 14px rgba(0,0,0,.22);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slider__dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s, transform 0.25s, width 0.25s;
+}
+
+.dot--active {
+  background: var(--white);
+  width: 20px;
+  border-radius: 4px;
+  transform: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RIGHT — 2 STATIC SIDE IMAGES (DESKTOP — unchanged)
+══════════════════════════════════════════════════════════════ */
+.hero__side {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  height: 100%;
+}
+
+.side__card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #ddd;
+  box-shadow: 0 4px 18px rgba(36, 52, 27, .12);
+  cursor: pointer;
+  height: 12.6rem;
+}
+
+.side__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.42s cubic-bezier(.4,0,.2,1);
+}
+
+.side__card:hover .side__img {
+  transform: scale(1.04);
+}
+
+.side__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0)    50%,
+    rgba(0,0,0,0.28) 100%
+  );
+  pointer-events: none;
+  border-radius: var(--radius);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — FULLY FLUID, DESKTOP UNCHANGED
+   (Desktop = anything above 1100px keeps the exact rules above)
+══════════════════════════════════════════════════════════════ */
+
+/* ── Large tablets / small laptops ── */
+@media (max-width: 1100px) {
+  .hero {
+    padding: clamp(28px, 4vw, 45px) clamp(20px, 4vw, 40px);
+  }
+
+  .hero__inner {
+    grid-template-columns: 60fr 40fr;
+    gap: clamp(16px, 2.5vw, 26px);
+    height: auto;
+  }
+
+  .hero__slider {
+    height: clamp(320px, 38vw, 420px);
+  }
+
+  .hero__side {
+    gap: clamp(14px, 2vw, 22px);
+  }
+
+  .side__card {
+    height: clamp(150px, 18vw, 195px);
+  }
+}
+
+/* ── Tablets ── */
+@media (max-width: 900px) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+    gap: clamp(14px, 3vw, 20px);
+  }
+
+  .hero__slider {
+    height: clamp(280px, 48vw, 400px);
+  }
+
+  .hero__side {
+    flex-direction: row;
+    gap: clamp(12px, 2.5vw, 20px);
+  }
+
+  .side__card {
+    flex: 1;
+    height: clamp(160px, 26vw, 240px);
+  }
+}
+
+/* ── Mobile landscape / large phones ── */
+@media (max-width: 768px) {
+  .hero {
+    padding: clamp(20px, 5vw, 30px) clamp(14px, 4vw, 22px);
+  }
+
+  .hero__inner {
+    gap: 14px;
+  }
+
+  .hero__slider {
+    height: clamp(240px, 62vw, 340px);
+    border-radius: 12px;
+  }
+
+  .hero__side {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .side__card {
+    height: clamp(130px, 30vw, 200px);
+    border-radius: 12px;
+  }
+
+  .slider__arrow {
+    width: 26px;
+    height: 26px;
+  }
+
+  .slider__arrow svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+/* ── Small phones — stack side images vertically ── */
+@media (max-width: 600px) {
+  .hero__side {
+    flex-direction: column;
+  }
+
+  .side__card {
+    height: clamp(120px, 34vw, 170px);
+  }
+}
+
+/* ── Compact phones ── */
+@media (max-width: 480px) {
+  .hero {
+    padding: 16px 12px;
+  }
+
+  .hero__inner {
+    gap: 10px;
+  }
+
+  .hero__slider {
+    height: clamp(200px, 52vw, 300px);
+    border-radius: 10px;
+  }
+
+  .side__card {
+    height: clamp(100px, 40vw, 150px);
+    border-radius: 10px;
+  }
+
+  .slider__arrow {
+    width: 22px;
+    height: 22px;
+  }
+
+  .slider__arrow svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .slider__arrow--prev { left: 6px; }
+  .slider__arrow--next { right: 6px; }
+
+  .slider__dots {
+    bottom: 8px;
+    gap: 5px;
+  }
+
+  .dot { width: 5px; height: 5px; }
+  .dot--active { width: 14px; }
+}
+
+/* ── Very small phones ── */
+@media (max-width: 360px) {
+  .hero {
+    padding: 12px 8px;
+  }
+
+  .hero__inner {
+    gap: 8px;
+  }
+
+  .hero__slider {
+    height: clamp(170px, 68vw, 240px);
+  }
+
+  .side__card {
+    height: clamp(85px, 44vw, 120px);
+  }
+
+  .slider__arrow {
+    width: 20px;
+    height: 20px;
+  }
+
+  .slider__arrow svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* ── Landscape orientation on short screens ── */
+@media (max-height: 480px) and (orientation: landscape) {
+  .hero__inner {
+    grid-template-columns: 60fr 40fr;
+  }
+
+  .hero__slider {
+    height: clamp(180px, 40vh, 260px);
+  }
+
+  .hero__side {
+    flex-direction: column;
+  }
+
+  .side__card {
+    height: clamp(80px, 18vh, 120px);
+  }
+}
+
+/* ── reduced motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .side__img { transition: none; }
+}

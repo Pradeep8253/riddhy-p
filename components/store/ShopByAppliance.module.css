@@ -15,6 +15,44 @@
 .section :global(p) {
   color: #c6d0c7;
 }
+
+.section:global(.bg-light-green),
+.section:global(.bg-light-yellow),
+.section:global(.bg-white) {
+  color: var(--rf-forest-deep, #10261a);
+}
+
+.section:global(.bg-light-green) :global(h2),
+.section:global(.bg-light-yellow) :global(h2),
+.section:global(.bg-white) :global(h2) {
+  color: var(--rf-forest-deep, #10261a);
+}
+
+.section:global(.bg-light-green) :global(p),
+.section:global(.bg-light-yellow) :global(p),
+.section:global(.bg-white) :global(p) {
+  color: var(--rf-charcoal-700, #353c37);
+}
+
+.section:global(.bg-light-green) :global(.kicker),
+.section:global(.bg-light-yellow) :global(.kicker),
+.section:global(.bg-white) :global(.kicker) {
+  color: var(--rf-green-800, #1f5f2e);
+}
+
+.section:global(.bg-light-green) .note,
+.section:global(.bg-light-yellow) .note,
+.section:global(.bg-white) .note {
+  border-top: 1px solid rgba(31, 95, 46, 0.12);
+  color: var(--rf-charcoal-600, #4a524c);
+}
+
+.section:global(.bg-light-green) .note a,
+.section:global(.bg-light-yellow) .note a,
+.section:global(.bg-white) .note a {
+  color: var(--rf-green-800, #1f5f2e);
+}
+
 .note {
   display: flex;
   justify-content: space-between;

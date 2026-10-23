@@ -30,7 +30,9 @@ export default function TagRail({
   eyebrow = 'Curated Recommendations',
   tag = 'best-selling',
   viewAllHref = '/collections/best-selling',
-  products = []
+  products = [],
+  className = '',
+  style
 }) {
   const locale = useSelector((state) => state.ui?.locale || 'en');
   const railRef = useRef(null);
@@ -73,7 +75,7 @@ export default function TagRail({
   const localizedTitle = getLocalizedSectionHeader(title, locale);
 
   return (
-    <section className={styles.section} aria-label={localizedTitle}>
+    <section className={`${styles.section} ${className}`} style={style} aria-label={localizedTitle}>
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>

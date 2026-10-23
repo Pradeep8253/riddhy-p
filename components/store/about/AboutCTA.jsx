@@ -8,7 +8,7 @@ export default function AboutCTA({ config = siteConfig } = {}) {
   const whatsapp = config?.contact?.whatsapp || siteConfig.contact.whatsapp || '919876543210';
   const telUrl = `tel:${phone.replace(/\s+/g, '')}`;
   const waUrl = `https://wa.me/${whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(
-    'Hello RF Riddhy, I would like to know more about your furniture, marriage packages, and appliances.'
+    'Hello RF Riddhy, I would like to know more about your furniture, our packages, and appliances.'
   )}`;
 
   return (
@@ -23,7 +23,7 @@ export default function AboutCTA({ config = siteConfig } = {}) {
               Find a piece that feels <em>right.</em>
             </h2>
             <p>
-              Whether you are furnishing a new apartment, planning a marriage setup, or upgrading your everyday
+              Whether you are furnishing a new apartment, exploring our packages, or upgrading your everyday
               appliances, our team is ready to assist you.
             </p>
 

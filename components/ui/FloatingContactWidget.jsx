@@ -68,7 +68,7 @@ export default function FloatingContactWidget() {
 
   if (pathname?.includes("package")) {
     waMessage =
-      "Hello RF Riddhy, I am interested in your marriage packages. Please share the details.";
+      "Hello RF Riddhy, I am interested in your packages (Shagun / Lagan / Kanyadaan / Griha Lakshmi / Bhagya Shree). Please share the details.";
   } else if (pathname?.includes("bulk")) {
     waMessage =
       "Hello RF Riddhy, I would like to inquire about bulk purchasing.";

@@ -3,9 +3,9 @@ import { getLivePackages } from '@/lib/packages-data';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata = {
-  title: 'Wedding Packages & Complete Home Setups — RF Riddhy',
+  title: 'Our Packages — RF Riddhy Furnitures & Home Appliances',
   description:
-    'Curated wedding furniture and home appliance packages for newlyweds and new homes. Essential, Premium, and Luxury collections with transparent pricing, interactive package builder and customizable selections.',
+    'Explore our 5 all-inclusive wedding and home setup packages: Shagun, Lagan, Kanyadaan, Griha Lakshmi, and Bhagya Shree from ₹49,999 to ₹89,999 with complete bedroom, living, dining, and home appliances.',
   alternates: {
     canonical: `${siteConfig.siteUrl}/packages`
   }
@@ -18,8 +18,8 @@ export default async function MarriagePackagesPage() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'RF Riddhy Marriage Packages',
-    description: 'Complete wedding furniture and appliance packages.',
+    name: 'RF Riddhy - Our Packages',
+    description: 'Complete 5 all-inclusive wedding furniture and appliance packages.',
     itemListElement: packages.map((pkg, idx) => ({
       '@type': 'Product',
       position: idx + 1,

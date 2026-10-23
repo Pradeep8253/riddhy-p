@@ -7,9 +7,9 @@ import Icon from '@/components/ui/Icon';
 import ApplianceGrid from './ApplianceGrid';
 import styles from './ShopByAppliance.module.css';
 
-export default function ShopByAppliance({ categories }) {
+export default function ShopByAppliance({ categories, className = '', style }) {
   return (
-    <section className={styles.section}>
+    <section className={`${styles.section} ${className}`} style={style}>
       <div className="container">
         <SectionHeading
           eyebrow="Appliance precision studio"

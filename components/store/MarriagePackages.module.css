@@ -61,6 +61,60 @@
   background: rgba(255, 255, 255, 0.08);
   font-size: 12px;
   color: #cad3ca;
+  margin-bottom: 18px;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btnPoster {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: var(--rf-gold-500);
+  color: #10261a;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(217, 154, 50, 0.35);
+}
+
+.btnPoster:hover {
+  background: var(--rf-gold-400);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217, 154, 50, 0.45);
+}
+
+.btnHeroContact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f7f3ea;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btnHeroContact:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Packages Grid Section */
@@ -71,8 +125,8 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(24px, 3vw, 36px);
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: clamp(20px, 2.5vw, 32px);
   align-items: stretch;
 }
 
@@ -95,7 +149,7 @@
 
 .featuredCard {
   border: 2px solid var(--rf-gold-500);
-  box-shadow: 0 12px 36px rgba(217, 154, 50, 0.15);
+  box-shadow: 0 12px 36px rgba(217, 154, 50, 0.18);
 }
 
 .featuredRibbon {
@@ -126,13 +180,13 @@
 }
 
 .cardHeader {
-  padding: 24px 24px 16px;
+  padding: 20px 22px 14px;
   border-bottom: 1px solid var(--rf-line);
 }
 
 .tierBadge {
   display: inline-block;
-  padding: 3px 8px;
+  padding: 3px 9px;
   border-radius: 6px;
   font-size: 10px;
   font-weight: 800;
@@ -141,27 +195,43 @@
   margin-bottom: 8px;
 }
 
-.basicBadge {
-  background: #eef3e9;
-  color: #2e6038;
+.shagunBadge {
+  background: #eef5ea;
+  color: #245030;
+  border: 1px solid rgba(36, 80, 48, 0.18);
 }
 
-.premiumBadge {
+.laganBadge {
   background: #fbf1d8;
-  color: #916110;
+  color: #8c5b08;
+  border: 1px solid rgba(140, 91, 8, 0.18);
 }
 
-.luxuryBadge {
-  background: #174d35;
+.kanyadaanBadge {
+  background: #eef4fb;
+  color: #174c80;
+  border: 1px solid rgba(23, 76, 128, 0.18);
+}
+
+.grihaLakshmiBadge {
+  background: #fdf0ec;
+  color: #a43e26;
+  border: 1px solid rgba(164, 62, 38, 0.18);
+}
+
+.bhagyaShreeBadge {
+  background: #10261a;
   color: #edb95e;
+  border: 1px solid rgba(237, 185, 94, 0.4);
 }
 
 .cardHeader h2 {
   margin: 0 0 4px;
-  font: 600 21px var(--font-display);
+  font: 600 22px var(--font-display);
   letter-spacing: -0.025em;
   color: var(--rf-forest-deep);
 }
+
 
 .cardHeader p {
   margin: 0;
@@ -208,30 +278,81 @@
   font-weight: 800;
 }
 
-/* Items Preview List */
+/* Items Checklist - All Points Display */
 .itemsList {
-  padding: 20px 24px;
+  padding: 18px 20px 16px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.itemsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rf-line);
 }
 
 .itemsCount {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
-  color: #707d72;
-  margin-bottom: 12px;
+  color: #4b6351;
   letter-spacing: 0.05em;
+}
+
+.pointsBadge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eef6ec;
+  color: #1f5d2b;
+  border: 1px solid rgba(31, 93, 43, 0.15);
+  white-space: nowrap;
+}
+
+.itemsScrollBox {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Custom modern scrollbar for items list */
+.itemsScrollBox::-webkit-scrollbar {
+  width: 5px;
+}
+.itemsScrollBox::-webkit-scrollbar-track {
+  background: #f4ede3;
+  border-radius: 4px;
+}
+.itemsScrollBox::-webkit-scrollbar-thumb {
+  background: #b5c3b1;
+  border-radius: 4px;
+}
+.itemsScrollBox::-webkit-scrollbar-thumb:hover {
+  background: #8fa189;
 }
 
 .itemRow {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 8px 0;
+  gap: 8px;
+  padding: 6px 0;
   border-bottom: 1px dashed rgba(0, 0, 0, 0.07);
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--rf-forest-deep);
+  line-height: 1.35;
 }
 
 .itemRow:last-child {
@@ -240,22 +361,51 @@
 
 .itemCheck {
   color: var(--rf-green-700);
-  margin-top: 2px;
+  margin-top: 1px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(36, 80, 48, 0.08);
 }
 
 .itemText {
   flex: 1;
-  line-height: 1.4;
 }
 
-.itemCategory {
+.itemQty {
+  display: inline-block;
+  font-weight: 800;
+  color: #174d35;
+  background: #eef5ea;
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-right: 6px;
+  font-size: 11px;
+  letter-spacing: -0.01em;
+}
+
+.itemTitle {
+  font-weight: 600;
+  color: #10261a;
+}
+
+.itemSpecs {
   display: block;
-  font-size: 10px;
-  color: #839185;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 700;
+  font-size: 11px;
+  color: #738275;
+  margin-top: 1px;
+}
+
+.hindiTag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7b8b7e;
+  margin-left: 6px;
 }
 
 /* Card Actions */
@@ -518,6 +668,93 @@
   font-size: 24px;
   color: var(--rf-forest-deep);
   font-family: var(--font-display);
+}
+
+/* Poster / Pamphlet Modal */
+.posterModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 18, 0.88);
+  backdrop-filter: blur(8px);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.25s ease;
+}
+
+.posterModal {
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  max-height: 92vh;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.posterModalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #10261a;
+  color: #f7f3ea;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.posterModalHead h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #edb95e;
+}
+
+.posterModalHead p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #cad3ca;
+}
+
+.posterModalBody {
+  overflow-y: auto;
+  padding: 14px;
+  background: #0f1c14;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.posterImg {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  display: block;
+}
+
+.posterModalFooter {
+  padding: 14px 20px;
+  background: #ffffff;
+  border-top: 1px solid var(--rf-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.posterContacts {
+  font-size: 12px;
+  color: #526054;
+}
+
+.posterContacts strong {
+  color: #10261a;
 }
 
 @keyframes fadeIn {

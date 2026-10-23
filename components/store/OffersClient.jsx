@@ -18,10 +18,10 @@ const fallbackOffers = [
     href: '/offers'
   },
   {
-    title: 'Marriage & Home Packages',
-    text: 'Everything for your new beginning. Complete 1BHK, 2BHK & luxury bedroom suites.',
+    title: 'Our Packages & Home Suites',
+    text: 'All 5 complete home setup packages from ₹49,999 to ₹89,999 with bed, sofa, smart TV, fridge, cooler & washing machine.',
     image: '/images/packages/package-premium-marriage.webp',
-    ends: 'Wedding Season',
+    ends: 'Showroom Special',
     href: '/packages'
   },
   {

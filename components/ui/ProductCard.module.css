@@ -1,123 +1,445 @@
-.card { min-width:0; overflow:hidden; border:1px solid rgba(31,95,46,.1); border-radius:var(--radius-lg); background:#fffefa; transition:transform .35s var(--ease-out-expo),box-shadow .35s ease; }
-.card:hover { transform:translateY(-5px); box-shadow:var(--shadow-card); }
-.media { position:relative; aspect-ratio:1/1; overflow:hidden; background:#FAF8F5; border-bottom:1px solid rgba(27,46,35,0.06); }
-.imageLink { position:absolute; inset:0; display:block; }
-.media img { object-fit:contain !important; padding:12px; transition:transform .5s var(--ease-out-expo); }
-.card:hover .media img { transform:scale(1.04); }
-.tagBadgeTopLeft { position:absolute; top:13px; left:13px; z-index:2; padding:5px 9px; border-radius:999px; color:#fff; background:#1f5f2e; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; box-shadow:0 2px 6px rgba(31,95,46,0.3); }
-.discount { position:absolute; top:13px; left:13px; z-index:1; padding:6px 9px; border-radius:999px; color:#3f2d10; background:#f2c978; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
-.discountOffset { left: auto; right: 54px; }
-.outOfStockBadge { position:absolute; top:13px; left:13px; z-index:2; padding:5px 9px; border-radius:999px; color:#fff; background:#b82b2b; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; box-shadow:0 2px 6px rgba(184,43,43,0.3); }
-.lowStockBadge { position:absolute; top:13px; left:13px; z-index:2; padding:5px 9px; border-radius:999px; color:#fff; background:#c25900; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; box-shadow:0 2px 6px rgba(194,89,0,0.3); }
-.demoBadge { position:absolute; left:12px; bottom:12px; padding:5px 8px; border:1px solid rgba(30,36,32,.08); border-radius:99px; color:#4a524c; background:rgba(251,248,242,.86); font-size:9px; font-weight:700; }
-.controls { position:absolute; top:12px; right:12px; display:grid; gap:7px; }
-.controls button, .controls a { display:grid; width:36px; height:36px; place-items:center; border:1px solid rgba(30,36,32,.06); border-radius:50%; color:var(--rf-charcoal-900); background:rgba(255,254,250,.92); cursor:pointer; text-decoration:none; transition:color .2s,background .2s,transform .2s; }
-.controls button:hover, .controls a:hover { transform:scale(1.07); color:var(--rf-green-800); }
-.controls button[aria-pressed="true"] { color:#a33e34; background:#fff; }
-.controls a.waControlBtn { color:#25d366; }
-.controls a.waControlBtn:hover { background:#25d366; color:#ffffff; }
-.details { padding:14px 15px 15px; }
-.meta { overflow:hidden; color:var(--rf-green-800); font-size:9.5px; font-weight:700; letter-spacing:.08em; text-overflow:ellipsis; text-transform:uppercase; white-space:nowrap; }.meta span{color:var(--rf-gold-600);padding:0 3px}
-.name { display:block; margin-top:5px; font:600 15px/1.2 var(--font-ui); letter-spacing:-.02em; }
-.tagline { min-height:18px; margin:4px 0 8px; color:#5c635d; font-size:11px; line-height:1.4; }
-.priceRow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; }.priceRow strong{font-size:15px;font-weight:700}.priceRow del{color:#858b85;font-size:11px}.rating{display:inline-flex;align-items:center;gap:3px;margin-left:auto;color:#767f76;font-size:9px;font-weight:700}.rating svg{fill:#e4ad4c;stroke:#e4ad4c}.demoPrice{display:block;margin-top:4px;color:#7b817b;font-size:8px;letter-spacing:.03em}
-.primaryImg { object-fit:contain !important; padding:12px; transition: opacity .4s ease, transform .5s var(--ease-out-expo); }
-.secondaryImg { position:absolute; inset:0; width:100%; height:100%; object-fit:contain !important; padding:12px; opacity:0; transition: opacity .4s ease, transform .5s var(--ease-out-expo); }
-.card:hover .primaryImg.hasSecondary { opacity:0; }
-.card:hover .secondaryImg { opacity:1; transform:scale(1.04); }
-.emiSnippet { display:inline-flex; align-items:center; gap:5px; margin-top:5px; font-size:10.5px; color:#2d6a4f; background:rgba(45,106,79,0.08); padding:2px 7px; border-radius:4px; font-weight:600; width:fit-content; }
-.emiSnippet strong { color:var(--rf-forest-deep); font-weight:700; }
-.controls button.quickViewBtn { color:var(--rf-charcoal-700); }
-.controls button.quickViewBtn:hover { color:var(--rf-gold-600); background:#ffffff; }
-.cardActions { display:flex; align-items:stretch; gap:8px; margin-top:11px; }
-.add { flex:1; display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:9px 12px; border:1px solid var(--rf-forest-deep, #1f5f2e); border-radius:var(--radius-sm, 8px); background:var(--rf-forest-deep, #1f5f2e); color:#fff; font-size:12.5px; font-weight:600; cursor:pointer; transition:background .2s,transform .15s; }
-.add:hover:not(:disabled) { background:#164722; transform:translateY(-1px); }
-.add:disabled { opacity:.55; cursor:not-allowed; border-color:rgba(30,36,32,.12); background:#e8e3da; color:#767f76; }
-.waCardBtn { display:inline-flex; align-items:center; justify-content:center; width:40px; border-radius:var(--radius-sm, 8px); background:rgba(37,211,102,0.12); color:#128c7e; border:1px solid rgba(37,211,102,0.35); text-decoration:none; cursor:pointer; transition:background .2s,color .2s,transform .15s; flex-shrink:0; }
-.waCardBtn:hover { background:#25d366; color:#fff; border-color:#25d366; transform:translateY(-1px); }
-@media(max-width:600px){.details{padding:11px 12px 12px}.name{font-size:13.5px}.priceRow strong{font-size:13.5px}.tagline{display:none}.emiSnippet{display:none}.demoBadge{font-size:8px;padding:4px 7px}.controls button, .controls a{width:32px;height:32px}.waCardBtn{width:36px}}
-@media(max-width:480px){.details{padding:10px 9px 11px}.cardActions{gap:6px;margin-top:9px}.add{padding:7px 5px;font-size:11px;gap:4px}.waCardBtn{width:32px}.priceRow{gap:5px}.priceRow strong{font-size:12.5px}}
+/* =========================================================
+   PRODUCT CARD - REFINED PRODUCTION STYLING
+   Brand: RF Riddhy Furnitures & Home Appliances
+   ========================================================= */
 
-/* ========== TABLET (768px - 1023px) ========== */
+.card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--rf-line, rgba(31, 95, 46, 0.12));
+  border-radius: 20px;
+  background: #ffffff;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease,
+    border-color 0.25s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(16, 38, 26, 0.08);
+  border-color: rgba(31, 95, 46, 0.25);
+}
+
+.compact {
+  border-radius: 16px;
+}
+
+/* Media Image Box */
+.media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #fcfbf8;
+  border-bottom: 1px solid rgba(27, 46, 35, 0.06);
+}
+
+.imageLink {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.primaryImg {
+  object-fit: cover !important;
+  padding: 0px;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.secondaryImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  padding: 0px;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .primaryImg.hasSecondary {
+  opacity: 0;
+}
+
+.card:hover .secondaryImg {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.card:hover .primaryImg:not(.hasSecondary) {
+  transform: scale(1.05);
+}
+
+/* Badges Top-Left */
+.tagBadgeTopLeft {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--rf-green-800, #174d25);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 8px rgba(23, 77, 37, 0.3);
+}
+
+.discount {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #10261a;
+  background: var(--rf-gold-400, #edb95e);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 8px rgba(217, 151, 38, 0.25);
+}
+
+.discountOffset {
+  left: auto;
+  right: 52px;
+}
+
+.outOfStockBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #c5402c;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lowStockBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #d35400;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Quick Action Controls (Top-Right) */
+.controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 3;
+}
+
+.controls button,
+.controls a {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  color: var(--rf-charcoal-800, #2c3830);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.controls button:hover,
+.controls a:hover {
+  transform: scale(1.08);
+  color: var(--rf-green-800, #174d25);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.controls button[aria-pressed="true"] {
+  color: #c5402c;
+  background: #ffffff;
+}
+
+.controls a.waControlBtn {
+  color: #25d366;
+}
+
+.controls a.waControlBtn:hover {
+  background: #25d366;
+  color: #ffffff;
+}
+
+/* Card Body & Details */
+.details {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.meta {
+  overflow: hidden;
+  color: var(--rf-green-800, #174d25);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.meta span {
+  color: var(--rf-gold-600, #b58022);
+  padding: 0 4px;
+}
+
+.name {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--rf-forest-deep, #10261a);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.name:hover {
+  color: var(--rf-green-800, #174d25);
+}
+
+.tagline {
+  min-height: 20px;
+  margin: 4px 0 8px;
+  color: #616e63;
+  font-size: 12.5px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Price & Ratings Row */
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.priceRow strong {
+  font-size: 18px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--rf-forest-deep, #10261a);
+}
+
+.priceRow del {
+  color: #8c978e;
+  font-size: 13px;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: #8c6827;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.rating svg {
+  fill: #d99726;
+  color: #d99726;
+}
+
+.emiSnippet {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--rf-green-800, #174d25);
+  background: #f0f7ee;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+/* Bottom CTA Actions */
+.cardActions {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.add {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--rf-forest-deep, #10261a);
+  border-radius: 999px;
+  background: var(--rf-forest-deep, #10261a);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add:hover:not(:disabled) {
+  background: var(--rf-green-800, #174d25);
+  border-color: var(--rf-green-800, #174d25);
+  transform: translateY(-1px);
+}
+
+.add:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-color: rgba(30, 36, 32, 0.12);
+  background: #ebe7de;
+  color: #7b857d;
+}
+
+.waCardBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.12);
+  color: #128c7e;
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.waCardBtn:hover {
+  background: #25d366;
+  color: #ffffff;
+  border-color: #25d366;
+  transform: scale(1.05);
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================= */
+
 @media (max-width: 1023px) {
   .card:hover {
-    transform: none; /* avoid sticky hover jump on touch tablets */
+    transform: none;
   }
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
 @media (max-width: 767px) {
-  .add {
-    min-height: 44px;
-    font-size: 12px;
-  }
-  .waCardBtn {
-    min-width: 44px;
-    min-height: 44px;
-  }
-  .controls button,
-  .controls a {
-    width: 36px;
-    height: 36px;
-  }
-}
-
-/* ========== SMALL MOBILE (320px - 480px) ========== */
-@media (max-width: 480px) {
   .card {
-    border-radius: var(--radius-md);
+    border-radius: 16px;
   }
+
+  .details {
+    padding: 12px 14px 14px;
+  }
+
+  .name {
+    font-size: 14.5px;
+  }
+
+  .priceRow strong {
+    font-size: 16px;
+  }
+
   .add {
     min-height: 42px;
-    font-size: 11.5px;
-    padding: 0 8px;
-  }
-  .waCardBtn {
-    min-width: 42px;
-    min-height: 42px;
-  }
-  .tagBadgeTopLeft,
-  .discount,
-  .outOfStockBadge,
-  .lowStockBadge {
-    font-size: 8.5px;
-    padding: 3px 6px;
-    top: 8px;
-    left: 8px;
-  }
-  .controls {
-    top: 8px;
-    right: 8px;
-    gap: 5px;
-  }
-  .controls button,
-  .controls a {
-    width: 34px;
-    height: 34px;
-  }
-}
-
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
-  .details {
-    padding: 8px 6px 10px;
-  }
-  .name {
     font-size: 12.5px;
   }
-  .priceRow strong {
-    font-size: 12px;
+
+  .waCardBtn {
+    width: 42px;
+    height: 42px;
   }
-  .priceRow del {
+}
+
+@media (max-width: 480px) {
+  .details {
+    padding: 10px 12px 12px;
+  }
+
+  .meta {
     font-size: 10px;
   }
+
+  .name {
+    font-size: 13.5px;
+  }
+
+  .tagline {
+    display: none;
+  }
+
+  .emiSnippet {
+    font-size: 10.5px;
+    padding: 2px 6px;
+  }
+
+  .priceRow strong {
+    font-size: 15px;
+  }
+
+  .add {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .controls button,
+  .controls a {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 360px) {
   .cardActions {
     flex-direction: column;
     gap: 6px;
   }
+
   .waCardBtn {
     width: 100%;
-    min-height: 38px;
+    border-radius: 999px;
+    height: 38px;
   }
 }
-

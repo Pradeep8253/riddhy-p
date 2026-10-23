@@ -10,9 +10,9 @@ const points = [
   ['03', 'Easy to find later', 'Registration, service requests and remaining days live together in your account.']
 ];
 
-export default function WarrantyPromise() {
+export default function WarrantyPromise({ className = '', style }) {
   return (
-    <section className={styles.section}>
+    <section className={`${styles.section} ${className}`} style={style}>
       <div className={styles.ringWrap}>
         <svg className={styles.ring} viewBox="0 0 240 240" role="img" aria-label="Illustrative 730 day warranty ring">
           <circle className={styles.track} cx="120" cy="120" r="105" />

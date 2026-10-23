@@ -21,6 +21,23 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+:global(.bg-light-green) .card,
+:global(.bg-light-yellow) .card,
+:global(.bg-white) .card {
+  border: 1px solid rgba(31, 95, 46, 0.12);
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 38, 26, 0.05);
+}
+
+:global(.bg-light-green) .card:hover,
+:global(.bg-light-yellow) .card:hover,
+:global(.bg-white) .card:hover {
+  transform: translateY(-5px);
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(16, 38, 26, 0.12);
+  border-color: rgba(31, 95, 46, 0.28);
+}
+
 .index {
   position: absolute;
   top: 5px;
@@ -71,10 +88,22 @@
   color: #f7f1e6;
 }
 
+:global(.bg-light-green) .details,
+:global(.bg-light-yellow) .details,
+:global(.bg-white) .details {
+  color: var(--rf-forest-deep, #10261a);
+}
+
 .details b {
   display: block;
   font-size: 10px;
   line-height: 1.3;
+}
+
+:global(.bg-light-green) .details b,
+:global(.bg-light-yellow) .details b,
+:global(.bg-white) .details b {
+  color: var(--rf-forest-deep, #10261a);
 }
 
 .details small {
@@ -84,9 +113,21 @@
   font-size: 9px;
 }
 
+:global(.bg-light-green) .details small,
+:global(.bg-light-yellow) .details small,
+:global(.bg-white) .details small {
+  color: #556258;
+}
+
 .details svg {
   flex: none;
   color: #edb95e;
+}
+
+:global(.bg-light-green) .details svg,
+:global(.bg-light-yellow) .details svg,
+:global(.bg-white) .details svg {
+  color: var(--rf-green-700, #2e7d32);
 }
 
 @media (max-width: 900px) {
