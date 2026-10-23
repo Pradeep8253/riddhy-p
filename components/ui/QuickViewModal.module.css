@@ -68,12 +68,13 @@
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--rf-cream-100);
+  background: #FAF8F5;
   border: 1px solid var(--rf-line);
 }
 
 .mainImg {
-  object-fit: cover;
+  object-fit: contain !important;
+  padding: 16px;
 }
 
 .thumbsRow {
@@ -96,9 +97,9 @@
   border-radius: var(--radius-sm);
   overflow: hidden;
   border: 1.5px solid var(--rf-line);
-  background: var(--rf-cream-50);
+  background: #FAF8F5;
   cursor: pointer;
-  padding: 0;
+  padding: 4px;
   flex-shrink: 0;
   transition: border-color 0.2s;
 }
@@ -109,7 +110,7 @@
 }
 
 .thumbImg {
-  object-fit: cover;
+  object-fit: contain !important;
 }
 
 /* Details Section */

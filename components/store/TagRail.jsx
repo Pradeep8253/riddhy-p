@@ -116,6 +116,7 @@ export default function TagRail({
 
               // Use primary gallery image or fallback
               const imageUrl = product.image || product.gallery?.[0]?.url || '/placeholder.png';
+              const secondaryImageUrl = product.gallery?.find?.((g) => g.view === 'back')?.url || product.gallery?.[1]?.url || null;
 
               return (
                 <Link
@@ -130,9 +131,19 @@ export default function TagRail({
                       alt={productName}
                       fill
                       sizes="(max-width: 640px) 200px, 260px"
-                      className={styles.image}
+                      className={`${styles.image} ${secondaryImageUrl ? styles.hasSecondary : ''}`}
                       loading="lazy"
                     />
+                    {secondaryImageUrl && (
+                      <Image
+                        src={secondaryImageUrl}
+                        alt={`${productName} rear angle`}
+                        fill
+                        sizes="(max-width: 640px) 200px, 260px"
+                        className={styles.secondaryImage}
+                        loading="lazy"
+                      />
+                    )}
                     <div className={styles.gradientOverlay}>
                       <span className={styles.chip}>
                         <MapPin size={10} />

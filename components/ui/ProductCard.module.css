@@ -1,9 +1,9 @@
 .card { min-width:0; overflow:hidden; border:1px solid rgba(31,95,46,.1); border-radius:var(--radius-lg); background:#fffefa; transition:transform .35s var(--ease-out-expo),box-shadow .35s ease; }
 .card:hover { transform:translateY(-5px); box-shadow:var(--shadow-card); }
-.media { position:relative; aspect-ratio:1/1; overflow:hidden; background:#f1ece3; }
+.media { position:relative; aspect-ratio:1/1; overflow:hidden; background:#FAF8F5; border-bottom:1px solid rgba(27,46,35,0.06); }
 .imageLink { position:absolute; inset:0; display:block; }
-.media img { object-fit:cover; transition:transform .8s var(--ease-out-expo); }
-.card:hover .media img { transform:scale(1.045); }
+.media img { object-fit:contain !important; padding:12px; transition:transform .5s var(--ease-out-expo); }
+.card:hover .media img { transform:scale(1.04); }
 .tagBadgeTopLeft { position:absolute; top:13px; left:13px; z-index:2; padding:5px 9px; border-radius:999px; color:#fff; background:#1f5f2e; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; box-shadow:0 2px 6px rgba(31,95,46,0.3); }
 .discount { position:absolute; top:13px; left:13px; z-index:1; padding:6px 9px; border-radius:999px; color:#3f2d10; background:#f2c978; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
 .discountOffset { left: auto; right: 54px; }
@@ -21,10 +21,10 @@
 .name { display:block; margin-top:5px; font:600 15px/1.2 var(--font-ui); letter-spacing:-.02em; }
 .tagline { min-height:18px; margin:4px 0 8px; color:#5c635d; font-size:11px; line-height:1.4; }
 .priceRow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; }.priceRow strong{font-size:15px;font-weight:700}.priceRow del{color:#858b85;font-size:11px}.rating{display:inline-flex;align-items:center;gap:3px;margin-left:auto;color:#767f76;font-size:9px;font-weight:700}.rating svg{fill:#e4ad4c;stroke:#e4ad4c}.demoPrice{display:block;margin-top:4px;color:#7b817b;font-size:8px;letter-spacing:.03em}
-.primaryImg { transition: opacity .4s ease, transform .8s var(--ease-out-expo); }
-.secondaryImg { position:absolute; inset:0; width:100%; height:100%; opacity:0; transition: opacity .4s ease, transform .8s var(--ease-out-expo); }
+.primaryImg { object-fit:contain !important; padding:12px; transition: opacity .4s ease, transform .5s var(--ease-out-expo); }
+.secondaryImg { position:absolute; inset:0; width:100%; height:100%; object-fit:contain !important; padding:12px; opacity:0; transition: opacity .4s ease, transform .5s var(--ease-out-expo); }
 .card:hover .primaryImg.hasSecondary { opacity:0; }
-.card:hover .secondaryImg { opacity:1; transform:scale(1.045); }
+.card:hover .secondaryImg { opacity:1; transform:scale(1.04); }
 .emiSnippet { display:inline-flex; align-items:center; gap:5px; margin-top:5px; font-size:10.5px; color:#2d6a4f; background:rgba(45,106,79,0.08); padding:2px 7px; border-radius:4px; font-weight:600; width:fit-content; }
 .emiSnippet strong { color:var(--rf-forest-deep); font-weight:700; }
 .controls button.quickViewBtn { color:var(--rf-charcoal-700); }

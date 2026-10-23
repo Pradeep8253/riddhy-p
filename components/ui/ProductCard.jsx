@@ -98,6 +98,8 @@ export default function ProductCard({ product, compact = false }) {
     IMG.products.sofa;
 
   const secondaryImage =
+    product.gallery?.find?.((g) => g.view === "back")?.mediumUrl ||
+    product.gallery?.find?.((g) => g.view === "back")?.url ||
     product.gallery?.[1]?.mediumUrl ||
     product.gallery?.[1]?.url ||
     null;

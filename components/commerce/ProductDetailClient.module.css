@@ -43,11 +43,12 @@
   aspect-ratio: 1/1;
   overflow: hidden;
   border-radius: 26px;
-  background: #f0ebe2;
+  background: #FAF8F5;
   outline: none;
 }
 .mainMedia > img {
-  object-fit: cover;
+  object-fit: contain !important;
+  padding: 24px;
 }
 .demoPill {
   position: absolute;
@@ -101,16 +102,16 @@
   width: 72px;
   height: 72px;
   overflow: hidden;
-  padding: 0;
-  border: 1px solid transparent;
+  padding: 4px;
+  border: 1px solid rgba(27, 46, 35, 0.12);
   border-radius: 12px;
-  background: #f0ebe2;
+  background: #FAF8F5;
   cursor: pointer;
 }
 .thumbs button img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain !important;
 }
 .thumbs button.thumbActive {
   border-color: var(--rf-green-700);
@@ -992,10 +993,11 @@
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #e8e4dc;
+  background: #FAF8F5;
+  padding: 2px;
 }
 .stickyThumb img {
-  object-fit: cover;
+  object-fit: contain !important;
 }
 .stickyMeta {
   display: grid;
