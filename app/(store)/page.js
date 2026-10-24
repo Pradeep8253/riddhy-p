@@ -130,6 +130,8 @@ export default async function HomePage() {
         viewAllHref="/collections/best-selling"
         products={bestsellers}
         className="bg-light-yellow"
+        autoSlide={true}
+        autoSlideInterval={2500}
       />
 
       {/* 3. ShopByAppliance */}
@@ -143,6 +145,8 @@ export default async function HomePage() {
         viewAllHref="/collections/trending"
         products={trending}
         className="bg-white"
+        autoSlide={true}
+        autoSlideInterval={2500}
       />
 
       {/* 5. Curated Living */}
@@ -181,6 +185,8 @@ export default async function HomePage() {
         viewAllHref="/collections/new-arrival"
         products={newArrivals}
         className="bg-white"
+        autoSlide={true}
+        autoSlideInterval={2500}
       />
 
       {/* 8. Warranty Promise */}

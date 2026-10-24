@@ -44,7 +44,11 @@ export default function AuthForm({ admin = false }) {
       }
       const redirectParam = params.get('redirect');
       if (redirectParam && !admin) {
-        setInfoMessage('Please sign in to save items to your bag and wishlist.');
+        if (redirectParam.includes('track-order')) {
+          setInfoMessage('Please sign in to track your order and shipment.');
+        } else {
+          setInfoMessage('Please sign in to save items to your bag and wishlist.');
+        }
       }
     }
   }, [admin]);

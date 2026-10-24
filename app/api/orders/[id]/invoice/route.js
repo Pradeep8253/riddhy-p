@@ -23,6 +23,9 @@ function formatInr(num) {
   });
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request, { params }) {
   const session = await getSession();
   if (!session) return fail('Sign in to view this invoice.', 401);
@@ -46,8 +49,12 @@ export async function GET(request, { params }) {
 
     // Ensure formal GST Invoice is generated
     let invoice = await Invoice.findOne({ orderId: id }).lean();
-    if (!invoice) {
-      invoice = await generateInvoiceForOrder(id, { actor: session });
+    const isCorrupt = invoice && (
+      Math.abs(invoice.roundOff || 0) > 5 ||
+      Math.abs((invoice.taxableAmount || 0) + (invoice.totalTax || 0) + (invoice.roundOff || 0) - (invoice.totalAmount || 0)) > 2
+    );
+    if (!invoice || isCorrupt || url.searchParams.get('regenerate') === '1') {
+      invoice = await generateInvoiceForOrder(id, { actor: session, regenerate: true });
     }
 
     // PDF format response
@@ -61,7 +68,9 @@ export async function GET(request, { params }) {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `${dispositionType}; filename="${filename}"`,
-          'Cache-Control': 'private, no-transform, max-age=86400'
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
     }

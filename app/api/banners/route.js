@@ -61,14 +61,13 @@ export const fallbackBanners = [
   }
 ];
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   try {
     const url = new URL(request.url);
-    const zone = url.searchParams.get('zone') || 'home-hero';
-
-    if (!process.env.MONGODB_URI) {
-      return ok(fallbackBanners);
-    }
+    const zone = url.searchParams.get('zone');
+    const isAll = !zone || zone === 'all' || url.searchParams.get('all') === 'true';
 
     await connectDB();
     const now = new Date();
@@ -80,36 +79,13 @@ export async function GET(request) {
       ]
     };
 
-    let zoneFilter;
-    if (zone === 'offers-modal') {
-      zoneFilter = {
-        $or: [
-          { zone: 'offers-modal' },
-          { isOfferModal: true },
-          { zone: 'all' }
-        ]
-      };
-    } else {
-      zoneFilter = {
-        $or: [
-          { zone },
-          { zone: 'all' }
-        ]
-      };
-    }
-
     const query = {
       active: true,
       ...dateFilter,
-      ...zoneFilter
+      ...(isAll ? {} : { zone })
     };
 
-    let banners = await Banner.find(query).sort({ sortOrder: 1, createdAt: -1 }).limit(10).lean();
-
-    // If query by specific zone gave nothing, but it's offers-modal, try any active banner
-    if ((!banners || banners.length === 0) && zone === 'offers-modal') {
-      banners = await Banner.find({ active: true, ...dateFilter }).sort({ sortOrder: 1, createdAt: -1 }).limit(1).lean();
-    }
+    let banners = await Banner.find(query).sort({ sortOrder: 1, createdAt: -1 }).lean();
 
     if (banners && banners.length > 0) {
       return ok(banners.map((b) => ({ ...b, id: String(b._id) })));

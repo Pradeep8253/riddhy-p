@@ -43,6 +43,26 @@ export async function PUT(request, { params }) {
     }
     if (!existing) return fail('Package not found.', 404);
 
+    if (Array.isArray(body.items)) {
+      body.items = body.items
+        .map((item) => {
+          const cleanItem = {
+            title: String(item.title || '').trim(),
+            category: String(item.category || 'General').trim(),
+            quantity: Math.max(1, Number(item.quantity) || 1),
+            specs: String(item.specs || '').trim(),
+            isOptional: Boolean(item.isOptional),
+          };
+          if (item.productId && String(item.productId).match(/^[0-9a-fA-F]{24}$/)) {
+            cleanItem.productId = item.productId;
+          }
+          if (item.productName) cleanItem.productName = String(item.productName);
+          if (item.image) cleanItem.image = String(item.image);
+          return cleanItem;
+        })
+        .filter((item) => item.title.length > 0);
+    }
+
     const updated = await MarriagePackage.findByIdAndUpdate(
       existing._id,
       { $set: body },

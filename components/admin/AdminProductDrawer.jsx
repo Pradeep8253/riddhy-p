@@ -310,6 +310,17 @@ export default function AdminProductDrawer({
           .replace(/(^-|-$)/g, "");
       }
 
+      // Sync image alt text with product name if alt text is generic
+      if (key === "name" && value.trim()) {
+        const cleanName = value.trim();
+        next.gallery = (prev.gallery || []).map((img, i) => {
+          if (!img.alt || img.alt === "Product Image" || img.alt.startsWith("Product Image") || img.alt.includes(" - View ")) {
+            return { ...img, alt: `${cleanName} - View ${i + 1}` };
+          }
+          return img;
+        });
+      }
+
       // Auto update HSN based on type
       if (key === "type") {
         next.hsnCode = value === "appliance" ? "8516" : "9403";
@@ -339,10 +350,23 @@ export default function AdminProductDrawer({
     setError("");
 
     try {
-      for (const file of files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         const formData = new FormData();
         formData.append("file", file);
         formData.append("storage", "local");
+
+        const currentName = form.name?.trim() || "";
+        if (currentName) {
+          formData.append("productName", currentName);
+          formData.append("alt", `${currentName} - View ${form.gallery.length + i + 1}`);
+        }
+        if (form.slug) {
+          formData.append("slug", form.slug);
+        }
+        if (initialData?._id) {
+          formData.append("productId", String(initialData._id));
+        }
 
         // Try primary /api/admin/media if available, fallback to /api/upload
         let res = await fetch("/api/admin/media", {
@@ -360,6 +384,7 @@ export default function AdminProductDrawer({
 
         const uploadedUrl = data.data?.url || data.url;
         const uploadedThumb = data.data?.thumbUrl || uploadedUrl;
+        const finalAlt = data.data?.alt || (currentName ? `${currentName} - View ${form.gallery.length + i + 1}` : "Product Image");
 
         setForm((prev) => {
           const newGallery = [
@@ -367,7 +392,7 @@ export default function AdminProductDrawer({
             {
               url: uploadedUrl,
               thumbUrl: uploadedThumb,
-              alt: prev.name || "Product Image",
+              alt: finalAlt,
               sortOrder: prev.gallery.length,
             },
           ];

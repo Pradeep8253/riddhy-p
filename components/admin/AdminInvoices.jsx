@@ -645,12 +645,12 @@ export default function AdminInvoices() {
                             type="button"
                             className={styles.btnAction}
                             title="Preview PDF"
-                            onClick={() => setPreviewPdfUrl(`/api/orders/${inv.orderId}/invoice.pdf`)}
+                            onClick={() => setPreviewPdfUrl(`/api/orders/${inv.orderId}/invoice.pdf?inline=1&t=${Date.now()}`)}
                           >
                             <Eye size={12} /> View
                           </button>
                           <a
-                            href={`/api/orders/${inv.orderId}/invoice.pdf?download=1`}
+                            href={`/api/orders/${inv.orderId}/invoice.pdf?download=1&t=${Date.now()}`}
                             className={styles.btnAction}
                             title="Download PDF"
                           >

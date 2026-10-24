@@ -196,13 +196,18 @@ export default function AdminCategories() {
     try {
       const data = new FormData();
       data.append("file", file);
+      if (formData.name) {
+        data.append("productName", formData.name);
+        data.append("alt", formData.name);
+      }
       const res = await fetch("/api/upload", {
         method: "POST",
         body: data,
       });
       const json = await res.json();
-      if (json.success && json.data?.url) {
-        setFormData((prev) => ({ ...prev, image: json.data.url }));
+      const finalUrl = json.data?.url || json.url;
+      if (json.success && finalUrl) {
+        setFormData((prev) => ({ ...prev, image: finalUrl }));
       } else {
         setError(json.error?.message || "Failed to upload image.");
       }

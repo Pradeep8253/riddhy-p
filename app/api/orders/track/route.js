@@ -2,8 +2,14 @@ import { connectDB } from '@/lib/db';
 import { Order, Invoice } from '@/models/index';
 import { ok, fail } from '@/lib/http';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { getSession } from '@/lib/auth';
 
 export async function GET(request) {
+  const session = await getSession();
+  if (!session) {
+    return fail('Please sign in to track orders.', 401);
+  }
+
   const ip = getClientIp(request);
   if (!rateLimit(`track:ip:${ip}`, { limit: 20, windowMs: 60000 }).allowed) {
     return fail('Too many tracking requests. Please wait a moment before trying again.', 429);

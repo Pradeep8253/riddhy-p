@@ -74,6 +74,24 @@ export async function POST(request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    const rawName = (formData.get("productName") || formData.get("name") || formData.get("alt") || "").toString().trim();
+    const cleanBase = rawName
+      ? rawName
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 60)
+      : path.parse(file.name).name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 60);
+
+    const basePrefix = cleanBase || "product";
+    const randomHex = crypto.randomBytes(4).toString("hex");
+
     // Check if local storage is explicitly requested or Cloudinary is not configured
     const storageParam =
       formData.get("storage") || request.nextUrl.searchParams.get("storage");
@@ -92,10 +110,14 @@ export async function POST(request) {
         secure: true,
       });
 
+      const folder = (formData.get("folder") || "rf-riddhy/customer-uploads").toString().trim();
+      const publicId = `${basePrefix}-${randomHex}`;
+
       const uploadResult = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            folder: "rf-riddhy/customer-uploads",
+            folder,
+            public_id: publicId,
             resource_type: file.type.startsWith("image/") ? "image" : "raw",
           },
           (error, result) => {
@@ -108,10 +130,19 @@ export async function POST(request) {
 
       return NextResponse.json({
         success: true,
+        data: {
+          url: uploadResult.secure_url,
+          thumbUrl: uploadResult.secure_url,
+          publicId: uploadResult.public_id,
+          bytes: file.size,
+          name: file.name,
+          alt: rawName || file.name,
+        },
         url: uploadResult.secure_url,
         publicId: uploadResult.public_id,
         bytes: file.size,
         name: file.name,
+        alt: rawName || file.name,
       });
     }
 
@@ -123,17 +154,26 @@ export async function POST(request) {
       path.extname(file.name) ||
       (file.type === "application/pdf" ? ".pdf" : ".jpg");
     const safeExt = ext.replace(/[^a-zA-Z0-9.]/g, "").toLowerCase();
-    const randomHex = crypto.randomBytes(8).toString("hex");
-    const safeFilename = `ref-${Date.now()}-${randomHex}${safeExt}`;
+    const safeFilename = `${basePrefix}-${randomHex}${safeExt}`;
     const filePath = path.join(uploadsDir, safeFilename);
 
     await writeFile(filePath, buffer);
 
+    const fileUrl = `/uploads/${safeFilename}`;
+
     return NextResponse.json({
       success: true,
-      url: `/uploads/${safeFilename}`,
+      data: {
+        url: fileUrl,
+        thumbUrl: fileUrl,
+        bytes: file.size,
+        name: file.name,
+        alt: rawName || file.name,
+      },
+      url: fileUrl,
       bytes: file.size,
       name: file.name,
+      alt: rawName || file.name,
     });
   } catch (err) {
     console.error("File upload error:", err);

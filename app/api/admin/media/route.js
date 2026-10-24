@@ -40,7 +40,8 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
     const files = formData.getAll('file');
-    const alt = formData.get('alt') || '';
+    const alt = (formData.get('alt') || '').trim();
+    let productName = (formData.get('productName') || formData.get('name') || '').trim();
     const productId = formData.get('productId') || null;
 
     if (!files || files.length === 0) {
@@ -48,9 +49,16 @@ export async function POST(request) {
     }
 
     await connectDB();
+
+    if (!productName && productId) {
+      const prod = await Product.findById(productId).select('name').lean();
+      if (prod?.name) productName = prod.name;
+    }
+
     const savedRecords = [];
 
-    for (const file of files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       if (!(file instanceof Blob)) continue;
 
       if (file.size > MAX_FILE_SIZE) {
@@ -59,10 +67,14 @@ export async function POST(request) {
 
       const buffer = Buffer.from(await file.arrayBuffer());
 
-      // Save and generate responsive sizes + blur placeholder
+      // Generate SEO-friendly image with Product Name
+      const viewSuffix = files.length > 1 ? ` - View ${i + 1}` : '';
+      const finalAlt = alt || (productName ? `${productName}${viewSuffix}` : file.name || 'Product Image');
+
       const imageResult = await saveProductImageLocally({
         buffer,
-        alt: alt || file.name || 'Product Image'
+        alt: finalAlt,
+        productName: productName || alt || file.name
       });
 
       const mediaDoc = await Media.create({

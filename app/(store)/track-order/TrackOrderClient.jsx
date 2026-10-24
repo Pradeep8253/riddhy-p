@@ -24,12 +24,40 @@ function getStageIndex(status) {
   return 1;
 }
 
-export default function TrackOrderClient() {
+export default function TrackOrderClient({ sessionUser }) {
   const [orderNumber, setOrderNumber] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState(sessionUser?.phone || '');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [trackingData, setTrackingData] = useState(null);
+  const [isDownloadingInvoice, setIsDownloadingInvoice] = useState(false);
+
+  const handleDownloadInvoice = async (orderId, invoiceNumber) => {
+    setIsDownloadingInvoice(true);
+    try {
+      const res = await fetch(`/api/orders/${orderId}/invoice.pdf?download=1&t=${Date.now()}`);
+      if (res.status === 401) {
+        window.location.href = '/account?redirect=/track-order';
+        return;
+      }
+      if (!res.ok) throw new Error('Unable to download invoice.');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      const cleanNum = (invoiceNumber || 'INV').replace(/[\/\\?%*:|"<>]/g, '_');
+      a.download = `Invoice_${cleanNum}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (err) {
+      alert(err.message || 'Download failed.');
+    } finally {
+      setIsDownloadingInvoice(false);
+    }
+  };
 
   const handleTrack = async (e) => {
     e?.preventDefault();
@@ -48,6 +76,10 @@ export default function TrackOrderClient() {
     try {
       const res = await fetch(`/api/orders/track?orderNumber=${encodeURIComponent(ord)}&phone=${encodeURIComponent(ph)}`);
       const json = await res.json();
+      if (res.status === 401) {
+        window.location.href = '/account?redirect=/track-order';
+        return;
+      }
       if (res.ok && json.success && json.data) {
         setTrackingData(json.data);
       } else {
@@ -112,12 +144,12 @@ export default function TrackOrderClient() {
               <span className={styles.statusBadge}>{trackingData.status.toUpperCase()}</span>
               <h2>Order #{trackingData.orderNumber}</h2>
               <p>Placed on {new Date(trackingData.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · Total: {formatINR(trackingData.total)}</p>
-              {trackingData.invoice?.downloadUrl && (
+              {trackingData.invoice && (
                 <div style={{ marginTop: 10 }}>
-                  <a
-                    href={trackingData.invoice.downloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadInvoice(trackingData.orderId, trackingData.invoice?.invoiceNumber)}
+                    disabled={isDownloadingInvoice}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -125,15 +157,16 @@ export default function TrackOrderClient() {
                       padding: '7px 14px',
                       background: '#1f5f2e',
                       color: '#ffffff',
+                      border: 'none',
                       borderRadius: 6,
                       fontSize: 12,
                       fontWeight: 700,
-                      textDecoration: 'none'
+                      cursor: isDownloadingInvoice ? 'wait' : 'pointer'
                     }}
                   >
                     <Icon name="receipt" size={14} />
-                    <span>Download GST Invoice ({trackingData.invoice.invoiceNumber})</span>
-                  </a>
+                    <span>{isDownloadingInvoice ? 'Downloading…' : `Download GST Invoice (${trackingData.invoice.invoiceNumber})`}</span>
+                  </button>
                 </div>
               )}
             </div>

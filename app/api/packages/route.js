@@ -5,11 +5,16 @@ import { requireAdmin } from '@/lib/roles';
 import { ok, fail, jsonBody } from '@/lib/http';
 import { getLivePackages, serializePackage, defaultPackages } from '@/lib/packages-data';
 
+export const dynamic = 'force-dynamic';
+
 const packageSchema = z.object({
   name: z.string().min(2),
+  hindiName: z.string().optional(),
+  name_hi: z.string().optional(),
   slug: z.string().min(2),
-  tier: z.enum(['basic', 'premium', 'luxury']).default('basic'),
+  tier: z.string().default('shagun'),
   tagline: z.string().optional(),
+  badgeText: z.string().optional(),
   description: z.string().min(10),
   bannerImage: z.string().optional(),
   thumbnailImage: z.string().optional(),
@@ -46,14 +51,18 @@ export async function GET(request) {
 
   try {
     await connectDB();
-    const count = await MarriagePackage.countDocuments();
+    let count = await MarriagePackage.countDocuments();
+    if (count === 0) {
+      await getLivePackages(); // Triggers auto-seed if empty
+      count = await MarriagePackage.countDocuments();
+    }
     if (count > 0) {
       const query = includeAll ? {} : { active: true };
       const docs = await MarriagePackage.find(query).sort({ sortOrder: 1, price: 1 }).lean();
       return ok((docs || []).map(serializePackage));
     }
   } catch (err) {
-    // Database unconfigured or error -> fallback to default packages
+    console.error('Error fetching packages:', err);
   }
 
   const packages = await getLivePackages();

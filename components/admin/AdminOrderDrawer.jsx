@@ -492,7 +492,7 @@ export default function AdminOrderDrawer({
                       {order.invoiceNumber ? (
                         <>
                           <a
-                            href={`/api/orders/${orderId}/invoice.pdf`}
+                            href={`/api/orders/${orderId}/invoice.pdf?inline=1&t=${Date.now()}`}
                             target="_blank"
                             rel="noreferrer"
                             className={styles.btnSecondary}
@@ -501,7 +501,7 @@ export default function AdminOrderDrawer({
                             <FileText size={13} /> View PDF
                           </a>
                           <a
-                            href={`/api/orders/${orderId}/invoice.pdf?download=1`}
+                            href={`/api/orders/${orderId}/invoice.pdf?download=1&t=${Date.now()}`}
                             className={styles.btnPrimary}
                             style={{ padding: "6px 12px", fontSize: "12px" }}
                           >
@@ -795,7 +795,7 @@ export default function AdminOrderDrawer({
                         }}
                       >
                         <a
-                          href={`/api/orders/${orderId}/invoice.pdf`}
+                          href={`/api/orders/${orderId}/invoice.pdf?download=1&t=${Date.now()}`}
                           target="_blank"
                           rel="noreferrer"
                           className={styles.btnPrimary}
