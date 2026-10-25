@@ -1,4 +1,7 @@
-.shell{padding:18px 0 clamp(70px,8vw,120px);background:var(--rf-cream-50)}
+.shell {
+  padding: 18px 0 clamp(70px, 8vw, 120px);
+  background: var(--rf-cream-50)
+}
 
 /* ========== TABLET (768px - 1023px) ========== */
 @media (max-width: 1023px) {
@@ -17,7 +20,7 @@
 /* ========== SMALL MOBILE (320px - 480px) ========== */
 @media (max-width: 480px) {
   .shell {
-    padding: 10px 0 90px;
+    padding: 10px 0 30px;
   }
 }
 
@@ -27,4 +30,3 @@
     padding: 8px 0 96px;
   }
 }
-

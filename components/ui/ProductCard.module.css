@@ -418,6 +418,17 @@
     padding: 10px 12px 12px;
   }
 
+  .lowStockBadge {
+
+    border-radius: 999px;
+    padding: 4px 7px;
+    font-size: 7px;
+    font-weight: 800;
+    position: absolute;
+    left: 6px;
+    top: 85%;
+  }
+
   .meta {
     font-size: 10px;
   }
