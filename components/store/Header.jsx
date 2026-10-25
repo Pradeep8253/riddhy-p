@@ -14,21 +14,129 @@ import { tr } from '@/lib/i18n';
 import styles from './Header.module.css';
 
 const nav = [
-  { key: 'furniture', href: '/furniture', children: ['sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables'] },
-  { key: 'appliances', href: '/appliances', children: ['refrigerators', 'washing-machines', 'air-conditioners', 'televisions'] },
+  {
+    key: 'furniture',
+    href: '/furniture',
+    children: [
+      'double-bed',
+      'sringardan',
+      'sofa-set',
+      'centre-table',
+      'wooden-wordrobe',
+      'almirah',
+      'fancy-almirah',
+      'mattress',
+      'rajai',
+      'blanket',
+      'pillow',
+      'bedsheet',
+      'pillow-cover',
+      'parda',
+      'namaz-chauki',
+      'plastic-table',
+      'plastic-chairs',
+      'baxa',
+      'peti',
+      'trolley-bag'
+    ]
+  },
+  {
+    key: 'appliances',
+    href: '/appliances',
+    children: [
+      'washing-machine',
+      'fridge',
+      'cooler',
+      'diacut-cooler',
+      'mixer',
+      'juicer',
+      'iron',
+      'gas-chulha',
+      'utensils-washer',
+      'roti-maker'
+    ]
+  },
+  {
+    key: 'utensils',
+    href: '/utensils',
+    children: [
+      'dinner-set',
+      'pressure-cooker',
+      'kadai-frypan',
+      'roti-tawa',
+      'thali-set',
+      'water-jug',
+      'masala-dabba',
+      'casserole-set',
+      'bhagona-set',
+      'cutlery-set',
+      'water-dispenser',
+      'tea-milk-pot'
+    ]
+  },
   { key: 'rooms', href: '/rooms/living', children: ['living', 'bedroom', 'dining', 'study', 'kitchen'] }
 ];
 
 const labels = {
-  sofas: 'Sofas',
+  // Furniture
+  'double-bed': 'Double Bed',
+  sringardan: 'Sringardan',
+  'sofa-set': 'Sofa Set',
+  'centre-table': 'Centre Table',
+  'wooden-wordrobe': 'Wooden Wardrobe',
+  almirah: 'Almirah (Steel)',
+  'fancy-almirah': 'Fancy Almirah',
+  mattress: 'Mattress',
+  rajai: 'Rajai (Quilt)',
+  blanket: 'Blanket',
+  pillow: 'Pillow',
+  bedsheet: 'Bedsheet',
+  'pillow-cover': 'Pillow Cover',
+  parda: 'Parda (Curtains)',
+  'namaz-chauki': 'Namaz Chauki',
+  'plastic-table': 'Plastic Table',
+  'plastic-chairs': 'Plastic Chairs',
+  baxa: 'Baxa (Trunk)',
+  peti: 'Peti (Storage)',
+  'trolley-bag': 'Trolley Bag',
+  sofas: 'Sofas & Seating',
   beds: 'Beds',
   wardrobes: 'Wardrobes',
-  'dining-sets': 'Dining',
-  'study-tables': 'Study',
+  'dining-sets': 'Dining Sets',
+  'study-tables': 'Study & Work',
+  mattresses: 'Mattresses',
+
+  // Appliances
+  'washing-machine': 'Washing Machine',
+  fridge: 'Fridge',
+  cooler: 'Cooler',
+  'diacut-cooler': 'Diacut Cooler',
+  mixer: 'Mixer Grinder',
+  juicer: 'Juicer & Blender',
+  iron: 'Iron (Press)',
+  'gas-chulha': 'Gas Chulha',
+  'utensils-washer': 'Utensils Washer',
+  'roti-maker': 'Roti Maker',
   refrigerators: 'Refrigerators',
-  'washing-machines': 'Washers',
-  'air-conditioners': 'Air conditioners',
+  'washing-machines': 'Washing Machines',
+  'air-conditioners': 'Air Conditioners',
   televisions: 'Televisions',
+
+  // Utensils
+  'dinner-set': 'Dinner Set',
+  'pressure-cooker': 'Pressure Cooker',
+  'kadai-frypan': 'Kadai & Fry Pan',
+  'roti-tawa': 'Roti Tawa',
+  'thali-set': 'Thali Set',
+  'water-jug': 'Water Jug & Glasses',
+  'masala-dabba': 'Masala Dabba',
+  'casserole-set': 'Hotpot Casserole',
+  'bhagona-set': 'Bhagona & Tope Set',
+  'cutlery-set': 'Cutlery & Spoon Stand',
+  'water-dispenser': 'Water Dispenser',
+  'tea-milk-pot': 'Tea & Milk Pot',
+
+  // Rooms
   living: 'Living room',
   bedroom: 'Bedroom',
   dining: 'Dining',
@@ -37,20 +145,32 @@ const labels = {
 };
 
 const furnitureGrid = [
-  { slug: 'sofas', label: 'Sofas & Seating', icon: 'sofa', href: '/furniture/sofas', desc: 'Luxury Sectionals & Sets' },
-  { slug: 'beds', label: 'Designer Beds', icon: 'bed', href: '/furniture/beds', desc: 'Hydraulic, King, Solid Teak' },
-  { slug: 'wardrobes', label: 'Wardrobes', icon: 'layers', href: '/furniture/wardrobes', desc: 'Sliding & Engineered Wood' },
-  { slug: 'dining-sets', label: 'Dining Sets', icon: 'sparkles', href: '/furniture/dining-sets', desc: '4 & 6-Seater Solid Timber' },
-  { slug: 'study-tables', label: 'Study & Work', icon: 'sliders', href: '/furniture/study-tables', desc: 'Ergonomic Tables & Units' },
-  { slug: 'all-furniture', label: 'All Furniture', icon: 'arrow', href: '/furniture', desc: 'Explore Complete Range' }
+  { slug: 'double-bed', label: 'Double Bed', icon: 'bed', href: '/furniture/double-bed', desc: 'Hydraulic Storage & King Size' },
+  { slug: 'sringardan', label: 'Sringardan', icon: 'sparkles', href: '/furniture/sringardan', desc: 'Dressing Vanity with Mirror' },
+  { slug: 'sofa-set', label: 'Sofa Set', icon: 'sofa', href: '/furniture/sofa-set', desc: '5-Seater Royal Living Sets' },
+  { slug: 'centre-table', label: 'Centre Table', icon: 'sliders', href: '/furniture/centre-table', desc: 'Sheesham & Glass Top Tables' },
+  { slug: 'wooden-wordrobe', label: 'Wooden Wardrobe', icon: 'layers', href: '/furniture/wooden-wordrobe', desc: 'Sliding & 4-Door Teak Wood' },
+  { slug: 'almirah', label: 'Steel Almirah', icon: 'shield', href: '/furniture/almirah', desc: 'Triveni Gold Heavy Gauge' },
+  { slug: 'all-furniture', label: 'All Furniture', icon: 'arrow', href: '/furniture', desc: 'Explore Complete 20 Categories' }
 ];
 
 const appliancesGrid = [
-  { slug: 'refrigerators', label: 'Refrigerators', icon: 'refrigerator', href: '/appliances/refrigerators', desc: 'Double Door & Inverter Tech' },
-  { slug: 'washing-machines', label: 'Washers', icon: 'washer', href: '/appliances/washing-machines', desc: 'Front & Top Load Washers' },
-  { slug: 'air-conditioners', label: 'Air Conditioners', icon: 'wind', href: '/appliances/air-conditioners', desc: 'Smart Inverter Split ACs' },
-  { slug: 'televisions', label: 'Smart TVs', icon: 'tv', href: '/appliances/televisions', desc: '4K Ultra HD & QLED' },
+  { slug: 'washing-machine', label: 'Washing Machine', icon: 'washer', href: '/appliances/washing-machine', desc: 'Inverter Front & Top Load' },
+  { slug: 'fridge', label: 'Fridge', icon: 'refrigerator', href: '/appliances/fridge', desc: 'Double Door Frost-Free' },
+  { slug: 'cooler', label: 'Desert Cooler', icon: 'wind', href: '/appliances/cooler', desc: '70L High Air Throw Blower' },
+  { slug: 'diacut-cooler', label: 'Diacut Cooler', icon: 'wind', href: '/appliances/diacut-cooler', desc: 'Heavy Galvanized Metal Body' },
+  { slug: 'mixer', label: 'Mixer Grinder', icon: 'sparkles', href: '/appliances/mixer', desc: 'Heavy Duty 3 & 4 Jars' },
+  { slug: 'gas-chulha', label: 'Gas Chulha', icon: 'flame', href: '/appliances/gas-chulha', desc: 'Toughened Glass 3-Burner' },
   { slug: 'all-appliances', label: 'All Appliances', icon: 'arrow', href: '/appliances', desc: 'View Full Appliance Suite' }
+];
+
+const utensilsGrid = [
+  { slug: 'dinner-set', label: 'Dinner Sets', icon: 'sparkles', href: '/utensils/dinner-set', desc: '51 & 61-Piece Heavy SS Sets' },
+  { slug: 'pressure-cooker', label: 'Pressure Cookers', icon: 'layers', href: '/utensils/pressure-cooker', desc: 'Hawkins & Prestige Induction' },
+  { slug: 'kadai-frypan', label: 'Kadai & Fry Pan', icon: 'sliders', href: '/utensils/kadai-frypan', desc: 'Tri-Ply Heavy Bottom Duo' },
+  { slug: 'thali-set', label: 'Thali & Katori Sets', icon: 'sparkles', href: '/utensils/thali-set', desc: 'Royal Maharaja Family Sets' },
+  { slug: 'casserole-set', label: 'Hotpot Casseroles', icon: 'shield', href: '/utensils/casserole-set', desc: 'Insulated Thermal Keep-Warm' },
+  { slug: 'all-utensils', label: 'All Utensils', icon: 'arrow', href: '/utensils', desc: 'View Full Utensils Collection' }
 ];
 
 const roomLinks = [
@@ -91,6 +211,11 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   const [dynamicNav, setDynamicNav] = useState(nav);
   const [categoryLabels, setCategoryLabels] = useState(labels);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  useEffect(() => {
+    setActiveDropdown(null);
+  }, [pathname]);
 
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -205,8 +330,14 @@ export default function Header() {
       .then((r) => (r.ok ? r.json() : null))
       .then((json) => {
         if (json?.success && Array.isArray(json?.data) && json.data.length > 0) {
-          const furn = json.data.filter((c) => c.type === 'furniture' && c.active);
-          const app = json.data.filter((c) => c.type === 'appliance' && c.active);
+          const legacyAliases = new Set([
+            'sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables', 'mattresses', 'decor', 'storage',
+            'refrigerators', 'washing-machines', 'air-conditioners', 'televisions', 'microwaves', 'chimneys', 'water-purifiers'
+          ]);
+          const furn = json.data.filter((c) => c.type === 'furniture' && c.active && !legacyAliases.has(c.slug));
+          const app = json.data.filter((c) => c.type === 'appliance' && c.active && !legacyAliases.has(c.slug));
+
+          const uten = json.data.filter((c) => c.type === 'utensils' && c.active && !legacyAliases.has(c.slug));
 
           const newLabels = { ...labels };
           json.data.forEach((c) => {
@@ -227,7 +358,12 @@ export default function Header() {
               href: '/appliances',
               children: app.length > 0 ? app.map((c) => c.slug) : nav[1].children
             },
-            nav[2]
+            {
+              key: 'utensils',
+              href: '/utensils',
+              children: uten.length > 0 ? uten.map((c) => c.slug) : nav[2].children
+            },
+            nav[3]
           ]);
         }
       })
@@ -684,23 +820,44 @@ export default function Header() {
       <nav className={styles.desktopNav} aria-label="Main desktop navigation">
         <div className={styles.navInner}>
           {dynamicNav.map((item) => (
-            <div className={styles.navItem} key={item.href}>
+            <div 
+              className={styles.navItem} 
+              key={item.href}
+              onMouseEnter={() => setActiveDropdown(item.key)}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
               <Link
                 className={pathname === item.href ? styles.active : ''}
                 href={item.href}
+                onClick={() => setActiveDropdown(null)}
               >
                 {tr(locale, item.key)}
               </Link>
-              {item.children && (
-                <div className={styles.dropdown}>
-                  {item.children.map((slug) => (
-                    <Link
-                      key={slug}
-                      href={item.href.startsWith('/rooms') ? `/rooms/${slug}` : `${item.href}/${slug}`}
+              {item.children && activeDropdown === item.key && (
+                <div className={`${styles.dropdown} ${item.key === 'rooms' ? styles.dropdownRooms : ''}`}>
+                  <div className={styles.dropdownGrid}>
+                    {item.children.map((slug) => (
+                      <Link
+                        key={slug}
+                        href={item.href.startsWith('/rooms') ? `/rooms/${slug}` : `${item.href}/${slug}`}
+                        className={styles.dropdownLink}
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <span className={styles.dropdownBullet}></span>
+                        <span className={styles.dropdownText}>{categoryLabels[slug] || slug.replace(/-/g, ' ')}</span>
+                      </Link>
+                    ))}
+                  </div>
+                  <div className={styles.dropdownFooter}>
+                    <Link 
+                      href={item.href} 
+                      className={styles.viewAllLink}
+                      onClick={() => setActiveDropdown(null)}
                     >
-                      {categoryLabels[slug] || slug.replace(/-/g, ' ')}
+                      <span>Explore all {item.key === 'furniture' ? 'furnitures' : item.key === 'rooms' ? 'rooms' : item.key}</span>
+                      <Icon name="arrow" size={12} />
                     </Link>
-                  ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -857,7 +1014,33 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Grid 3: Shop by Room (Text Only in Grids) */}
+            {/* Grid 3: Utensils & Kitchenware */}
+            <div className={styles.drawerSection}>
+              <div className={styles.drawerSectionHeader}>
+                <span className={styles.drawerSectionTitle}>Utensils & Kitchenware</span>
+                <Link href="/utensils" onClick={closeMenu} className={styles.drawerSectionAllLink}>
+                  <span>View All →</span>
+                </Link>
+              </div>
+
+              <div className={styles.categoryGrid}>
+                {utensilsGrid.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className={styles.categoryCard}
+                  >
+                    <div className={styles.cardContent}>
+                      <span className={styles.cardTitle}>{item.label}</span>
+                      <span className={styles.cardDesc}>{item.desc}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Grid 4: Shop by Room (Text Only in Grids) */}
             <div className={styles.drawerSection}>
               <div className={styles.drawerSectionHeader}>
                 <span className={styles.drawerSectionTitle}>Curated by Room</span>

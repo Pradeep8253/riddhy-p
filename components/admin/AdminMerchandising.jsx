@@ -302,25 +302,6 @@ export default function AdminMerchandising() {
           <h1>Collections &amp; Merchandising Rails</h1>
           <p>Control product ordering, tags, and pin overrides for storefront carousels and tag collections.</p>
         </div>
-        <div className={styles.headActions}>
-          <button
-            type="button"
-            className={styles.btnPrimary}
-            onClick={() => setAddModalOpen(true)}
-          >
-            <Plus size={16} />
-            <span>+ Add Products to Collection</span>
-          </button>
-          <button
-            type="button"
-            className={styles.btnSecondary}
-            onClick={handleRecompute}
-            disabled={recomputing}
-          >
-            <RefreshCw size={14} className={recomputing ? 'animate-spin' : ''} />
-            <span>{recomputing ? 'Recomputing Tags...' : 'Recompute Tags Now'}</span>
-          </button>
-        </div>
       </div>
 
       {/* Collection Tabs */}
@@ -390,6 +371,7 @@ export default function AdminMerchandising() {
             <option value="all">All Types</option>
             <option value="furniture">Furniture</option>
             <option value="appliance">Appliance</option>
+            <option value="utensils">Utensils</option>
           </select>
 
           <select
@@ -478,7 +460,7 @@ export default function AdminMerchandising() {
                   <td colSpan={10}>
                     <div className={styles.emptyState}>
                       <div className={styles.emptyStateTitle}>No products found in this rail</div>
-                      <p>Click &quot;+ Add Products to Collection&quot; above to search and pin products, or run &quot;Recompute Tags Now&quot;.</p>
+                      <p>No products currently assigned to this collection rail.</p>
                     </div>
                   </td>
                 </tr>

@@ -763,6 +763,7 @@ export default function AdminProductDrawer({
                   >
                     <option value="furniture">Furniture</option>
                     <option value="appliance">Appliance</option>
+                    <option value="utensils">Utensils</option>
                   </select>
                 </div>
 

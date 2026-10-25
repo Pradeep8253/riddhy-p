@@ -565,6 +565,7 @@ export default function AdminCatalogue() {
             <option value="all">All Types</option>
             <option value="furniture">Furniture</option>
             <option value="appliance">Appliances</option>
+            <option value="utensils">Utensils</option>
           </select>
 
           {/* Category Filter */}

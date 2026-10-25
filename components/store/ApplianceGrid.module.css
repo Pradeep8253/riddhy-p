@@ -69,7 +69,7 @@
   transform: scale(1.05);
 }
 
-.visual span {
+.badge360 {
   position: absolute;
   right: 7px;
   bottom: 7px;
@@ -79,6 +79,8 @@
   background: rgba(255, 254, 250, 0.86);
   font-size: 8px;
   font-weight: 900;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .details {
@@ -207,4 +209,112 @@
   .details b {
     font-size: 10px;
   }
+}
+
+/* ========== MULTI-IMAGE SEQUENCE CARD (07) ========== */
+.sequenceCard {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(31, 95, 46, 0.22) !important;
+}
+
+.sequenceCard:hover {
+  border-color: var(--rf-green-700, #1f5f2e) !important;
+  box-shadow: 0 12px 30px rgba(16, 38, 26, 0.14) !important;
+  transform: translateY(-5px);
+}
+
+.sequenceVisual {
+  position: relative;
+  display: block;
+  aspect-ratio: 1/1;
+  margin: 9px 0 10px;
+  overflow: hidden;
+  border-radius: 13px;
+  background: #FAF8F5;
+}
+
+.sequenceSlide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.96);
+  transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s ease;
+  pointer-events: none;
+}
+
+.sequenceSlideActive {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.sequenceSlide img {
+  object-fit: contain !important;
+  padding: 0;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sequenceCard:hover .sequenceSlideActive img {
+  transform: scale(1.06);
+}
+
+.sequenceBadge {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  bottom: auto;
+  left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--rf-green-800, #1b5228);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  z-index: 4;
+  box-shadow: 0 2px 6px rgba(16, 40, 27, 0.25);
+  pointer-events: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.sequenceDots {
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  z-index: 4;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 4px rgba(16, 40, 27, 0.12);
+  pointer-events: none;
+}
+
+.sequenceDot {
+  display: block;
+  width: 3.5px;
+  height: 3.5px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(31, 95, 46, 0.3);
+  transition: all 0.25s ease;
+}
+
+.sequenceDotActive {
+  width: 9px;
+  border-radius: 999px;
+  background: var(--rf-green-700, #1f5f2e);
 }

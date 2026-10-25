@@ -128,8 +128,9 @@ export default function AdminCategories() {
     const total = categories.length;
     const furniture = categories.filter((c) => c.type === "furniture").length;
     const appliances = categories.filter((c) => c.type === "appliance").length;
+    const utensils = categories.filter((c) => c.type === "utensils").length;
     const totalProds = categories.reduce((sum, c) => sum + (c.productCount || 0), 0);
-    return { total, furniture, appliances, totalProds };
+    return { total, furniture, appliances, utensils, totalProds };
   }, [categories]);
 
   // Slug generator helper
@@ -453,6 +454,13 @@ export default function AdminCategories() {
             >
               Appliances
             </button>
+            <button
+              type="button"
+              className={`${styles.pillBtn} ${typeFilter === "utensils" ? styles.pillBtnActive : ""}`}
+              onClick={() => setTypeFilter("utensils")}
+            >
+              Utensils
+            </button>
           </div>
 
           {/* Status Filter */}
@@ -501,8 +509,19 @@ export default function AdminCategories() {
         <div className={styles.grid}>
           {filtered.map((cat) => {
             const isFurniture = cat.type === "furniture";
-            const storeUrl = isFurniture ? `/furniture/${cat.slug}` : `/appliances/${cat.slug}`;
-            const imgSrc = cat.image || (isFurniture ? "/images/category-sofas.webp" : "/images/category-refrigerators.webp");
+            const storeUrl =
+              cat.type === "furniture"
+                ? `/furniture/${cat.slug}`
+                : cat.type === "utensils"
+                  ? `/utensils/${cat.slug}`
+                  : `/appliances/${cat.slug}`;
+            const imgSrc =
+              cat.image ||
+              (isFurniture
+                ? "/images/category-sofas.webp"
+                : cat.type === "utensils"
+                  ? "/images/category-dinner-set.webp"
+                  : "/images/category-refrigerators.webp");
 
             return (
               <div
@@ -673,7 +692,7 @@ export default function AdminCategories() {
                       required
                     />
                     <span className={styles.fieldHint}>
-                      Used in URL: /{formData.type === "appliance" ? "appliances" : "furniture"}/{formData.slug || "slug"}
+                      Used in URL: /{formData.type === "appliance" ? "appliances" : formData.type === "utensils" ? "utensils" : "furniture"}/{formData.slug || "slug"}
                     </span>
                   </div>
 
@@ -689,12 +708,15 @@ export default function AdminCategories() {
                           image:
                             val === "appliance"
                               ? "/images/category-refrigerators.webp"
-                              : "/images/category-sofas.webp",
+                              : val === "utensils"
+                                ? "/images/category-dinner-set.webp"
+                                : "/images/category-sofas.webp",
                         }));
                       }}
                     >
                       <option value="furniture">Furniture</option>
                       <option value="appliance">Appliance</option>
+                      <option value="utensils">Utensils</option>
                     </select>
                   </div>
                 </div>

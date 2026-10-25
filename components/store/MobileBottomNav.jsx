@@ -37,6 +37,7 @@ export default function MobileBottomNav() {
   const isCatalogActive =
     pathname?.startsWith('/furniture') ||
     pathname?.startsWith('/appliances') ||
+    pathname?.startsWith('/utensils') ||
     pathname?.startsWith('/search');
   const isWishlistActive = pathname?.startsWith('/account/wishlist');
   const isAccountActive = pathname?.startsWith('/account') && !isWishlistActive;

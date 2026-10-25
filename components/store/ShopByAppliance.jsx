@@ -23,15 +23,6 @@ export default function ShopByAppliance({ categories, className = '', style }) {
           }
         />
         <ApplianceGrid categories={categories} />
-        <div className={styles.note}>
-          <span>
-            Every product page puts dimensions and service options upfront.
-          </span>
-          <Link href="/policies/warranty" className={styles.link}>
-            Understand cover{' '}
-            <Icon name="arrow" size={15} />
-          </Link>
-        </div>
       </div>
     </section>
   );

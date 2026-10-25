@@ -25,7 +25,7 @@ const productSchema = z
       .string()
       .trim()
       .regex(/^[A-Z0-9-]{3,40}$/),
-    type: z.enum(["furniture", "appliance"]),
+    type: z.enum(["furniture", "appliance", "utensils"]),
     modelType: z.string().max(40).optional(),
     category: z.string().min(2),
     brand: z.string().min(1).default("RF Riddhy"),

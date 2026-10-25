@@ -9,7 +9,7 @@ const updateSchema = z.object({
   name: z.string().min(2, 'Name is required').max(100).optional(),
   name_hi: z.string().optional(),
   slug: z.string().min(2).max(100).regex(/^[a-z0-9-]+$/).optional(),
-  type: z.enum(['furniture', 'appliance']).optional(),
+  type: z.enum(['furniture', 'appliance', 'utensils']).optional(),
   room: z.string().optional(),
   image: z.string().optional(),
   imageKey: z.string().optional(),
