@@ -15,7 +15,6 @@ import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import ServiceabilityChecker from '@/components/store/ServiceabilityChecker';
 import ProductRail from '@/components/store/ProductRail';
-import DimensionDiagram from './DimensionDiagram';
 import {
   getLocalizedProductName,
   getLocalizedProductTagline,
@@ -86,7 +85,6 @@ export default function ProductDetailClient({ product, related = [] }) {
 
   const [activeMedia, setActiveMedia] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [view, setView] = useState('photo');
   const [qty, setQty] = useState(1);
   const isAppliance = product.type === 'appliance';
   const finishOptions = isAppliance ? defaultApplianceFinishes : defaultFurnitureFinishes;
@@ -128,7 +126,7 @@ export default function ProductDetailClient({ product, related = [] }) {
           '10-Day Safe Transit Guarantee'
         ]);
       }
-    } catch {}
+    } catch { }
   }, [deliveryDateStr]);
 
   const handlePincodeCheck = async (e) => {
@@ -158,7 +156,7 @@ export default function ProductDetailClient({ product, related = [] }) {
         ]);
         try {
           localStorage.setItem('rf_pincode', pincode);
-        } catch {}
+        } catch { }
       } else {
         setPinStatus('error');
         setPinMessage(data.error?.message || 'Delivery not yet available for this PIN code');
@@ -214,14 +212,13 @@ export default function ProductDetailClient({ product, related = [] }) {
   // Keyboard navigation for image cycling and lightbox
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (view !== 'photo') return;
       if (e.key === 'ArrowLeft') prevMedia();
       if (e.key === 'ArrowRight') nextMedia();
       if (e.key === 'Escape' && lightboxOpen) setLightboxOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [view, lightboxOpen, prevMedia, nextMedia]);
+  }, [lightboxOpen, prevMedia, nextMedia]);
 
   const handleTouchStart = (e) => {
     touchStartXRef.current = e.touches[0].clientX;
@@ -366,114 +363,78 @@ export default function ProductDetailClient({ product, related = [] }) {
                 onTouchEnd={handleTouchEnd}
                 tabIndex={0}
               >
-                {view === 'photo' && (
+                <Image
+                  src={media[activeMedia]?.src || product.image}
+                  alt={media[activeMedia]?.alt || product.name}
+                  fill
+                  priority
+                  sizes="(max-width: 900px) 100vw, 52vw"
+                  placeholder="blur"
+                  blurDataURL={IMG.blurDataURL}
+                  onClick={() => setLightboxOpen(true)}
+                  className={styles.mainMediaImg}
+                  unoptimized={Boolean(
+                    (media[activeMedia]?.src || product.image)?.startsWith('/api/files/') ||
+                    (media[activeMedia]?.src || product.image)?.startsWith('/uploads/')
+                  )}
+                />
+
+                {/* Stock / Highlight Badges */}
+                <div className={styles.mediaBadgesRow}>
+                  {discountPercent > 0 && (
+                    <span className={styles.discountBadge}>
+                      Save {discountPercent}%
+                    </span>
+                  )}
+                  {product.tags?.includes('best-selling') && (
+                    <span className={styles.bestSellerBadge}>
+                      ★ Best Seller
+                    </span>
+                  )}
+                  {product.warranty?.period && (
+                    <span className={styles.warrantyTagBadge}>
+                      🛡️ {product.warranty.period}
+                    </span>
+                  )}
+                </div>
+
+
+                {/* Zoom / Lightbox Trigger */}
+                <button
+                  type="button"
+                  className={styles.zoomTriggerBtn}
+                  onClick={() => setLightboxOpen(true)}
+                  title="Inspect texture in full zoom"
+                  aria-label="Inspect texture in full zoom"
+                >
+                  <Icon name="search" size={16} />
+                </button>
+
+                {/* Navigation Controls */}
+                {media.length > 1 && (
                   <>
-                    <Image
-                      src={media[activeMedia]?.src || product.image}
-                      alt={media[activeMedia]?.alt || product.name}
-                      fill
-                      priority
-                      sizes="(max-width: 900px) 100vw, 52vw"
-                      placeholder="blur"
-                      blurDataURL={IMG.blurDataURL}
-                      onClick={() => setLightboxOpen(true)}
-                      className={styles.mainMediaImg}
-                      unoptimized={Boolean(
-                        (media[activeMedia]?.src || product.image)?.startsWith('/api/files/') ||
-                        (media[activeMedia]?.src || product.image)?.startsWith('/uploads/')
-                      )}
-                    />
-
-                    {/* Stock / Highlight Badges */}
-                    <div className={styles.mediaBadgesRow}>
-                      {discountPercent > 0 && (
-                        <span className={styles.discountBadge}>
-                          Save {discountPercent}%
-                        </span>
-                      )}
-                      {product.tags?.includes('best-selling') && (
-                        <span className={styles.bestSellerBadge}>
-                          ★ Best Seller
-                        </span>
-                      )}
-                      {product.warranty?.period && (
-                        <span className={styles.warrantyTagBadge}>
-                          🛡️ {product.warranty.period}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* View Angle Badge */}
-                    <div className={styles.viewAngleBadge}>
-                      <span className={styles.viewAngleBadgeDot} />
-                      <span>{viewLabels[media[activeMedia]?.view] || 'Product View'}</span>
-                    </div>
-
-                    {/* Zoom / Lightbox Trigger */}
                     <button
                       type="button"
-                      className={styles.zoomTriggerBtn}
-                      onClick={() => setLightboxOpen(true)}
-                      title="Inspect texture in full zoom"
-                      aria-label="Inspect texture in full zoom"
+                      className={`${styles.galleryNavBtn} ${styles.galleryNavPrev}`}
+                      onClick={(e) => { e.stopPropagation(); prevMedia(); }}
+                      aria-label="Previous product image"
                     >
-                      <Icon name="search" size={16} />
+                      <Icon name="chevronLeft" size={20} />
                     </button>
-
-                    {/* Navigation Controls */}
-                    {media.length > 1 && (
-                      <>
-                        <button
-                          type="button"
-                          className={`${styles.galleryNavBtn} ${styles.galleryNavPrev}`}
-                          onClick={(e) => { e.stopPropagation(); prevMedia(); }}
-                          aria-label="Previous product image"
-                        >
-                          <Icon name="chevronLeft" size={20} />
-                        </button>
-                        <button
-                          type="button"
-                          className={`${styles.galleryNavBtn} ${styles.galleryNavNext}`}
-                          onClick={(e) => { e.stopPropagation(); nextMedia(); }}
-                          aria-label="Next product image"
-                        >
-                          <Icon name="chevronRight" size={20} />
-                        </button>
-                      </>
-                    )}
+                    <button
+                      type="button"
+                      className={`${styles.galleryNavBtn} ${styles.galleryNavNext}`}
+                      onClick={(e) => { e.stopPropagation(); nextMedia(); }}
+                      aria-label="Next product image"
+                    >
+                      <Icon name="chevronRight" size={20} />
+                    </button>
                   </>
                 )}
-
-                {view === 'dimensions' && (
-                  <div className={styles.diagram}>
-                    <DimensionDiagram dimensions={dims} />
-                    <span>Exact dimensions for room planning. Check entryway clearances before ordering.</span>
-                  </div>
-                )}
-
-                {/* View Tabs */}
-                <div className={styles.viewTabs} role="tablist" aria-label="Media view options">
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={view === 'photo'}
-                    onClick={() => setView('photo')}
-                  >
-                    Photos ({media.length})
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={view === 'dimensions'}
-                    onClick={() => setView('dimensions')}
-                  >
-                    Blueprint & Dimensions
-                  </button>
-                </div>
               </div>
 
               {/* Thumbnail Strip */}
-              {view === 'photo' && media.length > 1 && (
+              {media.length > 1 && (
                 <div className={styles.thumbs}>
                   {media.map((item, index) => (
                     <button
@@ -494,9 +455,6 @@ export default function ProductDetailClient({ product, related = [] }) {
                           (item.thumb || item.src)?.startsWith('/uploads/')
                         )}
                       />
-                      <span className={styles.thumbBadge}>
-                        {viewLabels[item.view]?.split(' ')[0] || `V${index + 1}`}
-                      </span>
                     </button>
                   ))}
                 </div>
@@ -739,9 +697,9 @@ export default function ProductDetailClient({ product, related = [] }) {
                     <b className={styles.dimVal}>{dims.width} × {dims.depth} × {dims.height} cm</b>
                     <small className={styles.dimSub}>Width × Depth × Height · Doorway clearance verified</small>
                   </div>
-                  <button type="button" className={styles.dimBtn} onClick={() => setView('dimensions')}>
-                    View Blueprint <Icon name="arrow" size={14} />
-                  </button>
+                  <a href="#specs" className={styles.dimBtn}>
+                    View Specs <Icon name="arrow" size={14} />
+                  </a>
                 </div>
               )}
 
@@ -787,8 +745,8 @@ export default function ProductDetailClient({ product, related = [] }) {
                   {!hasValidPrice
                     ? 'Currently Unavailable'
                     : isAvailable
-                    ? `Add to Bag · ${formatPriceSafe(product.price * qty)}`
-                    : 'Out of Stock'}
+                      ? `Add to Bag · ${formatPriceSafe(product.price * qty)}`
+                      : 'Out of Stock'}
                 </Button>
 
                 <button
@@ -800,16 +758,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                   Buy Now
                 </button>
 
-                <button
-                  type="button"
-                  className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlistedActive : ''}`}
-                  onClick={handleWishlist}
-                  aria-label={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
-                  aria-pressed={isWishlisted}
-                  title={isWishlisted ? 'Saved in wishlist' : 'Save to wishlist'}
-                >
-                  <Icon name="heart" size={20} />
-                </button>
+
               </div>
 
               {/* VIP Direct WhatsApp Concierge Card */}
@@ -1147,8 +1096,8 @@ export default function ProductDetailClient({ product, related = [] }) {
             {!hasValidPrice
               ? 'Unavailable'
               : isAvailable
-              ? 'Add to Bag'
-              : 'Out of Stock'}
+                ? 'Add to Bag'
+                : 'Out of Stock'}
           </Button>
         </div>
       </div>
