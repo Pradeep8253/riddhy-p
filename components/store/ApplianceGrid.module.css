@@ -60,9 +60,10 @@
 
 .visual img {
   object-fit: contain !important;
-  padding: 10px;
+  padding: 0px;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 
 .card:hover .visual img {
   transform: scale(1.05);
