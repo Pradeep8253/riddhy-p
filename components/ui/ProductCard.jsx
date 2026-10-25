@@ -21,11 +21,21 @@ import QuickViewModal from "./QuickViewModal";
 import { getProductWhatsAppUrl } from "@/lib/site-config";
 import styles from "./ProductCard.module.css";
 
+function truncateTitle(str, maxLen) {
+  if (!str) return "";
+  const trimmed = str.trim();
+  if (trimmed.length <= maxLen) return trimmed;
+  return trimmed.slice(0, maxLen).trim() + "...";
+}
+
 export default function ProductCard({ product, compact = false }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const locale = useSelector((state) => state.ui?.locale || "en");
+  const fullTitle = getLocalizedProductName(product, locale) || product.name || "";
+  const desktopTitle = truncateTitle(fullTitle, 35);
+  const mobileTitle = truncateTitle(fullTitle, 21);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
   const wishlisted = useSelector((state) =>
     Boolean(
@@ -224,8 +234,13 @@ export default function ProductCard({ product, compact = false }) {
             locale,
           )}
         </div>
-        <Link href={`/product/${product.slug}`} className={styles.name}>
-          {getLocalizedProductName(product, locale)}
+        <Link
+          href={`/product/${product.slug}`}
+          className={styles.name}
+          title={fullTitle}
+        >
+          <span className={styles.nameDesktop}>{desktopTitle}</span>
+          <span className={styles.nameMobile}>{mobileTitle}</span>
         </Link>
         {!compact && product.tagline && (
           <p className={styles.tagline}>

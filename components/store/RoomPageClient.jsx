@@ -54,7 +54,7 @@ export default function RoomPageClient({ room, image, products }) {
 
       <div className={styles.bottom}>
         <Link href="/appliances">
-          Explore appliances for this room <Icon name="arrow" size={15} />
+          Explore appliances for this room...
         </Link>
       </div>
     </>
