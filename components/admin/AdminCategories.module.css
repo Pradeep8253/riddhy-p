@@ -733,3 +733,171 @@
   align-items: center;
   gap: 12px;
 }
+
+/* ========== TABLET (768px - 1023px) ========== */
+@media (max-width: 1023px) {
+  .head {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .searchBox {
+    max-width: 100%;
+    width: 100%;
+  }
+  .filters {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== MOBILE (481px - 767px) ========== */
+@media (max-width: 767px) {
+  .head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .headerActions {
+    width: 100%;
+  }
+  .createBtn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .metricCard {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .metricIcon {
+    width: 38px;
+    height: 38px;
+  }
+  .metricValue {
+    font-size: 18px;
+  }
+  .toolbar {
+    padding: 12px;
+    border-radius: 12px;
+    gap: 10px;
+  }
+  .searchBox {
+    min-height: 44px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .filterPills {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .filterPills::-webkit-scrollbar {
+    display: none;
+  }
+  .pillBtn {
+    min-height: 38px;
+    padding: 0 14px;
+    flex-shrink: 0;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+  .modalOverlay {
+    padding: 8px;
+    align-items: flex-end;
+  }
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 18px 18px 0 0;
+  }
+  .modalHeader {
+    padding: 16px;
+  }
+  .modalBody {
+    padding: 16px;
+  }
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .modalFooter {
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    flex-direction: column-reverse;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .cancelBtn,
+  .saveBtn {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
+}
+
+/* ========== SMALL MOBILE (320px - 480px) ========== */
+@media (max-width: 480px) {
+  .head h1 {
+    font-size: 24px;
+  }
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  .cardTop {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .thumbnailWrap {
+    width: 60px;
+    height: 60px;
+  }
+  .cardFooter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .actionBtns {
+    justify-content: flex-end;
+  }
+  .iconBtn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .head h1 {
+    font-size: 20px;
+  }
+}
+

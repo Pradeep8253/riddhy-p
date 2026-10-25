@@ -470,9 +470,19 @@
     min-width: 44px;
     min-height: 44px;
   }
+  .tabsNav {
+    padding: 0 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tabsNav::-webkit-scrollbar {
+    display: none;
+  }
   .tabBtn {
     min-height: 44px;
     padding: 10px 12px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .btnPrimary,
   .btnSecondary,

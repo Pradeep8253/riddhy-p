@@ -368,7 +368,7 @@
 .ctaCard {
   position: relative;
   overflow: hidden;
-  max-width: 960px;
+  max-width: unset;
   margin: 0 auto;
   padding: clamp(48px, 6vw, 76px) clamp(24px, 5vw, 64px);
   background: linear-gradient(145deg, #fffefa 0%, #f9f4ea 100%);
@@ -379,7 +379,7 @@
 }
 
 .ctaContent {
-  max-width: 640px;
+  max-width: 90%;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -643,12 +643,12 @@
 
 .pillarsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 20px;
 }
 
 .pillarCard {
-  padding: 28px;
+  padding: 20px;
   border-radius: 18px;
   background: #ffffff;
   border: 1px solid var(--rf-line);
@@ -783,25 +783,32 @@
   .heroGrid {
     grid-template-columns: 1fr;
   }
+
   .categoryGrid {
     grid-template-columns: 1fr;
   }
+
   .commitmentGrid {
     grid-template-columns: 1fr;
   }
+
   .beliefsGrid {
     grid-template-columns: 1fr;
   }
+
   .duoGrid {
     grid-template-columns: 1fr;
   }
+
   .careTimelineGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .metricsGrid {
     grid-template-columns: 1fr;
     gap: 28px;
   }
+
   .showroomCard {
     grid-template-columns: 1fr;
   }
@@ -811,6 +818,7 @@
   .careTimelineGrid {
     grid-template-columns: 1fr;
   }
+
   .ctaButtonsGroup {
     flex-direction: column;
     align-items: stretch;
@@ -823,30 +831,38 @@
     grid-template-columns: 1fr;
     gap: 36px;
   }
+
   .categoryGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .commitmentGrid {
     grid-template-columns: 1fr;
     gap: 36px;
   }
+
   .beliefsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .duoGrid {
     grid-template-columns: 1fr;
   }
+
   .careTimelineGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .metricsGrid {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
+
   .showroomCard {
     grid-template-columns: 1fr;
     gap: 32px;
   }
+
   .ctaCard {
     padding: 36px 24px;
   }
@@ -857,39 +873,48 @@
   .hero {
     padding: 36px 0;
   }
+
   .heroTitle {
     font-size: 32px;
     line-height: 1.1;
   }
+
   .categoryGrid {
     grid-template-columns: 1fr;
   }
+
   .beliefsGrid {
     grid-template-columns: 1fr;
   }
+
   .careTimelineGrid {
     grid-template-columns: 1fr;
   }
+
   .metricsGrid {
     grid-template-columns: 1fr;
     gap: 24px;
   }
+
   .showroomActions {
     flex-direction: column;
     align-items: stretch;
   }
+
   .showroomBtn,
   .directionsLink {
     width: 100%;
     justify-content: center;
     min-height: 48px;
   }
+
   .ctaButtons,
   .ctaButtonsGroup {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
   }
+
   .ctaPrimary,
   .ctaSecondary,
   .ctaGold,
@@ -899,6 +924,7 @@
     justify-content: center;
     min-height: 48px;
   }
+
   .ctaCard {
     padding: 28px 16px;
     border-radius: var(--radius-lg);
@@ -910,12 +936,14 @@
   .heroTitle {
     font-size: 28px;
   }
+
   .storyContent h2,
   .sectionHead h2,
   .sectionHeader h2,
   .ctaContent h2 {
     font-size: 24px;
   }
+
   .beliefCard,
   .duoCard,
   .showroomCard,
@@ -924,6 +952,7 @@
     padding: 20px 14px;
     border-radius: var(--radius-md);
   }
+
   .showroomHoursBlock {
     padding: 16px 12px;
   }
@@ -934,9 +963,11 @@
   .heroTitle {
     font-size: 24px;
   }
+
   .metricItem b {
     font-size: 34px;
   }
+
   .storyContent p,
   .heroSubtitle,
   .beliefCard p,
@@ -945,5 +976,3 @@
     font-size: 13px;
   }
 }
-
-

@@ -107,7 +107,7 @@ export default function Footer() {
           </Link>
 
           <p className={styles.brandMission}>
-            Thoughtful furniture. Dependable appliances. Enduring craft designed for real Indian living.
+            Premium furniture and appliances for retail, wholesale, marriage packages, and custom orders — crafted with lasting quality for real Indian living. From everyday essentials to fancy, on-demand designs, we bring trusted craftsmanship to every home and business.
           </p>
 
           <p className={styles.hindiTagline}>{siteConfig.hindiTagline}</p>

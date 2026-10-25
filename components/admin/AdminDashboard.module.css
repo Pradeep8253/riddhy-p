@@ -770,6 +770,19 @@
     align-items: center;
     justify-content: center;
   }
+  .customDateContainer {
+    width: 100%;
+  }
+  .customDateBar {
+    width: 100%;
+    justify-content: space-between;
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+  .customDateBar input {
+    min-height: 34px;
+    flex: 1;
+  }
   .refreshBtn {
     min-height: 44px;
     min-width: 44px;

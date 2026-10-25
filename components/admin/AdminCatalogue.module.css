@@ -751,6 +751,26 @@
     min-height: 44px;
     justify-content: center;
   }
+  .toolbar {
+    padding: 12px;
+  }
+  .toolbarLeft,
+  .toolbarRight {
+    width: 100%;
+    min-width: 100%;
+  }
+  .searchBox {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  .searchInput {
+    min-height: 44px;
+  }
+  .filterBtn {
+    min-height: 44px;
+    flex: 1;
+    justify-content: center;
+  }
   .tableContainer {
     width: 100%;
     overflow: hidden;

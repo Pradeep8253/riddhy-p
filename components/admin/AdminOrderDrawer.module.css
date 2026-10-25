@@ -376,6 +376,19 @@
     min-width: 44px;
     min-height: 44px;
   }
+  .tabs {
+    padding: 0 12px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    min-height: 44px;
+    padding: 8px 12px;
+    flex-shrink: 0;
+  }
   .btnPrimary,
   .btnSecondary,
   .btnDanger {
