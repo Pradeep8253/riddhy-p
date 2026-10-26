@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
-import { formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import styles from './AccountDashboard.module.css';
 

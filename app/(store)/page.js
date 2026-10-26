@@ -1,31 +1,41 @@
-import Hero from '@/components/store/Hero';
-import HomePromotionalBanner from '@/components/store/HomePromotionalBanner';
-import WarrantyBanner from '@/components/store/WarrantyBanner';
-import Marquee from '@/components/store/Marquee';
-import RoomCards from '@/components/store/RoomCards';
-import ShopByAppliance from '@/components/store/ShopByAppliance';
-import TagRail from '@/components/store/TagRail';
-import CampaignSection from '@/components/store/CampaignSection';
-import WarrantyPromise from '@/components/store/WarrantyPromise';
-import DeliveryTimeline from '@/components/store/DeliveryTimeline';
-import ReviewWall from '@/components/store/ReviewWall';
-import ServiceabilityChecker from '@/components/store/ServiceabilityChecker';
-import ShopTheLookHotspots from '@/components/store/ShopTheLookHotspots';
-import RoomPlaygroundLoader from '@/components/three/RoomPlaygroundLoader';
-import SectionHeading from '@/components/ui/SectionHeading';
-import Button from '@/components/ui/Button';
-import Icon from '@/components/ui/Icon';
-import { getProductsByTag, getProducts, getCatalogProduct, getCategories, getCampaigns } from '@/lib/catalogue';
+import Hero from "@/components/store/Hero";
+import HomePromotionalBanner from "@/components/store/HomePromotionalBanner";
+import WarrantyBanner from "@/components/store/WarrantyBanner";
+import Marquee from "@/components/store/Marquee";
+import RoomCards from "@/components/store/RoomCards";
+import ShopByAppliance from "@/components/store/ShopByAppliance";
+import TagRail from "@/components/store/TagRail";
+import CampaignSection from "@/components/store/CampaignSection";
+import WarrantyPromise from "@/components/store/WarrantyPromise";
+import DeliveryTimeline from "@/components/store/DeliveryTimeline";
+import ReviewWall from "@/components/store/ReviewWall";
+import ServiceabilityChecker from "@/components/store/ServiceabilityChecker";
+import ShopTheLookHotspots from "@/components/store/ShopTheLookHotspots";
+import RoomPlaygroundLoader from "@/components/three/RoomPlaygroundLoader";
+import ExploreOurRange from "@/components/store/ExploreOurRange";
+import SectionHeading from "@/components/ui/SectionHeading";
+import Button from "@/components/ui/Button";
+import Icon from "@/components/ui/Icon";
+import {
+  getProductsByTag,
+  getProducts,
+  getCatalogProduct,
+  getCategories,
+  getCampaigns,
+  getCatalogue,
+} from "@/lib/catalogue";
 
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'Furniture & Home Appliances for Thoughtful Living',
-  description: 'Explore room-ready furniture and dependable home appliances, with delivery, installation and warranty details made clear.'
+  title: "Furniture & Home Appliances for Thoughtful Living",
+  description:
+    "Explore room-ready furniture and dependable home appliances, with delivery, installation and warranty details made clear.",
 };
 
 export default async function HomePage() {
   const [
+    catalogueProducts,
     bestsellers,
     trending,
     newArrivals,
@@ -34,71 +44,60 @@ export default async function HomePage() {
     sofaProduct,
     lampProduct,
     consoleProduct,
-    playgroundPiecesResult
+    playgroundPiecesResult,
   ] = await Promise.all([
-    getProductsByTag('best-selling', 10),
-    getProductsByTag('trending', 10),
-    getProductsByTag('new-arrival', 10),
-    getCategories('appliances'),
-    getCampaigns('home-hero'),
-    getCatalogProduct('mira-3-seater-sofa'),
-    getCatalogProduct('aangan-accent-lamp'),
+    getCatalogue(),
+    getProductsByTag("best-selling", 10),
+    getProductsByTag("trending", 10),
+    getProductsByTag("new-arrival", 10),
+    getCategories("appliances"),
+    getCampaigns("home-hero"),
+    getCatalogProduct("mira-3-seater-sofa"),
+    getCatalogProduct("aangan-accent-lamp"),
+    getCatalogProduct("sajilo-shoe-cabinet"),
+    getProducts({ limit: 4 }),
   ]);
 
   const curatedLook = {
-    roomName: 'Curated Living Room',
-    tagline: 'Balanced warmth, natural woods, and everyday comfort',
-    image: '/images/room-living.webp?v=20261023',
+    roomName: "Curated Living Room",
+    tagline: "Balanced warmth, natural woods, and everyday comfort",
+    image: "/images/room-living.webp?v=20261023",
     hotspots: [
       {
-        id: 'sofa-hotspot',
-        top: '60%',
-        left: '50%',
-        product: sofaProduct || {
-          id: 'demo-mira-3-seater-sofa',
-          slug: 'mira-3-seater-sofa',
-          sku: 'RF-0101-DEMO',
-          name: 'Mira 3-Seater Sofa',
-          tagline: 'Soft sage upholstery with solid wood base',
-          categoryLabel: 'Sofas & Sectionals',
-          price: 50000,
-          mrp: 58800,
-          image: '/images/products/mira-3-seater-sofa/front.webp'
-        }
+        id: "sofa-hotspot",
+        top: "60%",
+        left: "50%",
+        product:
+          sofaProduct ||
+          catalogueProducts.find((p) => p.type === "furniture") ||
+          catalogueProducts[0] ||
+          null,
       },
       {
-        id: 'decor-hotspot',
-        top: '32%',
-        left: '68%',
-        product: lampProduct || {
-          id: 'demo-aangan-accent-lamp',
-          slug: 'aangan-accent-lamp',
-          sku: 'RF-0701-DEMO',
-          name: 'Aangan Accent Lamp',
-          tagline: 'Warm diffused glow for evening calm',
-          categoryLabel: 'Home Décor',
-          price: 2490,
-          mrp: 2990,
-          image: '/images/products/aangan-accent-lamp/front.webp'
-        }
+        id: "decor-hotspot",
+        top: "32%",
+        left: "68%",
+        product:
+          lampProduct ||
+          catalogueProducts.find(
+            (p) => p.category === "decor" || p.modelType === "decor",
+          ) ||
+          catalogueProducts[1] ||
+          null,
       },
       {
-        id: 'table-hotspot',
-        top: '66%',
-        left: '14%',
-        product: consoleProduct || {
-          id: 'demo-sajilo-shoe-cabinet',
-          slug: 'sajilo-shoe-cabinet',
-          sku: 'RF-0802-DEMO',
-          name: 'Sajilo Storage Console',
-          tagline: 'Closed storage with warm natural grain',
-          categoryLabel: 'Storage & Shelving',
-          price: 18990,
-          mrp: 23990,
-          image: '/images/products/sajilo-shoe-cabinet/front.webp'
-        }
-      }
-    ]
+        id: "table-hotspot",
+        top: "66%",
+        left: "14%",
+        product:
+          consoleProduct ||
+          catalogueProducts.find(
+            (p) => p.category === "storage" || p.modelType === "storage",
+          ) ||
+          catalogueProducts[2] ||
+          null,
+      },
+    ].filter((h) => h.product),
   };
 
   return (
@@ -109,6 +108,8 @@ export default async function HomePage() {
       <WarrantyBanner />
       <Marquee />
 
+      {/* Explore Our Range - Harivan Organics Style for Furnitures, Appliances & Utensils */}
+
       {/* 1. Shop by room */}
       <section className="section bg-white">
         <div className="container">
@@ -116,11 +117,17 @@ export default async function HomePage() {
             eyebrow="Shop by room"
             title="Start with the room you’re shaping."
             description="Layer furniture, light and useful details into a space that feels like yours."
-            action={<Button href="/rooms/living" variant="outline">Explore all rooms <Icon name="arrowUpRight" size={15} /></Button>}
+            action={
+              <Button href="/rooms/living" variant="outline">
+                Explore all rooms <Icon name="arrowUpRight" size={15} />
+              </Button>
+            }
           />
           <RoomCards />
         </div>
       </section>
+
+      <ExploreOurRange allProducts={catalogueProducts} />
 
       {/* 2. Target UX Bestsellers Rail */}
       <TagRail
@@ -135,7 +142,10 @@ export default async function HomePage() {
       />
 
       {/* 3. ShopByAppliance */}
-      <ShopByAppliance categories={applianceCategories} className="bg-light-green" />
+      <ShopByAppliance
+        categories={applianceCategories}
+        className="bg-light-green"
+      />
 
       {/* 4. Trending Rail */}
       <TagRail
@@ -156,7 +166,11 @@ export default async function HomePage() {
             eyebrow="Curated Living"
             title="Shop the look, piece by piece."
             description="Explore our signature living space. Tap any piece to view details or add directly to your bag."
-            action={<Button href="/furniture" variant="ghost">Browse collection <Icon name="arrowUpRight" size={15} /></Button>}
+            action={
+              <Button href="/furniture" variant="ghost">
+                Browse collection <Icon name="arrowUpRight" size={15} />
+              </Button>
+            }
           />
           <ShopTheLookHotspots look={curatedLook} />
         </div>
@@ -170,7 +184,9 @@ export default async function HomePage() {
             title="Try a room, piece by piece."
             description="Arrange furniture in an interactive 3D space and preview your layout in real time. Your delivery options depend on your pincode."
           />
-          <RoomPlaygroundLoader catalogue={playgroundPiecesResult?.items || []} />
+          <RoomPlaygroundLoader
+            catalogue={playgroundPiecesResult?.items || []}
+          />
         </div>
       </section>
 
@@ -225,4 +241,3 @@ export default async function HomePage() {
     </>
   );
 }
-

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { clearCart } from "@/store/cartSlice";
-import { formatINR } from "@/lib/demo-data";
+import { formatINR } from "@/lib/pricing";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
 import { validateGSTIN } from "@/config/gstConfig";

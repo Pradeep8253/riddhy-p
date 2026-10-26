@@ -160,7 +160,7 @@ riddhy-pradeep/
 ├── lib/                              # Utility libraries & services
 │   ├── auth.js                       # JWT sign, verify, and session management
 │   ├── db.js                         # Mongoose connection manager with cache
-│   ├── demo-data.js                  # Curated catalog data & offline fallback
+│   ├── catalogue.js                  # Dynamic backend catalog queries & caching
 │   ├── razorpay.js                   # Payment gateway utilities
 │   └── pricing.js                    # Cart calculations and fee estimators
 ├── models/                           # Mongoose data schemas

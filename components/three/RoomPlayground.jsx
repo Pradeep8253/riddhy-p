@@ -6,7 +6,7 @@ import { RoundedBox } from '@react-three/drei';
 import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addItem } from '@/store/cartSlice';
-import { getDemoProducts, formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import styles from './RoomPlayground.module.css';
 
 function DropPiece({ index, color }) {
@@ -28,7 +28,7 @@ export default function RoomPlayground({ catalogue: propCatalogue }) {
   const dispatch = useDispatch();
   const catalogue = useMemo(() => {
     if (propCatalogue && propCatalogue.length > 0) return propCatalogue;
-    return getDemoProducts().filter((p) => ['sofa','study','decor','storage'].includes(p.modelType)).slice(0,4);
+    return [];
   }, [propCatalogue]);
   const [selected, setSelected] = useState([]);
   const [open, setOpen] = useState(false);

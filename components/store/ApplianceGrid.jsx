@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CATEGORY_SEED } from '@/lib/demo-data';
+import { CATEGORIES } from '@/config/categories';
 import { IMG } from '@/lib/images';
 import Icon from '@/components/ui/Icon';
 import styles from './ApplianceGrid.module.css';
@@ -44,7 +44,7 @@ export default function ApplianceGrid({ categories: propCategories, showAll = fa
 
   const allCategories = propCategories && propCategories.length > 0
     ? propCategories
-    : CATEGORY_SEED.filter((item) => item.type === 'appliance');
+    : CATEGORIES.filter((item) => item.type === 'appliance');
 
   const displayCategories = showAll
     ? allCategories

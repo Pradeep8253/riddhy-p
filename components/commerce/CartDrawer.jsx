@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { setCartDrawer } from "@/store/uiSlice";
 import { setQuantity, removeItem } from "@/store/cartSlice";
-import { formatINR } from "@/lib/demo-data";
+import { formatINR } from "@/lib/pricing";
 import { IMG } from "@/lib/images";
 import Icon from "@/components/ui/Icon";
 import { getProductWhatsAppUrl } from "@/lib/site-config";

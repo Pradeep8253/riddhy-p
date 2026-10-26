@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Icon from '@/components/ui/Icon';
-import { formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import styles from './TrackOrderClient.module.css';
 
 const STAGES = [

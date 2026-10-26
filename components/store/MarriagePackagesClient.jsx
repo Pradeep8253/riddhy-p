@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '@/components/ui/Icon';
-import { formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import { siteConfig } from '@/lib/site-config';
 import styles from './MarriagePackages.module.css';
 

@@ -1,29 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
+import { formatDateDDMMYYYY } from "@/lib/date-utils";
+import { formatINR } from "@/lib/pricing";
 import {
-  Search,
-  Download,
-  FileText,
-  Mail,
-  Share2,
   AlertTriangle,
-  RotateCcw,
-  Ban,
-  Eye,
   CheckCircle,
-  Copy
-} from 'lucide-react';
-import { formatINR } from '@/lib/demo-data';
-import { formatDateDDMMYYYY } from '@/lib/date-utils';
-import ExportDropdown from './ExportDropdown';
-import AdminPagination from './AdminPagination';
-import { Badge, Modal, ConfirmDialog, EmptyState, Skeleton } from './ui';
-import styles from './AdminInvoices.module.css';
+  Download,
+  Eye,
+  Mail,
+  Search,
+} from "lucide-react";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import styles from "./AdminInvoices.module.css";
+import AdminPagination from "./AdminPagination";
+import ExportDropdown from "./ExportDropdown";
+import { Badge, ConfirmDialog, EmptyState, Modal, Skeleton } from "./ui";
 
 export default function AdminInvoices() {
-  const [activeTab, setActiveTab] = useState('invoices'); // 'invoices' | 'credit_notes'
+  const [activeTab, setActiveTab] = useState("invoices"); // 'invoices' | 'credit_notes'
   const [invoices, setInvoices] = useState([]);
   const [creditNotes, setCreditNotes] = useState([]);
   const [total, setTotal] = useState(0);
@@ -36,21 +31,24 @@ export default function AdminInvoices() {
     totalTax: 0,
     paidTotal: 0,
     unpaidTotal: 0,
-    creditNotesTotal: 0
+    creditNotesTotal: 0,
   });
-  const [companyValidation, setCompanyValidation] = useState({ valid: true, errors: [] });
+  const [companyValidation, setCompanyValidation] = useState({
+    valid: true,
+    errors: [],
+  });
   const [loading, setLoading] = useState(true);
 
   // Filters
-  const [search, setSearch] = useState('');
-  const [fyFilter, setFyFilter] = useState('all');
-  const [paymentStatus, setPaymentStatus] = useState('all');
-  const [buyerType, setBuyerType] = useState('all');
-  const [stateType, setStateType] = useState('all');
-  const [hasCreditNote, setHasCreditNote] = useState('all');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [dateRangeError, setDateRangeError] = useState('');
+  const [search, setSearch] = useState("");
+  const [fyFilter, setFyFilter] = useState("all");
+  const [paymentStatus, setPaymentStatus] = useState("all");
+  const [buyerType, setBuyerType] = useState("all");
+  const [stateType, setStateType] = useState("all");
+  const [hasCreditNote, setHasCreditNote] = useState("all");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [dateRangeError, setDateRangeError] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
@@ -59,59 +57,87 @@ export default function AdminInvoices() {
 
   // Modal states
   const [previewPdfUrl, setPreviewPdfUrl] = useState(null);
-  const [emailModal, setEmailModal] = useState({ isOpen: false, invoice: null, email: '', isSending: false });
-  const [creditNoteModal, setCreditNoteModal] = useState({ isOpen: false, invoice: null, amount: '', reason: '', isSubmitting: false });
-  const [voidConfirm, setVoidConfirm] = useState({ isOpen: false, invoice: null, reason: 'Voided by administrative request' });
+  const [emailModal, setEmailModal] = useState({
+    isOpen: false,
+    invoice: null,
+    email: "",
+    isSending: false,
+  });
+  const [creditNoteModal, setCreditNoteModal] = useState({
+    isOpen: false,
+    invoice: null,
+    amount: "",
+    reason: "",
+    isSubmitting: false,
+  });
+  const [voidConfirm, setVoidConfirm] = useState({
+    isOpen: false,
+    invoice: null,
+    reason: "Voided by administrative request",
+  });
 
-  const showToast = (message, type = 'success') => {
+  const showToast = (message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   };
 
   const fetchInvoices = useCallback(async () => {
     if (fromDate && toDate && fromDate > toDate) {
-      showToast('From date cannot be after To date', 'error');
-      setDateRangeError('From date cannot be after To date');
+      showToast("From date cannot be after To date", "error");
+      setDateRangeError("From date cannot be after To date");
       return;
     }
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (search.trim()) params.set('q', search.trim());
-      if (fyFilter !== 'all') params.set('financialYear', fyFilter);
-      if (paymentStatus !== 'all') params.set('paymentStatus', paymentStatus);
-      if (buyerType !== 'all') params.set('buyerType', buyerType);
-      if (stateType !== 'all') params.set('stateType', stateType);
-      if (hasCreditNote !== 'all') params.set('hasCreditNote', hasCreditNote);
-      if (fromDate) params.set('from', fromDate);
-      if (toDate) params.set('to', toDate);
-      if (activeTab === 'credit_notes') params.set('type', 'credit_notes');
-      params.set('page', String(page));
-      params.set('limit', String(pageSize));
+      if (search.trim()) params.set("q", search.trim());
+      if (fyFilter !== "all") params.set("financialYear", fyFilter);
+      if (paymentStatus !== "all") params.set("paymentStatus", paymentStatus);
+      if (buyerType !== "all") params.set("buyerType", buyerType);
+      if (stateType !== "all") params.set("stateType", stateType);
+      if (hasCreditNote !== "all") params.set("hasCreditNote", hasCreditNote);
+      if (fromDate) params.set("from", fromDate);
+      if (toDate) params.set("to", toDate);
+      if (activeTab === "credit_notes") params.set("type", "credit_notes");
+      params.set("page", String(page));
+      params.set("limit", String(pageSize));
 
       const res = await fetch(`/api/admin/invoices?${params.toString()}`);
       if (!res.ok) {
-        if (activeTab === 'credit_notes') setCreditNotes([]);
+        if (activeTab === "credit_notes") setCreditNotes([]);
         else setInvoices([]);
         return;
       }
       const data = await res.json();
       if (data.success) {
-        if (activeTab === 'credit_notes') {
+        if (activeTab === "credit_notes") {
           setCreditNotes(data.data || []);
         } else {
           setInvoices(data.data || []);
         }
         setTotal(data.meta?.total || 0);
         if (data.meta?.summary) setSummary(data.meta.summary);
-        if (data.meta?.companyValidation) setCompanyValidation(data.meta.companyValidation);
+        if (data.meta?.companyValidation)
+          setCompanyValidation(data.meta.companyValidation);
       }
     } catch (err) {
-      console.error('Failed to load invoices:', err);
+      console.error("Failed to load invoices:", err);
     } finally {
       setLoading(false);
     }
-  }, [activeTab, search, fyFilter, paymentStatus, buyerType, stateType, hasCreditNote, fromDate, toDate, page, pageSize]);
+  }, [
+    activeTab,
+    search,
+    fyFilter,
+    paymentStatus,
+    buyerType,
+    stateType,
+    hasCreditNote,
+    fromDate,
+    toDate,
+    page,
+    pageSize,
+  ]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -121,15 +147,15 @@ export default function AdminInvoices() {
   }, [fetchInvoices]);
 
   const resetFilters = () => {
-    setSearch('');
-    setFyFilter('all');
-    setPaymentStatus('all');
-    setBuyerType('all');
-    setStateType('all');
-    setHasCreditNote('all');
-    setFromDate('');
-    setToDate('');
-    setDateRangeError('');
+    setSearch("");
+    setFyFilter("all");
+    setPaymentStatus("all");
+    setBuyerType("all");
+    setStateType("all");
+    setHasCreditNote("all");
+    setFromDate("");
+    setToDate("");
+    setDateRangeError("");
     setPage(1);
   };
 
@@ -138,37 +164,45 @@ export default function AdminInvoices() {
     if (!emailModal.invoice || !emailModal.email.trim()) return;
     setEmailModal((prev) => ({ ...prev, isSending: true }));
     try {
-      const res = await fetch('/api/admin/invoices', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/admin/invoices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: 'email',
+          action: "email",
           invoiceId: emailModal.invoice.id,
-          email: emailModal.email.trim()
-        })
+          email: emailModal.email.trim(),
+        }),
       });
       const data = await res.json();
       if (data.success) {
-        showToast(data.data?.message || 'Invoice emailed successfully!');
-        setEmailModal({ isOpen: false, invoice: null, email: '', isSending: false });
+        showToast(data.data?.message || "Invoice emailed successfully!");
+        setEmailModal({
+          isOpen: false,
+          invoice: null,
+          email: "",
+          isSending: false,
+        });
         fetchInvoices();
       } else {
-        showToast(data.error?.message || 'Failed to email invoice.', 'error');
+        showToast(data.error?.message || "Failed to email invoice.", "error");
         setEmailModal((prev) => ({ ...prev, isSending: false }));
       }
     } catch (err) {
-      showToast('Error emailing invoice.', 'error');
+      showToast("Error emailing invoice.", "error");
       setEmailModal((prev) => ({ ...prev, isSending: false }));
     }
   };
 
   // Row Action: Copy WhatsApp Link
   const handleCopyWhatsApp = (inv) => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://rfriddhy.com';
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://rfriddhy.com";
     const invoicePdfUrl = `${origin}/api/orders/${inv.orderId}/invoice.pdf`;
-    const message = `Hello ${inv.buyer?.name || 'Customer'},\nHere is your official GST Tax Invoice ${inv.invoiceNumber} for Order ${inv.orderNumber}:\n${invoicePdfUrl}\n\nThank you for choosing RF Riddhy!`;
+    const message = `Hello ${inv.buyer?.name || "Customer"},\nHere is your official GST Tax Invoice ${inv.invoiceNumber} for Order ${inv.orderNumber}:\n${invoicePdfUrl}\n\nThank you for choosing RF Riddhy!`;
     navigator.clipboard.writeText(message);
-    showToast('WhatsApp message & invoice link copied to clipboard!');
+    showToast("WhatsApp message & invoice link copied to clipboard!");
   };
 
   // Row Action: Issue Credit Note
@@ -176,27 +210,36 @@ export default function AdminInvoices() {
     if (!creditNoteModal.invoice || !creditNoteModal.amount) return;
     setCreditNoteModal((prev) => ({ ...prev, isSubmitting: true }));
     try {
-      const res = await fetch('/api/admin/invoices', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/admin/invoices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: 'credit_note',
+          action: "credit_note",
           orderId: creditNoteModal.invoice.orderId,
           amount: Number(creditNoteModal.amount),
-          reason: creditNoteModal.reason || 'Goods return / price adjustment'
-        })
+          reason: creditNoteModal.reason || "Goods return / price adjustment",
+        }),
       });
       const data = await res.json();
       if (data.success) {
-        showToast(data.data?.message || 'Credit note issued successfully!');
-        setCreditNoteModal({ isOpen: false, invoice: null, amount: '', reason: '', isSubmitting: false });
+        showToast(data.data?.message || "Credit note issued successfully!");
+        setCreditNoteModal({
+          isOpen: false,
+          invoice: null,
+          amount: "",
+          reason: "",
+          isSubmitting: false,
+        });
         fetchInvoices();
       } else {
-        showToast(data.error?.message || 'Failed to issue credit note.', 'error');
+        showToast(
+          data.error?.message || "Failed to issue credit note.",
+          "error",
+        );
         setCreditNoteModal((prev) => ({ ...prev, isSubmitting: false }));
       }
     } catch (err) {
-      showToast('Error issuing credit note.', 'error');
+      showToast("Error issuing credit note.", "error");
       setCreditNoteModal((prev) => ({ ...prev, isSubmitting: false }));
     }
   };
@@ -205,65 +248,83 @@ export default function AdminInvoices() {
   const handleVoidInvoice = async () => {
     if (!voidConfirm.invoice) return;
     try {
-      const res = await fetch('/api/admin/invoices', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/admin/invoices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: 'void',
+          action: "void",
           invoiceId: voidConfirm.invoice.id,
-          reason: voidConfirm.reason
-        })
+          reason: voidConfirm.reason,
+        }),
       });
       const data = await res.json();
       if (data.success) {
-        showToast(data.data?.message || 'Invoice voided successfully.');
-        setVoidConfirm({ isOpen: false, invoice: null, reason: '' });
+        showToast(data.data?.message || "Invoice voided successfully.");
+        setVoidConfirm({ isOpen: false, invoice: null, reason: "" });
         fetchInvoices();
       } else {
-        showToast(data.error?.message || 'Cannot void invoice.', 'error');
+        showToast(data.error?.message || "Cannot void invoice.", "error");
       }
     } catch (err) {
-      showToast('Error voiding invoice.', 'error');
+      showToast("Error voiding invoice.", "error");
     }
   };
 
   const exportColumns = [
-    { label: 'Invoice No', key: 'invoiceNumber' },
-    { label: 'Date', key: 'invoiceDate', getValue: (i) => formatDateDDMMYYYY(i.invoiceDate) },
-    { label: 'Order No', key: 'orderNumber' },
-    { label: 'Buyer', key: 'buyer', getValue: (i) => i.buyer?.businessName || i.buyer?.name || 'Customer' },
-    { label: 'Buyer GSTIN', key: 'gstin', getValue: (i) => i.buyer?.gstin || 'URP' },
-    { label: 'Place of Supply', key: 'placeOfSupply' },
-    { label: 'Taxable (₹)', key: 'taxableAmount' },
-    { label: 'CGST (₹)', key: 'cgstTotal' },
-    { label: 'SGST (₹)', key: 'sgstTotal' },
-    { label: 'IGST (₹)', key: 'igstTotal' },
-    { label: 'Total Tax (₹)', key: 'totalTax' },
-    { label: 'Total Amount (₹)', key: 'totalAmount' },
-    { label: 'Status', key: 'status' }
+    { label: "Invoice No", key: "invoiceNumber" },
+    {
+      label: "Date",
+      key: "invoiceDate",
+      getValue: (i) => formatDateDDMMYYYY(i.invoiceDate),
+    },
+    { label: "Order No", key: "orderNumber" },
+    {
+      label: "Buyer",
+      key: "buyer",
+      getValue: (i) => i.buyer?.businessName || i.buyer?.name || "Customer",
+    },
+    {
+      label: "Buyer GSTIN",
+      key: "gstin",
+      getValue: (i) => i.buyer?.gstin || "URP",
+    },
+    { label: "Place of Supply", key: "placeOfSupply" },
+    { label: "Taxable (₹)", key: "taxableAmount" },
+    { label: "CGST (₹)", key: "cgstTotal" },
+    { label: "SGST (₹)", key: "sgstTotal" },
+    { label: "IGST (₹)", key: "igstTotal" },
+    { label: "Total Tax (₹)", key: "totalTax" },
+    { label: "Total Amount (₹)", key: "totalAmount" },
+    { label: "Status", key: "status" },
   ];
 
   return (
     <div className={styles.page}>
       {/* Toast */}
       {toast && (
-        <div style={{
-          position: 'fixed',
-          top: 24,
-          right: 24,
-          background: toast.type === 'error' ? '#991b1b' : '#1b5e20',
-          color: '#ffffff',
-          padding: '12px 20px',
-          borderRadius: 8,
-          fontSize: 13,
-          fontWeight: 600,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-          zIndex: 9999,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8
-        }}>
-          {toast.type === 'error' ? <AlertTriangle size={16} /> : <CheckCircle size={16} />}
+        <div
+          style={{
+            position: "fixed",
+            top: 24,
+            right: 24,
+            background: toast.type === "error" ? "#991b1b" : "#1b5e20",
+            color: "#ffffff",
+            padding: "12px 20px",
+            borderRadius: 8,
+            fontSize: 13,
+            fontWeight: 600,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {toast.type === "error" ? (
+            <AlertTriangle size={16} />
+          ) : (
+            <CheckCircle size={16} />
+          )}
           {toast.message}
         </div>
       )}
@@ -271,12 +332,21 @@ export default function AdminInvoices() {
       {/* Header */}
       <div className={styles.head}>
         <div>
-          <span style={{ fontSize: '11px', fontWeight: 800, color: '#1b5e20', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <span
+            style={{
+              fontSize: "11px",
+              fontWeight: 800,
+              color: "#1b5e20",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+            }}
+          >
             Statutory Accounting &amp; Compliance
           </span>
           <h1>GST Tax Invoices &amp; Credit Notes</h1>
           <p>
-            Sequential invoice series per financial year, multi-rate GST, reverse-calculated tax splits, GSTR-1 &amp; Tally exports.
+            Sequential invoice series per financial year, multi-rate GST,
+            reverse-calculated tax splits, GSTR-1 &amp; Tally exports.
           </p>
         </div>
         <div>
@@ -299,12 +369,17 @@ export default function AdminInvoices() {
             <div>
               <h4>Incomplete Company Tax Profile</h4>
               <p>
-                Invoices cannot be legally generated because required company tax details are missing:
-                {' '}{companyValidation.errors?.join(', ') || 'Please verify GSTIN, PAN, and registered address.'}
+                Invoices cannot be legally generated because required company
+                tax details are missing:{" "}
+                {companyValidation.errors?.join(", ") ||
+                  "Please verify GSTIN, PAN, and registered address."}
               </p>
             </div>
           </div>
-          <Link href="/admin/settings?tab=company" className={styles.warningBtn}>
+          <Link
+            href="/admin/settings?tab=company"
+            className={styles.warningBtn}
+          >
             Complete Company &amp; Billing Settings
           </Link>
         </div>
@@ -314,31 +389,45 @@ export default function AdminInvoices() {
       <div className={styles.kpiRow}>
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>Total Invoiced Revenue</div>
-          <div className={styles.kpiValue}>{formatINR(summary.totalInvoiced || summary.grandTotal || 0)}</div>
-          <div className={styles.kpiSub}>Taxable: {formatINR(summary.taxableTotal || 0)}</div>
+          <div className={styles.kpiValue}>
+            {formatINR(summary.totalInvoiced || summary.grandTotal || 0)}
+          </div>
+          <div className={styles.kpiSub}>
+            Taxable: {formatINR(summary.taxableTotal || 0)}
+          </div>
         </div>
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>Tax Collected (GST)</div>
           <div className={styles.kpiValue}>
-            {formatINR((summary.cgstTotal || 0) + (summary.sgstTotal || 0) + (summary.igstTotal || 0))}
+            {formatINR(
+              (summary.cgstTotal || 0) +
+                (summary.sgstTotal || 0) +
+                (summary.igstTotal || 0),
+            )}
           </div>
           <div className={styles.kpiSub}>
-            Intra: {formatINR((summary.cgstTotal || 0) + (summary.sgstTotal || 0))} · Inter (IGST): {formatINR(summary.igstTotal || 0)}
+            Intra:{" "}
+            {formatINR((summary.cgstTotal || 0) + (summary.sgstTotal || 0))} ·
+            Inter (IGST): {formatINR(summary.igstTotal || 0)}
           </div>
         </div>
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>Credit Notes Issued</div>
-          <div className={styles.kpiValue} style={{ color: '#b91c1c' }}>
+          <div className={styles.kpiValue} style={{ color: "#b91c1c" }}>
             {formatINR(summary.creditNotesTotal || 0)}
           </div>
-          <div className={styles.kpiSub}>Total refunds &amp; adjustments reversed</div>
+          <div className={styles.kpiSub}>
+            Total refunds &amp; adjustments reversed
+          </div>
         </div>
         <div className={styles.kpiCard}>
           <div className={styles.kpiLabel}>Outstanding Unpaid</div>
-          <div className={styles.kpiValue} style={{ color: '#b45309' }}>
+          <div className={styles.kpiValue} style={{ color: "#b45309" }}>
             {formatINR(summary.unpaidTotal || 0)}
           </div>
-          <div className={styles.kpiSub}>Awaiting COD delivery or NEFT clearance</div>
+          <div className={styles.kpiSub}>
+            Awaiting COD delivery or NEFT clearance
+          </div>
         </div>
       </div>
 
@@ -346,9 +435,9 @@ export default function AdminInvoices() {
       <nav className={styles.tabs} aria-label="Invoice sections">
         <button
           type="button"
-          className={`${styles.tabBtn} ${activeTab === 'invoices' ? styles.active : ''}`}
+          className={`${styles.tabBtn} ${activeTab === "invoices" ? styles.active : ""}`}
           onClick={() => {
-            setActiveTab('invoices');
+            setActiveTab("invoices");
             setPage(1);
           }}
         >
@@ -356,9 +445,9 @@ export default function AdminInvoices() {
         </button>
         <button
           type="button"
-          className={`${styles.tabBtn} ${activeTab === 'credit_notes' ? styles.active : ''}`}
+          className={`${styles.tabBtn} ${activeTab === "credit_notes" ? styles.active : ""}`}
           onClick={() => {
-            setActiveTab('credit_notes');
+            setActiveTab("credit_notes");
             setPage(1);
           }}
         >
@@ -373,7 +462,11 @@ export default function AdminInvoices() {
             <Search size={15} color="#68736a" />
             <input
               type="text"
-              placeholder={activeTab === 'invoices' ? "Search invoice #, order #, buyer name, or GSTIN..." : "Search credit note #, invoice #, or order #..."}
+              placeholder={
+                activeTab === "invoices"
+                  ? "Search invoice #, order #, buyer name, or GSTIN..."
+                  : "Search credit note #, invoice #, or order #..."
+              }
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -382,7 +475,7 @@ export default function AdminInvoices() {
             />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <select
               className={styles.filterSelect}
               value={fyFilter}
@@ -395,13 +488,17 @@ export default function AdminInvoices() {
               <option value="2026-27">FY 2026-27</option>
               <option value="2025-26">FY 2025-26</option>
             </select>
-            <button type="button" className={styles.resetBtn} onClick={resetFilters}>
+            <button
+              type="button"
+              className={styles.resetBtn}
+              onClick={resetFilters}
+            >
               Reset Filters
             </button>
           </div>
         </div>
 
-        {activeTab === 'invoices' && (
+        {activeTab === "invoices" && (
           <div className={styles.filterControlsRow}>
             <select
               className={styles.filterSelect}
@@ -456,12 +553,21 @@ export default function AdminInvoices() {
               <option value="no">No Credit Note</option>
             </select>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#647065', position: 'relative' }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                color: "#647065",
+                position: "relative",
+              }}
+            >
               <span>From:</span>
               <input
                 type="date"
                 lang="en-IN"
-                className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ''}`}
+                className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ""}`}
                 value={fromDate}
                 max={toDate || undefined}
                 onChange={(e) => {
@@ -469,9 +575,9 @@ export default function AdminInvoices() {
                   setFromDate(val);
                   setPage(1);
                   if (toDate && val && val > toDate) {
-                    setDateRangeError('From date cannot be after To date');
+                    setDateRangeError("From date cannot be after To date");
                   } else {
-                    setDateRangeError('');
+                    setDateRangeError("");
                   }
                 }}
                 title="Filter invoices from date (DD/MM/YYYY)"
@@ -480,7 +586,7 @@ export default function AdminInvoices() {
               <input
                 type="date"
                 lang="en-IN"
-                className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ''}`}
+                className={`${styles.dateInput} ${dateRangeError ? styles.dateInputError : ""}`}
                 value={toDate}
                 min={fromDate || undefined}
                 onChange={(e) => {
@@ -488,9 +594,11 @@ export default function AdminInvoices() {
                   setToDate(val);
                   setPage(1);
                   if (fromDate && val && val < fromDate) {
-                    setDateRangeError('To date cannot be earlier than From date');
+                    setDateRangeError(
+                      "To date cannot be earlier than From date",
+                    );
                   } else {
-                    setDateRangeError('');
+                    setDateRangeError("");
                   }
                 }}
                 title="Filter invoices to date (DD/MM/YYYY)"
@@ -499,19 +607,19 @@ export default function AdminInvoices() {
                 <button
                   type="button"
                   style={{
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#c62828',
-                    cursor: 'pointer',
+                    border: "none",
+                    background: "transparent",
+                    color: "#c62828",
+                    cursor: "pointer",
                     fontSize: 11,
                     fontWeight: 600,
-                    textDecoration: 'underline',
-                    padding: '0 4px'
+                    textDecoration: "underline",
+                    padding: "0 4px",
                   }}
                   onClick={() => {
-                    setFromDate('');
-                    setToDate('');
-                    setDateRangeError('');
+                    setFromDate("");
+                    setToDate("");
+                    setDateRangeError("");
                     setPage(1);
                   }}
                   title="Clear date filter"
@@ -523,18 +631,18 @@ export default function AdminInvoices() {
                 <span
                   role="alert"
                   style={{
-                    position: 'absolute',
-                    top: 'calc(100% + 4px)',
+                    position: "absolute",
+                    top: "calc(100% + 4px)",
                     left: 0,
-                    background: '#991b1b',
-                    color: '#fff',
-                    fontSize: '11px',
+                    background: "#991b1b",
+                    color: "#fff",
+                    fontSize: "11px",
                     fontWeight: 600,
-                    padding: '3px 8px',
-                    borderRadius: '5px',
-                    whiteSpace: 'nowrap',
+                    padding: "3px 8px",
+                    borderRadius: "5px",
+                    whiteSpace: "nowrap",
                     zIndex: 20,
-                    boxShadow: '0 2px 8px rgba(153,27,27,0.2)'
+                    boxShadow: "0 2px 8px rgba(153,27,27,0.2)",
                   }}
                 >
                   ⚠ {dateRangeError}
@@ -546,7 +654,7 @@ export default function AdminInvoices() {
       </div>
 
       {/* Main Table: Invoices */}
-      {activeTab === 'invoices' && (
+      {activeTab === "invoices" && (
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
@@ -556,10 +664,10 @@ export default function AdminInvoices() {
                 <th>Order No</th>
                 <th>Buyer / Recipient</th>
                 <th>Place of Supply</th>
-                <th style={{ textAlign: 'right' }}>Taxable (₹)</th>
-                <th style={{ textAlign: 'right' }}>GST Split (₹)</th>
-                <th style={{ textAlign: 'right' }}>Total Amount (₹)</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
+                <th style={{ textAlign: "right" }}>Taxable (₹)</th>
+                <th style={{ textAlign: "right" }}>GST Split (₹)</th>
+                <th style={{ textAlign: "right" }}>Total Amount (₹)</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -583,69 +691,119 @@ export default function AdminInvoices() {
                 </tr>
               ) : (
                 invoices.map((inv) => {
-                  const totalGst = (inv.cgstTotal || 0) + (inv.sgstTotal || 0) + (inv.igstTotal || 0);
-                  const isVoid = inv.status === 'void';
-                  const hasCN = Boolean(inv.creditNoteId || (inv.creditNotes && inv.creditNotes.length > 0));
+                  const totalGst =
+                    (inv.cgstTotal || 0) +
+                    (inv.sgstTotal || 0) +
+                    (inv.igstTotal || 0);
+                  const isVoid = inv.status === "void";
+                  const hasCN = Boolean(
+                    inv.creditNoteId ||
+                    (inv.creditNotes && inv.creditNotes.length > 0),
+                  );
 
                   return (
                     <tr key={inv.id} style={{ opacity: isVoid ? 0.6 : 1 }}>
                       <td>
                         <strong>{inv.invoiceNumber}</strong>
-                        <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
+                        <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
                           {isVoid ? (
-                            <Badge variant="danger" size="sm">VOID</Badge>
+                            <Badge variant="danger" size="sm">
+                              VOID
+                            </Badge>
                           ) : (
                             <Badge
-                              variant={inv.paymentStatus === 'paid' ? 'success' : inv.paymentStatus === 'cod' ? 'gold' : 'warning'}
+                              variant={
+                                inv.paymentStatus === "paid"
+                                  ? "success"
+                                  : inv.paymentStatus === "cod"
+                                    ? "gold"
+                                    : "warning"
+                              }
                               size="sm"
                             >
-                              {(inv.paymentStatus || 'unpaid').toUpperCase()}
+                              {(inv.paymentStatus || "unpaid").toUpperCase()}
                             </Badge>
                           )}
-                          {hasCN && <Badge variant="neutral" size="sm">CN Issued</Badge>}
+                          {hasCN && (
+                            <Badge variant="neutral" size="sm">
+                              CN Issued
+                            </Badge>
+                          )}
                         </div>
                       </td>
                       <td>
                         <strong>{formatDateDDMMYYYY(inv.invoiceDate)}</strong>
-                        <div style={{ fontSize: '10px', color: '#727e74' }}>FY {inv.financialYear}</div>
+                        <div style={{ fontSize: "10px", color: "#727e74" }}>
+                          FY {inv.financialYear}
+                        </div>
                       </td>
                       <td>
-                        <Link href={`/admin/orders`} style={{ color: '#1b5e20', fontWeight: 600 }}>
+                        <Link
+                          href={`/admin/orders`}
+                          style={{ color: "#1b5e20", fontWeight: 600 }}
+                        >
                           {inv.orderNumber}
                         </Link>
                       </td>
                       <td>
-                        <div><strong>{inv.buyer?.businessName || inv.buyer?.name || 'Customer'}</strong></div>
+                        <div>
+                          <strong>
+                            {inv.buyer?.businessName ||
+                              inv.buyer?.name ||
+                              "Customer"}
+                          </strong>
+                        </div>
                         {inv.buyer?.isB2B && (
-                          <span style={{ display: 'inline-block', fontSize: '10px', background: '#e0f2fe', color: '#0369a1', padding: '1px 6px', borderRadius: 4, fontWeight: 700, marginTop: 2 }}>
+                          <span
+                            style={{
+                              display: "inline-block",
+                              fontSize: "10px",
+                              background: "#e0f2fe",
+                              color: "#0369a1",
+                              padding: "1px 6px",
+                              borderRadius: 4,
+                              fontWeight: 700,
+                              marginTop: 2,
+                            }}
+                          >
                             B2B: {inv.buyer.gstin}
                           </span>
                         )}
                         {!inv.buyer?.isB2B && (
-                          <div style={{ fontSize: '10px', color: '#727e74' }}>B2C Consumer</div>
+                          <div style={{ fontSize: "10px", color: "#727e74" }}>
+                            B2C Consumer
+                          </div>
                         )}
                       </td>
                       <td>
-                        {inv.placeOfSupply || 'Delhi'}
-                        <div style={{ fontSize: '10px', color: '#727e74' }}>
-                          Code: {inv.placeOfSupplyStateCode || '07'}
+                        {inv.placeOfSupply || "Delhi"}
+                        <div style={{ fontSize: "10px", color: "#727e74" }}>
+                          Code: {inv.placeOfSupplyStateCode || "07"}
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right' }}>{formatINR(inv.taxableAmount)}</td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: "right" }}>
+                        {formatINR(inv.taxableAmount)}
+                      </td>
+                      <td style={{ textAlign: "right" }}>
                         {formatINR(totalGst)}
-                        <div style={{ fontSize: '10px', color: '#727e74' }}>
-                          {inv.isInterState ? 'IGST' : 'CGST+SGST'}
+                        <div style={{ fontSize: "10px", color: "#727e74" }}>
+                          {inv.isInterState ? "IGST" : "CGST+SGST"}
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right' }}><strong>{formatINR(inv.totalAmount)}</strong></td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: "right" }}>
+                        <strong>{formatINR(inv.totalAmount)}</strong>
+                      </td>
+                      <td style={{ textAlign: "right" }}>
                         <div className={styles.actionGroup}>
                           <button
                             type="button"
                             className={styles.btnAction}
                             title="Preview PDF"
-                            onClick={() => setPreviewPdfUrl(`/api/orders/${inv.orderId}/invoice.pdf?inline=1&t=${Date.now()}`)}
+                            onClick={() =>
+                              setPreviewPdfUrl(
+                                `/api/orders/${inv.orderId}/invoice.pdf?inline=1&t=${Date.now()}`,
+                              )
+                            }
                           >
                             <Eye size={12} /> View
                           </button>
@@ -660,12 +818,14 @@ export default function AdminInvoices() {
                             type="button"
                             className={styles.btnAction}
                             title="Email to customer"
-                            onClick={() => setEmailModal({
-                              isOpen: true,
-                              invoice: inv,
-                              email: inv.buyer?.email || '',
-                              isSending: false
-                            })}
+                            onClick={() =>
+                              setEmailModal({
+                                isOpen: true,
+                                invoice: inv,
+                                email: inv.buyer?.email || "",
+                                isSending: false,
+                              })
+                            }
                           >
                             <Mail size={12} /> Email
                           </button>
@@ -680,9 +840,17 @@ export default function AdminInvoices() {
               {!loading && invoices.length > 0 && (
                 <tr className={styles.totalsRow}>
                   <td colSpan={5}>ACCUMULATED SELECTION TOTALS:</td>
-                  <td style={{ textAlign: 'right' }}>{formatINR(summary.taxableTotal)}</td>
-                  <td style={{ textAlign: 'right' }}>{formatINR(summary.cgstTotal + summary.sgstTotal + summary.igstTotal)}</td>
-                  <td style={{ textAlign: 'right' }}>{formatINR(summary.totalInvoiced || summary.grandTotal)}</td>
+                  <td style={{ textAlign: "right" }}>
+                    {formatINR(summary.taxableTotal)}
+                  </td>
+                  <td style={{ textAlign: "right" }}>
+                    {formatINR(
+                      summary.cgstTotal + summary.sgstTotal + summary.igstTotal,
+                    )}
+                  </td>
+                  <td style={{ textAlign: "right" }}>
+                    {formatINR(summary.totalInvoiced || summary.grandTotal)}
+                  </td>
                   <td></td>
                 </tr>
               )}
@@ -692,7 +860,7 @@ export default function AdminInvoices() {
       )}
 
       {/* Credit Notes Table */}
-      {activeTab === 'credit_notes' && (
+      {activeTab === "credit_notes" && (
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
@@ -702,9 +870,9 @@ export default function AdminInvoices() {
                 <th>Original Invoice No</th>
                 <th>Order No</th>
                 <th>Reason</th>
-                <th style={{ textAlign: 'right' }}>Refund Amount (₹)</th>
-                <th style={{ textAlign: 'right' }}>Reversed GST (₹)</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
+                <th style={{ textAlign: "right" }}>Refund Amount (₹)</th>
+                <th style={{ textAlign: "right" }}>Reversed GST (₹)</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -726,31 +894,51 @@ export default function AdminInvoices() {
                 </tr>
               ) : (
                 creditNotes.map((cn) => {
-                  const reversedTax = (cn.cgstReversed || 0) + (cn.sgstReversed || 0) + (cn.igstReversed || 0);
+                  const reversedTax =
+                    (cn.cgstReversed || 0) +
+                    (cn.sgstReversed || 0) +
+                    (cn.igstReversed || 0);
                   return (
                     <tr key={cn.id}>
                       <td>
                         <strong>{cn.creditNoteNumber}</strong>
-                        <div style={{ fontSize: '10px', color: '#727e74' }}>FY {cn.financialYear}</div>
+                        <div style={{ fontSize: "10px", color: "#727e74" }}>
+                          FY {cn.financialYear}
+                        </div>
                       </td>
-                      <td><strong>{formatDateDDMMYYYY(cn.issuedAt || cn.createdAt)}</strong></td>
-                      <td><strong>{cn.invoiceNumber}</strong></td>
                       <td>
-                        <Link href="/admin/orders" style={{ color: '#1b5e20', fontWeight: 600 }}>
+                        <strong>
+                          {formatDateDDMMYYYY(cn.issuedAt || cn.createdAt)}
+                        </strong>
+                      </td>
+                      <td>
+                        <strong>{cn.invoiceNumber}</strong>
+                      </td>
+                      <td>
+                        <Link
+                          href="/admin/orders"
+                          style={{ color: "#1b5e20", fontWeight: 600 }}
+                        >
                           {cn.orderNumber}
                         </Link>
                       </td>
-                      <td>{cn.reason || 'Customer Return'}</td>
-                      <td style={{ textAlign: 'right', color: '#b91c1c', fontWeight: 700 }}>
+                      <td>{cn.reason || "Customer Return"}</td>
+                      <td
+                        style={{
+                          textAlign: "right",
+                          color: "#b91c1c",
+                          fontWeight: 700,
+                        }}
+                      >
                         -{formatINR(cn.amount)}
                       </td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: "right" }}>
                         -{formatINR(reversedTax)}
-                        <div style={{ fontSize: '10px', color: '#727e74' }}>
-                          {cn.igstReversed > 0 ? 'IGST' : 'CGST+SGST'}
+                        <div style={{ fontSize: "10px", color: "#727e74" }}>
+                          {cn.igstReversed > 0 ? "IGST" : "CGST+SGST"}
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: "right" }}>
                         <a
                           href={`/api/orders/${cn.orderId}/invoice.pdf?type=credit_note&download=1`}
                           className={styles.btnAction}
@@ -778,7 +966,7 @@ export default function AdminInvoices() {
           setPageSize(size);
           setPage(1);
         }}
-        itemLabel={activeTab === 'invoices' ? 'invoices' : 'credit notes'}
+        itemLabel={activeTab === "invoices" ? "invoices" : "credit notes"}
       />
 
       {/* MODAL: PDF Preview */}
@@ -790,7 +978,14 @@ export default function AdminInvoices() {
       >
         {previewPdfUrl && (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginBottom: 12 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 10,
+                marginBottom: 12,
+              }}
+            >
               <a
                 href={`${previewPdfUrl}?download=1`}
                 className={styles.btnAction}
@@ -811,7 +1006,14 @@ export default function AdminInvoices() {
       {/* MODAL: Email to Customer */}
       <Modal
         isOpen={emailModal.isOpen}
-        onClose={() => setEmailModal({ isOpen: false, invoice: null, email: '', isSending: false })}
+        onClose={() =>
+          setEmailModal({
+            isOpen: false,
+            invoice: null,
+            email: "",
+            isSending: false,
+          })
+        }
         title="Email Invoice PDF to Customer"
         maxWidth="500px"
       >
@@ -821,18 +1023,29 @@ export default function AdminInvoices() {
             type="email"
             className={styles.modalInput}
             value={emailModal.email}
-            onChange={(e) => setEmailModal((prev) => ({ ...prev, email: e.target.value }))}
+            onChange={(e) =>
+              setEmailModal((prev) => ({ ...prev, email: e.target.value }))
+            }
             placeholder="customer@example.com"
           />
         </div>
-        <p style={{ fontSize: 12, color: '#647065' }}>
-          This will attach the official GST Tax Invoice PDF for {emailModal.invoice?.invoiceNumber} (Rs. {emailModal.invoice?.totalAmount}) directly to the email.
+        <p style={{ fontSize: 12, color: "#647065" }}>
+          This will attach the official GST Tax Invoice PDF for{" "}
+          {emailModal.invoice?.invoiceNumber} (Rs.{" "}
+          {emailModal.invoice?.totalAmount}) directly to the email.
         </p>
         <div className={styles.modalActions}>
           <button
             type="button"
             className={styles.modalBtnSecondary}
-            onClick={() => setEmailModal({ isOpen: false, invoice: null, email: '', isSending: false })}
+            onClick={() =>
+              setEmailModal({
+                isOpen: false,
+                invoice: null,
+                email: "",
+                isSending: false,
+              })
+            }
           >
             Cancel
           </button>
@@ -842,7 +1055,7 @@ export default function AdminInvoices() {
             disabled={emailModal.isSending || !emailModal.email.trim()}
             onClick={handleSendEmail}
           >
-            {emailModal.isSending ? 'Sending PDF...' : 'Send Invoice Email'}
+            {emailModal.isSending ? "Sending PDF..." : "Send Invoice Email"}
           </button>
         </div>
       </Modal>
@@ -850,22 +1063,38 @@ export default function AdminInvoices() {
       {/* MODAL: Issue Credit Note */}
       <Modal
         isOpen={creditNoteModal.isOpen}
-        onClose={() => setCreditNoteModal({ isOpen: false, invoice: null, amount: '', reason: '', isSubmitting: false })}
+        onClose={() =>
+          setCreditNoteModal({
+            isOpen: false,
+            invoice: null,
+            amount: "",
+            reason: "",
+            isSubmitting: false,
+          })
+        }
         title="Issue GST Credit Note"
         maxWidth="520px"
       >
-        <p style={{ fontSize: 13, color: '#2a342d', marginBottom: 14 }}>
-          Issuing a credit note reverses the taxable amount and GST collected for Invoice <strong>{creditNoteModal.invoice?.invoiceNumber}</strong>.
+        <p style={{ fontSize: 13, color: "#2a342d", marginBottom: 14 }}>
+          Issuing a credit note reverses the taxable amount and GST collected
+          for Invoice <strong>{creditNoteModal.invoice?.invoiceNumber}</strong>.
         </p>
         <div className={styles.modalField}>
-          <label>Refund Amount (₹) (Max: {creditNoteModal.invoice?.totalAmount})</label>
+          <label>
+            Refund Amount (₹) (Max: {creditNoteModal.invoice?.totalAmount})
+          </label>
           <input
             type="number"
             step="0.01"
             max={creditNoteModal.invoice?.totalAmount}
             className={styles.modalInput}
             value={creditNoteModal.amount}
-            onChange={(e) => setCreditNoteModal((prev) => ({ ...prev, amount: e.target.value }))}
+            onChange={(e) =>
+              setCreditNoteModal((prev) => ({
+                ...prev,
+                amount: e.target.value,
+              }))
+            }
             placeholder="Enter refund amount"
           />
         </div>
@@ -875,7 +1104,12 @@ export default function AdminInvoices() {
             type="text"
             className={styles.modalInput}
             value={creditNoteModal.reason}
-            onChange={(e) => setCreditNoteModal((prev) => ({ ...prev, reason: e.target.value }))}
+            onChange={(e) =>
+              setCreditNoteModal((prev) => ({
+                ...prev,
+                reason: e.target.value,
+              }))
+            }
             placeholder="e.g. Return of damaged item, price correction, goodwill refund"
           />
         </div>
@@ -883,7 +1117,15 @@ export default function AdminInvoices() {
           <button
             type="button"
             className={styles.modalBtnSecondary}
-            onClick={() => setCreditNoteModal({ isOpen: false, invoice: null, amount: '', reason: '', isSubmitting: false })}
+            onClick={() =>
+              setCreditNoteModal({
+                isOpen: false,
+                invoice: null,
+                amount: "",
+                reason: "",
+                isSubmitting: false,
+              })
+            }
           >
             Cancel
           </button>
@@ -893,7 +1135,7 @@ export default function AdminInvoices() {
             disabled={creditNoteModal.isSubmitting || !creditNoteModal.amount}
             onClick={handleIssueCreditNote}
           >
-            {creditNoteModal.isSubmitting ? 'Issuing...' : 'Issue Credit Note'}
+            {creditNoteModal.isSubmitting ? "Issuing..." : "Issue Credit Note"}
           </button>
         </div>
       </Modal>
@@ -901,7 +1143,9 @@ export default function AdminInvoices() {
       {/* CONFIRM DIALOG: Void Invoice */}
       <ConfirmDialog
         isOpen={voidConfirm.isOpen}
-        onClose={() => setVoidConfirm({ isOpen: false, invoice: null, reason: '' })}
+        onClose={() =>
+          setVoidConfirm({ isOpen: false, invoice: null, reason: "" })
+        }
         onConfirm={handleVoidInvoice}
         title={`Void Invoice ${voidConfirm.invoice?.invoiceNumber}?`}
         message="Voiding an invoice marks it invalid in compliance logs without deleting the sequential number. An audit entry will be recorded."

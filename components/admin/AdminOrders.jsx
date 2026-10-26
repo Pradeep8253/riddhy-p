@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import { formatDateDDMMYYYY } from '@/lib/date-utils';
 import {
   Search,

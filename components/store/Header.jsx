@@ -1,176 +1,23 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCartDrawer } from '@/store/uiSlice';
-import { formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import { getLocalizedProductName, getLocalizedCategoryName } from '@/lib/translate-backend';
 import Icon from '@/components/ui/Icon';
 import { siteConfig } from '@/lib/site-config';
 import { tr } from '@/lib/i18n';
 import styles from './Header.module.css';
 
-const nav = [
-  {
-    key: 'furniture',
-    href: '/furniture',
-    children: [
-      'double-bed',
-      'sringardan',
-      'sofa-set',
-      'centre-table',
-      'wooden-wordrobe',
-      'almirah',
-      'fancy-almirah',
-      'mattress',
-      'rajai',
-      'blanket',
-      'pillow',
-      'bedsheet',
-      'pillow-cover',
-      'parda',
-      'namaz-chauki',
-      'plastic-table',
-      'plastic-chairs',
-      'baxa',
-      'peti',
-      'trolley-bag'
-    ]
-  },
-  {
-    key: 'appliances',
-    href: '/appliances',
-    children: [
-      'washing-machine',
-      'fridge',
-      'cooler',
-      'diacut-cooler',
-      'mixer',
-      'juicer',
-      'iron',
-      'gas-chulha',
-      'utensils-washer',
-      'roti-maker'
-    ]
-  },
-  {
-    key: 'utensils',
-    href: '/utensils',
-    children: [
-      'dinner-set',
-      'pressure-cooker',
-      'kadai-frypan',
-      'roti-tawa',
-      'thali-set',
-      'water-jug',
-      'masala-dabba',
-      'casserole-set',
-      'bhagona-set',
-      'cutlery-set',
-      'water-dispenser',
-      'tea-milk-pot'
-    ]
-  },
+const defaultNav = [
+  { key: 'furniture', href: '/furniture', children: [] },
+  { key: 'appliances', href: '/appliances', children: [] },
+  { key: 'utensils', href: '/utensils', children: [] },
   { key: 'rooms', href: '/rooms/living', children: ['living', 'bedroom', 'dining', 'study', 'kitchen'] }
-];
-
-const labels = {
-  // Furniture
-  'double-bed': 'Double Bed',
-  sringardan: 'Sringardan',
-  'sofa-set': 'Sofa Set',
-  'centre-table': 'Centre Table',
-  'wooden-wordrobe': 'Wooden Wardrobe',
-  almirah: 'Almirah (Steel)',
-  'fancy-almirah': 'Fancy Almirah',
-  mattress: 'Mattress',
-  rajai: 'Rajai (Quilt)',
-  blanket: 'Blanket',
-  pillow: 'Pillow',
-  bedsheet: 'Bedsheet',
-  'pillow-cover': 'Pillow Cover',
-  parda: 'Parda (Curtains)',
-  'namaz-chauki': 'Namaz Chauki',
-  'plastic-table': 'Plastic Table',
-  'plastic-chairs': 'Plastic Chairs',
-  baxa: 'Baxa (Trunk)',
-  peti: 'Peti (Storage)',
-  'trolley-bag': 'Trolley Bag',
-  sofas: 'Sofas & Seating',
-  beds: 'Beds',
-  wardrobes: 'Wardrobes',
-  'dining-sets': 'Dining Sets',
-  'study-tables': 'Study & Work',
-  mattresses: 'Mattresses',
-
-  // Appliances
-  'washing-machine': 'Washing Machine',
-  fridge: 'Fridge',
-  cooler: 'Cooler',
-  'diacut-cooler': 'Diacut Cooler',
-  mixer: 'Mixer Grinder',
-  juicer: 'Juicer & Blender',
-  iron: 'Iron (Press)',
-  'gas-chulha': 'Gas Chulha',
-  'utensils-washer': 'Utensils Washer',
-  'roti-maker': 'Roti Maker',
-  refrigerators: 'Refrigerators',
-  'washing-machines': 'Washing Machines',
-  'air-conditioners': 'Air Conditioners',
-  televisions: 'Televisions',
-
-  // Utensils
-  'dinner-set': 'Dinner Set',
-  'pressure-cooker': 'Pressure Cooker',
-  'kadai-frypan': 'Kadai & Fry Pan',
-  'roti-tawa': 'Roti Tawa',
-  'thali-set': 'Thali Set',
-  'water-jug': 'Water Jug & Glasses',
-  'masala-dabba': 'Masala Dabba',
-  'casserole-set': 'Hotpot Casserole',
-  'bhagona-set': 'Bhagona & Tope Set',
-  'cutlery-set': 'Cutlery & Spoon Stand',
-  'water-dispenser': 'Water Dispenser',
-  'tea-milk-pot': 'Tea & Milk Pot',
-
-  // Rooms
-  living: 'Living room',
-  bedroom: 'Bedroom',
-  dining: 'Dining',
-  study: 'Study',
-  kitchen: 'Kitchen & utility'
-};
-
-const furnitureGrid = [
-  { slug: 'double-bed', label: 'Double Bed', icon: 'bed', href: '/furniture/double-bed', desc: 'Hydraulic Storage & King Size' },
-  { slug: 'sringardan', label: 'Sringardan', icon: 'sparkles', href: '/furniture/sringardan', desc: 'Dressing Vanity with Mirror' },
-  { slug: 'sofa-set', label: 'Sofa Set', icon: 'sofa', href: '/furniture/sofa-set', desc: '5-Seater Royal Living Sets' },
-  { slug: 'centre-table', label: 'Centre Table', icon: 'sliders', href: '/furniture/centre-table', desc: 'Sheesham & Glass Top Tables' },
-  { slug: 'wooden-wordrobe', label: 'Wooden Wardrobe', icon: 'layers', href: '/furniture/wooden-wordrobe', desc: 'Sliding & 4-Door Teak Wood' },
-  { slug: 'almirah', label: 'Steel Almirah', icon: 'shield', href: '/furniture/almirah', desc: 'Triveni Gold Heavy Gauge' },
-  { slug: 'all-furniture', label: 'All Furniture', icon: 'arrow', href: '/furniture', desc: 'Explore Complete 20 Categories' }
-];
-
-const appliancesGrid = [
-  { slug: 'washing-machine', label: 'Washing Machine', icon: 'washer', href: '/appliances/washing-machine', desc: 'Inverter Front & Top Load' },
-  { slug: 'fridge', label: 'Fridge', icon: 'refrigerator', href: '/appliances/fridge', desc: 'Double Door Frost-Free' },
-  { slug: 'cooler', label: 'Desert Cooler', icon: 'wind', href: '/appliances/cooler', desc: '70L High Air Throw Blower' },
-  { slug: 'diacut-cooler', label: 'Diacut Cooler', icon: 'wind', href: '/appliances/diacut-cooler', desc: 'Heavy Galvanized Metal Body' },
-  { slug: 'mixer', label: 'Mixer Grinder', icon: 'sparkles', href: '/appliances/mixer', desc: 'Heavy Duty 3 & 4 Jars' },
-  { slug: 'gas-chulha', label: 'Gas Chulha', icon: 'flame', href: '/appliances/gas-chulha', desc: 'Toughened Glass 3-Burner' },
-  { slug: 'all-appliances', label: 'All Appliances', icon: 'arrow', href: '/appliances', desc: 'View Full Appliance Suite' }
-];
-
-const utensilsGrid = [
-  { slug: 'dinner-set', label: 'Dinner Sets', icon: 'sparkles', href: '/utensils/dinner-set', desc: '51 & 61-Piece Heavy SS Sets' },
-  { slug: 'pressure-cooker', label: 'Pressure Cookers', icon: 'layers', href: '/utensils/pressure-cooker', desc: 'Hawkins & Prestige Induction' },
-  { slug: 'kadai-frypan', label: 'Kadai & Fry Pan', icon: 'sliders', href: '/utensils/kadai-frypan', desc: 'Tri-Ply Heavy Bottom Duo' },
-  { slug: 'thali-set', label: 'Thali & Katori Sets', icon: 'sparkles', href: '/utensils/thali-set', desc: 'Royal Maharaja Family Sets' },
-  { slug: 'casserole-set', label: 'Hotpot Casseroles', icon: 'shield', href: '/utensils/casserole-set', desc: 'Insulated Thermal Keep-Warm' },
-  { slug: 'all-utensils', label: 'All Utensils', icon: 'arrow', href: '/utensils', desc: 'View Full Utensils Collection' }
 ];
 
 const roomLinks = [
@@ -209,9 +56,37 @@ export default function Header() {
   const locale = useSelector((state) => state.ui.locale);
 
   const [mounted, setMounted] = useState(false);
-  const [dynamicNav, setDynamicNav] = useState(nav);
-  const [categoryLabels, setCategoryLabels] = useState(labels);
+  const [dynamicNav, setDynamicNav] = useState(defaultNav);
+  const [categoryLabels, setCategoryLabels] = useState({});
+  const [categoriesList, setCategoriesList] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const legacyAliases = useMemo(
+    () =>
+      new Set([
+        'sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables', 'mattresses', 'decor', 'storage',
+        'refrigerators', 'washing-machines', 'air-conditioners', 'televisions', 'microwaves', 'chimneys', 'water-purifiers'
+      ]),
+    []
+  );
+
+  const furnitureCategories = useMemo(() => {
+    return categoriesList.filter(
+      (c) => c.type === 'furniture' && c.active !== false && !legacyAliases.has(c.slug)
+    );
+  }, [categoriesList, legacyAliases]);
+
+  const applianceCategories = useMemo(() => {
+    return categoriesList.filter(
+      (c) => (c.type === 'appliance' || c.type === 'appliances') && c.active !== false && !legacyAliases.has(c.slug)
+    );
+  }, [categoriesList, legacyAliases]);
+
+  const utensilsCategories = useMemo(() => {
+    return categoriesList.filter(
+      (c) => c.type === 'utensils' && c.active !== false && !legacyAliases.has(c.slug)
+    );
+  }, [categoriesList, legacyAliases]);
 
   useEffect(() => {
     setActiveDropdown(null);
@@ -330,16 +205,19 @@ export default function Header() {
       .then((r) => (r.ok ? r.json() : null))
       .then((json) => {
         if (json?.success && Array.isArray(json?.data) && json.data.length > 0) {
-          const legacyAliases = new Set([
-            'sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables', 'mattresses', 'decor', 'storage',
-            'refrigerators', 'washing-machines', 'air-conditioners', 'televisions', 'microwaves', 'chimneys', 'water-purifiers'
-          ]);
-          const furn = json.data.filter((c) => c.type === 'furniture' && c.active && !legacyAliases.has(c.slug));
-          const app = json.data.filter((c) => c.type === 'appliance' && c.active && !legacyAliases.has(c.slug));
+          setCategoriesList(json.data);
 
-          const uten = json.data.filter((c) => c.type === 'utensils' && c.active && !legacyAliases.has(c.slug));
+          const furn = json.data.filter(
+            (c) => c.type === 'furniture' && c.active !== false && !legacyAliases.has(c.slug)
+          );
+          const app = json.data.filter(
+            (c) => (c.type === 'appliance' || c.type === 'appliances') && c.active !== false && !legacyAliases.has(c.slug)
+          );
+          const uten = json.data.filter(
+            (c) => c.type === 'utensils' && c.active !== false && !legacyAliases.has(c.slug)
+          );
 
-          const newLabels = { ...labels };
+          const newLabels = {};
           json.data.forEach((c) => {
             if (c.slug && c.name) {
               newLabels[c.slug] = c.name;
@@ -351,24 +229,24 @@ export default function Header() {
             {
               key: 'furniture',
               href: '/furniture',
-              children: furn.length > 0 ? furn.map((c) => c.slug) : nav[0].children
+              children: furn.map((c) => c.slug)
             },
             {
               key: 'appliances',
               href: '/appliances',
-              children: app.length > 0 ? app.map((c) => c.slug) : nav[1].children
+              children: app.map((c) => c.slug)
             },
             {
               key: 'utensils',
               href: '/utensils',
-              children: uten.length > 0 ? uten.map((c) => c.slug) : nav[2].children
+              children: uten.map((c) => c.slug)
             },
-            nav[3]
+            defaultNav[3]
           ]);
         }
       })
       .catch(() => {});
-  }, []);
+  }, [legacyAliases]);
 
   const displayCartCount = mounted ? cartCount : 0;
   const displayWishlistCount = mounted ? wishlistCount : 0;
@@ -835,33 +713,172 @@ export default function Header() {
               </Link>
               {item.children && activeDropdown === item.key && (
                 <div className={`${styles.dropdown} ${item.key === 'rooms' ? styles.dropdownRooms : ''}`}>
-                  <div className={styles.dropdownGrid}>
-                    {item.children.map((slug) => (
-                      <Link
-                        key={slug}
-                        href={item.href.startsWith('/rooms') ? `/rooms/${slug}` : `${item.href}/${slug}`}
-                        className={styles.dropdownLink}
+                  <div className={styles.dropdownHeader}>
+                    <span>Explore Our Collection</span>
+                  </div>
+
+                  <div className={styles.dropdownBody}>
+                    <div className={styles.dropdownBadge}>
+                      {item.key === 'furniture'
+                        ? 'Furniture'
+                        : item.key === 'appliances'
+                        ? 'Appliances'
+                        : item.key === 'utensils'
+                        ? 'Utensils'
+                        : 'Shop by Room'}
+                    </div>
+
+                    <div className={styles.dropdownGrid}>
+                      {item.children.map((slug) => (
+                        <Link
+                          key={slug}
+                          href={item.href.startsWith('/rooms') ? `/rooms/${slug}` : `${item.href}/${slug}`}
+                          className={styles.dropdownLink}
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <span className={styles.dropdownArrow}>›</span>
+                          <span className={styles.dropdownText}>{categoryLabels[slug] || slug.replace(/-/g, ' ')}</span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    <div className={styles.dropdownFooter}>
+                      <Link 
+                        href={item.href} 
+                        className={styles.dropdownViewAll}
                         onClick={() => setActiveDropdown(null)}
                       >
-                        <span className={styles.dropdownBullet}></span>
-                        <span className={styles.dropdownText}>{categoryLabels[slug] || slug.replace(/-/g, ' ')}</span>
+                        <span className={styles.dropdownArrow}>›</span>
+                        <span>
+                          {item.key === 'furniture'
+                            ? `View All Furniture (${item.children.length}) →`
+                            : item.key === 'appliances'
+                            ? `View All Appliances (${item.children.length}) →`
+                            : item.key === 'utensils'
+                            ? `View All Utensils (${item.children.length}) →`
+                            : item.key === 'rooms'
+                            ? 'Explore All Rooms →'
+                            : `View All ${item.key} →`}
+                        </span>
                       </Link>
-                    ))}
-                  </div>
-                  <div className={styles.dropdownFooter}>
-                    <Link 
-                      href={item.href} 
-                      className={styles.viewAllLink}
-                      onClick={() => setActiveDropdown(null)}
-                    >
-                      <span>Explore all {item.key === 'furniture' ? 'furnitures' : item.key === 'rooms' ? 'rooms' : item.key}</span>
-                      <Icon name="arrow" size={12} />
-                    </Link>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           ))}
+
+          {/* Shop by Category Mega Menu (Similar to Hariwan Organics) */}
+          <div
+            className={`${styles.navItem} ${styles.shopByCategoryNavItem}`}
+            onMouseEnter={() => setActiveDropdown('mega-category')}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            <button
+              type="button"
+              className={`${styles.shopByCategoryBtn} ${
+                activeDropdown === 'mega-category' ? styles.shopByCategoryBtnActive : ''
+              }`}
+              onClick={() =>
+                setActiveDropdown(activeDropdown === 'mega-category' ? null : 'mega-category')
+              }
+              aria-expanded={activeDropdown === 'mega-category'}
+            >
+              <span className={styles.shopByCategoryDiamond}>◆</span>
+              <span>Shop by Category</span>
+              <span className={styles.shopByCategoryChevron}>
+                {activeDropdown === 'mega-category' ? '▴' : '▾'}
+              </span>
+            </button>
+
+            {activeDropdown === 'mega-category' && (
+              <div className={styles.megaMenuDropdown}>
+                <div className={styles.megaMenuHeader}>
+                  <span>Explore Our Collection</span>
+                </div>
+
+                <div className={styles.megaMenuColumns}>
+                  {/* Furniture Column */}
+                  <div className={styles.megaMenuCol}>
+                    <div className={styles.megaMenuBadge}>Furniture</div>
+                    <div className={styles.megaMenuList}>
+                      {furnitureCategories.slice(0, 10).map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/furniture/${cat.slug}`}
+                          className={styles.megaMenuLink}
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <span className={styles.megaMenuArrow}>›</span>
+                          <span>{cat.name}</span>
+                        </Link>
+                      ))}
+                      <Link
+                        href="/furniture"
+                        className={styles.megaMenuViewAll}
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <span className={styles.megaMenuArrow}>›</span>
+                        <span>View All Furniture ({furnitureCategories.length}) →</span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Utensils Column */}
+                  <div className={styles.megaMenuCol}>
+                    <div className={styles.megaMenuBadge}>Utensils</div>
+                    <div className={styles.megaMenuList}>
+                      {utensilsCategories.slice(0, 10).map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/utensils/${cat.slug}`}
+                          className={styles.megaMenuLink}
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <span className={styles.megaMenuArrow}>›</span>
+                          <span>{cat.name}</span>
+                        </Link>
+                      ))}
+                      <Link
+                        href="/utensils"
+                        className={styles.megaMenuViewAll}
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <span className={styles.megaMenuArrow}>›</span>
+                        <span>View All Utensils ({utensilsCategories.length}) →</span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Appliances Column */}
+                  <div className={styles.megaMenuCol}>
+                    <div className={styles.megaMenuBadge}>Appliances</div>
+                    <div className={styles.megaMenuList}>
+                      {applianceCategories.slice(0, 10).map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/appliances/${cat.slug}`}
+                          className={styles.megaMenuLink}
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <span className={styles.megaMenuArrow}>›</span>
+                          <span>{cat.name}</span>
+                        </Link>
+                      ))}
+                      <Link
+                        href="/appliances"
+                        className={styles.megaMenuViewAll}
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <span className={styles.megaMenuArrow}>›</span>
+                        <span>View All Appliances ({applianceCategories.length}) →</span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           <Link
             href="/packages"
@@ -962,78 +979,94 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Grid 1: Handcrafted Furniture (Text Only in Grids) */}
+            {/* Grid 1: Handcrafted Furniture (Dynamic from Backend) */}
             <div className={styles.drawerSection}>
               <div className={styles.drawerSectionHeader}>
-                <span className={styles.drawerSectionTitle}>Furniture Collections</span>
+                <span className={styles.drawerSectionTitle}>
+                  Furniture Collections ({furnitureCategories.length})
+                </span>
                 <Link href="/furniture" onClick={closeMenu} className={styles.drawerSectionAllLink}>
                   <span>View All →</span>
                 </Link>
               </div>
 
               <div className={styles.categoryGrid}>
-                {furnitureGrid.map((item) => (
+                {furnitureCategories.map((item) => (
                   <Link
                     key={item.slug}
-                    href={item.href}
+                    href={`/furniture/${item.slug}`}
                     onClick={closeMenu}
                     className={styles.categoryCard}
                   >
                     <div className={styles.cardContent}>
-                      <span className={styles.cardTitle}>{item.label}</span>
-                      <span className={styles.cardDesc}>{item.desc}</span>
+                      <span className={styles.cardTitle}>{item.name}</span>
+                      {item.name_hi ? (
+                        <span className={styles.cardDesc}>{item.name_hi}</span>
+                      ) : item.room ? (
+                        <span className={styles.cardDesc}>{item.room}</span>
+                      ) : null}
                     </div>
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Grid 2: Smart Home Appliances (Text Only in Grids) */}
+            {/* Grid 2: Smart Home Appliances (Dynamic from Backend) */}
             <div className={styles.drawerSection}>
               <div className={styles.drawerSectionHeader}>
-                <span className={styles.drawerSectionTitle}>Home Appliances</span>
+                <span className={styles.drawerSectionTitle}>
+                  Home Appliances ({applianceCategories.length})
+                </span>
                 <Link href="/appliances" onClick={closeMenu} className={styles.drawerSectionAllLink}>
                   <span>View All →</span>
                 </Link>
               </div>
 
               <div className={styles.categoryGrid}>
-                {appliancesGrid.map((item) => (
+                {applianceCategories.map((item) => (
                   <Link
                     key={item.slug}
-                    href={item.href}
+                    href={`/appliances/${item.slug}`}
                     onClick={closeMenu}
                     className={styles.categoryCard}
                   >
                     <div className={styles.cardContent}>
-                      <span className={styles.cardTitle}>{item.label}</span>
-                      <span className={styles.cardDesc}>{item.desc}</span>
+                      <span className={styles.cardTitle}>{item.name}</span>
+                      {item.name_hi ? (
+                        <span className={styles.cardDesc}>{item.name_hi}</span>
+                      ) : item.room ? (
+                        <span className={styles.cardDesc}>{item.room}</span>
+                      ) : null}
                     </div>
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Grid 3: Utensils & Kitchenware */}
+            {/* Grid 3: Utensils & Kitchenware (Dynamic from Backend) */}
             <div className={styles.drawerSection}>
               <div className={styles.drawerSectionHeader}>
-                <span className={styles.drawerSectionTitle}>Utensils & Kitchenware</span>
+                <span className={styles.drawerSectionTitle}>
+                  Utensils & Kitchenware ({utensilsCategories.length})
+                </span>
                 <Link href="/utensils" onClick={closeMenu} className={styles.drawerSectionAllLink}>
                   <span>View All →</span>
                 </Link>
               </div>
 
               <div className={styles.categoryGrid}>
-                {utensilsGrid.map((item) => (
+                {utensilsCategories.map((item) => (
                   <Link
                     key={item.slug}
-                    href={item.href}
+                    href={`/utensils/${item.slug}`}
                     onClick={closeMenu}
                     className={styles.categoryCard}
                   >
                     <div className={styles.cardContent}>
-                      <span className={styles.cardTitle}>{item.label}</span>
-                      <span className={styles.cardDesc}>{item.desc}</span>
+                      <span className={styles.cardTitle}>{item.name}</span>
+                      {item.name_hi ? (
+                        <span className={styles.cardDesc}>{item.name_hi}</span>
+                      ) : null}
                     </div>
                   </Link>
                 ))}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
-import { formatINR } from "@/lib/demo-data";
+import { formatINR } from "@/lib/pricing";
 import styles from "./AdminPackages.module.css";
 
 const emptyPackage = {

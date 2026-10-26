@@ -1,14 +1,3 @@
-/**
- * Centralized Admin CRM Navigation Configuration
- * Defines all primary navigation groups, flat links, section dividers,
- * icon identifiers, route paths, role-based permission requirements, and live badge keys.
- *
- * Supported node types:
- * - 'section': Uppercase divider header (OPERATIONS / CATALOGUE / GROWTH / SYSTEM)
- * - 'link': Flat standalone link (no accordion dropdown)
- * - 'group': Multi-item accordion dropdown (2+ items)
- */
-
 export const ADMIN_NAV_CONFIG = [
   {
     type: 'section',

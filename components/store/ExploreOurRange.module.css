@@ -1,0 +1,337 @@
+.section {
+  position: relative;
+  padding: 64px 0 72px;
+  background: linear-gradient(180deg, #fdf8ee 0%, #f9f2e0 100%);
+  border-top: 1px solid rgba(224, 160, 64, 0.22);
+  border-bottom: 1px solid rgba(31, 95, 46, 0.12);
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 var(--page-gutter, 24px);
+}
+
+/* Header Row: Title on Left, Shop More Button on Right */
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-family: var(--font-serif, "Playfair Display", Georgia, serif);
+  font-size: clamp(30px, 3.8vw, 46px);
+  font-weight: 800;
+  color: var(--rf-forest-deep, #10261a);
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.rangeHighlight {
+  position: relative;
+  display: inline-block;
+  color: var(--rf-gold-600, #c48620);
+  margin-left: 6px;
+  text-shadow: 0 0 24px rgba(224, 160, 64, 0.22);
+}
+
+.brushStroke {
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 10px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Shop More Button - Branded with RF Riddhy Logo Forest Green & Amber Gold */
+.shopMoreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 26px;
+  background: linear-gradient(135deg, #1f5f2e 0%, #154922 100%);
+  color: #ffffff;
+  border: 1.5px solid rgba(224, 160, 64, 0.55);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 14px rgba(31, 95, 46, 0.28);
+  flex-shrink: 0;
+}
+
+.shopMoreBtn:hover {
+  background: linear-gradient(135deg, #267439 0%, #1f5f2e 100%);
+  border-color: #edb95e;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(31, 95, 46, 0.38);
+}
+
+.shopMoreBtn svg {
+  color: #edb95e;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.shopMoreBtn:hover svg {
+  transform: translateX(3px);
+  color: #fff2c4;
+}
+
+/* Department Tabs (Furnitures | Appliances | Utensils with Real Avatars) */
+.deptTabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.deptTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 22px 6px 8px;
+  background: #ffffff;
+  color: #2e3b24;
+  border: 1.5px solid rgba(31, 95, 46, 0.18);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.deptTab:hover {
+  border-color: var(--rf-gold-500, #e0a040);
+  color: var(--rf-forest-deep, #10261a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(224, 160, 64, 0.18);
+}
+
+.deptTabActive {
+  background: var(--rf-green-800, #1f5f2e);
+  color: #ffffff !important;
+  border-color: var(--rf-green-800, #1f5f2e);
+  box-shadow: 0 6px 18px rgba(31, 95, 46, 0.32);
+  transform: translateY(-1px);
+}
+
+.deptAvatarWrap {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffffff;
+  background: #f4efe4;
+  flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.deptAvatarImg {
+  object-fit: cover !important;
+}
+
+.deptTabActive .deptAvatarWrap {
+  border-color: var(--rf-gold-500, #e0a040);
+}
+
+/* Circular Categories Filter Bar */
+.circlesWrapper {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.circlesRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 22px;
+  overflow-x: auto;
+  padding: 10px 4px 18px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.circlesRow::-webkit-scrollbar {
+  display: none;
+}
+
+.circleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+  outline: none;
+}
+
+.circleCard:hover {
+  transform: translateY(-4px);
+}
+
+/* The round image container matching Hariwan Organics Cashew item */
+.circleImgWrap {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 4px;
+  box-shadow: 0 6px 20px rgba(31, 95, 46, 0.08);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 2.5px solid #ffffff;
+  overflow: hidden;
+}
+
+.circleImgInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fbfaf6;
+}
+
+.circleImg {
+  object-fit: cover !important;
+  transform: scale(1.1);
+  transition: transform 0.35s ease;
+}
+
+.circleCard:hover .circleImg {
+  transform: scale(1.18);
+}
+
+/* Active State for Circle: Luminous Amber Gold Halo Ring (Logo Match) */
+.circleCardActive .circleImgWrap {
+  border-color: #ffffff;
+  box-shadow:
+    0 0 0 3.5px var(--rf-gold-500, #e0a040),
+    0 10px 28px rgba(224, 160, 64, 0.38);
+  transform: scale(1.05);
+}
+
+.circleLabel {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #2d3827;
+  margin-top: 10px;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.circleCardActive .circleLabel {
+  color: var(--rf-forest-deep, #10261a);
+  font-weight: 800;
+}
+
+/* Active Underline Bar below Label (Logo Amber Gold Match) */
+.activeIndicator {
+  width: 32px;
+  height: 3.5px;
+  background: var(--rf-gold-600, #c48620);
+  border-radius: 2px;
+  margin-top: 6px;
+  transition: all 0.2s ease;
+}
+
+.indicatorPlaceholder {
+  width: 32px;
+  height: 3.5px;
+  margin-top: 6px;
+  visibility: hidden;
+}
+
+/* Products Grid (4 Columns) */
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 50px 20px;
+  color: #636b5d;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+  .productsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .circlesRow {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 44px 0 54px;
+  }
+
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .shopMoreBtn {
+    align-self: flex-start;
+    padding: 9px 20px;
+    font-size: 13px;
+  }
+
+  .circlesRow {
+    gap: 16px;
+    padding-bottom: 12px;
+  }
+
+  .circleImgWrap {
+    width: 76px;
+    height: 76px;
+  }
+
+  .circleLabel {
+    font-size: 12px;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .productsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

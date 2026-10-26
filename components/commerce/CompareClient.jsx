@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeCompareItem, clearCompare } from "@/store/compareSlice";
 import { addItem } from "@/store/cartSlice";
 import { showToast } from "@/store/uiSlice";
-import { formatINR } from "@/lib/demo-data";
+import { formatINR } from "@/lib/pricing";
 import { getLocalizedCategoryName } from "@/lib/translate-backend";
 import ProductGrid from "@/components/ui/ProductGrid";
 import Button from "@/components/ui/Button";

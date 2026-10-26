@@ -19,7 +19,7 @@ import {
   Tag,
   ShieldCheck,
 } from "lucide-react";
-import { CATEGORY_SEED } from "@/lib/demo-data";
+import { CATEGORIES } from "@/config/categories";
 import styles from "./AdminProductDrawer.module.css";
 
 const TAG_OPTIONS = [
@@ -63,7 +63,7 @@ export default function AdminProductDrawer({
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [libraryAssets, setLibraryAssets] = useState([]);
   const [loadingLibrary, setLoadingLibrary] = useState(false);
-  const [availableCategories, setAvailableCategories] = useState(CATEGORY_SEED);
+  const [availableCategories, setAvailableCategories] = useState(CATEGORIES);
 
   useEffect(() => {
     if (isOpen) {
@@ -325,7 +325,7 @@ export default function AdminProductDrawer({
       if (key === "type") {
         next.hsnCode = value === "appliance" ? "8516" : "9403";
         // adjust default category
-        const availableCats = CATEGORY_SEED.filter((c) => c.type === value);
+        const availableCats = availableCategories.filter((c) => c.type === value);
         if (availableCats[0]) next.category = availableCats[0].slug;
       }
 

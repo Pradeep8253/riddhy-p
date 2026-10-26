@@ -7,7 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '@/store/cartSlice';
 import { showToast, setCartDrawer } from '@/store/uiSlice';
-import { formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon';
 import styles from './ShopTheLookHotspots.module.css';
 

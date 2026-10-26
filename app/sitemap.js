@@ -1,6 +1,5 @@
 import { connectDB } from "@/lib/db";
 import { Product } from "@/models/index";
-import { getDemoProducts } from "@/lib/demo-data";
 
 export default async function sitemap() {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -54,17 +53,8 @@ export default async function sitemap() {
         }));
       }
     }
-  } catch {
-    // Graceful fallback to demo product slugs
-  }
-
-  if (!productEntries.length) {
-    productEntries = getDemoProducts().map((product) => ({
-      url: `${base}/product/${product.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    }));
+  } catch (error) {
+    console.warn("Sitemap DB product fetch error:", error.message);
   }
 
   const staticEntries = staticRoutes.map((r) => ({

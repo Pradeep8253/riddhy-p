@@ -82,8 +82,6 @@ export default function AdminCategories() {
 
   const fileInputRef = useRef(null);
 
-  // Auto-generate slug from name if user hasn't manually diverged
-  const [autoSlug, setAutoSlug] = useState(true);
 
   const loadCategories = async () => {
     setLoading(true);
@@ -135,11 +133,13 @@ export default function AdminCategories() {
 
   // Slug generator helper
   const slugify = (text) => {
+    if (!text) return "";
     return text
+      .toString()
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
+      .replace(/['’]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
   };
 
@@ -151,7 +151,6 @@ export default function AdminCategories() {
       image: typeFilter === "appliance" ? "/images/category-refrigerators.webp" : "/images/category-sofas.webp",
       type: typeFilter === "appliance" ? "appliance" : "furniture",
     });
-    setAutoSlug(true);
     setError("");
     setModalOpen(true);
   };
@@ -161,7 +160,7 @@ export default function AdminCategories() {
     setFormData({
       name: cat.name || "",
       name_hi: cat.name_hi || "",
-      slug: cat.slug || "",
+      slug: cat.slug || (cat.name ? slugify(cat.name) : ""),
       type: cat.type || "furniture",
       room: cat.room || "",
       image: cat.image || "/images/category-sofas.webp",
@@ -169,7 +168,6 @@ export default function AdminCategories() {
       sortOrder: cat.sortOrder ?? 0,
       active: cat.active ?? true,
     });
-    setAutoSlug(false);
     setError("");
     setModalOpen(true);
   };
@@ -179,13 +177,8 @@ export default function AdminCategories() {
     setFormData((prev) => ({
       ...prev,
       name: val,
-      slug: autoSlug ? slugify(val) : prev.slug,
+      slug: slugify(val),
     }));
-  };
-
-  const handleSlugChange = (e) => {
-    setAutoSlug(false);
-    setFormData((prev) => ({ ...prev, slug: slugify(e.target.value) }));
   };
 
   const handleImageUpload = async (e) => {
@@ -640,7 +633,7 @@ export default function AdminCategories() {
               </button>
             </div>
 
-            <form onSubmit={handleSave}>
+            <form className={styles.modalForm} onSubmit={handleSave}>
               <div className={styles.modalBody}>
                 {error && (
                   <div
@@ -686,9 +679,11 @@ export default function AdminCategories() {
                     <label>URL Slug *</label>
                     <input
                       type="text"
-                      placeholder="center-tables"
+                      placeholder="Auto-generated from name"
                       value={formData.slug}
-                      onChange={handleSlugChange}
+                      readOnly
+                      disabled
+                      className={styles.disabledSlugInput}
                       required
                     />
                     <span className={styles.fieldHint}>
@@ -865,10 +860,10 @@ export default function AdminCategories() {
                 <button type="submit" className={styles.saveBtn} disabled={saving || uploading}>
                   {saving ? (
                     <>
-                      <Loader2 size={16} className="animate-spin" /> Saving…
+                      <Loader2 size={16} className="animate-spin" /> {editingCategory ? "Saving…" : "Creating…"}
                     </>
                   ) : (
-                    "Save Category"
+                    editingCategory ? "Save Changes" : "Create Category"
                   )}
                 </button>
               </div>

@@ -100,7 +100,6 @@ export default function ProductCard({ product, compact = false }) {
     );
   };
 
-  // Gallery image fallback logic with responsive sizes & blur
   const image =
     product.gallery?.[0]?.mediumUrl ||
     product.gallery?.[0]?.url ||
@@ -108,6 +107,10 @@ export default function ProductCard({ product, compact = false }) {
     IMG.products.sofa;
 
   const secondaryImage =
+    product.gallery?.find?.((g) => g.view === "angle")?.mediumUrl ||
+    product.gallery?.find?.((g) => g.view === "angle")?.url ||
+    product.gallery?.find?.((g) => g.view === "lifestyle")?.mediumUrl ||
+    product.gallery?.find?.((g) => g.view === "lifestyle")?.url ||
     product.gallery?.find?.((g) => g.view === "back")?.mediumUrl ||
     product.gallery?.find?.((g) => g.view === "back")?.url ||
     product.gallery?.[1]?.mediumUrl ||

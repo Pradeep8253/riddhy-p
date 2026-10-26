@@ -890,59 +890,122 @@
 
 .dropdown {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 10px);
   left: 0;
   display: block;
-  width: 480px;
-  padding: 14px 16px;
-  border: 1px solid rgba(31, 95, 46, 0.16);
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 16px 42px -6px rgba(16, 40, 27, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
-  z-index: 1000;
-  animation: fadeInDown 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 520px;
+  background: #1c1b18;
+  border: 1px solid #333027;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.25);
+  z-index: 1200;
+  overflow: visible;
+  animation: megaFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dropdown::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 24px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #1c1b18;
+}
+
+.dropdown::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
 }
 
 .dropdownRooms {
-  width: 220px !important;
-  padding: 10px 12px !important;
+  width: 260px !important;
 }
 
 .dropdownRooms .dropdownGrid {
   grid-template-columns: 1fr !important;
   column-gap: 0 !important;
-  row-gap: 2px !important;
+  row-gap: 8.5px !important;
+}
+
+.dropdownHeader {
+  padding: 14px 22px 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dropdownHeader span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #d4a359;
+}
+
+.dropdownBody {
+  padding: 16px 20px 18px;
+}
+
+.dropdownBadge {
+  display: inline-block;
+  background: linear-gradient(135deg, #6a7f34 0%, #516327 100%);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .dropdownGrid {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
-  column-gap: 14px !important;
-  row-gap: 3px !important;
+  column-gap: 20px !important;
+  row-gap: 8.5px !important;
 }
 
 .dropdownLink {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 8px;
-  color: var(--rf-charcoal-800, #242c26);
-  font-weight: 600;
+  gap: 7px;
+  color: #e5e2da;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 12.5px;
+  font-weight: 500;
   line-height: 1.35;
-  transition: all 0.16s ease;
+  transition: all 0.15s ease;
   min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.dropdownBullet {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(31, 95, 46, 0.35);
+.dropdownLink:hover {
+  color: #edb95e;
+  transform: translateX(2px);
+  background: transparent;
+  padding-left: 0;
+}
+
+.dropdownArrow {
+  font-size: 13px;
+  color: #8c867a;
+  font-weight: 700;
+  transition: transform 0.15s ease, color 0.15s ease;
   flex-shrink: 0;
-  transition: all 0.16s ease;
+}
+
+.dropdownLink:hover .dropdownArrow {
+  color: #edb95e;
+  transform: translateX(2px);
 }
 
 .dropdownText {
@@ -951,38 +1014,218 @@
   text-overflow: ellipsis;
 }
 
-.dropdownLink:hover {
-  color: var(--rf-forest-deep, #10281b);
-  background: #f3f7f2;
-  padding-left: 13px;
-}
-
-.dropdownLink:hover .dropdownBullet {
-  background: var(--rf-gold-600, #b8860b);
-  transform: scale(1.4);
-}
-
 .dropdownFooter {
-  margin-top: 12px;
+  margin-top: 14px;
   padding-top: 10px;
-  border-top: 1px solid rgba(31, 95, 46, 0.09);
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
-.viewAllLink {
+.dropdownViewAll {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  color: #d4a359;
   font-size: 11.5px;
   font-weight: 700;
-  color: var(--rf-green-700, #1f5f2e);
   text-decoration: none;
   transition: all 0.15s ease;
 }
 
-.viewAllLink:hover {
-  color: var(--rf-gold-600, #b8860b);
+.dropdownViewAll:hover {
+  color: #f7d28b;
+  transform: translateX(3px);
+}
+
+/* =========================================================
+   MEGA MENU: SHOP BY CATEGORY (Similar to Hariwan Organics)
+   ========================================================= */
+.shopByCategoryNavItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.shopByCategoryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #614d2a 0%, #4a3a1f 100%);
+  color: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  user-select: none;
+}
+
+.shopByCategoryBtn:hover,
+.shopByCategoryBtnActive {
+  background: linear-gradient(135deg, #745d33 0%, #594625 100%);
+  border-color: #edb95e;
+  color: #fffaf0;
+  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.3);
+  transform: translateY(-1px);
+}
+
+.shopByCategoryDiamond {
+  font-size: 8px;
+  color: #edb95e;
+  display: inline-block;
+  line-height: 1;
+}
+
+.shopByCategoryChevron {
+  font-size: 11px;
+  color: #edb95e;
+  margin-left: 2px;
+  line-height: 1;
+}
+
+.megaMenuDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 760px;
+  max-width: 90vw;
+  background: #1c1b18;
+  border: 1px solid #333027;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.25);
+  z-index: 1200;
+  overflow: visible;
+  animation: megaFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.megaMenuDropdown::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #1c1b18;
+}
+
+@keyframes megaFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.megaMenuHeader {
+  padding: 14px 22px 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.megaMenuHeader span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #d4a359;
+}
+
+.megaMenuColumns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 16px 8px 18px;
+}
+
+.megaMenuCol {
+  padding: 4px 18px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.megaMenuCol:last-child {
+  border-right: none;
+}
+
+.megaMenuBadge {
+  display: inline-block;
+  background: linear-gradient(135deg, #6a7f34 0%, #516327 100%);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.megaMenuList {
+  display: flex;
+  flex-direction: column;
+  gap: 8.5px;
+}
+
+.megaMenuLink {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #e5e2da;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.megaMenuLink:hover {
+  color: #edb95e;
+  transform: translateX(2px);
+}
+
+.megaMenuArrow {
+  font-size: 13px;
+  color: #8c867a;
+  font-weight: 700;
+  transition: transform 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.megaMenuLink:hover .megaMenuArrow {
+  color: #edb95e;
+  transform: translateX(2px);
+}
+
+.megaMenuViewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  color: #d4a359;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.megaMenuViewAll:hover {
+  color: #f7d28b;
   transform: translateX(3px);
 }
 

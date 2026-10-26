@@ -1,7 +1,7 @@
 "use client";
 
 import { formatDateDDMMYYYY } from "@/lib/date-utils";
-import { formatINR } from "@/lib/demo-data";
+import { formatINR } from "@/lib/pricing";
 import { ALLOWED_TRANSITIONS } from "@/lib/order-state";
 import {
   ArrowRight,

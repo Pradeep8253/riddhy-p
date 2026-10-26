@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { removeItem, setQuantity } from "@/store/cartSlice";
-import { formatINR } from "@/lib/demo-data";
+import { formatINR } from "@/lib/pricing";
 import { IMG } from "@/lib/images";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";

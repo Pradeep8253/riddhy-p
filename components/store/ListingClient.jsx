@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import ProductGrid from '@/components/ui/ProductGrid';
-import { formatINR } from '@/lib/demo-data';
+import { formatINR } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon';
 import styles from './ListingClient.module.css';
 
