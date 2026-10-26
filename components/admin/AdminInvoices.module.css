@@ -432,31 +432,6 @@
   border-color: #1b5e20;
 }
 
-@media (max-width: 768px) {
-  .page {
-    padding: 14px 12px;
-  }
-  .head h1 {
-    font-size: 22px;
-  }
-  .warningBanner {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .warningBtn {
-    justify-content: center;
-  }
-  .kpiRow {
-    grid-template-columns: 1fr;
-  }
-  .searchBox {
-    max-width: 100%;
-  }
-  .pdfPreviewFrame {
-    height: 50vh;
-  }
-}
-
 /* ========== TABLET (768px - 1023px) ========== */
 @media (max-width: 1023px) {
   .kpiRow {
@@ -466,34 +441,84 @@
 
 /* ========== MOBILE (481px - 767px) ========== */
 @media (max-width: 767px) {
-  .tableCard {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .page {
+    padding: 14px 10px;
+  }
+  .head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .head h1 {
+    font-size: 22px;
+  }
+  .warningBanner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .warningBtn {
+    justify-content: center;
+    min-height: 44px;
+    width: 100%;
+  }
+  .kpiRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .filterTopRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .searchBox {
+    max-width: 100%;
+    min-height: 44px;
   }
   .filterSelect,
   .dateInput {
     min-height: 44px;
+    flex: 1 1 calc(50% - 6px);
   }
-  .warningBtn {
+  .tableCard {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pdfPreviewFrame {
+    height: 55vh;
+  }
+  .tabBtn {
     min-height: 44px;
+    padding: 10px 14px;
   }
 }
 
 /* ========== SMALL MOBILE (320px - 480px) ========== */
 @media (max-width: 480px) {
   .head h1 {
-    font-size: 24px;
+    font-size: 20px;
+  }
+  .filterSelect,
+  .dateInput {
+    flex: 1 1 100%;
   }
   .modalCard {
-    width: 92%;
+    width: 95%;
+    max-width: 100%;
     padding: 16px 12px;
+  }
+  .kpiValue {
+    font-size: 20px;
   }
 }
 
 /* ========== EXTRA SMALL (<= 360px) ========== */
 @media (max-width: 360px) {
   .head h1 {
-    font-size: 20px;
+    font-size: 19px;
+  }
+  .page {
+    padding: 10px 6px;
   }
 }
 

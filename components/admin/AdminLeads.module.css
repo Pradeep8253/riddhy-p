@@ -482,42 +482,6 @@
   cursor: pointer;
 }
 
-@media (max-width: 800px) {
-  .kpiRow {
-    grid-template-columns: 1fr;
-  }
-  .filterBar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
-@media (max-width: 500px) {
-  .heading {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .heading h1 {
-    font-size: clamp(24px, 7vw, 32px);
-  }
-  .headerActions {
-    width: 100%;
-  }
-  .csvBtn {
-    width: 100%;
-    justify-content: center;
-  }
-  .assignRow {
-    grid-template-columns: 1fr;
-  }
-  .detailGrid {
-    grid-template-columns: 1fr;
-  }
-  .drawer {
-    width: 100vw;
-  }
-}
-
 /* ========== TABLET (768px - 1023px) ========== */
 @media (max-width: 1023px) {
   .kpiRow {
@@ -530,18 +494,68 @@
 
 /* ========== MOBILE (481px - 767px) ========== */
 @media (max-width: 767px) {
+  .heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .headerActions {
+    width: 100%;
+  }
+  .csvBtn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+  .kpiRow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+    gap: 10px;
+  }
+  .searchBox {
+    max-width: 100%;
+    min-height: 44px;
+  }
+  .selectFilters {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+  .selectFilters select,
+  .drawerSelect {
+    min-height: 44px;
+    width: 100%;
+  }
+  .tableCard,
+  .tableWrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .table {
+    min-width: 650px;
+  }
   .drawer {
     width: 100%;
     max-width: 100%;
   }
-  .tableCard,
-  .tableWrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .assignRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
-  .saveDetailsBtn,
-  .csvBtn {
+  .detailGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .saveDetailsBtn {
     min-height: 44px;
+    width: 100%;
   }
   .closeBtn {
     min-width: 44px;
@@ -562,4 +576,3 @@
     font-size: 20px;
   }
 }
-

@@ -50,8 +50,22 @@
 
 /* ========== MOBILE (481px - 767px) ========== */
 @media (max-width: 767px) {
+  .breadcrumbs {
+    margin-bottom: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .breadcrumbs::-webkit-scrollbar {
+    display: none;
+  }
+  .list {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
   .link {
-    min-height: 44px;
+    min-height: 28px;
+    padding: 2px 0;
   }
 }
 

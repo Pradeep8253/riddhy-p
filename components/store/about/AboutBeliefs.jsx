@@ -33,13 +33,17 @@ export default function AboutBeliefs() {
 
         <div className={styles.beliefsGrid}>
           {BELIEFS.map((belief) => (
-            <article key={belief.num} className={beliefCard}>
-              <div className={styles.beliefIcon}>
-                <Icon name={belief.icon} size={24} />
+            <article key={belief.num} className={styles.beliefCard}>
+              <div className={styles.beliefCardHead}>
+                <div className={styles.beliefIcon}>
+                  <Icon name={belief.icon} size={20} />
+                </div>
+                <span className={styles.beliefNum}>{belief.num}</span>
               </div>
-              <span>{belief.num}</span>
-              <h3>{belief.title}</h3>
-              <p>{belief.desc}</p>
+              <div className={styles.beliefCardBody}>
+                <h3 className={styles.beliefTitle}>{belief.title}</h3>
+                <p className={styles.beliefDesc}>{belief.desc}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -47,5 +51,3 @@ export default function AboutBeliefs() {
     </section>
   );
 }
-
-const beliefCard = styles.beliefCard;

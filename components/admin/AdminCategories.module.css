@@ -839,10 +839,14 @@
     border-radius: 12px;
     gap: 10px;
   }
-  .searchBox {
+  .searchWrap {
     min-height: 44px;
     width: 100%;
     max-width: 100%;
+    min-width: 100%;
+  }
+  .searchInput {
+    min-height: 44px;
   }
   .filters {
     flex-direction: column;

@@ -526,6 +526,7 @@ function AdminShellInner({ children, session }) {
               <span className={styles.breadcrumbSep}>/</span>
               <span className={styles.breadcrumbActive}>{activePageName}</span>
             </nav>
+            <span className={styles.mobilePageTitle}>{activePageName}</span>
           </div>
 
           {/* Quick Search with Ctrl+K shortcut */}
@@ -548,6 +549,15 @@ function AdminShellInner({ children, session }) {
 
           {/* Topbar User Menu with Avatar Dropdown */}
           <div className={styles.topbarRight}>
+            <button
+              type="button"
+              className={styles.mobileSearchBtn}
+              onClick={() => setIsCmdOpen(true)}
+              aria-label="Search dashboard"
+            >
+              <Search size={16} strokeWidth={2.2} />
+            </button>
+
             <div className={styles.userMenuContainer} ref={userMenuRef}>
               <button
                 type="button"

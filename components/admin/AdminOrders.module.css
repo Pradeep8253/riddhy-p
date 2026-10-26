@@ -260,30 +260,6 @@
   font-size: 13px;
 }
 
-@media (max-width: 800px) {
-  .head {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .filterBar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
-@media (max-width: 480px) {
-  .head h1 {
-    font-size: clamp(24px, 7vw, 32px);
-  }
-  .searchWrapper {
-    min-width: 100%;
-  }
-  .tools {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-}
-
 /* ========== TABLET (768px - 1023px) ========== */
 @media (max-width: 1023px) {
   .head {
@@ -302,24 +278,45 @@
   .head {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
-  .searchWrapper {
-    min-width: 100%;
-  }
-  .filtersGroup {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .filtersGroup select {
-    flex: 1 1 calc(50% - 4px);
-    min-height: 44px;
+  .head h1 {
+    font-size: 26px;
   }
   .tools {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+  }
+  .tools button,
+  .tools a {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 44px;
+    justify-content: center;
+  }
+  .filterBar {
+    padding: 12px;
+    gap: 10px;
+  }
+  .searchWrapper {
+    min-width: 100%;
+    min-height: 44px;
+  }
+  .filtersGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+  .filtersGroup select {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 44px;
+  }
+  .table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .row select {
     min-height: 44px;
@@ -329,7 +326,11 @@
 /* ========== SMALL MOBILE (320px - 480px) ========== */
 @media (max-width: 480px) {
   .head h1 {
-    font-size: 24px;
+    font-size: 22px;
+  }
+  .tools button,
+  .tools a {
+    flex: 1 1 100%;
   }
   .filtersGroup select {
     flex: 1 1 100%;

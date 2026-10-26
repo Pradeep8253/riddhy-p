@@ -83,7 +83,13 @@ function getPopoverPosition(spot) {
 }
 
 export default function ShopTheLookHotspots({ look = defaultLook }) {
-  const [activePin, setActivePin] = useState(look.hotspots[0].id);
+  const effectiveLook =
+    look && Array.isArray(look.hotspots) && look.hotspots.length > 0
+      ? look
+      : defaultLook;
+  const [activePin, setActivePin] = useState(
+    effectiveLook.hotspots[0]?.id || null,
+  );
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -113,8 +119,8 @@ export default function ShopTheLookHotspots({ look = defaultLook }) {
         }}
       >
         <Image
-          src={look.image}
-          alt={look.roomName}
+          src={effectiveLook.image}
+          alt={effectiveLook.roomName}
           fill
           className={styles.roomImage}
           sizes="(max-width: 1024px) 100vw, 1200px"
@@ -124,7 +130,7 @@ export default function ShopTheLookHotspots({ look = defaultLook }) {
 
         {/* Hotspot Pins */}
         <div className={styles.hotspotsLayer}>
-          {look.hotspots.map((spot) => {
+          {effectiveLook.hotspots.map((spot) => {
             const isActive = activePin === spot.id;
             const pos = getPopoverPosition(spot);
             const popoverClasses = [
@@ -215,7 +221,7 @@ export default function ShopTheLookHotspots({ look = defaultLook }) {
 
       {/* Mobile product drawer / pills */}
       <div className={styles.mobileList}>
-        {look.hotspots.map((spot) => (
+        {effectiveLook.hotspots.map((spot) => (
           <div
             key={spot.id}
             className={`${styles.mobileCard} ${activePin === spot.id ? styles.mobileCardActive : ''}`}

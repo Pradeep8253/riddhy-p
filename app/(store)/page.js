@@ -103,12 +103,13 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
+      {/* Explore Our Range - Harivan Organics Style for Furnitures, Appliances & Utensils */}
+      <ExploreOurRange allProducts={catalogueProducts} />
+
       {/* Old hero section */}
       {/* <HomePromotionalBanner initialBanners={heroBanners} /> */}
       <WarrantyBanner />
       <Marquee />
-
-      {/* Explore Our Range - Harivan Organics Style for Furnitures, Appliances & Utensils */}
 
       {/* 1. Shop by room */}
       <section className="section bg-white">
@@ -126,8 +127,6 @@ export default async function HomePage() {
           <RoomCards />
         </div>
       </section>
-
-      <ExploreOurRange allProducts={catalogueProducts} />
 
       {/* 2. Target UX Bestsellers Rail */}
       <TagRail
@@ -172,7 +171,9 @@ export default async function HomePage() {
               </Button>
             }
           />
-          <ShopTheLookHotspots look={curatedLook} />
+          <ShopTheLookHotspots
+            look={curatedLook?.hotspots?.length ? curatedLook : undefined}
+          />
         </div>
       </section>
 

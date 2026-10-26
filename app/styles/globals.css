@@ -26,12 +26,13 @@ h6,
 .display-title {
   font-family: var(--font-display);
   font-weight: var(--fw-semibold, 600);
-  color: var(--rf-forest-deep, #10261a);
+
   letter-spacing: var(--tracking-tight, -0.02em);
   margin-top: 0;
   margin-bottom: 8px;
   text-wrap: balance;
 }
+
 
 h1 *,
 h2 *,
@@ -317,9 +318,11 @@ svg {
   .section {
     padding-block: clamp(32px, 5vw, 48px);
   }
+
   .display-title {
     font-size: clamp(26px, 6vw, 36px);
   }
+
   .kicker {
     font-size: 9.5px;
     letter-spacing: .1em;
@@ -331,9 +334,11 @@ svg {
   .section {
     padding-block: clamp(24px, 4vw, 36px);
   }
+
   .display-title {
     font-size: clamp(22px, 5.5vw, 28px);
   }
+
   .kicker {
     font-size: 9px;
     gap: 6px;
@@ -345,4 +350,4 @@ svg {
   .display-title {
     font-size: 20px;
   }
-}
+}

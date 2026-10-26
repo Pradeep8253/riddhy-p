@@ -495,6 +495,9 @@
   gap: 10px;
   padding: 20px 4px 34px;
   border-bottom: 1px solid #e8e0d4;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
   background: repeating-linear-gradient(
     to bottom,
     transparent 0 46px,
@@ -749,6 +752,10 @@
 
 /* ========== MOBILE (481px - 767px) ========== */
 @media (max-width: 767px) {
+  .page {
+    gap: 18px;
+    padding-bottom: 28px;
+  }
   .header {
     flex-direction: column;
     align-items: stretch;
@@ -762,10 +769,21 @@
   .rangeGroup {
     width: 100%;
     display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 4px;
+    padding: 3px;
+    border-radius: 10px;
+  }
+  .rangeGroup::-webkit-scrollbar {
+    display: none;
   }
   .rangeBtn {
-    flex: 1;
-    min-height: 44px;
+    flex: 1 0 auto;
+    min-height: 40px;
+    padding: 6px 12px;
+    white-space: nowrap;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -775,20 +793,24 @@
   }
   .customDateBar {
     width: 100%;
-    justify-content: space-between;
+    flex-wrap: wrap;
     min-height: 44px;
+    gap: 6px;
     box-sizing: border-box;
+    padding: 6px 8px;
   }
   .customDateBar input {
-    min-height: 34px;
-    flex: 1;
+    min-height: 36px;
+    flex: 1 1 120px;
+    font-size: 12px;
   }
   .refreshBtn {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 42px;
+    min-width: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0 14px;
   }
   .kpiGrid {
     grid-template-columns: 1fr 1fr;
@@ -796,11 +818,16 @@
   }
   .paymentMethodCards {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
   .tableWrap,
   .tableContainer {
+    width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+  .table {
+    min-width: 580px;
   }
 }
 
@@ -811,13 +838,20 @@
   }
   .kpiGrid {
     grid-template-columns: 1fr;
+    gap: 8px;
   }
   .panel {
     padding: 14px 10px;
     border-radius: 12px;
   }
   .chartContainer {
-    height: 180px;
+    height: 190px;
+    padding-bottom: 28px;
+  }
+  .panelHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 
@@ -828,6 +862,9 @@
   }
   .kpiValue {
     font-size: 22px;
+  }
+  .panel {
+    padding: 12px 8px;
   }
 }
 

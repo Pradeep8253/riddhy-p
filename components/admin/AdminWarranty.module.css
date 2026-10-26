@@ -133,31 +133,12 @@
   background: var(--rf-cream-100);
 }
 
-@media (max-width: 800px) {
-  .table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-@media (max-width: 500px) {
-  .head h1 {
-    font-size: clamp(24px, 7vw, 32px);
-  }
-  .controls {
-    width: 100%;
-  }
-  .searchInput {
-    min-width: 100%;
-  }
-  .filterSelect {
-    width: 100%;
-  }
-}
-
 /* ========== TABLET (768px - 1023px) ========== */
 @media (max-width: 1023px) {
+  .head {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
   .controls {
     flex-wrap: wrap;
     gap: 10px;
@@ -166,21 +147,37 @@
 
 /* ========== MOBILE (481px - 767px) ========== */
 @media (max-width: 767px) {
-  .tableCard {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
-  .table {
-    min-width: 600px;
+  .controls {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
   }
   .searchInput,
   .filterSelect {
-    min-height: 44px;
     width: 100%;
+    min-width: 100%;
+    min-height: 44px;
+  }
+  .tableCard {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .table {
+    min-width: 640px;
   }
   .actionBtn {
     min-height: 44px;
-    padding: 8px 14px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -197,4 +194,3 @@
     font-size: 20px;
   }
 }
-

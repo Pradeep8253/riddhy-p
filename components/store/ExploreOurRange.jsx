@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductCard from '@/components/ui/ProductCard';
+import { getDemoProducts } from '@/lib/demo-data';
 import styles from './ExploreOurRange.module.css';
 
 const DEPARTMENT_CONFIG = {
@@ -159,6 +160,14 @@ export default function ExploreOurRange({ allProducts = [], initialDept = 'furni
 
   const deptData = DEPARTMENT_CONFIG[activeDept] || DEPARTMENT_CONFIG.furniture;
 
+  // Use passed products if available, otherwise fall back to full demo products
+  const productsList = useMemo(() => {
+    if (Array.isArray(allProducts) && allProducts.length > 0) {
+      return allProducts;
+    }
+    return getDemoProducts();
+  }, [allProducts]);
+
   // Switch department: also reset active category to 'all'
   const handleDeptChange = (deptKey) => {
     setActiveDept(deptKey);
@@ -167,39 +176,48 @@ export default function ExploreOurRange({ allProducts = [], initialDept = 'furni
 
   // Filter products for the current selection
   const filteredProducts = useMemo(() => {
-    if (!Array.isArray(allProducts) || allProducts.length === 0) return [];
+    if (!Array.isArray(productsList) || productsList.length === 0) return [];
 
     const deptType = activeDept === 'appliances' ? 'appliance' : activeDept;
 
     if (activeCategory === 'all') {
       // Return top products of this entire department
-      return allProducts
+      return productsList
         .filter((p) => p.type === deptType || p.type === activeDept)
         .slice(0, 8);
     }
 
-    // Filter by specific category slug
-    const matching = allProducts.filter(
-      (p) =>
-        p.category === activeCategory ||
-        p.categorySlug === activeCategory ||
-        p.category?.toLowerCase() === activeCategory.toLowerCase()
-    );
+    // Filter by specific category slug or label or modelType
+    const target = activeCategory.toLowerCase();
+    const matching = productsList.filter((p) => {
+      const matchType = !p.type || p.type === deptType || p.type === activeDept;
+      if (!matchType) return false;
 
-    // If specific category has fewer than 4 products, fill with department items
-    if (matching.length < 4) {
-      const remaining = allProducts
-        .filter(
-          (p) =>
-            (p.type === deptType || p.type === activeDept) &&
-            !matching.some((m) => m.slug === p.slug)
-        )
-        .slice(0, 4 - matching.length);
-      return [...matching, ...remaining].slice(0, 8);
+      const cat = String(p.category || '').toLowerCase();
+      const catSlug = String(p.categorySlug || '').toLowerCase();
+      const catLabel = String(p.categoryLabel || '').toLowerCase();
+      const model = String(p.modelType || '').toLowerCase();
+
+      return (
+        cat === target ||
+        catSlug === target ||
+        catLabel === target ||
+        model === target ||
+        cat.replace(/-/g, '') === target.replace(/-/g, '') ||
+        cat.includes(target) ||
+        target.includes(cat)
+      );
+    });
+
+    if (matching.length > 0) {
+      return matching.slice(0, 8);
     }
 
-    return matching.slice(0, 8);
-  }, [allProducts, activeDept, activeCategory]);
+    // If no exact category match, fallback to department items
+    return productsList
+      .filter((p) => p.type === deptType || p.type === activeDept)
+      .slice(0, 8);
+  }, [productsList, activeDept, activeCategory]);
 
   const shopMoreHref = useMemo(() => {
     if (activeCategory && activeCategory !== 'all') {

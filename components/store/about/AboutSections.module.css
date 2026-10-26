@@ -77,65 +77,108 @@
 
 /* Beliefs */
 .beliefsSection {
-  background: var(--rf-cream-50);
+  background: var(--rf-cream-50, #f8f6f0);
+  border-bottom: 1px solid var(--rf-line, #e7ded2);
 }
 
 .sectionHead {
   text-align: center;
-  max-width: 680px;
-  margin: 0 auto clamp(36px, 5vw, 60px);
+  max-width: 620px;
+  margin: 0 auto clamp(24px, 3.5vw, 40px);
 }
 
 .sectionHead h2 {
-  margin: 12px 0 10px;
-  font: 500 clamp(32px, 4.5vw, 54px) / 1.05 var(--font-display);
-  letter-spacing: -0.04em;
-  color: var(--rf-forest-deep);
+  margin: 10px 0 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(26px, 3.8vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--rf-forest-deep, #142a1b);
 }
 
 .beliefsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(16px, 2.5vw, 28px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 22px);
+  align-items: stretch;
 }
 
 .beliefCard {
-  background: var(--rf-white);
-  border: 1px solid var(--rf-line);
-  border-radius: var(--radius-lg);
-  padding: clamp(24px, 3.5vw, 36px);
-  box-shadow: var(--shadow-card);
-  display: grid;
-  align-content: start;
+  background: #ffffff;
+  border: 1px solid rgba(20, 42, 27, 0.08);
+  border-radius: 16px;
+  padding: clamp(18px, 2.2vw, 24px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.beliefCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(20, 42, 27, 0.08);
+  border-color: rgba(30, 93, 45, 0.25);
+}
+
+.beliefCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
 .beliefIcon {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--rf-cream-100);
-  color: var(--rf-gold-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(224, 160, 64, 0.14), rgba(31, 95, 46, 0.08));
+  color: var(--rf-forest-deep, #142a1b);
+  border: 1px solid rgba(224, 160, 64, 0.25);
+  flex-shrink: 0;
 }
 
-.beliefCard span {
-  color: var(--rf-gold-600);
-  font: 500 18px var(--font-display);
-}
-
-.beliefCard h3 {
-  margin: 0;
-  font: 500 22px / 1.15 var(--font-display);
-  color: var(--rf-forest-deep);
-}
-
-.beliefCard p {
-  margin: 0;
-  color: var(--rf-charcoal-600);
+.beliefNum {
+  font-family: var(--font-display);
   font-size: 13px;
-  line-height: 1.7;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--rf-gold-600, #b57a1e);
+  background: rgba(196, 134, 32, 0.08);
+  border: 1px solid rgba(196, 134, 32, 0.16);
+  padding: 3px 10px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.beliefCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.beliefTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(17px, 1.35vw, 20px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--rf-forest-deep, #142a1b);
+}
+
+.beliefDesc {
+  margin: 0;
+  color: var(--rf-charcoal-600, #4b554e);
+  font-size: 13.5px;
+  line-height: 1.6;
 }
 
 /* Duo Split Section */
@@ -842,7 +885,8 @@
   }
 
   .beliefsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
   }
 
   .duoGrid {
@@ -885,6 +929,13 @@
 
   .beliefsGrid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .beliefCard {
+    padding: 18px 16px;
+    border-radius: 14px;
+    gap: 12px;
   }
 
   .careTimelineGrid {
@@ -944,7 +995,11 @@
     font-size: 24px;
   }
 
-  .beliefCard,
+  .beliefCard {
+    padding: 15px 14px;
+    border-radius: 12px;
+  }
+
   .duoCard,
   .showroomCard,
   .pillarCard,
@@ -974,5 +1029,9 @@
   .duoCard p,
   .careStep p {
     font-size: 13px;
+  }
+
+  .beliefCard {
+    padding: 13px 12px;
   }
 }
