@@ -17,6 +17,8 @@ import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import { getProductsByTag, getProducts, getCatalogProduct, getCategories, getCampaigns } from '@/lib/catalogue';
 
+export const revalidate = 0;
+
 export const metadata = {
   title: 'Furniture & Home Appliances for Thoughtful Living',
   description: 'Explore room-ready furniture and dependable home appliances, with delivery, installation and warranty details made clear.'
@@ -41,8 +43,6 @@ export default async function HomePage() {
     getCampaigns('home-hero'),
     getCatalogProduct('mira-3-seater-sofa'),
     getCatalogProduct('aangan-accent-lamp'),
-    getCatalogProduct('sajilo-shoe-cabinet'),
-    getProducts({ type: 'furniture', limit: 8 })
   ]);
 
   const curatedLook = {
