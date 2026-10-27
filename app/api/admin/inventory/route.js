@@ -118,7 +118,12 @@ export async function PATCH(request) {
       inventory.available = targetAvailable;
       await inventory.save({ session });
 
-      // Automatically keep Product.stock in sync with frontend catalog
+      // Automatically keep Product.stock and Variant.stock in sync with frontend catalog
+      await Variant.updateOne(
+        { _id: variant._id },
+        { $set: { stock: targetAvailable } }
+      ).session(session);
+
       if (variant.productId) {
         await Product.updateOne(
           { _id: variant.productId },

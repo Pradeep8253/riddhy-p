@@ -188,7 +188,7 @@ export default async function ContactPage({ searchParams }) {
               <span className="kicker" style={{ color: 'var(--rf-gold-600)' }}>Prayagraj Store</span>
               <h3>Visit our Prayagraj Store</h3>
               <p>
-                Explore our full solid wood collection and premium home appliances in person at our Civil Lines, Prayagraj store.
+                Explore our full solid wood collection and premium home appliances in person at our {liveConfig.showroom.addressLine1 || 'Mansoorabad'}, {liveConfig.showroom.city || 'Prayagraj'} store.
               </p>
               <a
                 href={whatsappUrl || 'https://wa.me/918840245188'}

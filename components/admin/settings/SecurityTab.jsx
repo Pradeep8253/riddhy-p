@@ -85,7 +85,7 @@ export default function SecurityTab() {
 
           <div className={styles.field}>
             <label>Two-Factor Authentication (TOTP 2FA)</label>
-            <div style={{ display: 'flex', alignItems: 'center', height: 44 }}>
+            <div style={{ display: 'flex', alignItems: 'center', minHeight: 44 }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', textTransform: 'none', fontWeight: 500 }}>
                 <input
                   type="checkbox"
@@ -99,7 +99,7 @@ export default function SecurityTab() {
           </div>
         </div>
 
-        <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <button type="submit" className={styles.saveBtn}>
             Update Security Policies
           </button>

@@ -116,6 +116,8 @@ const ProductSchema = new Schema(
     price: { type: Number, min: 0 },
     mrp: { type: Number, min: 0 },
     discount: { type: Number, min: 0, max: 100 },
+    stock: { type: Number, min: 0, default: 0 },
+    lowStockAt: { type: Number, default: 3 },
     status: {
       type: String,
       enum: ["draft", "active", "archived"],
@@ -154,6 +156,7 @@ const VariantSchema = new Schema(
     price: { type: Number, min: 0, required: true },
     mrp: { type: Number, min: 0 },
     stock: { type: Number, min: 0, default: 0 },
+    lowStockAt: { type: Number, default: 3 },
     active: { type: Boolean, default: true },
     model3d: Schema.Types.Mixed,
   },

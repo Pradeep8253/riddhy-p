@@ -34,7 +34,7 @@ export default function ShowroomTab({ formData, updateField, fieldErrors = {} })
             className={styles.input}
             value={showroom.addressLine1}
             onChange={(e) => updateField('showroom', 'addressLine1', e.target.value)}
-            placeholder="Ring Road, Sector 14"
+            placeholder="Mansoorabad"
           />
         </div>
       </div>
@@ -47,7 +47,7 @@ export default function ShowroomTab({ formData, updateField, fieldErrors = {} })
             className={styles.input}
             value={showroom.city}
             onChange={(e) => updateField('showroom', 'city', e.target.value)}
-            placeholder="New Delhi"
+            placeholder="Prayagraj"
           />
         </div>
 
@@ -58,7 +58,7 @@ export default function ShowroomTab({ formData, updateField, fieldErrors = {} })
             className={styles.input}
             value={showroom.state}
             onChange={(e) => updateField('showroom', 'state', e.target.value)}
-            placeholder="Delhi"
+            placeholder="Uttar Pradesh"
           />
         </div>
 
@@ -69,7 +69,7 @@ export default function ShowroomTab({ formData, updateField, fieldErrors = {} })
             className={`${styles.input} ${fieldErrors['showroom.pincode'] ? styles.inputError : ''}`}
             value={showroom.pincode}
             onChange={(e) => updateField('showroom', 'pincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
-            placeholder="110001"
+            placeholder="229411"
             maxLength={6}
           />
           {fieldErrors['showroom.pincode'] && (
@@ -86,7 +86,7 @@ export default function ShowroomTab({ formData, updateField, fieldErrors = {} })
             className={styles.input}
             value={showroom.hours}
             onChange={(e) => updateField('showroom', 'hours', e.target.value)}
-            placeholder="10:30 AM – 8:30 PM (Tuesday – Sunday)"
+            placeholder="10:00 AM – 8:30 PM (Open 7 Days)"
           />
         </div>
 

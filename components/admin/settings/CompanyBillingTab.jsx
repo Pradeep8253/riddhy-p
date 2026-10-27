@@ -154,7 +154,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
             className={styles.input}
             value={comp.addressLine1}
             onChange={(e) => updateField('company', 'addressLine1', e.target.value)}
-            placeholder="Plot, Building, Floor, Street"
+            placeholder="Mansoorabad"
           />
         </div>
 
@@ -165,7 +165,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
             className={styles.input}
             value={comp.addressLine2}
             onChange={(e) => updateField('company', 'addressLine2', e.target.value)}
-            placeholder="Industrial Area, Landmark"
+            placeholder="Landmark (Optional)"
           />
         </div>
       </div>
@@ -178,7 +178,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
             className={styles.input}
             value={comp.city}
             onChange={(e) => updateField('company', 'city', e.target.value)}
-            placeholder="New Delhi"
+            placeholder="Prayagraj"
           />
         </div>
 
@@ -205,7 +205,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
             className={`${styles.input} ${fieldErrors['company.pincode'] ? styles.inputError : ''}`}
             value={comp.pincode}
             onChange={(e) => updateField('company', 'pincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
-            placeholder="110001"
+            placeholder="229411"
             maxLength={6}
           />
           {fieldErrors['company.pincode'] && (
@@ -269,7 +269,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
             className={styles.input}
             value={formData.contact?.hours || ''}
             onChange={(e) => updateField('contact', 'hours', e.target.value)}
-            placeholder="Mon – Sat: 10:00 AM – 8:00 PM (Sunday Open)"
+            placeholder="10:00 AM – 8:30 PM (Open 7 Days)"
           />
         </div>
       </div>

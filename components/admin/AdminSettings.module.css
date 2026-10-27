@@ -527,6 +527,37 @@
   border-top: 2px solid var(--rf-line);
 }
 
+.previewContainer {
+  border-top: 2px solid var(--rf-line);
+  padding-top: 24px;
+  margin-top: 28px;
+}
+
+.previewPaper {
+  background: #ffffff;
+  border: 1px solid #d4ddd5;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 24px;
+  margin-top: 14px;
+  font-size: 12px;
+}
+
+.previewTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.previewLegal {
+  font-size: 11px;
+  color: #647065;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
 .invoicePaper {
   background: #ffffff;
   border: 1px solid #d4ddd5;
@@ -832,6 +863,16 @@
   text-decoration: underline;
 }
 
+/* Table Wrapper for Horizontal Scroll */
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  border: 1px solid var(--rf-line);
+  margin-top: 14px;
+}
+
 /* Team & Roles & Audit table styles */
 .teamTable {
   width: 100%;
@@ -1127,6 +1168,22 @@
   .invoicePaper {
     padding: 16px 12px;
   }
+  .previewMetaGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .previewFooterGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .previewTop {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .previewTop > div:last-child {
+    text-align: left !important;
+  }
   .saveBtn,
   .secondaryBtn {
     min-height: 44px;
@@ -1151,6 +1208,20 @@
   .roleCard {
     width: 100%;
     box-sizing: border-box;
+  }
+  .previewMetaGrid {
+    grid-template-columns: 1fr;
+  }
+  .stickyBarActions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .stickyBarActions button {
+    width: 100%;
+    min-width: 0 !important;
+  }
+  .permGrid {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -133,6 +133,77 @@
   background: var(--rf-cream-100);
 }
 
+.tabsBar {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--rf-line, #d5cec2);
+  margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tabsBar::-webkit-scrollbar {
+  display: none;
+}
+
+.tabBtn {
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: #647065;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.tabBtn:hover {
+  color: var(--rf-forest-deep, #1b5e20);
+}
+
+.tabBtnActive {
+  border-bottom-color: #1b5e20 !important;
+  color: #1b5e20 !important;
+}
+
+.filterBar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--rf-line, #d5cec2);
+  border-radius: 8px;
+  padding: 0 12px;
+  min-height: 40px;
+  flex: 1;
+  min-width: 260px;
+  max-width: 440px;
+  gap: 8px;
+}
+
+.searchInnerInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 13px;
+  background: transparent;
+  color: var(--rf-forest-deep);
+}
+
 /* ========== TABLET (<= 1024px) ========== */
 @media (max-width: 1024px) {
   .head {
@@ -157,12 +228,26 @@
     flex-direction: column;
     gap: 10px;
   }
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .searchBox {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 44px;
+  }
+  .searchInnerInput {
+    font-size: 16px !important;
+  }
   .searchInput,
   .filterSelect {
     width: 100%;
     min-width: 100%;
     min-height: 44px;
-    font-size: 16px;
+    font-size: 16px !important;
     box-sizing: border-box;
   }
   .tableCard {
@@ -173,7 +258,7 @@
     border-radius: 12px;
   }
   .table {
-    min-width: 600px;
+    min-width: 680px;
   }
   .table th:first-child,
   .table td:first-child {
@@ -181,6 +266,10 @@
     left: 0;
     z-index: 2;
     background: inherit;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .table th:first-child {
     background: var(--rf-cream-100);
@@ -211,3 +300,4 @@
     font-size: 20px;
   }
 }
+

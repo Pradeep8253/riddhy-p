@@ -836,7 +836,7 @@
 @media (max-width: 768px) {
   .page {
     gap: 20px;
-    padding-bottom: 40px;
+    padding-bottom: calc(40px + var(--admin-safe-bottom, 0px));
   }
   .head {
     flex-direction: column;

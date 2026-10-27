@@ -74,6 +74,7 @@ export async function GET(request) {
       paymentMethodAgg,
       codPendingAgg,
       failedPaymentsCount,
+      lowStockTotalCount,
       lowStockDocs,
       expiringWarrantiesCount,
       openClaimsCount,
@@ -176,7 +177,12 @@ export async function GET(request) {
         status: 'failed'
       }),
 
-      // 7. Low Stock Inventory count and top 6 items
+      // 7a. Low Stock Total Count across entire inventory
+      Inventory.countDocuments({
+        $expr: { $lte: ['$available', '$lowStockAt'] }
+      }),
+
+      // 7b. Low Stock top 6 preview items
       Inventory.aggregate([
         { $match: { $expr: { $lte: ['$available', '$lowStockAt'] } } },
         {
@@ -475,7 +481,7 @@ export async function GET(request) {
         refundsIssued: refundedAmount,
         gstCollected: totalTax,
         gstSplit: { cgst, sgst, igst },
-        lowStockCount: lowStockDocs.length,
+        lowStockCount: lowStockTotalCount || 0,
         expiringWarranties: expiringWarrantiesCount,
         openClaims: openClaimsCount
       },

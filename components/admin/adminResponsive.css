@@ -9,18 +9,31 @@
   --admin-touch-min: 44px;
 }
 
+/* Ensure no unwanted horizontal page scrolling */
+html:has([data-lenis-prevent="true"]),
 body:has([data-lenis-prevent="true"]) {
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
 }
 
+/* iOS Safari auto-zoom prevention: ensure inputs have at least 16px font-size on mobile */
 @media (max-width: 768px) {
-  :is(.adminScope, [class*="Admin"], [class*="crmContainer"])
+  :is(.adminScope, [class*="Admin"], [class*="crmContainer"], [class*="module"])
     input:not([type="checkbox"]):not([type="radio"]),
-  :is(.adminScope, [class*="Admin"], [class*="crmContainer"]) select,
-  :is(.adminScope, [class*="Admin"], [class*="crmContainer"]) textarea {
+  :is(.adminScope, [class*="Admin"], [class*="crmContainer"], [class*="module"]) select,
+  :is(.adminScope, [class*="Admin"], [class*="crmContainer"], [class*="module"]) textarea {
     font-size: 16px !important;
   }
+}
+
+/* Containment for all tables and data containers across Admin CRM */
+:is([class*="crmContainer"], [class*="Admin"]) table {
+  max-width: 100%;
+}
+
+:is([class*="crmContainer"], [class*="Admin"]) * {
+  box-sizing: border-box;
 }
 
 .adminTouchTarget {
@@ -88,7 +101,7 @@ body:has([data-lenis-prevent="true"]) {
     left: 0 !important;
     right: 0 !important;
     top: auto !important;
-    max-height: 90dvh !important;
+    max-height: 92dvh !important;
     border-radius: 20px 20px 0 0 !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
@@ -97,3 +110,4 @@ body:has([data-lenis-prevent="true"]) {
     z-index: 1200 !important;
   }
 }
+

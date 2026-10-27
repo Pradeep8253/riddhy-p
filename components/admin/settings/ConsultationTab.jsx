@@ -32,7 +32,7 @@ export default function ConsultationTab({ formData, updateField, fieldErrors }) 
 
         <div className={styles.field}>
           <label htmlFor="cs-homevisit">In-Home Space Planning Visits</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, height: 44 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minHeight: 44 }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', textTransform: 'none', fontWeight: 500 }}>
               <input
                 id="cs-homevisit"

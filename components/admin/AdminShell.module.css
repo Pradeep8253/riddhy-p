@@ -1003,6 +1003,23 @@
   color: #a9201c !important;
 }
 
+.mobileBrand {
+  display: none;
+}
+
+.mobileBrandMark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #d99a32, #b57a1e);
+  color: #0d1e15;
+  font: 800 12px var(--font-display, sans-serif);
+  box-shadow: 0 2px 8px rgba(217, 154, 50, 0.25);
+  flex-shrink: 0;
+}
+
 /* ========== TABLET (<= 1024px) ========== */
 @media (max-width: 1024px) {
   .mobileOverlay {
@@ -1025,10 +1042,15 @@
     z-index: 1100;
     padding-top: var(--admin-safe-top, 0px);
     padding-bottom: var(--admin-safe-bottom, 0px);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.3);
   }
 
   .sidebarOpen {
     transform: translateX(0);
+  }
+
+  .toggleMiniBtn {
+    display: none !important;
   }
 
   .closeSidebarBtn {
@@ -1045,6 +1067,12 @@
     justify-content: center;
     min-width: 44px;
     min-height: 44px;
+  }
+
+  .mobileBrand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
   }
 
   .contentArea {
@@ -1075,8 +1103,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 160px;
-    font-size: 14px;
+    max-width: 150px;
+    font-size: 13.5px;
     font-weight: 700;
   }
 
@@ -1097,14 +1125,14 @@
   }
 
   .userMenuDropdown {
-    max-width: calc(100vw - 24px);
-    right: 12px;
+    max-width: calc(100vw - 20px);
+    right: 8px;
     top: calc(100% + 4px);
     z-index: 1200;
   }
 
   .main {
-    padding: 16px 12px;
+    padding: 16px 12px calc(24px + var(--admin-safe-bottom, 0px));
   }
 
   .flatNavLink,
@@ -1129,20 +1157,21 @@
     padding: 0 8px;
     padding-top: var(--admin-safe-top, 0px);
     height: calc(52px + var(--admin-safe-top, 0px));
+    gap: 6px;
   }
 
   .mobilePageTitle {
-    font-size: 13px;
-    max-width: 130px;
+    font-size: 12.5px;
+    max-width: 110px;
   }
 
   .main {
-    padding: 12px 8px;
+    padding: 12px 8px calc(20px + var(--admin-safe-bottom, 0px));
   }
 
   .sidebar {
-    width: 290px;
-    max-width: 86vw;
+    width: 280px;
+    max-width: 85vw;
   }
 
   .userAvatarBtn {
@@ -1158,18 +1187,19 @@
 /* ========== EXTRA SMALL (<= 360px) ========== */
 @media (max-width: 360px) {
   .sidebar {
-    width: 270px;
-    max-width: 88vw;
+    width: calc(100vw - 32px);
+    max-width: 270px;
   }
 
   .main {
-    padding: 10px 6px;
+    padding: 10px 6px calc(16px + var(--admin-safe-bottom, 0px));
   }
 
   .mobilePageTitle {
-    max-width: 100px;
+    max-width: 90px;
     font-size: 12px;
   }
 }
+
 
 

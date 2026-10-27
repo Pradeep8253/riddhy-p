@@ -30,7 +30,6 @@ export default function StickySaveBar({ isDirty, isSaving, onSave, onReset }) {
           className={styles.saveBtn}
           onClick={onSave}
           disabled={isSaving}
-          style={{ minWidth: 140 }}
         >
           {isSaving ? (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>

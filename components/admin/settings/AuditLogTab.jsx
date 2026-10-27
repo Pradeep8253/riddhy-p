@@ -100,7 +100,7 @@ export default function AuditLogTab({ session }) {
         ))}
       </div>
 
-      <div style={{ overflowX: 'auto', marginTop: 12 }}>
+      <div className={styles.tableWrap}>
         <table className={styles.teamTable}>
           <thead>
             <tr>

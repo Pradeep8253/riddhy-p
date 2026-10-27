@@ -292,7 +292,7 @@ export default function ProductDetailClient({ product, related = [] }) {
 
   const dims = product.dimensions || {};
   const isAvailable = product.stock > 0;
-  const isLowStock = isAvailable && product.stock <= 4;
+  const isLowStock = isAvailable && product.stock <= (product.lowStockAt || 3);
 
   const reviewsList = useMemo(() => {
     if (product.reviews && product.reviews.length > 0) return product.reviews;

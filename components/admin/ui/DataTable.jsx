@@ -143,18 +143,38 @@ export default function DataTable({
             </button>
 
             {showColDropdown && (
-              <div className={styles.colDropdown}>
-                {columns.map((col) => (
-                  <label key={col.key} className={styles.colOption}>
-                    <input
-                      type="checkbox"
-                      checked={visibleColumns.has(col.key)}
-                      onChange={() => handleToggleCol(col.key)}
-                    />
-                    <span>{col.label}</span>
-                  </label>
-                ))}
-              </div>
+              <>
+                <div
+                  className={styles.colDropdownBackdrop}
+                  onClick={() => setShowColDropdown(false)}
+                  aria-hidden="true"
+                />
+                <div className={styles.colDropdown}>
+                  <div className={styles.colDropdownHeader}>
+                    <span className={styles.colDropdownTitle}>Visible Columns</span>
+                    <button
+                      type="button"
+                      className={styles.colDropdownClose}
+                      onClick={() => setShowColDropdown(false)}
+                      aria-label="Close column options"
+                    >
+                      <Icon name="close" size={14} />
+                    </button>
+                  </div>
+                  <div className={styles.colOptionsList}>
+                    {columns.map((col) => (
+                      <label key={col.key} className={styles.colOption}>
+                        <input
+                          type="checkbox"
+                          checked={visibleColumns.has(col.key)}
+                          onChange={() => handleToggleCol(col.key)}
+                        />
+                        <span>{col.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
           </div>
 

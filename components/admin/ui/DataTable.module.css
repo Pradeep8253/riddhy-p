@@ -327,6 +327,14 @@
     padding: 0 16px;
   }
 
+  .colDropdownBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 30, 21, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 1190;
+  }
+
   .colDropdown {
     position: fixed;
     top: auto;
@@ -339,6 +347,43 @@
     padding-bottom: calc(20px + var(--admin-safe-bottom, 0px));
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
     z-index: 1200;
+  }
+
+  .colDropdownHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2eae3;
+    margin-bottom: 10px;
+  }
+
+  .colDropdownTitle {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--admin-text-main, #10261a);
+  }
+
+  .colDropdownClose {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #617064;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .colOptionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+    max-height: 60dvh;
+    -webkit-overflow-scrolling: touch;
   }
 
   .colOption {
@@ -359,6 +404,10 @@
     z-index: 2;
     background: var(--admin-card-bg, #fffefa);
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .table th:first-child {

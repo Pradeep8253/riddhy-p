@@ -19,7 +19,7 @@ const initial = {
   line2: "",
   city: "Prayagraj",
   state: "Uttar Pradesh",
-  pincode: "211001",
+  pincode: "229411",
   landmark: "",
 };
 function createCheckoutKey() {

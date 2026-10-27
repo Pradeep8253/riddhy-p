@@ -5,7 +5,11 @@ import { can } from '@/lib/permissions';
 import styles from '../AdminSettings.module.css';
 
 export const SETTINGS_TABS = [
-  { id: 'company', label: 'Company & Store Details', icon: 'fileText', permission: 'settings.view' },
+  { id: 'company', label: 'Company & Billing', icon: 'fileText', permission: 'settings.view' },
+  { id: 'showroom', label: 'Showroom & Store Address', icon: 'mapPin', permission: 'settings.view' },
+  { id: 'support', label: 'Customer Care & Desks', icon: 'phone', permission: 'settings.view' },
+  { id: 'story', label: 'Brand Story & Proof', icon: 'award', permission: 'settings.view' },
+  { id: 'consultation', label: 'Consultations', icon: 'calendar', permission: 'settings.view' },
   { id: 'team', label: 'Team Members', icon: 'users', permission: 'team.manage' },
   { id: 'roles', label: 'Roles & Permissions', icon: 'shield', permission: 'roles.manage' },
   { id: 'security', label: 'Security', icon: 'lock', permission: 'settings.security' },

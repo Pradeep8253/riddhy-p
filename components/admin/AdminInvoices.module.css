@@ -480,22 +480,34 @@
     flex: 1 1 calc(50% - 6px);
     font-size: 16px !important;
   }
-  .tableCard {
+  .tableWrap {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
-  .tableCard table th:first-child,
-  .tableCard table td:first-child {
+  .table {
+    min-width: 680px;
+  }
+  .tableWrap table th:first-child,
+  .tableWrap table td:first-child {
     position: sticky;
     left: 0;
     z-index: 2;
     background: #ffffff;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .tableCard table th:first-child {
+  .tableWrap table th:first-child {
     z-index: 3;
     background: #f8faf8;
+  }
+  .btnAction {
+    min-height: 40px;
+    padding: 6px 12px;
   }
   .pdfPreviewFrame {
     height: 55vh;

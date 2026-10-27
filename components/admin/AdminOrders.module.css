@@ -324,6 +324,11 @@
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .rowHead,
+  .row {
+    min-width: 700px;
   }
   .rowHead > span:first-child,
   .row > div:first-child {
@@ -332,6 +337,9 @@
     z-index: 2;
     background: #fffefa;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+    max-width: 140px;
+    overflow: hidden;
+    word-break: break-word;
   }
   .rowHead > span:first-child {
     background: #f4f0e8;
@@ -340,6 +348,10 @@
   .row select {
     min-height: 44px;
     font-size: 16px !important;
+  }
+  .row button {
+    min-height: 44px;
+    padding: 8px 14px;
   }
 }
 
@@ -355,12 +367,23 @@
   .filtersGroup select {
     flex: 1 1 100%;
   }
+  .filterBar {
+    padding: 10px 8px;
+  }
+  .rowHead,
+  .row {
+    padding: 12px 10px;
+  }
 }
 
 /* ========== EXTRA SMALL (<= 360px) ========== */
 @media (max-width: 360px) {
   .head h1 {
     font-size: 20px;
+  }
+  .rowHead,
+  .row {
+    padding: 10px 6px;
   }
 }
 

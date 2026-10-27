@@ -50,12 +50,15 @@
 }
 
 .value {
-  font-size: clamp(24px, 2.4vw, 32px);
+  font-size: clamp(20px, 2.4vw, 32px);
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--admin-text-main, #10261a);
   font-variant-numeric: tabular-nums;
   line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .footerRow {
@@ -133,7 +136,10 @@
     gap: 8px;
   }
   .value {
-    font-size: 24px;
+    font-size: clamp(18px, 4vw, 24px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -143,7 +149,7 @@
     padding: 12px;
   }
   .value {
-    font-size: 22px;
+    font-size: clamp(16px, 5vw, 20px);
   }
 }
 

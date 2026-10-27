@@ -107,8 +107,8 @@ export default function Header({ config }) {
   const whatsappDigits = whatsappDisplay.replace(/[^0-9]/g, '') || '918840245188';
   const emailDisplay = activeConfig.contact?.email || 'riddhyfurnitureshomeappliances@gmail.com';
   const addressDisplay = activeConfig.showroom?.addressLine1
-    ? `${activeConfig.showroom.addressLine1}, ${activeConfig.showroom.city || 'Prayagraj'}`
-    : 'Civil Lines, Prayagraj, UP (Opp. High Court)';
+    ? `${activeConfig.showroom.addressLine1}, ${activeConfig.showroom.city || 'Prayagraj'}${activeConfig.showroom.pincode ? ` ${activeConfig.showroom.pincode}` : ''}`
+    : 'Mansoorabad, Prayagraj 229411';
 
   const announcementItems = [
     {
@@ -944,7 +944,7 @@ export default function Header({ config }) {
           {/* Showroom Location Pill */}
           <div className={styles.drawerLocationStrip}>
             <span className={styles.drawerLocationPulse} />
-            <span>Civil Lines Showroom · Prayagraj</span>
+            <span>{activeConfig.showroom?.addressLine1 ? `${activeConfig.showroom.addressLine1} Showroom · ${activeConfig.showroom.city || 'Prayagraj'}` : 'Mansoorabad Showroom · Prayagraj'}</span>
           </div>
 
           {/* Drawer Quick Search */}

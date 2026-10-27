@@ -521,6 +521,10 @@ function AdminShellInner({ children, session }) {
               <Menu size={18} />
             </button>
 
+            <Link href="/admin" className={styles.mobileBrand} aria-label="RF Riddhy Admin Dashboard">
+              <div className={styles.mobileBrandMark}>RF</div>
+            </Link>
+
             <nav className={styles.breadcrumb} aria-label="Breadcrumb">
               <Link href="/admin">Admin</Link>
               <span className={styles.breadcrumbSep}>/</span>

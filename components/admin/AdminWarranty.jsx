@@ -127,33 +127,14 @@ export default function AdminWarranty() {
       </div>
 
       {/* Tabs */}
-      <div
-        style={{
-          display: "flex",
-          gap: "8px",
-          borderBottom: "1px solid #d5cec2",
-          marginBottom: "20px",
-        }}
-      >
+      <div className={styles.tabsBar}>
         <button
           type="button"
           onClick={() => {
             setActiveTab("registrations");
             setPage(1);
           }}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "none",
-            fontWeight: 700,
-            fontSize: "13px",
-            cursor: "pointer",
-            borderBottom:
-              activeTab === "registrations"
-                ? "2px solid #1b5e20"
-                : "2px solid transparent",
-            color: activeTab === "registrations" ? "#1b5e20" : "#647065",
-          }}
+          className={`${styles.tabBtn} ${activeTab === "registrations" ? styles.tabBtnActive : ""}`}
         >
           All Registrations
         </button>
@@ -163,19 +144,7 @@ export default function AdminWarranty() {
             setActiveTab("review_queue");
             setPage(1);
           }}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "none",
-            fontWeight: 700,
-            fontSize: "13px",
-            cursor: "pointer",
-            borderBottom:
-              activeTab === "review_queue"
-                ? "2px solid #1b5e20"
-                : "2px solid transparent",
-            color: activeTab === "review_queue" ? "#1b5e20" : "#647065",
-          }}
+          className={`${styles.tabBtn} ${activeTab === "review_queue" ? styles.tabBtnActive : ""}`}
         >
           Offline Review Queue
         </button>
@@ -185,59 +154,20 @@ export default function AdminWarranty() {
             setActiveTab("claims");
             setPage(1);
           }}
-          style={{
-            padding: "10px 16px",
-            border: "none",
-            background: "none",
-            fontWeight: 700,
-            fontSize: "13px",
-            cursor: "pointer",
-            borderBottom:
-              activeTab === "claims"
-                ? "2px solid #1b5e20"
-                : "2px solid transparent",
-            color: activeTab === "claims" ? "#1b5e20" : "#647065",
-          }}
+          className={`${styles.tabBtn} ${activeTab === "claims" ? styles.tabBtnActive : ""}`}
         >
           Claims Desk
         </button>
       </div>
 
       {/* Search & Filter Bar */}
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          alignItems: "center",
-          marginBottom: "16px",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            background: "#fff",
-            border: "1px solid #d5cec2",
-            borderRadius: "8px",
-            padding: "0 10px",
-            minHeight: "38px",
-            flex: 1,
-            maxWidth: "380px",
-          }}
-        >
+      <div className={styles.filterBar}>
+        <div className={styles.searchBox}>
           <Search size={14} color="#727e74" />
           <input
             type="text"
             placeholder="Search customer, phone, serial, order, SKU..."
-            className={styles.searchInput}
-            style={{
-              border: "none",
-              outline: "none",
-              marginLeft: "8px",
-              width: "100%",
-              fontSize: "13px",
-            }}
+            className={styles.searchInnerInput}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);

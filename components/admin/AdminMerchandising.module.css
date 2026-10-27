@@ -816,6 +816,10 @@
     z-index: 2;
     background: #ffffff;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .table th:first-child {
     z-index: 3;

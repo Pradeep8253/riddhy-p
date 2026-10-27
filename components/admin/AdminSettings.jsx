@@ -11,6 +11,10 @@ import SettingsSubNav, { SETTINGS_TABS } from './settings/SettingsSubNav';
 import StickySaveBar from './settings/StickySaveBar';
 
 import CompanyBillingTab from './settings/CompanyBillingTab';
+import ShowroomTab from './settings/ShowroomTab';
+import StoreSupportTab from './settings/StoreSupportTab';
+import BrandStoryTab from './settings/BrandStoryTab';
+import ConsultationTab from './settings/ConsultationTab';
 import TeamMembersTab from './settings/TeamMembersTab';
 import RolesPermissionsTab from './settings/RolesPermissionsTab';
 import SecurityTab from './settings/SecurityTab';
@@ -145,8 +149,8 @@ export default function AdminSettings({ session }) {
             <span className={styles.statusDot} />
             <span>
               {source === 'database'
-                ? 'Stored in Database (Overrides .env)'
-                : 'Loaded from .env Defaults'}
+                ? 'Live Configuration (Stored in Database)'
+                : 'System Default Configuration'}
             </span>
           </div>
         </div>
@@ -191,6 +195,39 @@ export default function AdminSettings({ session }) {
               fieldErrors={fieldErrors}
               warehouses={warehouses}
               companyValidation={companyValidation}
+            />
+          )}
+
+          {activeTab === 'showroom' && (
+            <ShowroomTab
+              formData={formData}
+              updateField={updateField}
+              fieldErrors={fieldErrors}
+            />
+          )}
+
+          {activeTab === 'support' && (
+            <StoreSupportTab
+              formData={formData}
+              updateField={updateField}
+              fieldErrors={fieldErrors}
+            />
+          )}
+
+          {activeTab === 'story' && (
+            <BrandStoryTab
+              formData={formData}
+              updateField={updateField}
+              updateStoryMetric={updateStoryMetric}
+              fieldErrors={fieldErrors}
+            />
+          )}
+
+          {activeTab === 'consultation' && (
+            <ConsultationTab
+              formData={formData}
+              updateField={updateField}
+              fieldErrors={fieldErrors}
             />
           )}
 

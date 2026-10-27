@@ -524,7 +524,7 @@
     box-sizing: border-box;
   }
   .searchBox input {
-    font-size: 16px;
+    font-size: 16px !important;
   }
   .selectFilters {
     flex-direction: column;
@@ -535,7 +535,7 @@
   .drawerSelect {
     min-height: 44px;
     width: 100%;
-    font-size: 16px;
+    font-size: 16px !important;
   }
   .drawer {
     width: 100%;
@@ -557,7 +557,7 @@
   }
   .assignRow input {
     height: 44px;
-    font-size: 16px;
+    font-size: 16px !important;
   }
   .detailGrid {
     grid-template-columns: 1fr;
@@ -576,7 +576,7 @@
   }
   .statusAction select {
     min-height: 44px;
-    font-size: 14px;
+    font-size: 16px !important;
   }
 }
 

@@ -35,11 +35,12 @@
 ══════════════════════════════════════════════════════════════ */
 .hero__slider {
   position: relative;
+  width: 100%;
   border-radius: var(--radius);
   overflow: hidden;
   background: #111;
   box-shadow: 0 8px 32px rgba(36, 52, 27, .18);
-  height: 27.2rem;
+  aspect-ratio: 1.72 / 1;
 }
 
 .slider__track {
@@ -215,123 +216,158 @@
   .hero__inner {
     grid-template-columns: 60fr 40fr;
     gap: clamp(16px, 2.5vw, 26px);
-    height: auto;
+    width: 100%;
+    max-width: 100%;
   }
 
   .hero__slider {
-    height: clamp(320px, 38vw, 420px);
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
   }
 
   .hero__side {
     gap: clamp(14px, 2vw, 22px);
+    width: 100%;
   }
 
   .side__card {
-    height: clamp(150px, 18vw, 195px);
+    height: auto !important;
+    aspect-ratio: 2 / 1;
+    width: 100% !important;
   }
 }
 
 /* ── Tablets ── */
 @media (max-width: 900px) {
   .hero__inner {
-    grid-template-columns: 1fr;
-    gap: clamp(14px, 3vw, 20px);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    gap: 18px;
   }
 
   .hero__slider {
-    height: clamp(280px, 48vw, 400px);
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
   }
 
   .hero__side {
-    flex-direction: row;
-    gap: clamp(12px, 2.5vw, 20px);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    width: 100%;
   }
 
   .side__card {
-    flex: 1;
-    height: clamp(160px, 26vw, 240px);
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 2 / 1;
   }
 }
 
 /* ── Mobile landscape / large phones ── */
 @media (max-width: 768px) {
   .hero {
-    padding: clamp(20px, 5vw, 30px) clamp(14px, 4vw, 22px);
+    padding: 16px 12px;
   }
 
   .hero__inner {
     gap: 14px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .hero__slider {
-    height: clamp(240px, 62vw, 340px);
-    border-radius: 12px;
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    border-radius: 14px;
   }
 
   .hero__side {
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   .side__card {
-    height: clamp(130px, 30vw, 200px);
-    border-radius: 12px;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 2.1 / 1;
+    border-radius: 14px;
   }
 
   .slider__arrow {
-    width: 26px;
-    height: 26px;
+    width: 36px;
+    height: 36px;
   }
 
   .slider__arrow svg {
-    width: 13px;
-    height: 13px;
-  }
-}
-
-/* ── Small phones — stack side images vertically ── */
-@media (max-width: 600px) {
-  .hero__side {
-    flex-direction: column;
-  }
-
-  .side__card {
-    height: clamp(120px, 34vw, 170px);
+    width: 16px;
+    height: 16px;
   }
 }
 
 /* ── Compact phones ── */
 @media (max-width: 480px) {
   .hero {
-    padding: 16px 12px;
+    padding: 12px 10px;
   }
 
   .hero__inner {
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .hero__slider {
-    height: clamp(200px, 52vw, 300px);
-    border-radius: 10px;
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    border-radius: 12px;
+  }
+
+  .hero__side {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   .side__card {
-    height: clamp(100px, 40vw, 150px);
-    border-radius: 10px;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 2.1 / 1;
+    border-radius: 12px;
   }
 
   .slider__arrow {
-    width: 22px;
-    height: 22px;
+    width: 32px;
+    height: 32px;
   }
 
   .slider__arrow svg {
-    width: 11px;
-    height: 11px;
+    width: 14px;
+    height: 14px;
   }
 
-  .slider__arrow--prev { left: 6px; }
-  .slider__arrow--next { right: 6px; }
+  .slider__arrow--prev { left: 8px; }
+  .slider__arrow--next { right: 8px; }
 
   .slider__dots {
     bottom: 8px;
@@ -345,29 +381,29 @@
 /* ── Very small phones ── */
 @media (max-width: 360px) {
   .hero {
-    padding: 12px 8px;
+    padding: 10px 8px;
   }
 
   .hero__inner {
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .hero__slider {
-    height: clamp(170px, 68vw, 240px);
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    border-radius: 10px;
   }
 
   .side__card {
-    height: clamp(85px, 44vw, 120px);
-  }
-
-  .slider__arrow {
-    width: 20px;
-    height: 20px;
-  }
-
-  .slider__arrow svg {
-    width: 10px;
-    height: 10px;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 2.1 / 1;
+    border-radius: 10px;
   }
 }
 

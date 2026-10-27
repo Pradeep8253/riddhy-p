@@ -136,7 +136,7 @@ export default function ProductCard({ product, compact = false }) {
               : null);
 
   const isOutOfStock = Number(product.stock ?? 1) <= 0;
-  const isLowStock = !isOutOfStock && Number(product.stock ?? 1) <= 3;
+  const isLowStock = !isOutOfStock && Number(product.stock ?? 1) <= (product.lowStockAt || 3);
 
   return (
     <article className={`${styles.card} ${compact ? styles.compact : ""}`}>
