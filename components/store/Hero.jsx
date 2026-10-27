@@ -131,12 +131,7 @@ const Hero = ({ initialSlides = [], initialSideCards = [] }) => {
           </div>
 
           {slides.length > 1 && <>
-            <button type="button" className="slider__arrow slider__arrow--prev" onClick={() => move(-1)} aria-label="Previous banner">
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13 15l-5-5 5-5" /></svg>
-            </button>
-            <button type="button" className="slider__arrow slider__arrow--next" onClick={() => move(1)} aria-label="Next banner">
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5l5 5-5 5" /></svg>
-            </button>
+
             <div className="slider__dots" role="group" aria-label="Choose a banner">
               {slides.map((slide, index) => <button key={slide.id || index} type="button" className={`dot${index === current ? ' dot--active' : ''}`} onClick={() => setCurrent(index)} aria-label={`Go to banner ${index + 1}`} aria-current={index === current ? 'true' : undefined} />)}
             </div>

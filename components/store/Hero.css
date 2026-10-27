@@ -80,6 +80,7 @@
 .slide__link {
   position: relative;
 }
+
 .slide__img,
 .side__img {
   object-fit: cover;
@@ -110,17 +111,21 @@
   background: #fff;
   transform: translateY(-50%) scale(1.06);
 }
+
 .slider__arrow:focus-visible,
 .dot:focus-visible {
   outline: 3px solid var(--hero-gold);
   outline-offset: 3px;
 }
+
 .slider__arrow--prev {
   left: 16px;
 }
+
 .slider__arrow--next {
   right: 16px;
 }
+
 .slider__arrow svg {
   width: 20px;
   height: 20px;
@@ -197,6 +202,7 @@
   .hero {
     padding: 28px clamp(16px, 3vw, 32px);
   }
+
   .hero__inner {
     display: flex;
     flex-direction: column;
@@ -204,12 +210,14 @@
     max-width: 100%;
     gap: 20px;
   }
+
   .hero__slider {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
     aspect-ratio: 16 / 9 !important;
   }
+
   .hero__side {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -217,6 +225,7 @@
     gap: 16px;
     width: 100%;
   }
+
   .side__card {
     width: 100% !important;
     max-width: 100% !important;
@@ -229,11 +238,13 @@
   .hero {
     padding: 16px 12px;
   }
+
   .hero__inner {
     gap: 14px;
     width: 100%;
     max-width: 100%;
   }
+
   .hero__slider {
     width: 100% !important;
     max-width: 100% !important;
@@ -241,15 +252,17 @@
     aspect-ratio: 16 / 9 !important;
     border-radius: 14px;
   }
+
   .hero__side {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
     width: 100%;
     margin: 0;
     padding: 0;
     overflow: visible;
   }
+
   .side__card {
     width: 100% !important;
     max-width: 100% !important;
@@ -264,11 +277,13 @@
   .hero {
     padding: 12px 10px;
   }
+
   .hero__inner {
     gap: 10px;
     width: 100%;
     max-width: 100%;
   }
+
   .hero__slider {
     width: 100% !important;
     max-width: 100% !important;
@@ -276,15 +291,17 @@
     aspect-ratio: 16 / 9 !important;
     border-radius: 12px;
   }
+
   .hero__side {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
     width: 100%;
     margin: 0;
     padding: 0;
     overflow: visible;
   }
+
   .side__card {
     width: 100% !important;
     max-width: 100% !important;
@@ -292,16 +309,20 @@
     aspect-ratio: 2.1 / 1;
     border-radius: 12px;
   }
+
   .slider__arrow {
     width: 36px;
     height: 36px;
   }
+
   .slider__arrow--prev {
     left: 8px;
   }
+
   .slider__arrow--next {
     right: 8px;
   }
+
   .slider__dots {
     bottom: 10px;
     gap: 6px;
@@ -312,15 +333,18 @@
   .hero {
     padding: 10px 8px;
   }
+
   .hero__slider {
     border-radius: 10px;
   }
+
   .side__card {
     border-radius: 10px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .slide,
   .dot,
   .slider__arrow,

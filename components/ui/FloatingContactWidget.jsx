@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { useSelector } from "react-redux";
-import { getWhatsAppUrl, getTelUrl } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
 import styles from "./FloatingContactWidget.module.css";
 
 function WhatsAppIcon({ size = 20, color = "currentColor" }) {
