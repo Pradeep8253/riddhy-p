@@ -230,7 +230,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
               updateField('company', 'phone', e.target.value);
               updateField('contact', 'phone', e.target.value);
             }}
-            placeholder="+91 99342 08035"
+            placeholder="+91 88402 45188"
           />
         </div>
 
@@ -241,7 +241,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
             className={styles.input}
             value={formData.contact?.whatsapp || ''}
             onChange={(e) => updateField('contact', 'whatsapp', e.target.value)}
-            placeholder="+91 99342 08035"
+            placeholder="+91 88402 45188"
           />
         </div>
       </div>
@@ -258,7 +258,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
               updateField('company', 'email', e.target.value);
               updateField('contact', 'email', e.target.value);
             }}
-            placeholder="care@riddhy.in"
+            placeholder="riddhyfurnitureshomeappliances@gmail.com"
           />
         </div>
 

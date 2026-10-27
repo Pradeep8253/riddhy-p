@@ -1,35 +1,37 @@
 import Icon from '@/components/ui/Icon';
+import { siteConfig } from '@/lib/site-config';
 import styles from './AboutSections.module.css';
 
-const pillars = [
-  {
-    icon: 'shield',
-    title: 'Uncompromised Quality',
-    desc: 'Kiln-dried pure Sheesham, Grade-A CP Teak, and appliances tested for Indian voltage conditions. No low-density particle boards.'
-  },
-  {
-    icon: 'check',
-    title: 'Honest, Competitive Pricing',
-    desc: 'Direct-to-home pricing. No inflated dealer commissions, artificial markups, or hidden delivery surprises.'
-  },
-  {
-    icon: 'phone',
-    title: 'Personalized Support',
-    desc: 'A real team member in Delhi NCR answers your call. From size recommendations to installation tracking, you talk to people, not bots.'
-  },
-  {
-    icon: 'check',
-    title: 'Guaranteed Warranty Assistance',
-    desc: 'Comprehensive multi-year structural coverage for furniture and official brand warranties with full on-site service support.'
-  },
-  {
-    icon: 'truck',
-    title: 'White-Glove Delivery & Setup',
-    desc: 'Careful room-of-choice placement, unboxing, assembly, and packaging removal handled by experienced technicians.'
-  }
-];
+export default function AboutWhyChooseUs({ config = siteConfig } = {}) {
+  const city = config.showroom?.city || 'Prayagraj';
 
-export default function AboutWhyChooseUs() {
+  const pillars = [
+    {
+      icon: 'shield',
+      title: 'Uncompromised Quality',
+      desc: 'Kiln-dried pure Sheesham, Grade-A CP Teak, and appliances tested for Indian voltage conditions. No low-density particle boards.'
+    },
+    {
+      icon: 'check',
+      title: 'Honest, Competitive Pricing',
+      desc: 'Direct-to-home pricing. No inflated dealer commissions, artificial markups, or hidden delivery surprises.'
+    },
+    {
+      icon: 'phone',
+      title: 'Personalized Support',
+      desc: `A real team member in ${city} answers your call. From size recommendations to installation tracking, you talk to people, not bots.`
+    },
+    {
+      icon: 'check',
+      title: 'Guaranteed Warranty Assistance',
+      desc: 'Comprehensive multi-year structural coverage for furniture and official brand warranties with full on-site service support.'
+    },
+    {
+      icon: 'truck',
+      title: 'White-Glove Delivery & Setup',
+      desc: 'Careful room-of-choice placement, unboxing, assembly, and packaging removal handled by experienced technicians.'
+    }
+  ];
   return (
     <section className={`section ${styles.whySection}`}>
       <div className="container">

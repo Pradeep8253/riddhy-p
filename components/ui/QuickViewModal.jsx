@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '@/store/cartSlice';
 import { showToast, setCartDrawer } from '@/store/uiSlice';
 import { formatPriceSafe, formatINR } from '@/lib/pricing';
-import { IMG } from '@/lib/images';
 import Icon from './Icon';
 import { getProductWhatsAppUrl } from '@/lib/site-config';
 import styles from './QuickViewModal.module.css';
@@ -24,7 +23,7 @@ export default function QuickViewModal({ product, onClose }) {
   const gallery =
     product.gallery && product.gallery.length > 0
       ? product.gallery.map((g) => g.largeUrl || g.mediumUrl || g.url)
-      : [product.image || IMG.products.sofa];
+      : [product.image || '/images/product-sofa.webp'];
 
   const currentImage = gallery[selectedIdx] || gallery[0];
 

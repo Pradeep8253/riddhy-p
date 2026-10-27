@@ -54,8 +54,8 @@
   background: #144719;
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
   .actions {
     flex-direction: column-reverse;
     align-items: stretch;

@@ -121,34 +121,6 @@
   max-height: 280px;
 }
 
-@media (max-width: 600px) {
-  .overlay {
-    padding: 12px;
-  }
-  .modal {
-    max-height: 92vh;
-    border-radius: 12px;
-  }
-  .header,
-  .body {
-    padding: 14px 16px;
-  }
-  .summaryBar {
-    flex-direction: column;
-    gap: 6px;
-  }
-  .footer {
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
-    flex-direction: column-reverse;
-    gap: 8px;
-    align-items: stretch;
-  }
-  .btnPrimary,
-  .btnSecondary {
-    width: 100%;
-    text-align: center;
-  }
-}
 
 .previewTable {
   width: 100%;
@@ -254,50 +226,100 @@
   to { opacity: 1; }
 }
 
-/* ========== TABLET (768px - 1023px) ========== */
-@media (max-width: 1023px) {
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
   .modal {
-    max-width: 90%;
+    max-width: 720px;
   }
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
-  .modal {
-    width: 95%;
-    max-width: 95%;
-    max-height: 90vh;
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
+  .overlay {
+    padding: 0;
+    align-items: flex-end;
   }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 94dvh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    z-index: 10;
+    padding: 16px;
+  }
+
+  .closeBtn {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .body {
+    padding: 16px 14px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .summaryBar {
+    flex-direction: column;
+    gap: 6px;
+  }
+
   .previewTableWrap,
   .tableWrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    width: 100%;
   }
+
+  .footer {
+    position: sticky;
+    bottom: 0;
+    background: #ffffff;
+    z-index: 10;
+    border-top: 1px solid #e2e8f0;
+    padding: 12px 16px calc(14px + var(--admin-safe-bottom, 0px));
+    flex-direction: column-reverse;
+    gap: 8px;
+    align-items: stretch;
+  }
+
   .btnPrimary,
   .btnSecondary {
     min-height: 44px;
-  }
-}
-
-/* ========== SMALL MOBILE (320px - 480px) ========== */
-@media (max-width: 480px) {
-  .footer {
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 10px;
-    padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
-  }
-  .btnPrimary,
-  .btnSecondary {
     width: 100%;
     justify-content: center;
     text-align: center;
   }
+}
+
+/* ========== SMALL MOBILE (<= 480px) ========== */
+@media (max-width: 480px) {
   .header {
-    padding: 14px 16px;
+    padding: 14px 12px;
   }
+
   .body {
-    padding: 16px 14px;
+    padding: 14px 12px;
+  }
+
+  .dropzone {
+    padding: 20px 14px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .titleArea h3 {
+    font-size: 1rem;
   }
 }
 

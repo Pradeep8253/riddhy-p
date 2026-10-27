@@ -3,7 +3,7 @@ import { connectDB } from '@/lib/db';
 import { MarriagePackage, AuditLog } from '@/models/index';
 import { requireAdmin } from '@/lib/roles';
 import { ok, fail, jsonBody } from '@/lib/http';
-import { getLivePackages, serializePackage, defaultPackages } from '@/lib/packages-data';
+import { getLivePackages, serializePackage } from '@/lib/packages-data';
 
 export const dynamic = 'force-dynamic';
 

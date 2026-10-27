@@ -734,8 +734,8 @@
   100% { background-position: -200% 0; }
 }
 
-/* ========== TABLET (768px - 1023px) ========== */
-@media (max-width: 1023px) {
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
   .paymentsSection {
     grid-template-columns: 1fr;
     gap: 18px;
@@ -750,11 +750,11 @@
   }
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
   .page {
     gap: 18px;
-    padding-bottom: 28px;
+    padding-bottom: calc(28px + var(--admin-safe-bottom, 0px));
   }
   .header {
     flex-direction: column;
@@ -781,8 +781,8 @@
   }
   .rangeBtn {
     flex: 1 0 auto;
-    min-height: 40px;
-    padding: 6px 12px;
+    min-height: 44px;
+    padding: 6px 14px;
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
@@ -800,21 +800,26 @@
     padding: 6px 8px;
   }
   .customDateBar input {
-    min-height: 36px;
+    min-height: 44px;
     flex: 1 1 120px;
-    font-size: 12px;
+    font-size: 16px !important;
   }
   .refreshBtn {
-    min-height: 42px;
-    min-width: 42px;
+    min-height: 44px;
+    min-width: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0 14px;
+    padding: 0 16px;
+    width: 100%;
   }
   .kpiGrid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+  }
+  .paymentsSection {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   .paymentMethodCards {
     grid-template-columns: 1fr;
@@ -829,9 +834,31 @@
   .table {
     min-width: 580px;
   }
+  .table th:first-child,
+  .table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #ffffff;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
+  .table th:first-child {
+    z-index: 3;
+    background: #faf8f5;
+  }
+  .chartContainer {
+    gap: 6px;
+    padding: 16px 2px 30px;
+  }
+  .chartBarCol {
+    min-width: 12px;
+  }
+  .chartDateLabel {
+    font-size: 10px;
+  }
 }
 
-/* ========== SMALL MOBILE (320px - 480px) ========== */
+/* ========== SMALL MOBILE (<= 480px) ========== */
 @media (max-width: 480px) {
   .headerLeft h1 {
     font-size: 24px;
@@ -845,8 +872,15 @@
     border-radius: 12px;
   }
   .chartContainer {
-    height: 190px;
-    padding-bottom: 28px;
+    height: 200px;
+    gap: 4px;
+    padding-bottom: 26px;
+  }
+  .chartBarCol {
+    min-width: 8px;
+  }
+  .chartBarCol:nth-child(even) .chartDateLabel {
+    display: none;
   }
   .panelHead {
     flex-direction: column;
@@ -865,6 +899,12 @@
   }
   .panel {
     padding: 12px 8px;
+  }
+  .chartContainer {
+    gap: 3px;
+  }
+  .chartBarCol:not(:nth-child(3n+1)) .chartDateLabel {
+    display: none;
   }
 }
 

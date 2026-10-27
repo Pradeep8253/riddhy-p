@@ -53,7 +53,7 @@ function CloseIcon({ size = 16, color = "currentColor" }) {
   );
 }
 
-export default function FloatingContactWidget() {
+export default function FloatingContactWidget({ config }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -86,8 +86,11 @@ export default function FloatingContactWidget() {
       "Hello RF Riddhy, I am interested in your handcrafted furniture collection.";
   }
 
-  const waUrl = getWhatsAppUrl(waMessage);
-  const telUrl = getTelUrl();
+  const activePhone = config?.contact?.phone || siteConfig.contact?.phone || "+91 88402 45188";
+  const activeWhatsapp = config?.contact?.whatsapp || config?.contact?.phone || siteConfig.contact?.whatsapp || "+91 88402 45188";
+  const waDigits = activeWhatsapp.replace(/[^0-9]/g, "") || "918840245188";
+  const waUrl = `https://wa.me/${waDigits}?text=${encodeURIComponent(waMessage)}`;
+  const telUrl = `tel:${activePhone.replace(/[^0-9+]/g, "")}`;
 
   return (
     <aside className={styles.widget} aria-label="Quick contact channels">

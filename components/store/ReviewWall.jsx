@@ -1,6 +1,13 @@
 import Image from 'next/image';
-import { IMG } from '@/lib/images';
 import styles from './ReviewWall.module.css';
+
+const reviewImages = [
+  '/images/review-living.webp',
+  '/images/review-bedroom.webp',
+  '/images/review-dining.webp',
+  '/images/review-delivery.webp'
+];
+
 const cards = [
   ['Living spaces', 'Real homes', 'Customer spaces styled with RF Riddhy sofas, accent lighting and thoughtful details.'],
   ['Bedrooms', 'Quiet retreats', 'Solid wood beds and balanced bedside tables, assembled and styled in Indian homes.'],
@@ -15,12 +22,10 @@ export default function ReviewWall() {
         <article key={title} className={`${styles.card} ${index % 2 === 1 ? styles.offset : ''}`}>
           <div className={styles.photo}>
             <Image
-              src={IMG.reviews[index]}
+              src={reviewImages[index]}
               alt={`${tagline} customer space`}
               fill
               sizes="(max-width:700px) 80vw, 25vw"
-              placeholder="blur"
-              blurDataURL={IMG.blurDataURL}
               unoptimized
             />
           </div>

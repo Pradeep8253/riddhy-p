@@ -54,7 +54,13 @@ const AdminUserSchema = new Schema(
 );
 const RoleSchema = new Schema(
   {
-    key: { type: String, unique: true, lowercase: true, trim: true, sparse: true },
+    key: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      sparse: true,
+    },
     name: { type: String, sparse: true },
     label: { type: String, required: true, trim: true },
     description: { type: String, default: "" },

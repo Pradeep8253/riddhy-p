@@ -23,6 +23,7 @@ import {
   getCategories,
   getCampaigns,
   getCatalogue,
+  getHeroBanners,
 } from "@/lib/catalogue";
 
 export const revalidate = 0;
@@ -39,24 +40,30 @@ export default async function HomePage() {
     bestsellers,
     trending,
     newArrivals,
-    applianceCategories,
+    allCategories,
     heroBanners,
     sofaProduct,
     lampProduct,
     consoleProduct,
     playgroundPiecesResult,
+    heroBannersData,
   ] = await Promise.all([
     getCatalogue(),
     getProductsByTag("best-selling", 10),
     getProductsByTag("trending", 10),
     getProductsByTag("new-arrival", 10),
-    getCategories("appliances"),
+    getCategories(),
     getCampaigns("home-hero"),
     getCatalogProduct("mira-3-seater-sofa"),
     getCatalogProduct("aangan-accent-lamp"),
     getCatalogProduct("sajilo-shoe-cabinet"),
     getProducts({ limit: 4 }),
+    getHeroBanners(),
   ]);
+
+  const applianceCategories = allCategories.filter(
+    (c) => c.type === "appliance" || c.type === "appliances",
+  );
 
   const curatedLook = {
     roomName: "Curated Living Room",
@@ -102,9 +109,15 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
+      <Hero
+        initialSlides={heroBannersData?.slides || []}
+        initialSideCards={heroBannersData?.sideCards || []}
+      />
       {/* Explore Our Range - Harivan Organics Style for Furnitures, Appliances & Utensils */}
-      <ExploreOurRange allProducts={catalogueProducts} />
+      <ExploreOurRange
+        allProducts={catalogueProducts}
+        categories={allCategories}
+      />
 
       {/* Old hero section */}
       {/* <HomePromotionalBanner initialBanners={heroBanners} /> */}

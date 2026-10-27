@@ -739,8 +739,8 @@
   cursor: not-allowed;
 }
 
-/* ========== TABLET (768px - 1023px) ========== */
-@media (max-width: 1023px) {
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
   .head {
     flex-wrap: wrap;
     gap: 14px;
@@ -757,8 +757,11 @@
   }
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
+  .page {
+    padding-bottom: calc(24px + var(--admin-safe-bottom, 0px));
+  }
   .titleArea h1 {
     font-size: 1.5rem;
   }
@@ -783,6 +786,7 @@
   }
   .searchInput {
     min-height: 44px;
+    font-size: 16px !important;
   }
   .toolbarRight {
     display: flex;
@@ -793,6 +797,7 @@
   .filterSelect {
     min-height: 44px;
     width: 100%;
+    font-size: 16px !important;
   }
   .tableContainer,
   .tableWrap {
@@ -803,6 +808,18 @@
   }
   .table {
     min-width: 650px;
+  }
+  .table th:first-child,
+  .table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #ffffff;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
+  .table th:first-child {
+    z-index: 3;
+    background: #f8fafc;
   }
   .statusTabs {
     overflow-x: auto;
@@ -822,10 +839,10 @@
     left: 12px;
     right: 12px;
     transform: none;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(12px + var(--admin-safe-bottom, 0px));
     flex-direction: column;
     align-items: stretch;
-    border-radius: 12px;
+    border-radius: 14px;
     z-index: 950;
     padding: 12px;
     gap: 10px;
@@ -834,13 +851,40 @@
     min-height: 44px;
     width: 100%;
   }
+  .modalOverlay {
+    padding: 0;
+    align-items: flex-end;
+  }
   .modal {
-    width: 95%;
-    max-height: 90vh;
+    width: 100%;
+    max-width: 100%;
+    max-height: 94dvh;
+    border-radius: 20px 20px 0 0;
+  }
+  .modalHead {
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    z-index: 10;
+    padding: 16px;
+  }
+  .modalBody {
+    padding: 16px 14px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modalFooter {
+    position: sticky;
+    bottom: 0;
+    background: #ffffff;
+    z-index: 10;
+    padding: 12px 16px calc(14px + var(--admin-safe-bottom, 0px));
+    border-top: 1px solid #e2e8f0;
   }
 }
 
-/* ========== SMALL MOBILE (320px - 480px) ========== */
+/* ========== SMALL MOBILE (<= 480px) ========== */
 @media (max-width: 480px) {
   .titleArea h1 {
     font-size: 22px;

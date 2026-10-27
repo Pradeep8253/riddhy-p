@@ -48,13 +48,14 @@
   font-weight: 800;
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
   .breadcrumbs {
     margin-bottom: 12px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    -ms-overflow-style: none;
   }
   .breadcrumbs::-webkit-scrollbar {
     display: none;
@@ -64,8 +65,8 @@
     white-space: nowrap;
   }
   .link {
-    min-height: 28px;
-    padding: 2px 0;
+    min-height: 44px;
+    padding: 6px 4px;
   }
 }
 

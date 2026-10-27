@@ -39,7 +39,7 @@ const servicesLinks = [
   { label: 'Store Visit', href: '/contact', icon: 'mapPin' }
 ];
 
-export default function Header() {
+export default function Header({ config }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -99,14 +99,15 @@ export default function Header() {
   const mobileInputRef = useRef(null);
   const mobileSearchRef = useRef(null);
 
-  // Contact configurations
-  const phoneDisplay = siteConfig.contact?.phone || '+91 99342 08035';
+  // Contact configurations (derived dynamically from backend config or siteConfig)
+  const activeConfig = config || siteConfig;
+  const phoneDisplay = activeConfig.contact?.phone || '+91 88402 45188';
   const phoneRaw = phoneDisplay.replace(/[^0-9+]/g, '');
-  const whatsappDisplay = siteConfig.contact?.whatsapp || '+91 99342 08035';
-  const whatsappDigits = whatsappDisplay.replace(/[^0-9]/g, '') || '919934208035';
-  const emailDisplay = siteConfig.contact?.email || 'care@riddhy.in';
-  const addressDisplay = siteConfig.showroom?.addressLine1
-    ? `${siteConfig.showroom.addressLine1}, ${siteConfig.showroom.city || 'Prayagraj'}`
+  const whatsappDisplay = activeConfig.contact?.whatsapp || activeConfig.contact?.phone || '+91 88402 45188';
+  const whatsappDigits = whatsappDisplay.replace(/[^0-9]/g, '') || '918840245188';
+  const emailDisplay = activeConfig.contact?.email || 'riddhyfurnitureshomeappliances@gmail.com';
+  const addressDisplay = activeConfig.showroom?.addressLine1
+    ? `${activeConfig.showroom.addressLine1}, ${activeConfig.showroom.city || 'Prayagraj'}`
     : 'Civil Lines, Prayagraj, UP (Opp. High Court)';
 
   const announcementItems = [

@@ -1,7 +1,6 @@
 import { connectDB } from '@/lib/db';
 import { Banner } from '@/models/index';
 import { ok } from '@/lib/http';
-import { IMG } from '@/lib/images';
 
 export const fallbackBanners = [
   {
@@ -32,8 +31,8 @@ export const fallbackBanners = [
     campaignTag: '💍 WEDDING SEASON SPECIAL',
     ctaText: 'Explore Packages',
     href: '/packages',
-    desktopImage: IMG.hero.desktop,
-    mobileImage: IMG.hero.mobile,
+    desktopImage: '/images/hero-desktop.webp',
+    mobileImage: '/images/hero-mobile.webp',
     alt: 'RF Riddhy Wedding Furniture & Appliances Collection',
     active: true,
     sortOrder: 2,
@@ -50,8 +49,8 @@ export const fallbackBanners = [
     campaignTag: '⚡ APPLIANCE CARNIVAL',
     ctaText: 'Shop Appliances',
     href: '/appliances',
-    desktopImage: IMG.hero.desktop,
-    mobileImage: IMG.hero.mobile,
+    desktopImage: '/images/hero-desktop.webp',
+    mobileImage: '/images/hero-mobile.webp',
     alt: 'RF Riddhy Home Appliances Showcase',
     active: true,
     sortOrder: 3,

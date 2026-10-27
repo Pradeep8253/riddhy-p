@@ -3,7 +3,6 @@ import ContactForm from '@/components/commerce/ContactForm';
 import Icon from '@/components/ui/Icon';
 import { siteConfig, isConfigured } from '@/lib/site-config';
 import { getLiveSiteConfig } from '@/lib/server-config';
-import { IMG } from '@/lib/images';
 import styles from './content.module.css';
 
 export async function generateMetadata() {
@@ -24,13 +23,13 @@ export async function generateMetadata() {
       url,
       title,
       description,
-      images: [IMG.og || '/og-image.webp']
+      images: ['/images/og-image.webp']
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [IMG.og || '/og-image.webp']
+      images: ['/images/og-image.webp']
     }
   };
 }
@@ -192,7 +191,7 @@ export default async function ContactPage({ searchParams }) {
                 Explore our full solid wood collection and premium home appliances in person at our Civil Lines, Prayagraj store.
               </p>
               <a
-                href={whatsappUrl || 'https://wa.me/919934208035'}
+                href={whatsappUrl || 'https://wa.me/918840245188'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.consultationBtn}

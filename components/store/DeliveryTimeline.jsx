@@ -169,7 +169,7 @@ export default function DeliveryTimeline() {
               <span>Our logistics desk coordinates direct with your building security and schedule.</span>
             </div>
             <a
-              href="https://wa.me/919934208035?text=Hello%20RF%20Riddhy%2C%20I%20have%20a%20question%20about%20delivery%20and%20assembly."
+              href="https://wa.me/918840245188?text=Hello%20RF%20Riddhy%2C%20I%20have%20a%20question%20about%20delivery%20and%20assembly."
               target="_blank"
               rel="noopener noreferrer"
               className={styles.whatsappBtn}

@@ -1,55 +1,68 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { IMG } from '@/lib/images';
 import Icon from '@/components/ui/Icon';
 import styles from './AboutSections.module.css';
 
-const categories = [
+const defaultCategories = [
   {
     title: 'Living Room Furniture',
     description: 'Chesterfields, fabric sectional sofas, solid Sheesham coffee tables, and fluted TV units.',
     href: '/furniture/living',
-    image: IMG.categories.living || '/images/room-living.webp',
+    image: '/images/room-living.webp',
     tag: 'Handcrafted Furniture'
   },
   {
     title: 'Master & Guest Bedrooms',
     description: 'Hydraulic storage beds, orthopedic pocket-spring mattresses, and modular wardrobes.',
     href: '/furniture/bedroom',
-    image: IMG.categories.bedroom || '/images/room-bedroom.webp',
+    image: '/images/room-bedroom.webp',
     tag: 'Solid Wood & Storage'
   },
   {
     title: 'Dining & Entertaining',
     description: 'Italian marble top dining tables, solid teak 6-seater sets, and display buffets.',
     href: '/furniture/dining',
-    image: IMG.categories.dining || '/images/room-dining.webp',
+    image: '/images/room-dining.webp',
     tag: 'Center of the Home'
   },
   {
     title: 'Refrigeration & Cooling',
     description: 'Frost-free convertible double-door & side-by-side smart inverter refrigerators.',
     href: '/appliances/refrigerators',
-    image: IMG.categories.refrigerators || IMG.categories.kitchen || '/images/category-refrigerators.webp',
+    image: '/images/category-refrigerators.webp',
     tag: '5-Star Energy Saver'
   },
   {
     title: 'Fabric & Laundry Care',
     description: 'AI inverter front-load washers and washer-dryer combos with hygiene steam care.',
     href: '/appliances/washing-machines',
-    image: IMG.categories['washing-machines'] || IMG.categories.laundry || '/images/category-washers.webp',
+    image: '/images/category-washers.webp',
     tag: 'Allergen Steam Wash'
   },
   {
     title: 'Smart Kitchen Tech',
     description: 'Convection microwave ovens, touch induction hobs, and motion-sensing auto-clean chimneys.',
     href: '/appliances',
-    image: IMG.categories.microwaves || IMG.categories.chimneys || '/images/category-microwave.webp',
+    image: '/images/category-microwave.webp',
     tag: 'Effortless Cooking'
   }
 ];
 
-export default function AboutCategories() {
+export default function AboutCategories({ categories: propCategories = [] }) {
+  const displayCategories =
+    Array.isArray(propCategories) && propCategories.length >= 4
+      ? propCategories.slice(0, 6).map((c) => ({
+          title: c.name,
+          description:
+            c.description ||
+            (c.type === 'furniture'
+              ? 'Thoughtfully handcrafted solid wood & tailored upholstery.'
+              : 'Energy-efficient dependable technology for Indian homes.'),
+          href: c.type === 'furniture' ? `/furniture/${c.slug}` : `/appliances/${c.slug}`,
+          image: c.image || '/images/room-living.webp',
+          tag: c.type === 'furniture' ? 'Handcrafted Furniture' : 'Energy-Smart Appliances'
+        }))
+      : defaultCategories;
   return (
     <section className={`section ${styles.categoriesSection}`}>
       <div className="container">
@@ -63,7 +76,7 @@ export default function AboutCategories() {
         </div>
 
         <div className={styles.categoryGrid}>
-          {categories.map((cat) => (
+          {displayCategories.map((cat) => (
             <Link key={cat.title} href={cat.href} className={styles.categoryCard}>
               <div className={styles.categoryImageWrapper}>
                 {cat.image ? (

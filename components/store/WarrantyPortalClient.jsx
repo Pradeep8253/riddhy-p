@@ -439,7 +439,7 @@ export default function WarrantyPortalClient() {
                             }}
                           >
                             <a
-                              href={`https://wa.me/919934208035?text=${encodeURIComponent(
+                              href={`https://wa.me/918840245188?text=${encodeURIComponent(
                                 `Hello RF Riddhy Support, I am requesting warranty assistance for product "${reg.productName}" (Serial: ${reg.serialNumber || "N/A"}, Order: ${reg.orderNumber || "N/A"}).`,
                               )}`}
                               target="_blank"
@@ -461,7 +461,7 @@ export default function WarrantyPortalClient() {
                               <span>Request Service on WhatsApp</span>
                             </a>
                             <a
-                              href="tel:+919934208035"
+                              href="tel:+918840245188"
                               style={{
                                 padding: "8px 16px",
                                 borderRadius: "999px",

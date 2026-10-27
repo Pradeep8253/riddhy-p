@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCartDrawer } from "@/store/uiSlice";
 import { setQuantity, removeItem } from "@/store/cartSlice";
 import { formatINR } from "@/lib/pricing";
-import { IMG } from "@/lib/images";
 import Icon from "@/components/ui/Icon";
 import { getProductWhatsAppUrl } from "@/lib/site-config";
 import styles from "./CartDrawer.module.css";
@@ -152,7 +151,7 @@ export default function CartDrawer() {
                 item.gallery?.[0]?.thumbUrl ||
                 item.gallery?.[0]?.url ||
                 item.image ||
-                IMG.products.sofa;
+                '/images/product-sofa.webp';
 
               return (
                 <div key={itemKey} className={styles.cartItem}>

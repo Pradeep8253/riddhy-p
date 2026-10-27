@@ -5,7 +5,6 @@ import LocaleSync from '@/components/providers/LocaleSync';
 import LenisProvider from '@/components/motion/LenisProvider';
 import IntroPreloader from '@/components/motion/IntroPreloader';
 import SceneRootLoader from '@/components/three/SceneRootLoader';
-import { IMG } from '@/lib/images';
 
 const playfair = localFont({
   src: './fonts/playfair-display.woff2',
@@ -33,7 +32,7 @@ export const metadata = {
   title: { default: 'RF Riddhy | Furniture & Home Appliances', template: '%s | RF Riddhy' },
   description: 'Thoughtfully chosen furniture and dependable home appliances for a more beautiful, comfortable home.',
   applicationName: 'RF Riddhy',
-  openGraph: { type: 'website', siteName: 'RF Riddhy', title: 'RF Riddhy — Furniture & Home Appliances', description: 'Thoughtfully chosen furniture and dependable home appliances for a more beautiful, comfortable home.', images: [IMG.og] },
+  openGraph: { type: 'website', siteName: 'RF Riddhy', title: 'RF Riddhy — Furniture & Home Appliances', description: 'Thoughtfully chosen furniture and dependable home appliances for a more beautiful, comfortable home.', images: ['/images/og-image.webp'] },
   icons: { icon: '/icons/favicon.svg', apple: '/icons/favicon.svg' }
 };
 

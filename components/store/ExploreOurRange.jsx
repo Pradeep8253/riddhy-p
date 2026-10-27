@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductCard from '@/components/ui/ProductCard';
-import { getDemoProducts } from '@/lib/demo-data';
 import styles from './ExploreOurRange.module.css';
 
 const DEPARTMENT_CONFIG = {
@@ -154,19 +153,93 @@ const DEPARTMENT_CONFIG = {
   }
 };
 
-export default function ExploreOurRange({ allProducts = [], initialDept = 'furniture' }) {
+export default function ExploreOurRange({ allProducts = [], categories = [], initialDept = 'furniture' }) {
   const [activeDept, setActiveDept] = useState(initialDept);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [fetchedProducts, setFetchedProducts] = useState([]);
+  const [categoriesList, setCategoriesList] = useState(categories || []);
 
-  const deptData = DEPARTMENT_CONFIG[activeDept] || DEPARTMENT_CONFIG.furniture;
+  const legacyAliases = useMemo(
+    () =>
+      new Set([
+        'sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables', 'mattresses', 'decor', 'storage',
+        'refrigerators', 'washing-machines', 'air-conditioners', 'televisions', 'microwaves', 'chimneys', 'water-purifiers'
+      ]),
+    []
+  );
 
-  // Use passed products if available, otherwise fall back to full demo products
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      setCategoriesList(categories);
+    } else {
+      fetch('/api/categories')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          if (json?.success && Array.isArray(json?.data) && json.data.length > 0) {
+            setCategoriesList(json.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [categories]);
+
+  useEffect(() => {
+    if (!allProducts || allProducts.length === 0) {
+      fetch('/api/products?limit=50')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          const items = json?.data?.items || json?.data || [];
+          if (Array.isArray(items) && items.length > 0) {
+            setFetchedProducts(items);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [allProducts]);
+
+  const deptData = useMemo(() => {
+    const base = DEPARTMENT_CONFIG[activeDept] || DEPARTMENT_CONFIG.furniture;
+    if (!categoriesList || categoriesList.length === 0) return base;
+
+    const deptType = activeDept === 'appliances' ? 'appliance' : activeDept;
+    const backendCategories = categoriesList.filter(
+      (c) =>
+        (c.type === deptType || (activeDept === 'appliances' && c.type === 'appliances')) &&
+        c.active !== false &&
+        !legacyAliases.has(c.slug)
+    );
+
+    if (backendCategories.length === 0) return base;
+
+    const allCircle = base.circles[0] || {
+      slug: 'all',
+      name: `All ${base.label}`,
+      image: backendCategories[0]?.image || base.avatar
+    };
+
+    const dynamicCircles = [
+      allCircle,
+      ...backendCategories.map((c) => ({
+        slug: c.slug,
+        name: c.name,
+        image: c.image || base.avatar
+      }))
+    ];
+
+    return {
+      ...base,
+      avatar: backendCategories[0]?.image || base.avatar,
+      circles: dynamicCircles
+    };
+  }, [activeDept, categoriesList, legacyAliases]);
+
+  // Use passed products if available, otherwise dynamically fetched backend products
   const productsList = useMemo(() => {
     if (Array.isArray(allProducts) && allProducts.length > 0) {
       return allProducts;
     }
-    return getDemoProducts();
-  }, [allProducts]);
+    return fetchedProducts;
+  }, [allProducts, fetchedProducts]);
 
   // Switch department: also reset active category to 'all'
   const handleDeptChange = (deptKey) => {

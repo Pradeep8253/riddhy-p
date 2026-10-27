@@ -3,10 +3,8 @@ import Image from 'next/image';
 import ConsultationForm from '@/components/commerce/ConsultationForm';
 import ConsultationFaq from '@/components/store/ConsultationFaq';
 import { getConsultationFaqSchema } from '@/lib/consultation-faq-data';
-import ConsultationHeroCanvas from '@/components/three/ConsultationHeroCanvas';
 import Icon from '@/components/ui/Icon';
 import { siteConfig, isConfigured, getWhatsAppUrl } from '@/lib/site-config';
-import { IMG } from '@/lib/images';
 import styles from './consultation.module.css';
 
 export async function generateMetadata() {
@@ -26,13 +24,13 @@ export async function generateMetadata() {
       url,
       title,
       description,
-      images: [IMG.og || '/og-image.webp']
+      images: ['/images/og-image.webp']
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [IMG.og || '/og-image.webp']
+      images: ['/images/og-image.webp']
     }
   };
 }
@@ -134,26 +132,26 @@ export default async function ConsultationPage({ searchParams }) {
                 </div>
               </div>
 
-              <div className={styles.heroCanvasCol}>
-                <ConsultationHeroCanvas
-                  fallback={
-                    <div className={styles.heroImageWrapper}>
-                      <Image
-                        src={IMG.consultation?.lifestyle || '/images/consultation/consultation-lifestyle.webp'}
-                        alt="Warm, curated modern home interior for furniture and appliance consultation by RF Riddhy"
-                        width={560}
-                        height={420}
-                        className={styles.heroImage}
-                        priority
-                      />
-                      <div className={styles.heroImageCard}>
-                        <span className={styles.heroCardBadge}>Guided Layout</span>
-                        <strong>Room Fit & Clearance Plan</strong>
-                        <small>Tailored to your space & requirements</small>
-                      </div>
+              <div className={styles.heroImageCol}>
+                <div className={styles.heroImageWrapper}>
+                  <Image
+                    src="/images/consultation/consultation-lifestyle.webp"
+                    alt="Warm, curated modern home interior for furniture and appliance consultation by RF Riddhy"
+                    width={1376}
+                    height={768}
+                    className={styles.heroImage}
+                    priority
+                    sizes="(max-width: 767px) 90vw, (max-width: 1023px) 45vw, 540px"
+                  />
+                  <div className={styles.heroImageCard}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                      <span className={styles.heroCardBadge}>Guided Layout</span>
+                      <span style={{ fontSize: 11, color: 'var(--rf-gold-600)', fontWeight: 700 }}>100% Free</span>
                     </div>
-                  }
-                />
+                    <strong>Room Fit & Clearance Plan</strong>
+                    <small>Accurate dimensions, appliance capacities & delivery access</small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

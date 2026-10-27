@@ -9,8 +9,9 @@ import { addItem } from '@/store/cartSlice';
 import { toggleWishlist } from '@/store/wishlistSlice';
 import { showToast, setCartDrawer } from '@/store/uiSlice';
 import { formatPriceSafe, formatINR } from '@/lib/pricing';
-import { IMG } from '@/lib/images';
 import Button from '@/components/ui/Button';
+
+const blurDataURL = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 import Icon from '@/components/ui/Icon';
 import ServiceabilityChecker from '@/components/store/ServiceabilityChecker';
 import ProductRail from '@/components/store/ProductRail';
@@ -183,7 +184,7 @@ export default function ProductDetailClient({ product, related = [] }) {
       return product.gallery.map((g, idx) => ({
         src: g.large || g.medium || g.url,
         thumb: g.thumbUrl || g.thumb || g.url,
-        blurDataURL: g.blurDataURL || IMG.blurDataURL,
+        blurDataURL: g.blurDataURL || blurDataURL,
         alt: g.alt || `${product.name} view ${idx + 1}`,
         view: g.view || (idx === 0 ? 'front' : idx === 1 ? 'angle' : idx === 2 ? 'detail' : idx === 3 ? 'lifestyle' : 'interior'),
         viewType: g.viewType || 'verified-product',
@@ -191,9 +192,9 @@ export default function ProductDetailClient({ product, related = [] }) {
     }
     return [
       {
-        src: product.image || IMG.products.sofa,
+        src: product.image || '/images/product-sofa.webp',
         alt: product.imageAlt || `${product.name} product photo`,
-        blurDataURL: IMG.blurDataURL,
+        blurDataURL,
         view: 'front',
         viewType: 'verified-product',
       },
@@ -369,7 +370,7 @@ export default function ProductDetailClient({ product, related = [] }) {
                   priority
                   sizes="(max-width: 900px) 100vw, 52vw"
                   placeholder="blur"
-                  blurDataURL={IMG.blurDataURL}
+                  blurDataURL={blurDataURL}
                   onClick={() => setLightboxOpen(true)}
                   className={styles.mainMediaImg}
                   unoptimized={Boolean(
@@ -1051,7 +1052,7 @@ export default function ProductDetailClient({ product, related = [] }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flex: 1 }}>
           <div className={styles.stickyThumb}>
             <Image
-              src={media[0]?.thumb || media[0]?.src || product.image || IMG.products.sofa}
+              src={media[0]?.thumb || media[0]?.src || product.image || '/images/product-sofa.webp'}
               alt={product.name}
               fill
               sizes="44px"

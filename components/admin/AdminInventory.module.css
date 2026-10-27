@@ -417,16 +417,19 @@
   font-size: 13px;
 }
 
-/* ========== TABLET (768px - 1023px) ========== */
-@media (max-width: 1023px) {
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
   .controlsBar {
     flex-wrap: wrap;
     gap: 12px;
   }
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
+  .page {
+    padding-bottom: calc(24px + var(--admin-safe-bottom, 0px));
+  }
   .heading {
     flex-direction: column;
     align-items: stretch;
@@ -456,6 +459,9 @@
     min-width: 100%;
     min-height: 44px;
   }
+  .searchWrap input {
+    font-size: 16px !important;
+  }
   .filterGroup {
     display: flex;
     flex-wrap: wrap;
@@ -465,6 +471,7 @@
   .filterGroup select {
     min-height: 44px;
     flex: 1 1 calc(50% - 4px);
+    font-size: 16px !important;
   }
   .tableWrap {
     width: 100%;
@@ -479,19 +486,37 @@
   .tableScroll table {
     min-width: 700px;
   }
+  .tableScroll table th:first-child,
+  .tableScroll table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #ffffff;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
+  .tableScroll table th:first-child {
+    z-index: 3;
+    background: #f5f1ea;
+  }
   .submitBtn,
   .cancelBtn {
     min-height: 44px;
   }
+  .modalOverlay {
+    padding: 0;
+    align-items: flex-end;
+  }
   .modalCard {
-    width: 95%;
-    max-width: 440px;
-    margin: auto;
-    padding: 20px 16px;
+    width: 100%;
+    max-width: 100%;
+    max-height: 94dvh;
+    border-radius: 20px 20px 0 0;
+    margin: 0;
+    padding: 20px 16px calc(20px + var(--admin-safe-bottom, 0px));
   }
 }
 
-/* ========== SMALL MOBILE (320px - 480px) ========== */
+/* ========== SMALL MOBILE (<= 480px) ========== */
 @media (max-width: 480px) {
   .heading h1 {
     font-size: 24px;
@@ -504,7 +529,7 @@
     flex: 1 1 100%;
   }
   .modalCard {
-    padding: 16px 12px;
+    padding: 16px 12px calc(18px + var(--admin-safe-bottom, 0px));
   }
 }
 

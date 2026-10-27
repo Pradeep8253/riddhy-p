@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { removeItem, setQuantity } from "@/store/cartSlice";
 import { formatINR } from "@/lib/pricing";
-import { IMG } from "@/lib/images";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
 import { getProductWhatsAppUrl } from "@/lib/site-config";
@@ -180,8 +179,8 @@ export default function CartClient() {
             <article className={styles.item} key={key}>
               <Link href={`/product/${item.slug}`} className={styles.image}>
                 <Image
-                  src={item.image || IMG.products.sofa}
-                  alt={item.imageAlt || `${item.name} demo illustration`}
+                  src={item.image || item.gallery?.[0]?.thumbUrl || item.gallery?.[0]?.url || '/images/product-sofa.webp'}
+                  alt={item.imageAlt || `${item.name} product photography`}
                   fill
                   sizes="120px"
                   unoptimized

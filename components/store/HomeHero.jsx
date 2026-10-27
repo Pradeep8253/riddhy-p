@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
-import { IMG } from '@/lib/images';
 import Button from '@/components/ui/Button';
 import Countdown from '@/components/ui/Countdown';
 import Icon from '@/components/ui/Icon';
@@ -19,23 +18,19 @@ export default function HomeHero() {
     <section className={`${styles.hero} cinematic-hero`} aria-labelledby="hero-title">
       <div className={styles.poster}>
         <Image
-          src={IMG.hero.desktop}
-          alt={IMG.hero.alt}
+          src="/images/hero-desktop.webp"
+          alt="Warm modern living room beside a compact appliance display"
           fill
           priority
           sizes="100vw"
-          placeholder="blur"
-          blurDataURL={IMG.blurDataURL}
           unoptimized
           className={styles.desktopImage}
         />
         <Image
-          src={IMG.hero.mobile}
+          src="/images/hero-mobile.webp"
           alt=""
           fill
           sizes="100vw"
-          placeholder="blur"
-          blurDataURL={IMG.blurDataURL}
           unoptimized
           className={styles.mobileImage}
         />

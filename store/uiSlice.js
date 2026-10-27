@@ -1,26 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  locale: 'en',
+  locale: "en",
   liteMode: false,
   cartDrawerOpen: false,
   offersModalOpen: false,
-  toast: null
+  toast: null,
 };
 
 const uiSlice = createSlice({
-  name: 'ui',
+  name: "ui",
   initialState,
   reducers: {
     setLocale(state) {
-      state.locale = 'en';
-      if (typeof window !== 'undefined') {
+      state.locale = "en";
+      if (typeof window !== "undefined") {
         try {
-          window.localStorage.setItem('rf-locale', 'en');
-          document.cookie = 'rf-locale=en; path=/; max-age=31536000; SameSite=Lax';
-          document.cookie = 'rf_locale=en; path=/; max-age=31536000; SameSite=Lax';
-        } catch {
-        }
+          window.localStorage.setItem("rf-locale", "en");
+          document.cookie =
+            "rf-locale=en; path=/; max-age=31536000; SameSite=Lax";
+          document.cookie =
+            "rf_locale=en; path=/; max-age=31536000; SameSite=Lax";
+        } catch {}
       }
     },
     setLiteMode(state, { payload }) {
@@ -40,8 +41,8 @@ const uiSlice = createSlice({
     },
     clearToast(state) {
       state.toast = null;
-    }
-  }
+    },
+  },
 });
 
 export const {
@@ -51,7 +52,6 @@ export const {
   setCartDrawer,
   setOffersModal,
   showToast,
-  clearToast
+  clearToast,
 } = uiSlice.actions;
 export default uiSlice.reducer;
-

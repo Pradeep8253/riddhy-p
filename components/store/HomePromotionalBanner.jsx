@@ -147,7 +147,7 @@ export default function HomePromotionalBanner({ initialBanners = null }) {
                     )}
 
                     <a
-                      href={`https://wa.me/919934208035?text=${encodeURIComponent(
+                      href={`https://wa.me/918840245188?text=${encodeURIComponent(
                         `Hello RF Riddhy, I saw your promotional banner "${banner.title}" and would like more details and pricing.`
                       )}`}
                       target="_blank"

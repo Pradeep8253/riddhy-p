@@ -13,7 +13,7 @@ import AboutCTA from "@/components/store/about/AboutCTA";
 import ReviewWall from "@/components/store/ReviewWall";
 import { siteConfig, isConfigured } from "@/lib/site-config";
 import { getLiveSiteConfig } from "@/lib/server-config";
-import { IMG } from "@/lib/images";
+import { getCategories } from "@/lib/catalogue";
 
 export async function generateMetadata() {
   const liveConfig = await getLiveSiteConfig();
@@ -33,19 +33,22 @@ export async function generateMetadata() {
       url,
       title,
       description,
-      images: [IMG.og || "/og-image.webp"],
+      images: ["/images/og-image.webp"],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [IMG.og || "/og-image.webp"],
+      images: ["/images/og-image.webp"],
     },
   };
 }
 
 export default async function AboutPage() {
-  const liveConfig = await getLiveSiteConfig();
+  const [liveConfig, liveCategories] = await Promise.all([
+    getLiveSiteConfig(),
+    getCategories(),
+  ]);
 
   const orgSchema = {
     "@context": "https://schema.org",
@@ -107,16 +110,16 @@ export default async function AboutPage() {
 
       <main>
         {/* 1. Hero & Brand Introduction */}
-        <AboutHero />
+        <AboutHero config={liveConfig} />
 
         {/* 2. Product Categories Showcase */}
-        <AboutCategories />
+        <AboutCategories categories={liveCategories} />
 
         {/* 3. Why Choose Us (5 Pillars) */}
-        <AboutWhyChooseUs />
+        <AboutWhyChooseUs config={liveConfig} />
 
         {/* 4. Our Commitment to Reliable Service */}
-        <AboutCommitment />
+        <AboutCommitment config={liveConfig} />
 
         {/* 5. Origin Story (hidden if unconfigured) */}
         <AboutStory config={liveConfig} />

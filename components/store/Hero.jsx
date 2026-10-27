@@ -1,241 +1,155 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import './Hero.css';
 
-// ── Default Banners (RF Riddhy Brand Showcase) ──────────────
-const defaultSliderImages = [
-  {
-    id: 'default-marriage-hero',
-    src: '/images/banners/marriage-packages-hero.jpg',
-    alt: 'RF Riddhy 5 Exclusive Marriage Packages from ₹49,999',
-    href: '/packages',
-  },
-  {
-    id: 'default-furniture-appliances',
-    src: '/images/banners/furniture-appliances-slider.jpg',
-    alt: 'RF Riddhy Luxury Furniture & Smart Home Appliances',
-    href: '/products',
-  },
+const fallbackSlides = [
+  { id: 'fallback-furniture', src: '/images/banners/hero-slide-1-furniture.webp', mobileSrc: '/images/banners/hero-slide-1-furniture-mobile.webp', alt: 'Furniture collection', href: '/furniture' },
+  { id: 'fallback-appliances', src: '/images/banners/hero-slide-2-appliances.webp', mobileSrc: '/images/banners/hero-slide-2-appliances-mobile.webp', alt: 'Home appliances collection', href: '/appliances' },
+  { id: 'fallback-diwali', src: '/images/banners/hero-slide-3-diwali.webp', mobileSrc: '/images/banners/hero-slide-3-diwali-mobile.webp', alt: 'Diwali offer', href: '/offers' },
+  { id: 'fallback-wedding', src: '/images/banners/hero-slide-4-wedding.webp', mobileSrc: '/images/banners/hero-slide-4-wedding-mobile.webp', alt: 'Wedding packages', href: '/packages' },
 ];
 
-const defaultSideImages = [
-  {
-    id: 'default-top-card',
-    src: '/images/banners/diwali-offer-banner.jpg',
-    alt: 'Hero Right Top Banner',
-    href: '/offers',
-  },
-  {
-    id: 'default-bottom-card',
-    src: '/images/banners/saadi-offer-banner.jpg',
-    alt: 'Hero Right Bottom Banner',
-    href: '/packages',
-  },
+const fallbackSideCards = [
+  { id: 'fallback-side-top', src: '/images/banners/banner-diwali-right-top.webp', alt: 'Diwali offer', href: '/offers' },
+  { id: 'fallback-side-bottom', src: '/images/banners/banner-wedding-right-bottom.webp', alt: 'Wedding packages', href: '/packages' },
 ];
 
-const Hero = () => {
-  const [slides, setSlides] = useState(defaultSliderImages);
-  const [sideCards, setSideCards] = useState(defaultSideImages);
+const Hero = ({ initialSlides = [], initialSideCards = [] }) => {
+  const [slides, setSlides] = useState(initialSlides.length ? initialSlides : fallbackSlides);
+  const [sideCards, setSideCards] = useState(initialSideCards.length ? initialSideCards : fallbackSideCards);
   const [current, setCurrent] = useState(0);
-  const [animating, setAnimating] = useState(false);
-  const [direction, setDirection] = useState('next');
-  const timerRef = useRef(null);
+  const [paused, setPaused] = useState(false);
 
-  // Fetch live banners from CMS dynamically
   useEffect(() => {
-    let isMounted = true;
+    if (initialSlides.length) setSlides(initialSlides);
+  }, [initialSlides]);
+
+  useEffect(() => {
+    if (initialSideCards.length) setSideCards(initialSideCards);
+  }, [initialSideCards]);
+
+  useEffect(() => {
+    let mounted = true;
     fetch('/api/banners?all=true', { cache: 'no-store' })
-      .then((r) => r.json())
+      .then((response) => response.json())
       .then((res) => {
-        if (!isMounted) return;
-        const allBanners = res.data || (Array.isArray(res) ? res : []);
-        if (!allBanners || allBanners.length === 0) return;
+        if (!mounted) return;
+        const banners = res.data || (Array.isArray(res) ? res : []);
+        const active = banners.filter((banner) => banner.active !== false && (banner.desktopImage || banner.mobileImage));
+        let sliderBanners = active.filter((banner) => banner.zone === 'hero-slider');
+        if (!sliderBanners.length) sliderBanners = active.filter((banner) => banner.zone === 'home-hero');
 
-        // 1. Slider banners: prioritize hero-slider
-        let sliderCandidates = allBanners.filter(
-          (b) => b.active !== false && b.zone === 'hero-slider' && (b.desktopImage || b.mobileImage)
-        );
-        if (sliderCandidates.length === 0) {
-          sliderCandidates = allBanners.filter(
-            (b) => b.active !== false && b.zone === 'home-hero' && (b.desktopImage || b.mobileImage)
-          );
-        }
-
-        const customSlides = sliderCandidates
+        const cmsSlides = sliderBanners
           .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-          .map((b) => ({
-            id: b.id || b._id,
-            src: b.desktopImage || b.mobileImage,
-            alt: b.title || b.name || 'Hero Banner',
-            href: b.href || '/packages',
+          .map((banner) => ({
+            id: banner.id || banner._id,
+            src: banner.desktopImage || banner.mobileImage,
+            mobileSrc: banner.mobileImage || '',
+            alt: banner.title || banner.name || 'Hero banner',
+            href: banner.href || '/packages',
           }));
+        if (cmsSlides.length) setSlides(cmsSlides);
 
-        if (customSlides.length > 0) {
-          setSlides(customSlides);
-        }
-
-        // 2. Right Top & Right Bottom Side Banners
-        const customTop = allBanners.find(
-          (b) => b.active !== false && b.zone === 'hero-side-top' && (b.desktopImage || b.mobileImage)
-        );
-        const customBottom = allBanners.find(
-          (b) => b.active !== false && b.zone === 'hero-side-bottom' && (b.desktopImage || b.mobileImage)
-        );
-
-        setSideCards([
-          customTop
-            ? {
-                id: customTop.id || customTop._id,
-                src: customTop.desktopImage || customTop.mobileImage,
-                alt: customTop.title || customTop.name || 'Hero Right Top Banner',
-                href: customTop.href || '/offers',
-              }
-            : defaultSideImages[0],
-          customBottom
-            ? {
-                id: customBottom.id || customBottom._id,
-                src: customBottom.desktopImage || customBottom.mobileImage,
-                alt: customBottom.title || customBottom.name || 'Hero Right Bottom Banner',
-                href: customBottom.href || '/packages',
-              }
-            : defaultSideImages[1],
-        ]);
+        const cmsCards = [
+          ['hero-side-top', '/offers'],
+          ['hero-side-bottom', '/packages'],
+        ].map(([zone, fallbackHref]) => {
+          const banner = active.find((item) => item.zone === zone);
+          return banner ? {
+            id: banner.id || banner._id,
+            src: banner.desktopImage || banner.mobileImage,
+            mobileSrc: banner.mobileImage || '',
+            alt: banner.title || banner.name || 'Promotional banner',
+            href: banner.href || fallbackHref,
+          } : null;
+        }).filter(Boolean);
+        if (cmsCards.length) setSideCards(cmsCards);
       })
-      .catch((err) => {
-        // Fallback to default banners gracefully
-        console.warn('Loaded default hero banners:', err);
-      });
+      .catch((error) => console.warn('Backend hero banners fetch error:', error));
 
-    return () => {
-      isMounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
-  const total = slides.length;
+  useEffect(() => {
+    setCurrent((index) => Math.min(index, Math.max(slides.length - 1, 0)));
+  }, [slides.length]);
 
-  const goTo = (index, dir) => {
-    if (animating || total <= 1) return;
-    setDirection(dir);
-    setAnimating(true);
-    setTimeout(() => {
-      setCurrent(index);
-      setAnimating(false);
-    }, 520);
-  };
-
-  const prev = () => {
-    if (total <= 1) return;
-    const idx = (current - 1 + total) % total;
-    goTo(idx, 'prev');
-  };
-
-  const next = () => {
-    if (total <= 1) return;
-    const idx = (current + 1) % total;
-    goTo(idx, 'next');
-  };
-
-  const goToSlide = (i) => {
-    if (i === current || animating || total <= 1) return;
-    goTo(i, i > current ? 'next' : 'prev');
-  };
+  const move = useCallback((step) => {
+    setCurrent((index) => (index + step + slides.length) % slides.length);
+  }, [slides.length]);
 
   useEffect(() => {
-    if (total <= 1) return;
-    timerRef.current = setInterval(() => {
-      next();
-    }, 4500);
-    return () => clearInterval(timerRef.current);
-  }, [current, animating, total]);
+    if (paused || slides.length <= 1 || typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = window.setInterval(() => move(1), 5000);
+    return () => window.clearInterval(timer);
+  }, [move, paused, slides.length]);
+
+  const onKeyDown = (event) => {
+    if (event.key === 'ArrowLeft') { event.preventDefault(); move(-1); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); move(1); }
+  };
+
+  const onTouchStart = (event) => { event.currentTarget.dataset.touchStartX = event.touches[0].clientX; };
+  const onTouchEnd = (event) => {
+    const start = Number(event.currentTarget.dataset.touchStartX);
+    if (!start) return;
+    const delta = event.changedTouches[0].clientX - start;
+    if (Math.abs(delta) > 45) move(delta < 0 ? 1 : -1);
+    delete event.currentTarget.dataset.touchStartX;
+  };
 
   return (
-    <section className="hero">
+    <section className="hero" aria-label="Featured collections and offers">
       <div className="hero__inner">
-        {/* LEFT MAIN SLIDER */}
-        <div className="hero__slider">
-          <div className="slider__track">
-            {slides.map((img, i) => (
-              <div
-                key={img.id}
-                className={`slide ${i === current ? 'slide--active' : ''} ${
-                  animating && i === current ? `slide--out-${direction}` : ''
-                }`}
-              >
-                <Link
-                  href={img.href || '/packages'}
-                  style={{ display: 'block', width: '100%', height: '100%' }}
-                >
-                  <img src={img.src} alt={img.alt} className="slide__img" />
-                  <div className="slide__overlay" />
+        <div
+          className="hero__slider"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Featured banners"
+          tabIndex="0"
+          onKeyDown={onKeyDown}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocus={() => setPaused(true)}
+          onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <div className="slider__track" aria-live="off">
+            {slides.map((slide, index) => (
+              <div key={slide.id || slide.src || index} className={`slide${index === current ? ' slide--active' : ''}`} aria-hidden={index !== current}>
+                <Link href={slide.href || '/packages'} className="slide__link" tabIndex={index === current ? 0 : -1} aria-label={slide.alt || `Featured banner ${index + 1}`}>
+                  <picture>
+                    {slide.mobileSrc && <source media="(max-width: 600px)" srcSet={slide.mobileSrc} />}
+                    <img src={slide.src} alt={slide.alt || ''} className="slide__img" fetchPriority={index === 0 ? 'high' : 'auto'} loading={index === 0 ? 'eager' : 'lazy'} />
+                  </picture>
                 </Link>
               </div>
             ))}
           </div>
 
-          {total > 1 && (
-            <>
-              <button
-                type="button"
-                className="slider__arrow slider__arrow--prev"
-                onClick={prev}
-                aria-label="Previous"
-              >
-                <svg viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M13 15l-5-5 5-5"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-
-              <button
-                type="button"
-                className="slider__arrow slider__arrow--next"
-                onClick={next}
-                aria-label="Next"
-              >
-                <svg viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M7 5l5 5-5 5"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-
-              <div className="slider__dots">
-                {slides.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    className={`dot ${i === current ? 'dot--active' : ''}`}
-                    onClick={() => goToSlide(i)}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
+          {slides.length > 1 && <>
+            <button type="button" className="slider__arrow slider__arrow--prev" onClick={() => move(-1)} aria-label="Previous banner">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13 15l-5-5 5-5" /></svg>
+            </button>
+            <button type="button" className="slider__arrow slider__arrow--next" onClick={() => move(1)} aria-label="Next banner">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5l5 5-5 5" /></svg>
+            </button>
+            <div className="slider__dots" role="group" aria-label="Choose a banner">
+              {slides.map((slide, index) => <button key={slide.id || index} type="button" className={`dot${index === current ? ' dot--active' : ''}`} onClick={() => setCurrent(index)} aria-label={`Go to banner ${index + 1}`} aria-current={index === current ? 'true' : undefined} />)}
+            </div>
+          </>}
         </div>
 
-        {/* RIGHT 2 PROMOTIONAL CARDS */}
-        <div className="hero__side">
-          {sideCards.map((img) => (
-            <Link
-              key={img.id}
-              href={img.href || '/packages'}
-              className="side__card"
-              style={{ display: 'block', textDecoration: 'none' }}
-            >
-              <img src={img.src} alt={img.alt} className="side__img" />
-              <div className="side__overlay" />
+        <div className="hero__side" aria-label="More offers">
+          {sideCards.map((card, index) => (
+            <Link key={card.id || card.src || index} href={card.href || '/packages'} className="side__card" aria-label={card.alt || `Featured offer ${index + 1}`}>
+              <picture>
+                {card.mobileSrc && <source media="(max-width: 600px)" srcSet={card.mobileSrc} />}
+                <img src={card.src} alt={card.alt || ''} className="side__img" loading="lazy" />
+              </picture>
             </Link>
           ))}
         </div>
@@ -245,4 +159,3 @@ const Hero = () => {
 };
 
 export default Hero;
-

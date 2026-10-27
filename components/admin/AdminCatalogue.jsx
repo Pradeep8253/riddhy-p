@@ -1,6 +1,5 @@
 "use client";
 
-import { CATEGORY_SEED } from "@/config/categories";
 import { formatPriceSafe } from "@/lib/pricing";
 import {
   AlertCircle,
@@ -15,7 +14,7 @@ import {
   Search,
   SlidersHorizontal,
   Upload,
-  X
+  X,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -26,12 +25,12 @@ import ExportDropdown from "./ExportDropdown";
 
 const AdminProductDrawer = dynamic(() => import("./AdminProductDrawer"), {
   ssr: false,
-  loading: () => null
+  loading: () => null,
 });
 
 const AdminImportModal = dynamic(() => import("./AdminImportModal"), {
   ssr: false,
-  loading: () => null
+  loading: () => null,
 });
 
 const DEFAULT_COLUMNS = {
@@ -109,6 +108,18 @@ export default function AdminCatalogue() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [categoriesList, setCategoriesList] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/admin/categories")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (json?.success && Array.isArray(json?.data)) {
+          setCategoriesList(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Keyboard shortcut '/' to focus search
   useEffect(() => {
@@ -324,7 +335,7 @@ export default function AdminCatalogue() {
     if (typeParam !== "all")
       list.push({ key: "type", label: `Type: ${typeParam}` });
     if (categoryParam !== "all") {
-      const catObj = CATEGORY_SEED.find((c) => c.slug === categoryParam);
+      const catObj = categoriesList.find((c) => c.slug === categoryParam);
       list.push({
         key: "category",
         label: `Category: ${catObj ? catObj.name : categoryParam}`,
@@ -575,8 +586,8 @@ export default function AdminCatalogue() {
             onChange={(e) => updateQuery({ category: e.target.value })}
           >
             <option value="all">All Categories</option>
-            {CATEGORY_SEED.map((c) => (
-              <option key={c.slug} value={c.slug}>
+            {categoriesList.map((c) => (
+              <option key={c.slug || c.id || c._id} value={c.slug}>
                 {c.name}
               </option>
             ))}
@@ -922,12 +933,27 @@ export default function AdminCatalogue() {
                               >
                                 {product.name}
                               </span>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 6,
+                                }}
+                              >
                                 <span className={styles.productSku}>
                                   {product.sku || "NO-SKU"}
                                 </span>
                                 {!product.hsnCode && (
-                                  <span style={{ fontSize: '10px', background: '#fef3c7', color: '#92400e', padding: '1px 5px', borderRadius: 4, fontWeight: 700 }}>
+                                  <span
+                                    style={{
+                                      fontSize: "10px",
+                                      background: "#fef3c7",
+                                      color: "#92400e",
+                                      padding: "1px 5px",
+                                      borderRadius: 4,
+                                      fontWeight: 700,
+                                    }}
+                                  >
                                     Missing HSN
                                   </span>
                                 )}

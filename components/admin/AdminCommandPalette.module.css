@@ -192,51 +192,96 @@
   margin-right: 4px;
 }
 
-@media (max-width: 600px) {
-  .overlay {
-    padding: 16px 10px;
-    align-items: center;
-  }
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
   .modal {
-    max-height: 85vh;
-  }
-  .footerShortcuts {
-    display: none;
-  }
-  .searchHeader {
-    padding: 12px 14px;
+    max-width: 560px;
   }
 }
 
-/* ========== TABLET (768px - 1023px) ========== */
-@media (max-width: 1023px) {
-  .modal {
-    max-width: 540px;
-  }
-}
-
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
   .overlay {
-    padding: 12px;
+    padding: 0;
+    align-items: stretch;
+    background: rgba(14, 21, 16, 0.92);
   }
+
   .modal {
     width: 100%;
     max-width: 100%;
-    max-height: 85vh;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
   }
-  .resultItem {
+
+  .searchHeader {
+    padding: calc(14px + var(--admin-safe-top, 0px)) 16px 14px;
+    gap: 12px;
+  }
+
+  .searchInput {
+    font-size: 16px !important;
+  }
+
+  .escBadge {
+    min-width: 44px;
     min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+  }
+
+  .resultsBody {
+    flex: 1;
+    max-height: none;
+    padding: 12px;
+    gap: 14px;
+  }
+
+  .resultItem {
+    min-height: 52px;
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .footer {
+    padding: 12px 16px calc(14px + var(--admin-safe-bottom, 0px));
+  }
+
+  .footerShortcuts {
+    display: none;
   }
 }
 
-/* ========== SMALL MOBILE (320px - 480px) ========== */
+/* ========== SMALL MOBILE (<= 480px) ========== */
 @media (max-width: 480px) {
-  .overlay {
+  .searchHeader {
+    padding: calc(12px + var(--admin-safe-top, 0px)) 12px 12px;
+  }
+
+  .resultsBody {
     padding: 8px;
   }
-  .searchHeader {
+
+  .resultItem {
     padding: 10px 12px;
+  }
+}
+
+/* ========== EXTRA SMALL (<= 360px) ========== */
+@media (max-width: 360px) {
+  .resultText b {
+    font-size: 12px;
+  }
+
+  .resultText small {
+    font-size: 10px;
   }
 }
 

@@ -20,8 +20,8 @@ const SettingsSchema = new Schema(
     addressLine2: { type: String, default: "Near Subhash Chauraha" },
     city: { type: String, default: "Prayagraj" },
     pincode: { type: String, default: "211001" },
-    phone: { type: String, default: "+91 99342 08035" },
-    email: { type: String, default: "care@riddhy.in" },
+    phone: { type: String, default: "+91 88402 45188" },
+    email: { type: String, default: "riddhyfurnitureshomeappliances@gmail.com" },
     invoicePrefix: { type: String, default: "RF" },
     creditNotePrefix: { type: String, default: "CN" },
     invoiceTiming: {
@@ -43,7 +43,8 @@ const SettingsSchema = new Schema(
     installationSac: { type: String, default: "9987" },
     returnPolicyText: {
       type: String,
-      default: "Returns accepted within 7 days in original packaging subject to inspection.",
+      default:
+        "Returns accepted within 7 days in original packaging subject to inspection.",
     },
     invoiceTerms: {
       type: String,
@@ -53,7 +54,7 @@ const SettingsSchema = new Schema(
     invoiceFooterNote: {
       type: String,
       default:
-        "Thank you for choosing RF Riddhy. For support & warranty, email care@riddhy.in or WhatsApp +91 99342 08035. Delivery & installation in Prayagraj.",
+        "Thank you for choosing RF Riddhy. For support & warranty, email riddhyfurnitureshomeappliances@gmail.com or WhatsApp +91 88402 45188. Delivery & installation in Prayagraj.",
     },
     nextInvoiceNumber: { type: Number, default: 1 },
     updatedBy: Schema.Types.ObjectId,

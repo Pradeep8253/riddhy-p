@@ -9,7 +9,6 @@ import { addItem } from "@/store/cartSlice";
 import { toggleWishlist } from "@/store/wishlistSlice";
 import { showToast, setCartDrawer } from "@/store/uiSlice";
 import { formatPriceSafe } from "@/lib/pricing";
-import { IMG } from "@/lib/images";
 import {
   getLocalizedProductName,
   getLocalizedCategoryName,
@@ -104,7 +103,7 @@ export default function ProductCard({ product, compact = false }) {
     product.gallery?.[0]?.mediumUrl ||
     product.gallery?.[0]?.url ||
     product.image ||
-    IMG.products.sofa;
+    "/images/product-sofa.webp";
 
   const secondaryImage =
     product.gallery?.find?.((g) => g.view === "angle")?.mediumUrl ||

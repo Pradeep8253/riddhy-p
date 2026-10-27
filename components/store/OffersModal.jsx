@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setOffersModal, showToast } from '@/store/uiSlice';
 import Icon from '@/components/ui/Icon';
 import { getWhatsAppUrl } from '@/lib/site-config';
-import { IMG } from '@/lib/images';
 import styles from './OffersModal.module.css';
 
 const DEFAULT_OFFER_CODE = 'DIWALI10';
@@ -43,7 +42,7 @@ function OffersModalInner({
   const title = bannerData?.title || 'Diwali Dhamaka Offer';
   const subtitle = bannerData?.subtitle || 'Celebrate with Up to 40% OFF Handcrafted Teak & Smart Inverter Tech';
   const offerDesc = bannerData?.offerDescription || 'Instant 10% OFF + Free Delivery & Setup in Prayagraj';
-  const bannerImage = bannerData?.desktopImage || propBannerImage || IMG?.banners?.diwaliBanner || '/images/diwali-dhamaka-banner.jpg';
+  const bannerImage = bannerData?.desktopImage || propBannerImage || '/images/diwali-dhamaka-banner.jpg';
   const altText = bannerData?.alt || propAltText || `${title} - RF Riddhy Exclusive Offers`;
   const ctaText = bannerData?.ctaText || 'Tap to Claim on WhatsApp';
   const destinationHref = bannerData?.href;

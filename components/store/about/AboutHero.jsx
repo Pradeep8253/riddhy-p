@@ -2,7 +2,9 @@ import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import styles from './AboutSections.module.css';
 
-export default function AboutHero() {
+export default function AboutHero({ config }) {
+  const brandName = config?.brandName || 'RF Riddhy';
+
   return (
     <section className={styles.hero}>
       <div className="container">
@@ -15,7 +17,7 @@ export default function AboutHero() {
             </h1>
             <p className={styles.heroSubtitle}>
               Furniture gives a room its character. Appliances make daily life flow.
-              RF Riddhy brings both worlds together—thoughtfully, practically, and with care.
+              {' '}{brandName} brings both worlds together—thoughtfully, practically, and with care.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <Button href="/furniture" variant="gold">
@@ -29,12 +31,13 @@ export default function AboutHero() {
 
           <div className={styles.heroLogoWrap}>
             <Image
-              src="/riddhy-logo.jpeg"
-              alt="RF Riddhy furniture and home appliances logo, including the tree of life heritage emblem"
-              width={640}
-              height={640}
+              src="/images/about/about-hero-lifestyle.webp"
+              alt="RF Riddhy modern living showroom combining elegant furniture with integrated home appliances"
+              width={1376}
+              height={768}
               priority
-              sizes="(max-width:700px) 90vw, 38vw"
+              sizes="(max-width: 700px) 90vw, 45vw"
+              style={{ width: '100%', height: 'auto', display: 'block' }}
             />
           </div>
         </div>

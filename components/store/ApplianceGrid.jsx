@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CATEGORIES } from '@/config/categories';
-import { IMG } from '@/lib/images';
 import Icon from '@/components/ui/Icon';
 import styles from './ApplianceGrid.module.css';
 
@@ -33,18 +31,47 @@ const SEQUENCE_SLIDES = [
 
 export default function ApplianceGrid({ categories: propCategories, showAll = false }) {
   const [slideIndex, setSlideIndex] = useState(0);
+  const [categoriesList, setCategoriesList] = useState(propCategories || []);
+
+  useEffect(() => {
+    if (propCategories && propCategories.length > 0) {
+      setCategoriesList(propCategories);
+    } else {
+      fetch('/api/categories?type=appliance')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          if (json?.success && Array.isArray(json?.data)) {
+            setCategoriesList(json.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [propCategories]);
+
+  const sequenceSlides = useMemo(() => {
+    const remaining = categoriesList.filter(
+      (c) => !FEATURED_SLUGS.includes(c.slug) && (c.image || c.src)
+    );
+    if (remaining.length > 0) {
+      return remaining.map((c) => ({
+        name: c.name,
+        slug: c.slug,
+        src: c.image || c.src
+      }));
+    }
+    return SEQUENCE_SLIDES;
+  }, [categoriesList]);
 
   // Smoothly rotate the multi-image sequence every 2.2 seconds
   useEffect(() => {
+    if (sequenceSlides.length <= 1) return;
     const timer = setInterval(() => {
-      setSlideIndex((prev) => (prev + 1) % SEQUENCE_SLIDES.length);
+      setSlideIndex((prev) => (prev + 1) % sequenceSlides.length);
     }, 2200);
     return () => clearInterval(timer);
-  }, []);
+  }, [sequenceSlides.length]);
 
-  const allCategories = propCategories && propCategories.length > 0
-    ? propCategories
-    : CATEGORIES.filter((item) => item.type === 'appliance');
+  const allCategories = categoriesList;
 
   const displayCategories = showAll
     ? allCategories
@@ -53,15 +80,13 @@ export default function ApplianceGrid({ categories: propCategories, showAll = fa
         .filter(Boolean)
         .slice(0, 6);
 
-  const activeSlide = SEQUENCE_SLIDES[slideIndex];
+  const activeSlide = sequenceSlides[slideIndex] || sequenceSlides[0] || { name: 'Appliances', slug: 'appliances' };
 
   return (
     <div className={styles.grid}>
       {displayCategories.map((category, index) => {
         const imgSrc =
           category.image ||
-          IMG.categories[category.imageKey] ||
-          IMG.categories[category.slug] ||
           '/images/category-refrigerators.webp';
 
         return (
@@ -73,8 +98,6 @@ export default function ApplianceGrid({ categories: propCategories, showAll = fa
                 alt={`${category.name} illustration`}
                 fill
                 sizes="(max-width:720px) 42vw, 170px"
-                placeholder="blur"
-                blurDataURL={IMG.blurDataURL}
                 unoptimized
               />
               <span className={styles.badge360}>360°</span>
@@ -94,7 +117,7 @@ export default function ApplianceGrid({ categories: propCategories, showAll = fa
         <Link href="/appliances" className={`${styles.card} ${styles.sequenceCard}`}>
           <span className={styles.index}>07</span>
           <div className={`${styles.visual} ${styles.sequenceVisual}`}>
-            {SEQUENCE_SLIDES.map((slide, i) => (
+            {sequenceSlides.map((slide, i) => (
               <div
                 key={slide.slug}
                 className={`${styles.sequenceSlide} ${i === slideIndex ? styles.sequenceSlideActive : ''}`}
@@ -105,15 +128,13 @@ export default function ApplianceGrid({ categories: propCategories, showAll = fa
                   alt={`${slide.name} illustration`}
                   fill
                   sizes="(max-width:720px) 42vw, 170px"
-                  placeholder="blur"
-                  blurDataURL={IMG.blurDataURL}
                   unoptimized
                 />
               </div>
             ))}
-            <div className={styles.sequenceBadge}>+{SEQUENCE_SLIDES.length} More</div>
+            <div className={styles.sequenceBadge}>+{sequenceSlides.length} More</div>
             <div className={styles.sequenceDots}>
-              {SEQUENCE_SLIDES.map((_, i) => (
+              {sequenceSlides.map((_, i) => (
                 <i
                   key={i}
                   className={`${styles.sequenceDot} ${i === slideIndex ? styles.sequenceDotActive : ''}`}

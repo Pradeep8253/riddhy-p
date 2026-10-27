@@ -804,8 +804,22 @@
   }
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
+  .head {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
+  .page {
+    padding-bottom: calc(24px + var(--admin-safe-bottom, 0px));
+  }
   .head {
     flex-direction: column;
     align-items: stretch;
@@ -847,6 +861,7 @@
   }
   .searchInput {
     min-height: 44px;
+    font-size: 16px !important;
   }
   .filters {
     flex-direction: column;
@@ -863,7 +878,7 @@
     display: none;
   }
   .pillBtn {
-    min-height: 38px;
+    min-height: 44px;
     padding: 0 14px;
     flex-shrink: 0;
   }
@@ -876,27 +891,44 @@
     border-radius: 14px;
   }
   .modalOverlay {
-    padding: 8px;
+    padding: 0;
     align-items: flex-end;
   }
   .modal {
     width: 100%;
     max-width: 100%;
-    max-height: 92vh;
-    border-radius: 18px 18px 0 0;
+    max-height: 94dvh;
+    border-radius: 20px 20px 0 0;
   }
   .modalHeader {
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    z-index: 10;
     padding: 16px;
   }
   .modalBody {
     padding: 16px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .formGrid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+  .input,
+  .textarea,
+  .select {
+    font-size: 16px !important;
+  }
   .modalFooter {
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    position: sticky;
+    bottom: 0;
+    background: #ffffff;
+    z-index: 10;
+    border-top: 1px solid var(--rf-line, #e2e8e3);
+    padding: 12px 16px calc(14px + var(--admin-safe-bottom, 0px));
     flex-direction: column-reverse;
     gap: 8px;
     align-items: stretch;
@@ -909,7 +941,7 @@
   }
 }
 
-/* ========== SMALL MOBILE (320px - 480px) ========== */
+/* ========== SMALL MOBILE (<= 480px) ========== */
 @media (max-width: 480px) {
   .head h1 {
     font-size: 24px;
@@ -935,8 +967,8 @@
     justify-content: flex-end;
   }
   .iconBtn {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
   }
 }
 

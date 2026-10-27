@@ -144,7 +144,7 @@ export async function POST(request) {
     // Email dispatch (Customer & Team)
     try {
       const teamMail = sendMail({
-        to: process.env.SMTP_FROM || 'care@riddhy.in',
+        to: process.env.SMTP_FROM || 'riddhyfurnitureshomeappliances@gmail.com',
         subject: `New Home Consultation: ${reference} (${data.name})`,
         text: `Consultation Reference: ${reference}\nCustomer: ${data.name} (${data.phone}${data.email ? ', ' + data.email : ''})\nPincode: ${data.pincode} (Serviceable: ${isServiceable ? 'Yes' : 'No'})\nMode: ${data.mode.toUpperCase()}\nPreferred Slot: ${data.preferredDate} [${data.timeWindow}]\nInterests: ${data.interests.join(', ')}\nRoom: ${data.roomType} | Budget: ${data.budgetRange || 'Not specified'}\nTimeline: ${data.timeline}\nLanguage: ${data.language}\nWhatsApp Updates: ${data.whatsappOptIn ? 'Yes' : 'No'}\n\nNotes:\n${data.message || 'None'}`
       });

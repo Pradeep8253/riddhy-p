@@ -19,7 +19,6 @@ import {
   Tag,
   ShieldCheck,
 } from "lucide-react";
-import { CATEGORIES } from "@/config/categories";
 import styles from "./AdminProductDrawer.module.css";
 
 const TAG_OPTIONS = [
@@ -63,7 +62,7 @@ export default function AdminProductDrawer({
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [libraryAssets, setLibraryAssets] = useState([]);
   const [loadingLibrary, setLoadingLibrary] = useState(false);
-  const [availableCategories, setAvailableCategories] = useState(CATEGORIES);
+  const [availableCategories, setAvailableCategories] = useState([]);
 
   useEffect(() => {
     if (isOpen) {

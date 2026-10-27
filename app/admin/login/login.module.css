@@ -1,7 +1,7 @@
 .page {
   display: grid;
-  grid-template-columns: minmax(360px, 520px) minmax(0, 1fr);
-  min-height: 100vh;
+  grid-template-columns: minmax(320px, 520px) minmax(0, 1fr);
+  min-height: 100dvh;
   background: #fbf8f2;
 }
 
@@ -11,6 +11,7 @@
   max-width: 520px;
   margin: auto;
   padding: clamp(30px, 6vw, 68px);
+  box-sizing: border-box;
 }
 
 .card h1 {
@@ -28,12 +29,15 @@
 }
 
 .back {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 22px;
   color: var(--rf-green-800);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   text-decoration: underline;
+  min-height: 44px;
+  padding: 0 4px;
 }
 
 .side {
@@ -97,7 +101,8 @@
   line-height: 1.6;
 }
 
-@media (max-width: 860px) {
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
   .page {
     grid-template-columns: 1fr;
   }
@@ -106,38 +111,24 @@
   }
   .card {
     max-width: 520px;
+    padding: clamp(24px, 5vw, 48px);
   }
 }
 
-/* ========== TABLET (768px - 1023px) ========== */
-@media (max-width: 1023px) {
-  .page {
-    grid-template-columns: 1fr;
-  }
-  .side {
-    display: none;
-  }
-}
-
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
   .card {
-    padding: 32px 20px;
+    padding: 32px 20px calc(24px + var(--admin-safe-bottom, env(safe-area-inset-bottom, 0px)));
   }
   .card h1 {
     font-size: 32px;
   }
-  .back {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-  }
 }
 
-/* ========== SMALL MOBILE (320px - 480px) ========== */
+/* ========== SMALL MOBILE (<= 480px) ========== */
 @media (max-width: 480px) {
   .card {
-    padding: 24px 16px;
+    padding: 24px 16px calc(20px + var(--admin-safe-bottom, env(safe-area-inset-bottom, 0px)));
   }
   .card h1 {
     font-size: 26px;
@@ -146,6 +137,9 @@
 
 /* ========== EXTRA SMALL (<= 360px) ========== */
 @media (max-width: 360px) {
+  .card {
+    padding: 20px 12px calc(16px + var(--admin-safe-bottom, env(safe-area-inset-bottom, 0px)));
+  }
   .card h1 {
     font-size: 22px;
   }

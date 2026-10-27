@@ -62,9 +62,15 @@ const trustPillars = [
   }
 ];
 
-export default function Footer() {
-  const hasPhone = isConfigured(siteConfig.contact?.phone);
-  const hasEmail = isConfigured(siteConfig.contact?.email);
+export default function Footer({ config }) {
+  const activeConfig = config || siteConfig;
+  const hasPhone = isConfigured(activeConfig.contact?.phone);
+  const hasEmail = isConfigured(activeConfig.contact?.email);
+  const phone = activeConfig.contact?.phone || '+91 88402 45188';
+  const email = activeConfig.contact?.email || 'riddhyfurnitureshomeappliances@gmail.com';
+  const city = activeConfig.showroom?.city || 'Prayagraj';
+  const whatsappDigits = (activeConfig.contact?.whatsapp || activeConfig.contact?.phone || '918840245188').replace(/[^0-9]/g, '');
+  const hindiTagline = activeConfig.hindiTagline || siteConfig.hindiTagline;
 
   return (
     <footer className={styles.footer}>
@@ -110,30 +116,30 @@ export default function Footer() {
             Premium furniture and appliances for retail, wholesale, marriage packages, and custom orders — crafted with lasting quality for real Indian living. From everyday essentials to fancy, on-demand designs, we bring trusted craftsmanship to every home and business.
           </p>
 
-          <p className={styles.hindiTagline}>{siteConfig.hindiTagline}</p>
+          <p className={styles.hindiTagline}>{hindiTagline}</p>
 
-          {(hasPhone || hasEmail) && (
+          {/* {(hasPhone || hasEmail) && (
             <div className={styles.contactChips}>
               {hasPhone && (
                 <a
-                  href={`tel:${siteConfig.contact.phone.replace(/[^0-9+]/g, '')}`}
+                  href={`tel:${phone.replace(/[^0-9+]/g, '')}`}
                   className={styles.contactChip}
                 >
                   <Icon name="phone" size={14} className={styles.contactIcon} />
-                  <span>{siteConfig.contact.phone}</span>
+                  <span>{phone}</span>
                 </a>
               )}
               {hasEmail && (
                 <a
-                  href={`mailto:${siteConfig.contact.email}`}
+                  href={`mailto:${email}`}
                   className={styles.contactChip}
                 >
                   <Icon name="mail" size={14} className={styles.contactIcon} />
-                  <span>{siteConfig.contact.email}</span>
+                  <span>{email}</span>
                 </a>
               )}
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Navigation Link Groups */}
@@ -188,11 +194,11 @@ export default function Footer() {
 
             <div className={styles.promiseActions}>
               <Link href="/contact" className={styles.ctaPrimary}>
-                <span>Visit Prayagraj Store</span>
+                <span>Visit {city} Store</span>
                 <Icon name="arrow" size={14} />
               </Link>
               <a
-                href="https://wa.me/919934208035?text=Hello%20RF%20Riddhy%2C%20I%20want%20to%20inquire%20about%20your%20Prayagraj%20store%20collection"
+                href={`https://wa.me/${whatsappDigits}?text=Hello%20RF%20Riddhy%2C%20I%20want%20to%20inquire%20about%20your%20${encodeURIComponent(city)}%20store%20collection`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.ctaSecondary}

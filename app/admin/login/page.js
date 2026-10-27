@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import AuthForm from '@/components/commerce/AuthForm';
 import Icon from '@/components/ui/Icon';
-import { IMG } from '@/lib/images';
 import styles from './login.module.css';
 
 export const metadata = {
@@ -24,7 +23,7 @@ export default function AdminLoginPage() {
 
       <div className={styles.side}>
         <Image
-          src={IMG.hero.desktop}
+          src="/images/hero-desktop.webp"
           alt="RF Riddhy furniture and living space"
           fill
           priority

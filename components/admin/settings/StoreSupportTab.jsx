@@ -37,7 +37,7 @@ export default function StoreSupportTab({ formData, updateField, fieldErrors = {
             className={`${styles.input} ${fieldErrors['contact.whatsapp'] ? styles.inputError : ''}`}
             value={contact.whatsapp}
             onChange={(e) => updateField('contact', 'whatsapp', e.target.value)}
-            placeholder="+91 99342 08035"
+            placeholder="+91 88402 45188"
           />
           {fieldErrors['contact.whatsapp'] && (
             <span className={styles.errorText}>{fieldErrors['contact.whatsapp']}</span>
@@ -54,7 +54,7 @@ export default function StoreSupportTab({ formData, updateField, fieldErrors = {
             className={`${styles.input} ${fieldErrors['contact.email'] ? styles.inputError : ''}`}
             value={contact.email}
             onChange={(e) => updateField('contact', 'email', e.target.value)}
-            placeholder="care@riddhy.in"
+            placeholder="riddhyfurnitureshomeappliances@gmail.com"
           />
           {fieldErrors['contact.email'] && (
             <span className={styles.errorText}>{fieldErrors['contact.email']}</span>

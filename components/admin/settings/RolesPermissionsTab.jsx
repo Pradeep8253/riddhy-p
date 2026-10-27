@@ -283,7 +283,7 @@ export default function RolesPermissionsTab({ session }) {
       )}
 
       {/* Role Selection Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 12, marginTop: 18 }}>
+      <div className={styles.roleGrid}>
         {roles.map((r) => {
           const isSelected = selectedRoleKey === r.key;
           const hasUnsaved = editedPerms[r.key] && r.permissions && (

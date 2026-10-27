@@ -5,18 +5,21 @@ import FloatingContactWidget from '@/components/ui/FloatingContactWidget';
 import CartDrawer from '@/components/commerce/CartDrawer';
 import MobileBottomNav from '@/components/store/MobileBottomNav';
 import OffersModal from '@/components/store/OffersModal';
+import { getLiveSiteConfig } from '@/lib/server-config';
 
-export default function StoreLayout({ children }) {
+export default async function StoreLayout({ children }) {
+  const liveConfig = await getLiveSiteConfig();
+
   return (
     <>
-      <Header />
+      <Header config={liveConfig} />
       <div>{children}</div>
-      <Footer />
+      <Footer config={liveConfig} />
       <ToastViewport />
       <CartDrawer />
       <OffersModal />
-      <FloatingContactWidget />
-      <MobileBottomNav />
+      <FloatingContactWidget config={liveConfig} />
+      <MobileBottomNav config={liveConfig} />
     </>
   );
 }

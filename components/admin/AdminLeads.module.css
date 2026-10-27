@@ -482,8 +482,8 @@
   cursor: pointer;
 }
 
-/* ========== TABLET (768px - 1023px) ========== */
-@media (max-width: 1023px) {
+/* ========== TABLET (<= 1024px) ========== */
+@media (max-width: 1024px) {
   .kpiRow {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -492,8 +492,8 @@
   }
 }
 
-/* ========== MOBILE (481px - 767px) ========== */
-@media (max-width: 767px) {
+/* ========== MOBILE (<= 768px) ========== */
+@media (max-width: 768px) {
   .heading {
     flex-direction: column;
     align-items: stretch;
@@ -520,6 +520,11 @@
   .searchBox {
     max-width: 100%;
     min-height: 44px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .searchBox input {
+    font-size: 16px;
   }
   .selectFilters {
     flex-direction: column;
@@ -530,24 +535,29 @@
   .drawerSelect {
     min-height: 44px;
     width: 100%;
-  }
-  .tableCard,
-  .tableWrap {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-  .table {
-    min-width: 650px;
+    font-size: 16px;
   }
   .drawer {
     width: 100%;
     max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+  .drawerHead {
+    padding: 16px 18px;
+    padding-top: calc(16px + var(--admin-safe-top, env(safe-area-inset-top, 0px)));
+  }
+  .drawerBody {
+    padding: 16px 18px calc(24px + var(--admin-safe-bottom, env(safe-area-inset-bottom, 0px)));
   }
   .assignRow {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+  .assignRow input {
+    height: 44px;
+    font-size: 16px;
   }
   .detailGrid {
     grid-template-columns: 1fr;
@@ -557,16 +567,37 @@
     min-height: 44px;
     width: 100%;
   }
-  .closeBtn {
+  .closeDrawerBtn {
     min-width: 44px;
     min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .statusAction select {
+    min-height: 44px;
+    font-size: 14px;
   }
 }
 
-/* ========== SMALL MOBILE (320px - 480px) ========== */
+/* ========== SMALL MOBILE (<= 480px) ========== */
 @media (max-width: 480px) {
   .heading h1 {
     font-size: 24px;
+  }
+  .card {
+    padding: 16px;
+  }
+  .cardFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .statusAction {
+    width: 100%;
+  }
+  .statusAction select {
+    width: 100%;
   }
 }
 
@@ -574,5 +605,12 @@
 @media (max-width: 360px) {
   .heading h1 {
     font-size: 20px;
+  }
+  .card {
+    padding: 14px 12px;
+  }
+  .contactLine {
+    flex-direction: column;
+    gap: 4px;
   }
 }

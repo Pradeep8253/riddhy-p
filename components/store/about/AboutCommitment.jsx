@@ -1,8 +1,12 @@
 import Link from 'next/link';
 import Icon from '@/components/ui/Icon';
+import { siteConfig } from '@/lib/site-config';
 import styles from './AboutSections.module.css';
 
-export default function AboutCommitment() {
+export default function AboutCommitment({ config = siteConfig } = {}) {
+  const city = config.showroom?.city || 'Prayagraj';
+  const brandName = config.brandName ? `The ${config.brandName} Team` : 'The RF Riddhy Team';
+
   return (
     <section className={`section ${styles.commitmentSection}`}>
       <div className="container">
@@ -43,8 +47,8 @@ export default function AboutCommitment() {
               feeling with furniture you love touching and appliances you never have to worry about.
             </blockquote>
             <div className={styles.quoteAuthor}>
-              <b>The RF Riddhy Team</b>
-              <span>Delhi NCR · Craft & Care Desk</span>
+              <b>{brandName}</b>
+              <span>{city} · Craft & Care Desk</span>
             </div>
           </div>
         </div>
