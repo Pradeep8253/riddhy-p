@@ -321,7 +321,7 @@ export default function ContactForm({ initialTopic = 'general' }) {
           <Icon name="arrow" size={16} />
         </button>
         <span className={styles.supportFootnote}>
-          <Icon name="clock" size={13} color="var(--rf-green-700)" />
+
           We typically reply in under 2 hours during store hours (10:00 AM – 8:00 PM).
         </span>
       </div>

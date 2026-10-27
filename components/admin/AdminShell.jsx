@@ -637,6 +637,81 @@ function AdminShellInner({ children, session }) {
         </main>
       </div>
 
+      {/* App Feel Mobile Bottom Navigation Dock */}
+      <nav className={styles.mobileBottomDock} aria-label="Quick mobile navigation">
+        <Link
+          href="/admin"
+          className={`${styles.dockItem} ${pathname === '/admin' ? styles.dockItemActive : ''}`}
+          aria-current={pathname === '/admin' ? 'page' : undefined}
+        >
+          <div className={styles.dockIconWrap}>
+            <LayoutDashboard size={20} />
+          </div>
+          <span className={styles.dockLabel}>Overview</span>
+        </Link>
+
+        <Link
+          href="/admin/orders"
+          className={`${styles.dockItem} ${pathname.startsWith('/admin/orders') ? styles.dockItemActive : ''}`}
+          aria-current={pathname.startsWith('/admin/orders') ? 'page' : undefined}
+        >
+          <div className={styles.dockIconWrap}>
+            <ShoppingBag size={20} />
+            {liveBadges.pendingOrders > 0 && (
+              <span className={styles.dockBadge}>
+                {liveBadges.pendingOrders > 99 ? '99+' : liveBadges.pendingOrders}
+              </span>
+            )}
+          </div>
+          <span className={styles.dockLabel}>Orders</span>
+        </Link>
+
+        <Link
+          href="/admin/catalogue"
+          className={`${styles.dockItem} ${pathname.startsWith('/admin/catalogue') ? styles.dockItemActive : ''}`}
+          aria-current={pathname.startsWith('/admin/catalogue') ? 'page' : undefined}
+        >
+          <div className={styles.dockIconWrap}>
+            <Layers size={20} />
+          </div>
+          <span className={styles.dockLabel}>Products</span>
+        </Link>
+
+        <Link
+          href="/admin/leads"
+          className={`${styles.dockItem} ${pathname.startsWith('/admin/leads') ? styles.dockItemActive : ''}`}
+          aria-current={pathname.startsWith('/admin/leads') ? 'page' : undefined}
+        >
+          <div className={styles.dockIconWrap}>
+            <MessageSquare size={20} />
+            {liveBadges.newLeads > 0 && (
+              <span className={styles.dockBadge}>
+                {liveBadges.newLeads > 99 ? '99+' : liveBadges.newLeads}
+              </span>
+            )}
+          </div>
+          <span className={styles.dockLabel}>Leads</span>
+        </Link>
+
+        <button
+          type="button"
+          className={`${styles.dockItem} ${mobileSidebarOpen ? styles.dockItemActive : ''}`}
+          onClick={() => setMobileSidebarOpen((prev) => !prev)}
+          aria-label="Open full admin menu"
+          aria-expanded={mobileSidebarOpen}
+        >
+          <div className={styles.dockIconWrap}>
+            <Menu size={20} />
+            {(liveBadges.lowStock > 0 || liveBadges.openClaims > 0) && (
+              <span className={`${styles.dockBadge} ${styles.dockBadgeAlert}`}>
+                {(liveBadges.lowStock + liveBadges.openClaims) > 99 ? '99+' : (liveBadges.lowStock + liveBadges.openClaims)}
+              </span>
+            )}
+          </div>
+          <span className={styles.dockLabel}>Menu</span>
+        </button>
+      </nav>
+
       {/* Command Palette Modal */}
       <AdminCommandPalette isOpen={isCmdOpen} onClose={() => setIsCmdOpen(false)} />
     </div>

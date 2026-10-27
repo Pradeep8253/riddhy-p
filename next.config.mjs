@@ -61,4 +61,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
-// Dev server reload timestamp: 2026-10-26T14:40:00
+// Dev server reload timestamp: 2026-10-28T00:06:00

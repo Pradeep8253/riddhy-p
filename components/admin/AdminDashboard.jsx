@@ -589,7 +589,7 @@ export default function AdminDashboard() {
       {/* 4. Analytics & Charts Grid */}
       <section className={styles.analyticsGrid}>
         {/* Left Column: Daily Trend & Pipeline Funnel */}
-        <div style={{ display: 'grid', gap: '20px' }}>
+        <div className={styles.analyticsColumn}>
           {/* Daily Revenue Trend Bar Chart */}
           <div className={styles.panel}>
             <div className={styles.panelHead}>
@@ -681,7 +681,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Right Column: Top Products, Categories, Geo & GST */}
-        <div style={{ display: 'grid', gap: '20px' }}>
+        <div className={styles.analyticsColumn}>
           {/* Top 5 Selling Products */}
           <div className={styles.panel}>
             <div className={styles.panelHead}>
@@ -794,7 +794,7 @@ export default function AdminDashboard() {
       </section>
 
       {/* 5. Bottom Row: Recent Orders, Recent Audit Feed, Low Stock */}
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
+      <section className={styles.bottomSectionGrid}>
         {/* Recent Orders */}
         <div className={styles.panel}>
           <div className={styles.panelHead}>

@@ -491,6 +491,27 @@
   display: grid;
   grid-template-columns: 1.25fr 0.95fr;
   gap: 20px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.analyticsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.bottomSectionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
 /* SVG Stacked Bar Chart */
@@ -751,6 +772,10 @@
     grid-template-columns: 1fr;
     gap: 18px;
   }
+  .bottomSectionGrid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
   .kpiGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -821,8 +846,33 @@
     width: 100%;
   }
   .kpiGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .kpiCard {
+    padding: 12px 10px !important;
+    border-radius: 12px !important;
+  }
+  .kpiHead {
+    margin-bottom: 6px !important;
+  }
+  .kpiTitle {
+    font-size: 11px !important;
+  }
+  .kpiIconWrap {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .kpiValue {
+    font-size: 18px !important;
+  }
+  .kpiFooter {
+    font-size: 10px !important;
+    margin-top: 6px !important;
+  }
+  .bottomSectionGrid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
   }
   .paymentsSection {
     grid-template-columns: 1fr;
@@ -875,8 +925,24 @@
     font-size: 24px;
   }
   .kpiGrid {
-    grid-template-columns: 1fr;
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .kpiCard {
+    padding: 10px 8px !important;
+    border-radius: 10px !important;
+  }
+  .kpiTitle {
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .kpiValue {
+    font-size: 16px !important;
+  }
+  .kpiFooter {
+    font-size: 9px !important;
   }
   .panel {
     padding: 14px 10px;
