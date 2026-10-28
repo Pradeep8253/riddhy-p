@@ -34,14 +34,14 @@ function OffersModalInner({
           setBannerData(list[0]);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const offerCode = bannerData?.offerCode || propOfferCode || DEFAULT_OFFER_CODE;
-  const campaignTag = bannerData?.campaignTag || '🪔 DIWALI DHAMAKA SALE';
+  const campaignTag = bannerData?.campaignTag || '🪔 DIWALI DHAMAKA';
   const title = bannerData?.title || 'Diwali Dhamaka Offer';
-  const subtitle = bannerData?.subtitle || 'Celebrate with Up to 40% OFF Handcrafted Teak & Smart Inverter Tech';
-  const offerDesc = bannerData?.offerDescription || 'Instant 10% OFF + Free Delivery & Setup in Prayagraj';
+  const subtitle = bannerData?.subtitle || 'Celebrate with Up to 20% OFF Handcrafted Teak & Smart Inverter Tech';
+  const offerDesc = bannerData?.offerDescription || 'Instant 20% OFF + Free Delivery & Setup in Prayagraj';
   const bannerImage = bannerData?.desktopImage || propBannerImage || '/images/diwali-dhamaka-banner.jpg';
   const altText = bannerData?.alt || propAltText || `${title} - RF Riddhy Exclusive Offers`;
   const ctaText = bannerData?.ctaText || 'Tap to Claim on WhatsApp';
@@ -229,12 +229,12 @@ function OffersModalInner({
               </div>
 
               <div className={styles.bannerBottom}>
-                <h2 className={styles.bannerTitle}>
+                {/* <h2 className={styles.bannerTitle}>
                   {renderTitle(title)}
-                </h2>
-                <p className={styles.bannerSubtitle}>
+                </h2> */}
+                {/* <p className={styles.bannerSubtitle}>
                   {subtitle}
-                </p>
+                </p> */}
 
                 <button
                   type="button"
