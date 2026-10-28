@@ -247,11 +247,11 @@ export default async function HomePage() {
       </section>
 
       {/* 11. Serviceability Checker */}
-      <section className="section bg-light-yellow">
+      {/* <section className="section bg-light-yellow">
         <div className="container">
           <ServiceabilityChecker />
         </div>
-      </section>
+      </section> */}
     </>
   );
 }
