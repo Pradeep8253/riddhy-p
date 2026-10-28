@@ -24,6 +24,7 @@ import {
   getCampaigns,
   getCatalogue,
   getHeroBanners,
+  getCuratedLook,
 } from "@/lib/catalogue";
 
 export const revalidate = 0;
@@ -42,9 +43,7 @@ export default async function HomePage() {
     newArrivals,
     allCategories,
     heroBanners,
-    sofaProduct,
-    lampProduct,
-    consoleProduct,
+    curatedLook,
     playgroundPiecesResult,
     heroBannersData,
   ] = await Promise.all([
@@ -54,9 +53,7 @@ export default async function HomePage() {
     getProductsByTag("new-arrival", 10),
     getCategories(),
     getCampaigns("home-hero"),
-    getCatalogProduct("mira-3-seater-sofa"),
-    getCatalogProduct("aangan-accent-lamp"),
-    getCatalogProduct("sajilo-shoe-cabinet"),
+    getCuratedLook("living"),
     getProducts({ limit: 4 }),
     getHeroBanners(),
   ]);
@@ -64,48 +61,6 @@ export default async function HomePage() {
   const applianceCategories = allCategories.filter(
     (c) => c.type === "appliance" || c.type === "appliances",
   );
-
-  const curatedLook = {
-    roomName: "Curated Living Room",
-    tagline: "Balanced warmth, natural woods, and everyday comfort",
-    image: "/images/room-living.webp?v=20261023",
-    hotspots: [
-      {
-        id: "sofa-hotspot",
-        top: "60%",
-        left: "50%",
-        product:
-          sofaProduct ||
-          catalogueProducts.find((p) => p.type === "furniture") ||
-          catalogueProducts[0] ||
-          null,
-      },
-      {
-        id: "decor-hotspot",
-        top: "32%",
-        left: "68%",
-        product:
-          lampProduct ||
-          catalogueProducts.find(
-            (p) => p.category === "decor" || p.modelType === "decor",
-          ) ||
-          catalogueProducts[1] ||
-          null,
-      },
-      {
-        id: "table-hotspot",
-        top: "66%",
-        left: "14%",
-        product:
-          consoleProduct ||
-          catalogueProducts.find(
-            (p) => p.category === "storage" || p.modelType === "storage",
-          ) ||
-          catalogueProducts[2] ||
-          null,
-      },
-    ].filter((h) => h.product),
-  };
 
   return (
     <>
@@ -185,7 +140,7 @@ export default async function HomePage() {
             }
           />
           <ShopTheLookHotspots
-            look={curatedLook?.hotspots?.length ? curatedLook : undefined}
+            look={curatedLook}
           />
         </div>
       </section>

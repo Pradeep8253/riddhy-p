@@ -99,22 +99,25 @@ export default function ProductCard({ product, compact = false }) {
     );
   };
 
+  const frontGalleryItem =
+    product.gallery?.find?.((g) => g.view === "front" || g.isPrimary) ||
+    product.gallery?.[0];
+
   const image =
-    product.gallery?.[0]?.mediumUrl ||
-    product.gallery?.[0]?.url ||
+    frontGalleryItem?.mediumUrl ||
+    frontGalleryItem?.url ||
     product.image ||
     "/images/product-sofa.webp";
 
-  const secondaryImage =
-    product.gallery?.find?.((g) => g.view === "angle")?.mediumUrl ||
-    product.gallery?.find?.((g) => g.view === "angle")?.url ||
-    product.gallery?.find?.((g) => g.view === "lifestyle")?.mediumUrl ||
-    product.gallery?.find?.((g) => g.view === "lifestyle")?.url ||
-    product.gallery?.find?.((g) => g.view === "back")?.mediumUrl ||
-    product.gallery?.find?.((g) => g.view === "back")?.url ||
-    product.gallery?.[1]?.mediumUrl ||
-    product.gallery?.[1]?.url ||
+  const backGalleryItem =
+    product.gallery?.find?.((g) => g.view === "back") ||
+    product.gallery?.find?.(
+      (g) => g !== frontGalleryItem && g.url !== frontGalleryItem?.url,
+    ) ||
     null;
+
+  const secondaryImage =
+    backGalleryItem?.mediumUrl || backGalleryItem?.url || null;
 
   const blurDataURL =
     product.gallery?.[0]?.blurDataURL ||

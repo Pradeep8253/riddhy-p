@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -11,65 +11,9 @@ import { formatINR } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon';
 import styles from './ShopTheLookHotspots.module.css';
 
-const defaultLook = {
-  roomName: 'Curated Living Room',
-  tagline: 'Balanced warmth, natural woods, and everyday comfort',
-  image: '/images/room-living.webp?v=20261023',
-  hotspots: [
-    {
-      id: 'sofa-hotspot',
-      top: '60%',
-      left: '50%',
-      product: {
-        id: 'demo-mira-3-seater-sofa',
-        slug: 'mira-3-seater-sofa',
-        sku: 'RF-0101-DEMO',
-        name: 'Mira 3-Seater Sofa',
-        tagline: 'Soft sage upholstery with solid wood base',
-        categoryLabel: 'Sofas & Sectionals',
-        price: 49990,
-        mrp: 58800,
-        image: '/images/products/mira-3-seater-sofa/front.webp'
-      }
-    },
-    {
-      id: 'decor-hotspot',
-      top: '32%',
-      left: '68%',
-      product: {
-        id: 'demo-aangan-accent-lamp',
-        slug: 'aangan-accent-lamp',
-        sku: 'RF-0701-DEMO',
-        name: 'Aangan Accent Lamp',
-        tagline: 'Warm diffused glow for evening calm',
-        categoryLabel: 'Home Décor',
-        price: 2490,
-        mrp: 2990,
-        image: '/images/products/aangan-accent-lamp/front.webp'
-      }
-    },
-    {
-      id: 'table-hotspot',
-      top: '66%',
-      left: '14%',
-      product: {
-        id: 'demo-sajilo-shoe-cabinet',
-        slug: 'sajilo-shoe-cabinet',
-        sku: 'RF-0802-DEMO',
-        name: 'Sajilo Storage Console',
-        tagline: 'Closed storage with warm natural grain',
-        categoryLabel: 'Storage & Shelving',
-        price: 18990,
-        mrp: 23990,
-        image: '/images/products/sajilo-shoe-cabinet/front.webp'
-      }
-    }
-  ]
-};
-
 function getPopoverPosition(spot) {
-  const topVal = parseFloat(spot.top) || 50;
-  const leftVal = parseFloat(spot.left) || 50;
+  const topVal = parseFloat(spot?.top) || 50;
+  const leftVal = parseFloat(spot?.left) || 50;
 
   const vertical = topVal > 52 ? 'above' : 'below';
   let horizontal = 'center';
@@ -82,18 +26,50 @@ function getPopoverPosition(spot) {
   return { vertical, horizontal };
 }
 
-export default function ShopTheLookHotspots({ look = defaultLook }) {
-  const effectiveLook =
-    look && Array.isArray(look.hotspots) && look.hotspots.length > 0
-      ? look
-      : defaultLook;
-  const [activePin, setActivePin] = useState(
-    effectiveLook.hotspots[0]?.id || null,
+export default function ShopTheLookHotspots({ look = null }) {
+  const [currentLook, setCurrentLook] = useState(
+    look && Array.isArray(look.hotspots) && look.hotspots.length > 0 ? look : null
   );
+  const [activePin, setActivePin] = useState(
+    currentLook?.hotspots?.[0]?.id || null
+  );
+
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
+
+  // Synchronize when server/parent prop changes
+  useEffect(() => {
+    if (look && Array.isArray(look.hotspots) && look.hotspots.length > 0) {
+      setCurrentLook(look);
+      setActivePin((prev) => prev || look.hotspots[0]?.id || null);
+    }
+  }, [look]);
+
+  // Fetch dynamic look from backend API if not supplied via props
+  useEffect(() => {
+    if (!currentLook || !Array.isArray(currentLook.hotspots) || currentLook.hotspots.length === 0) {
+      let isMounted = true;
+      fetch('/api/curated-look?room=living')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((json) => {
+          if (!isMounted) return;
+          const data = json?.data || json;
+          if (data && Array.isArray(data.hotspots) && data.hotspots.length > 0) {
+            setCurrentLook(data);
+            setActivePin((prev) => prev || data.hotspots[0]?.id || null);
+          }
+        })
+        .catch(() => {});
+
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [currentLook]);
+
+  const effectiveLook = currentLook;
 
   const handleAddToCart = (product, e) => {
     e.stopPropagation();
@@ -103,10 +79,28 @@ export default function ShopTheLookHotspots({ look = defaultLook }) {
       router.push(`/account?redirect=${encodeURIComponent(pathname || '/')}`);
       return;
     }
-    dispatch(addItem({ ...product, variantId: product.sku, qty: 1 }));
+    dispatch(addItem({ ...product, variantId: product.sku || product.id, qty: 1 }));
     dispatch(showToast({ message: `${product.name} added to your bag`, kind: 'success' }));
     dispatch(setCartDrawer(true));
   };
+
+  if (!effectiveLook || !Array.isArray(effectiveLook.hotspots) || effectiveLook.hotspots.length === 0) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.imageContainer}>
+          <Image
+            src={effectiveLook?.image || '/images/room-living.webp?v=20261023'}
+            alt={effectiveLook?.roomName || 'Curated Living Room'}
+            fill
+            className={styles.roomImage}
+            sizes="(max-width: 1024px) 100vw, 1200px"
+            priority
+          />
+          <div className={styles.imageOverlay} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -131,6 +125,7 @@ export default function ShopTheLookHotspots({ look = defaultLook }) {
         {/* Hotspot Pins */}
         <div className={styles.hotspotsLayer}>
           {effectiveLook.hotspots.map((spot) => {
+            if (!spot?.product) return null;
             const isActive = activePin === spot.id;
             const pos = getPopoverPosition(spot);
             const popoverClasses = [
@@ -178,7 +173,7 @@ export default function ShopTheLookHotspots({ look = defaultLook }) {
                     <div className={styles.popoverContent}>
                       <div className={styles.popoverThumb}>
                         <Image
-                          src={spot.product.image}
+                          src={spot.product.image || '/images/product-sofa.webp'}
                           alt={spot.product.name}
                           width={68}
                           height={68}
@@ -221,33 +216,36 @@ export default function ShopTheLookHotspots({ look = defaultLook }) {
 
       {/* Mobile product drawer / pills */}
       <div className={styles.mobileList}>
-        {effectiveLook.hotspots.map((spot) => (
-          <div
-            key={spot.id}
-            className={`${styles.mobileCard} ${activePin === spot.id ? styles.mobileCardActive : ''}`}
-            onClick={() => setActivePin(spot.id)}
-          >
-            <Image
-              src={spot.product.image}
-              alt=""
-              width={48}
-              height={48}
-              className={styles.mobileThumb}
-            />
-            <div className={styles.mobileInfo}>
-              <strong>{spot.product.name}</strong>
-              <span>{formatINR(spot.product.price)}</span>
-            </div>
-            <button
-              type="button"
-              className={styles.mobileAdd}
-              onClick={(e) => handleAddToCart(spot.product, e)}
-              aria-label={`Add ${spot.product.name} to bag`}
+        {effectiveLook.hotspots.map((spot) => {
+          if (!spot?.product) return null;
+          return (
+            <div
+              key={spot.id}
+              className={`${styles.mobileCard} ${activePin === spot.id ? styles.mobileCardActive : ''}`}
+              onClick={() => setActivePin(spot.id)}
             >
-              +
-            </button>
-          </div>
-        ))}
+              <Image
+                src={spot.product.image || '/images/product-sofa.webp'}
+                alt=""
+                width={48}
+                height={48}
+                className={styles.mobileThumb}
+              />
+              <div className={styles.mobileInfo}>
+                <strong>{spot.product.name}</strong>
+                <span>{formatINR(spot.product.price)}</span>
+              </div>
+              <button
+                type="button"
+                className={styles.mobileAdd}
+                onClick={(e) => handleAddToCart(spot.product, e)}
+                aria-label={`Add ${spot.product.name} to bag`}
+              >
+                +
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

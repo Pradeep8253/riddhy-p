@@ -2,7 +2,7 @@ import { connectDB } from "@/lib/db";
 import { Product } from "@/models/index";
 
 export default async function sitemap() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const base = "https://www.riddhyfurnitures.in";
   const staticRoutes = [
     { path: "", priority: 1.0, freq: "daily" },
     { path: "/furniture", priority: 0.9, freq: "daily" },

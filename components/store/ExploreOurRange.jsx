@@ -288,7 +288,7 @@ export default function ExploreOurRange({
       return result;
     }
 
-    // Specific category filter
+    // Specific category filter - strict category association without substring leakage
     const target = activeCategory.toLowerCase();
     const matching = deptProducts.filter((p) => {
       const cat = String(p.category || "").toLowerCase();
@@ -303,9 +303,7 @@ export default function ExploreOurRange({
         model === target ||
         cat.replace(/-/g, "") === target.replace(/-/g, "") ||
         cat.replace(/s$/, "") === target.replace(/s$/, "") ||
-        target.replace(/s$/, "") === cat.replace(/s$/, "") ||
-        cat.includes(target) ||
-        target.includes(cat)
+        target.replace(/s$/, "") === cat.replace(/s$/, "")
       );
     });
 
@@ -313,7 +311,7 @@ export default function ExploreOurRange({
       return matching.slice(0, PRODUCT_DISPLAY_LIMIT);
     }
 
-    return deptProducts.slice(0, PRODUCT_DISPLAY_LIMIT);
+    return [];
   }, [productsList, activeDept, activeCategory, categoryOrderMap]);
 
   const shopMoreHref = useMemo(() => {
