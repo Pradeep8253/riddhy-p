@@ -34,7 +34,7 @@ export default function BrandStoryTab({ formData, updateField, updateStoryMetric
             className={styles.input}
             value={story.originCity}
             onChange={(e) => updateField('story', 'originCity', e.target.value)}
-            placeholder="Kolkata / New Delhi"
+            placeholder="e.g. Prayagraj, Uttar Pradesh"
           />
         </div>
       </div>

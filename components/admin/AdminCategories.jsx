@@ -18,6 +18,9 @@ import {
   X,
   Loader2,
   RefreshCw,
+  ChevronUp,
+  ChevronDown,
+  ArrowUpDown,
 } from "lucide-react";
 import styles from "./AdminCategories.module.css";
 
@@ -66,6 +69,8 @@ export default function AdminCategories() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all"); // 'all' | 'furniture' | 'appliance'
   const [statusFilter, setStatusFilter] = useState("all"); // 'all' | 'active' | 'inactive'
+  const [sortOption, setSortOption] = useState("custom"); // 'custom' | 'newest' | 'oldest' | 'name'
+  const [reordering, setReordering] = useState(false);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -106,7 +111,7 @@ export default function AdminCategories() {
 
   // Filtered categories
   const filtered = useMemo(() => {
-    return categories.filter((cat) => {
+    let result = categories.filter((cat) => {
       if (typeFilter !== "all" && cat.type !== typeFilter) return false;
       if (statusFilter === "active" && !cat.active) return false;
       if (statusFilter === "inactive" && cat.active) return false;
@@ -119,7 +124,17 @@ export default function AdminCategories() {
       }
       return true;
     });
-  }, [categories, typeFilter, statusFilter, search]);
+
+    if (sortOption === "newest") {
+      result.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    } else if (sortOption === "oldest") {
+      result.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+    } else if (sortOption === "name") {
+      result.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    }
+
+    return result;
+  }, [categories, typeFilter, statusFilter, search, sortOption]);
 
   // Counts
   const metrics = useMemo(() => {
@@ -143,11 +158,57 @@ export default function AdminCategories() {
       .replace(/^-+|-+$/g, "");
   };
 
+  const handleMoveCategory = async (cat, direction) => {
+    const currentIndex = categories.findIndex(
+      (c) => (c.id || c._id) === (cat.id || cat._id)
+    );
+    if (currentIndex === -1) return;
+    const targetIndex = currentIndex + direction;
+    if (targetIndex < 0 || targetIndex >= categories.length) return;
+
+    const updated = [...categories];
+    const [moved] = updated.splice(currentIndex, 1);
+    updated.splice(targetIndex, 0, moved);
+
+    const withOrders = updated.map((c, idx) => ({
+      ...c,
+      sortOrder: idx + 1,
+    }));
+
+    setCategories(withOrders);
+    setReordering(true);
+
+    try {
+      const payload = {
+        items: withOrders.map((c) => ({
+          id: c.id || c._id,
+          sortOrder: c.sortOrder,
+        })),
+      };
+
+      const res = await fetch("/api/admin/categories/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error?.message || "Failed to update category order.");
+      }
+      setMessage({ text: "Category order updated successfully.", type: "success" });
+    } catch (err) {
+      setMessage({ text: err.message || "Failed to save category order.", type: "error" });
+      loadCategories();
+    } finally {
+      setReordering(false);
+    }
+  };
   const handleOpenCreate = () => {
     setEditingCategory(null);
     setFormData({
       ...initialForm,
-      sortOrder: categories.length + 1,
+      sortOrder: 0,
       image: typeFilter === "appliance" ? "/images/category-refrigerators.webp" : "/images/category-sofas.webp",
       type: typeFilter === "appliance" ? "appliance" : "furniture",
     });
@@ -290,21 +351,21 @@ export default function AdminCategories() {
     }
   };
 
-  const handleDelete = async (force = false) => {
+  const handleDelete = async () => {
     if (!deleteTarget) return;
     const id = deleteTarget.id || deleteTarget._id;
     setDeleting(true);
 
     try {
-      const res = await fetch(`/api/admin/categories/${id}${force ? "?force=true" : ""}`, {
+      const res = await fetch(`/api/admin/categories/${id}`, {
         method: "DELETE",
       });
       const json = await res.json();
       if (json.success) {
+        // Optimistically remove from list immediately
+        setCategories((prev) => prev.filter((c) => (c.id || c._id) !== id));
         setMessage({
-          text: json.data?.action === "deactivated"
-            ? `Category "${deleteTarget.name}" has ${deleteTarget.productCount} linked products and was set to Inactive.`
-            : `Category "${deleteTarget.name}" permanently deleted.`,
+          text: `Category "${deleteTarget.name}" deleted successfully.`,
           type: "success",
         });
         setDeleteTarget(null);
@@ -481,6 +542,29 @@ export default function AdminCategories() {
             </button>
           </div>
         </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span style={{ fontSize: "12px", color: "#64748b", fontWeight: 600, textTransform: "uppercase" }}>Sort:</span>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            style={{
+              padding: "7px 12px",
+              borderRadius: "8px",
+              border: "1px solid #cbd5e1",
+              fontSize: "13px",
+              background: "#ffffff",
+              color: "#0f172a",
+              cursor: "pointer",
+              fontWeight: 500,
+            }}
+          >
+            <option value="custom">Display Order (Reorderable)</option>
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="name">Name (A to Z)</option>
+          </select>
+        </div>
       </div>
 
       {/* Categories Grid */}
@@ -500,7 +584,7 @@ export default function AdminCategories() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {filtered.map((cat) => {
+          {filtered.map((cat, index) => {
             const isFurniture = cat.type === "furniture";
             const storeUrl =
               cat.type === "furniture"
@@ -564,6 +648,9 @@ export default function AdminCategories() {
                         <span className={styles.roomBadge}>{cat.room}</span>
                       )}
 
+                      <span className={styles.orderBadge} title="Display Order Rank">
+                        #{index + 1}
+                      </span>
                       <span className={styles.productCountBadge}>
                         {cat.productCount ?? 0} {cat.productCount === 1 ? "product" : "products"}
                       </span>
@@ -585,6 +672,26 @@ export default function AdminCategories() {
                   </label>
 
                   <div className={styles.actionBtns}>
+                    <button
+                      type="button"
+                      className={styles.iconBtn}
+                      disabled={index === 0 || reordering || sortOption !== "custom"}
+                      onClick={() => handleMoveCategory(cat, -1)}
+                      title="Move Up in Order"
+                      aria-label="Move Up"
+                    >
+                      <ChevronUp size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.iconBtn}
+                      disabled={index === filtered.length - 1 || reordering || sortOption !== "custom"}
+                      onClick={() => handleMoveCategory(cat, 1)}
+                      title="Move Down in Order"
+                      aria-label="Move Down"
+                    >
+                      <ChevronDown size={16} />
+                    </button>
                     <Link
                       href={storeUrl}
                       target="_blank"
@@ -911,11 +1018,11 @@ export default function AdminCategories() {
                   }}
                 >
                   <strong>Notice:</strong> This category has{" "}
-                  <strong>{deleteTarget.productCount}</strong> linked product(s). Deactivating is recommended so existing products remain catalogued.
+                  <strong>{deleteTarget.productCount}</strong> linked product(s). Deleting will remove it from category navigation while preserving product history in the database.
                 </div>
               ) : (
-                <p style={{ margin: 0, fontSize: "13px", color: "#617165" }}>
-                  This category has no linked products and can be safely removed.
+                <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#617165" }}>
+                  This category will be removed from your catalog and storefront.
                 </p>
               )}
             </div>
@@ -928,39 +1035,15 @@ export default function AdminCategories() {
               >
                 Cancel
               </button>
-
-              {deleteTarget.productCount > 0 ? (
-                <>
-                  <button
-                    type="button"
-                    className={styles.cancelBtn}
-                    style={{ background: "#fef8ee", color: "#8a5009", borderColor: "#f8dfaf" }}
-                    onClick={() => handleDelete(false)}
-                    disabled={deleting}
-                  >
-                    Deactivate Only
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.saveBtn}
-                    style={{ background: "#b42318" }}
-                    onClick={() => handleDelete(true)}
-                    disabled={deleting}
-                  >
-                    {deleting ? "Deleting…" : "Force Delete"}
-                  </button>
-                </>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.saveBtn}
-                  style={{ background: "#b42318" }}
-                  onClick={() => handleDelete(false)}
-                  disabled={deleting}
-                >
-                  {deleting ? "Deleting…" : "Delete Permanently"}
-                </button>
-              )}
+              <button
+                type="button"
+                className={styles.saveBtn}
+                style={{ background: "#b42318" }}
+                onClick={() => handleDelete()}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting…" : "Delete Category"}
+              </button>
             </div>
           </div>
         </div>

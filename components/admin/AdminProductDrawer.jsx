@@ -8,6 +8,8 @@ import {
   Check,
   ChevronUp,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Trash2,
   Star,
   Copy,
@@ -31,6 +33,13 @@ const TAG_OPTIONS = [
   { id: "limited", label: "Limited" },
 ];
 
+const slugify = (text) =>
+  String(text || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 const MODEL_TYPES = [
   "sofa",
   "bed",
@@ -49,6 +58,14 @@ const MODEL_TYPES = [
   "purifier",
 ];
 
+const STEPS = [
+  { id: "general", label: "General" },
+  { id: "media", label: "Media" },
+  { id: "pricing", label: "Pricing & Tax" },
+  { id: "inventory", label: "Inventory" },
+  { id: "tags", label: "Tags" },
+  { id: "warranty", label: "Warranty" },
+];
 export default function AdminProductDrawer({
   isOpen,
   onClose,
@@ -59,10 +76,8 @@ export default function AdminProductDrawer({
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
-  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
-  const [libraryAssets, setLibraryAssets] = useState([]);
-  const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [availableCategories, setAvailableCategories] = useState([]);
+  const [isSlugManual, setIsSlugManual] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -77,43 +92,6 @@ export default function AdminProductDrawer({
     }
   }, [isOpen]);
 
-  const openMediaLibrary = async () => {
-    setShowMediaLibrary(true);
-    setLoadingLibrary(true);
-    try {
-      const res = await fetch("/api/admin/media?limit=60");
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setLibraryAssets(data.data || []);
-      }
-    } catch (err) {
-      console.error("Failed to load media library:", err);
-    } finally {
-      setLoadingLibrary(false);
-    }
-  };
-
-  const pickLibraryAsset = (asset) => {
-    setForm((prev) => {
-      const newGallery = [
-        ...prev.gallery,
-        {
-          url: asset.url,
-          thumbUrl: asset.thumbUrl || asset.url,
-          blurDataURL: asset.blurDataURL,
-          alt: asset.alt || prev.name,
-          sortOrder: prev.gallery.length,
-          mediaId: asset._id,
-        },
-      ];
-      return {
-        ...prev,
-        gallery: newGallery,
-        image: prev.image || asset.url,
-      };
-    });
-    setShowMediaLibrary(false);
-  };
 
   const updateImageAlt = (index, alt) => {
     setForm((prev) => {
@@ -185,6 +163,7 @@ export default function AdminProductDrawer({
           ? `RF-${String(initialData.slug).toUpperCase().replace(/[^A-Z0-9]/g, "-").slice(0, 20)}`
           : `RF-${Date.now().toString(36).toUpperCase()}`);
 
+      setIsSlugManual(true);
       setForm({
         ...initialData,
         name: initialData.name || "",
@@ -220,6 +199,7 @@ export default function AdminProductDrawer({
         },
       });
     } else {
+      setIsSlugManual(false);
       setForm({
         name: "",
         slug: "",
@@ -295,18 +275,31 @@ export default function AdminProductDrawer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
+  const categories = useMemo(() => {
+    const filtered = availableCategories.filter((c) => c.type === form.type);
+    if (form.category && !filtered.some((c) => c.slug === form.category)) {
+      filtered.push({
+        slug: form.category,
+        name: form.category.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+        type: form.type,
+      });
+    }
+    return filtered;
+  }, [availableCategories, form.type, form.category]);
+
   if (!isOpen) return null;
 
   const updateField = (key, value) => {
     setForm((prev) => {
       const next = { ...prev, [key]: value };
 
-      // Auto slug from name if empty
-      if (key === "name" && !initialData && !prev.slug) {
-        next.slug = value
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/(^-|-$)/g, "");
+      // Auto slug from name
+      if (key === "name") {
+        if (!initialData && !isSlugManual) {
+          next.slug = slugify(value);
+        } else if (!prev.slug) {
+          next.slug = slugify(value);
+        }
       }
 
       // Sync image alt text with product name if alt text is generic
@@ -478,6 +471,35 @@ export default function AdminProductDrawer({
     setError("");
   };
 
+  const handleDelete = async () => {
+    if (!initialData?._id && !initialData?.id) return;
+    if (
+      !confirm(
+        "Are you sure you want to delete this product? It will be removed from your catalog and storefront.",
+      )
+    )
+      return;
+
+    setBusy(true);
+    try {
+      const pId = initialData._id || initialData.id;
+      const res = await fetch("/api/admin/products", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delete", id: pId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success)
+        throw new Error(data.error?.message || "Failed to delete product");
+      onSaved?.();
+      onClose();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const handleArchive = async () => {
     if (!initialData?._id && !initialData?.id) return;
     if (
@@ -507,6 +529,46 @@ export default function AdminProductDrawer({
     }
   };
 
+  const currentStepIndex = STEPS.findIndex((s) => s.id === tab);
+  const isFirstStep = currentStepIndex <= 0;
+  const isLastStep = currentStepIndex === STEPS.length - 1;
+
+  const handleNextStep = (e) => {
+    e?.preventDefault?.();
+    setError("");
+
+    if (tab === "general") {
+      if (!String(form.name || "").trim()) {
+        setError("Product name is required before proceeding.");
+        return;
+      }
+      if (!String(form.slug || "").trim()) {
+        setError("Product slug is required before proceeding.");
+        return;
+      }
+    } else if (tab === "pricing") {
+      if (!form.price || Number(form.price) <= 0) {
+        setError("A valid selling price is required before proceeding.");
+        return;
+      }
+      if (!form.mrp || Number(form.mrp) < Number(form.price)) {
+        setError("MRP must be greater than or equal to selling price.");
+        return;
+      }
+    }
+
+    if (currentStepIndex < STEPS.length - 1) {
+      setTab(STEPS[currentStepIndex + 1].id);
+    }
+  };
+
+  const handlePrevStep = (e) => {
+    e?.preventDefault?.();
+    setError("");
+    if (currentStepIndex > 0) {
+      setTab(STEPS[currentStepIndex - 1].id);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -595,17 +657,6 @@ export default function AdminProductDrawer({
     }
   };
 
-  const categories = useMemo(() => {
-    const filtered = availableCategories.filter((c) => c.type === form.type);
-    if (form.category && !filtered.some((c) => c.slug === form.category)) {
-      filtered.push({
-        slug: form.category,
-        name: form.category.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
-        type: form.type,
-      });
-    }
-    return filtered;
-  }, [availableCategories, form.type, form.category]);
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -713,44 +764,50 @@ export default function AdminProductDrawer({
                 />
               </div>
 
-              <div className={styles.twoCol}>
-                <div className={styles.fieldGroup}>
-                  <label>Slug *</label>
-                  <input
-                    type="text"
-                    value={form.slug || ""}
-                    onChange={(e) => updateField("slug", e.target.value)}
-                    placeholder="mira-3-seater-sofa"
-                    required
-                  />
-                  <span className={styles.hint}>
-                    Used in URL: /product/[slug]
-                  </span>
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label>SKU (Stock Keeping Unit) *</label>
-                  <input
-                    type="text"
-                    value={form.sku || ""}
-                    onChange={(e) =>
-                      updateField("sku", e.target.value.toUpperCase())
-                    }
-                    placeholder="SOFA-MIRA-01"
-                    readOnly={Boolean(initialData)}
-                    style={
-                      initialData
-                        ? { background: "#f8fafc", cursor: "not-allowed" }
-                        : undefined
-                    }
-                    required
-                  />
-                  {initialData && (
-                    <span className={styles.hint}>
-                      Primary SKU is permanent. Use variants to add new SKUs.
-                    </span>
+              <div className={styles.fieldGroup}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <label style={{ margin: 0 }}>Slug *</label>
+                  {isSlugManual && !initialData && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSlugManual(false);
+                        updateField("slug", slugify(form.name));
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#1f5f2e",
+                        fontSize: "0.75rem",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        padding: 0,
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Auto-generate
+                    </button>
                   )}
                 </div>
+                <input
+                  type="text"
+                  value={form.slug || ""}
+                  onChange={(e) => {
+                    const val = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+                    if (!val) {
+                      setIsSlugManual(false);
+                      updateField("slug", slugify(form.name));
+                    } else {
+                      setIsSlugManual(true);
+                      updateField("slug", val);
+                    }
+                  }}
+                  placeholder="mira-3-seater-sofa"
+                  required
+                />
+                <span className={styles.hint}>
+                  Used in URL: /product/[slug] {!isSlugManual && !initialData && form.slug ? "(auto-generated)" : ""}
+                </span>
               </div>
 
               <div className={styles.threeCol}>
@@ -865,21 +922,6 @@ export default function AdminProductDrawer({
                 />
               </label>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  margin: "4px 0 12px",
-                }}
-              >
-                <button
-                  type="button"
-                  className={styles.btnSecondary}
-                  onClick={openMediaLibrary}
-                >
-                  <ImageIcon size={15} /> Select from Media Library
-                </button>
-              </div>
 
               <div>
                 <label
@@ -1132,7 +1174,7 @@ export default function AdminProductDrawer({
                 <label>Fulfilment Warehouse</label>
                 <input
                   type="text"
-                  value="DELHI-01 (Primary Central Hub)"
+                  value="PRAYAGRAJ-01 (Prayagraj Central Store & Hub)"
                   disabled
                   style={{ background: "#f8fafc", color: "#64748b" }}
                 />
@@ -1257,6 +1299,16 @@ export default function AdminProductDrawer({
                   <button
                     type="button"
                     className={styles.btnDanger}
+                    style={{ background: "#b42318", color: "#fff", borderColor: "#b42318" }}
+                    onClick={handleDelete}
+                    disabled={busy}
+                    title="Delete this product"
+                  >
+                    <Trash2 size={15} /> Delete
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.btnSecondary}
                     onClick={handleArchive}
                     disabled={busy}
                     title="Archive this product"
@@ -1285,162 +1337,53 @@ export default function AdminProductDrawer({
               >
                 Cancel
               </button>
-              <button
-                type="submit"
-                className={styles.btnPrimary}
-                disabled={busy}
-              >
-                {busy && <Loader2 size={16} className="animate-spin" />}
-                {initialData ? "Save Changes" : "Create Product"}
-              </button>
+
+              {!isFirstStep && (
+                <button
+                  type="button"
+                  className={styles.btnSecondary}
+                  onClick={handlePrevStep}
+                  disabled={busy}
+                >
+                  <ChevronLeft size={16} /> Previous
+                </button>
+              )}
+
+              {initialData && !isLastStep && (
+                <button
+                  type="submit"
+                  className={styles.btnSecondary}
+                  disabled={busy}
+                  title="Save current progress"
+                >
+                  {busy && <Loader2 size={15} className="animate-spin" />}
+                  Save Changes
+                </button>
+              )}
+
+              {!isLastStep ? (
+                <button
+                  type="button"
+                  className={styles.btnPrimary}
+                  onClick={handleNextStep}
+                  disabled={busy}
+                >
+                  Next <ChevronRight size={16} />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className={styles.btnPrimary}
+                  disabled={busy}
+                >
+                  {busy && <Loader2 size={16} className="animate-spin" />}
+                  <Check size={16} /> {initialData ? "Save Changes" : "Create Product"}
+                </button>
+              )}
             </div>
           </div>
         </form>
 
-        {/* Media Asset Library Modal */}
-        {showMediaLibrary && (
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(15, 23, 42, 0.65)",
-              backdropFilter: "blur(4px)",
-              zIndex: 200,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 20,
-            }}
-            onClick={() => setShowMediaLibrary(false)}
-          >
-            <div
-              style={{
-                background: "#ffffff",
-                borderRadius: 12,
-                width: "100%",
-                maxWidth: 720,
-                maxHeight: "80vh",
-                display: "flex",
-                flexDirection: "column",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
-                overflow: "hidden",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div
-                style={{
-                  padding: "16px 20px",
-                  borderBottom: "1px solid #e2e8f0",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  background: "#f8fafc",
-                }}
-              >
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: "1.05rem",
-                    fontWeight: 700,
-                    color: "#0f172a",
-                  }}
-                >
-                  Media Asset Library
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setShowMediaLibrary(false)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "#64748b",
-                  }}
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div style={{ flex: 1, overflowY: "auto", padding: 20 }}>
-                {loadingLibrary ? (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      padding: 40,
-                      color: "#64748b",
-                    }}
-                  >
-                    <Loader2
-                      size={24}
-                      className="animate-spin"
-                      style={{ margin: "0 auto 8px" }}
-                    />
-                    Loading uploaded assets...
-                  </div>
-                ) : libraryAssets.length === 0 ? (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      padding: 40,
-                      color: "#94a3b8",
-                    }}
-                  >
-                    No media assets found in library. Upload images to populate
-                    the library.
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fill, minmax(130px, 1fr))",
-                      gap: 12,
-                    }}
-                  >
-                    {libraryAssets.map((asset) => (
-                      <div
-                        key={asset._id}
-                        onClick={() => pickLibraryAsset(asset)}
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          overflow: "hidden",
-                          cursor: "pointer",
-                          background: "#f8fafc",
-                          transition: "all 0.15s ease",
-                        }}
-                        title={asset.alt || "Click to select into gallery"}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={asset.thumbUrl || asset.url}
-                          alt={asset.alt || "Asset"}
-                          style={{
-                            width: "100%",
-                            height: 110,
-                            objectFit: "cover",
-                          }}
-                        />
-                        <div
-                          style={{
-                            padding: "6px 8px",
-                            fontSize: "0.72rem",
-                            color: "#475569",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {asset.alt || asset.mime || "Image"}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

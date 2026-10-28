@@ -124,6 +124,9 @@ export default function ListingClient({
       list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
     } else if (sort === 'stock') {
       list.sort((a, b) => Number(b.stock ?? 0) - Number(a.stock ?? 0));
+    } else {
+      // Default to newest first
+      list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
     }
 
     return list;

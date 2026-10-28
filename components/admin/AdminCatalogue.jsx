@@ -3,6 +3,7 @@
 import { formatPriceSafe } from "@/lib/pricing";
 import {
   AlertCircle,
+  AlertTriangle,
   Archive,
   Bookmark,
   Check,
@@ -13,6 +14,7 @@ import {
   RotateCcw,
   Search,
   SlidersHorizontal,
+  Trash2,
   Upload,
   X,
 } from "lucide-react";
@@ -47,8 +49,9 @@ const DEFAULT_COLUMNS = {
 };
 
 const SORT_OPTIONS = [
+  { value: "createdAt:desc", label: "Newest First (Default)" },
+  { value: "createdAt:asc", label: "Oldest First" },
   { value: "updatedAt:desc", label: "Recently Updated" },
-  { value: "createdAt:desc", label: "Newest First" },
   { value: "name:asc", label: "Name (A to Z)" },
   { value: "name:desc", label: "Name (Z to A)" },
   { value: "price:asc", label: "Price: Low to High" },
@@ -70,7 +73,7 @@ export default function AdminCatalogue() {
     100,
     Math.max(10, Number(searchParams.get("limit") || 25)),
   );
-  const sortParam = searchParams.get("sort") || "updatedAt:desc";
+  const sortParam = searchParams.get("sort") || "createdAt:desc";
   const statusParam = searchParams.get("status") || "all";
   const typeParam = searchParams.get("type") || "all";
   const categoryParam = searchParams.get("category") || "all";
@@ -103,6 +106,9 @@ export default function AdminCatalogue() {
 
   // Inline edit state: { id, field, value }
   const [inlineEdit, setInlineEdit] = useState(null);
+  const [togglingStatusId, setTogglingStatusId] = useState(null);
+  const [deleteTargetProduct, setDeleteTargetProduct] = useState(null);
+  const [deletingProduct, setDeletingProduct] = useState(false);
 
   // Drawer state
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -290,6 +296,105 @@ export default function AdminCatalogue() {
     }
   };
 
+  // Direct active/pause status toggle from table
+  const handleToggleProductStatus = async (product) => {
+    const productId = product.id || product._id;
+    const oldStatus = product.status;
+    const newStatus = oldStatus === "active" ? "draft" : "active";
+
+    // Optimistically update product in local table
+    setItems((prev) =>
+      prev.map((item) =>
+        (item.id || item._id) === productId ? { ...item, status: newStatus } : item,
+      ),
+    );
+
+    // Optimistically update status facet counters
+    setFacets((prev) => {
+      const copy = { ...prev, status: { ...prev.status } };
+      if (oldStatus === "active") {
+        copy.status.active = Math.max(0, (copy.status.active || 0) - 1);
+        copy.status.draft = (copy.status.draft || 0) + 1;
+      } else {
+        copy.status.draft = Math.max(0, (copy.status.draft || 0) - 1);
+        copy.status.active = (copy.status.active || 0) + 1;
+      }
+      return copy;
+    });
+
+    setTogglingStatusId(productId);
+
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "bulkStatus",
+          ids: [productId],
+          status: newStatus,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error?.message || "Failed to update status.");
+      }
+      showToast(
+        `"${product.name || product.slug}" is now ${newStatus === "active" ? "Active (Visible)" : "Paused (Hidden)"}.`,
+      );
+    } catch (err) {
+      // Revert on failure
+      setItems((prev) =>
+        prev.map((item) =>
+          (item.id || item._id) === productId ? { ...item, status: oldStatus } : item,
+        ),
+      );
+      showToast(`Error updating status: ${err.message}`);
+    } finally {
+      setTogglingStatusId(null);
+    }
+  };
+
+  // Single product soft delete with instant optimistic UI removal
+  const handleDeleteProduct = async (product) => {
+    const pId = product.id || product._id;
+    setDeletingProduct(true);
+
+    // Optimistically remove from table immediately
+    setItems((prev) => prev.filter((item) => (item.id || item._id) !== pId));
+    setTotal((prev) => Math.max(0, prev - 1));
+    setDeleteTargetProduct(null);
+    setFacets((prev) => {
+      const copy = { ...prev, status: { ...prev.status } };
+      if (product.status === "active") {
+        copy.status.active = Math.max(0, (copy.status.active || 0) - 1);
+      } else if (product.status === "draft") {
+        copy.status.draft = Math.max(0, (copy.status.draft || 0) - 1);
+      } else if (product.status === "archived") {
+        copy.status.archived = Math.max(0, (copy.status.archived || 0) - 1);
+      }
+      return copy;
+    });
+
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delete", id: pId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error?.message || "Failed to delete product.");
+      }
+      showToast(`Product "${product.name || product.slug}" deleted successfully.`);
+      fetchProducts();
+    } catch (err) {
+      showToast(`Error deleting product: ${err.message}`);
+      fetchProducts();
+    } finally {
+      setDeletingProduct(false);
+    }
+  };
+
   // Bulk actions executor
   const handleBulkAction = async (actionType, value) => {
     if (!selectedIds.length) return;
@@ -307,6 +412,18 @@ export default function AdminCatalogue() {
         if (!confirm(`Archive ${selectedIds.length} selected products?`))
           return;
         payload = { action: "bulkArchive", ids: selectedIds };
+      } else if (actionType === "delete") {
+        if (
+          !confirm(
+            `Are you sure you want to delete ${selectedIds.length} selected product(s)? They will be removed from your catalog and storefront.`,
+          )
+        )
+          return;
+        // Optimistically remove from table immediately
+        setItems((prev) => prev.filter((item) => !selectedIds.includes(item.id || item._id)));
+        setTotal((prev) => Math.max(0, prev - selectedIds.length));
+        payload = { action: "bulkDelete", ids: selectedIds };
+        setSelectedIds([]);
       }
 
       const res = await fetch("/api/admin/products", {
@@ -1170,17 +1287,44 @@ export default function AdminCatalogue() {
                       {/* Status */}
                       {visibleColumns.status && (
                         <td>
-                          <span
-                            className={`${styles.statusBadge} ${
-                              product.status === "active"
-                                ? styles.statusActive
-                                : product.status === "draft"
-                                  ? styles.statusDraft
-                                  : styles.statusArchived
-                            }`}
+                          <div
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 8,
+                            }}
                           >
-                            {product.status}
-                          </span>
+                            <label
+                              className={styles.switch}
+                              title={`Click to ${product.status === "active" ? "Pause" : "Activate"} product`}
+                              style={{ margin: 0 }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={product.status === "active"}
+                                disabled={togglingStatusId === (product.id || product._id)}
+                                onChange={() => handleToggleProductStatus(product)}
+                              />
+                              <span className={styles.slider} />
+                            </label>
+                            <span
+                              onClick={() => handleToggleProductStatus(product)}
+                              title={`Click to ${product.status === "active" ? "Pause" : "Activate"} product`}
+                              className={`${styles.statusBadge} ${
+                                product.status === "active"
+                                  ? styles.statusActive
+                                  : product.status === "draft"
+                                    ? styles.statusDraft
+                                    : styles.statusArchived
+                              }`}
+                            >
+                              {product.status === "active"
+                                ? "Active"
+                                : product.status === "draft"
+                                  ? "Paused"
+                                  : product.status}
+                            </span>
+                          </div>
                         </td>
                       )}
 
@@ -1204,17 +1348,39 @@ export default function AdminCatalogue() {
                       {/* Actions */}
                       {visibleColumns.actions && (
                         <td style={{ textAlign: "right" }}>
-                          <button
-                            type="button"
-                            className={styles.btnSecondary}
-                            style={{ padding: "6px 10px" }}
-                            onClick={() => {
-                              setEditingProduct(product);
-                              setDrawerOpen(true);
+                          <div
+                            style={{
+                              display: "inline-flex",
+                              gap: "6px",
+                              justifyContent: "flex-end",
                             }}
                           >
-                            <Edit2 size={13} /> Edit
-                          </button>
+                            <button
+                              type="button"
+                              className={styles.btnSecondary}
+                              style={{ padding: "6px 10px" }}
+                              onClick={() => {
+                                setEditingProduct(product);
+                                setDrawerOpen(true);
+                              }}
+                            >
+                              <Edit2 size={13} /> Edit
+                            </button>
+                            <button
+                              type="button"
+                              className={styles.btnSecondary}
+                              style={{
+                                padding: "6px 10px",
+                                color: "#b42318",
+                                borderColor: "#fecdd3",
+                                background: "#fff1f2",
+                              }}
+                              title="Delete product"
+                              onClick={() => setDeleteTargetProduct(product)}
+                            >
+                              <Trash2 size={13} /> Delete
+                            </button>
+                          </div>
                         </td>
                       )}
                     </tr>
@@ -1306,6 +1472,16 @@ export default function AdminCatalogue() {
             <option value="deal">Deal</option>
           </select>
 
+          {/* Delete */}
+          <button
+            type="button"
+            className={`${styles.bulkBtn} ${styles.danger}`}
+            style={{ background: "#b42318", color: "#fff", borderColor: "#b42318" }}
+            onClick={() => handleBulkAction("delete")}
+          >
+            <Trash2 size={14} /> Delete
+          </button>
+
           {/* Archive */}
           <button
             type="button"
@@ -1323,6 +1499,106 @@ export default function AdminCatalogue() {
           >
             <X size={14} /> Clear Selection
           </button>
+        </div>
+      )}
+
+      {/* Delete Product Confirmation Dialog */}
+      {deleteTargetProduct && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(15, 23, 42, 0.45)",
+            backdropFilter: "blur(2px)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+          }}
+          onClick={() => setDeleteTargetProduct(null)}
+        >
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: "14px",
+              boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)",
+              maxWidth: "460px",
+              width: "100%",
+              overflow: "hidden",
+              border: "1px solid #e2e8f0",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "16px 20px",
+                borderBottom: "1px solid #f1f5f9",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <AlertTriangle size={20} color="#b42318" />
+                <h2 style={{ fontSize: "17px", fontWeight: 700, margin: 0, color: "#0f172a" }}>
+                  Delete Product
+                </h2>
+              </div>
+              <button
+                type="button"
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#64748b",
+                  padding: "4px",
+                  borderRadius: "6px",
+                }}
+                onClick={() => setDeleteTargetProduct(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ padding: "20px" }}>
+              <p style={{ margin: 0, fontSize: "14px", color: "#334155", lineHeight: "1.5" }}>
+                Are you sure you want to delete <strong>{deleteTargetProduct.name}</strong>?
+              </p>
+              <p style={{ margin: "8px 0 0", fontSize: "13px", color: "#64748b", lineHeight: "1.4" }}>
+                This product will be removed from your catalogue listings and storefront.
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+                padding: "14px 20px",
+                background: "#f8fafc",
+                borderTop: "1px solid #f1f5f9",
+              }}
+            >
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => setDeleteTargetProduct(null)}
+                disabled={deletingProduct}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.bulkBtn}
+                style={{ background: "#b42318", color: "#fff", borderColor: "#b42318" }}
+                disabled={deletingProduct}
+                onClick={() => handleDeleteProduct(deleteTargetProduct)}
+              >
+                {deletingProduct ? "Deleting…" : "Delete Product"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

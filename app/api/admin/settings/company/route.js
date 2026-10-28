@@ -50,7 +50,7 @@ const companySettingsSchema = z
     invoicePrefix: z.string().trim().min(1).max(10).default("RF"),
     creditNotePrefix: z.string().trim().min(1).max(10).default("CN"),
     invoiceTiming: z.enum(["paid", "dispatch"]).default("paid"),
-    defaultWarehouseCode: z.string().trim().min(2).max(30).default("DELHI-01"),
+    defaultWarehouseCode: z.string().trim().min(2).max(30).default("PRAYAGRAJ-01"),
     currency: z.string().trim().length(3).default("INR"),
     logoUrl: z.string().trim().url().or(z.literal("")).optional().default(""),
     signatureUrl: z
@@ -117,19 +117,9 @@ export async function GET() {
         ? warehouseDocs
         : [
             {
-              code: "DELHI-01",
-              name: "Okhla Fulfillment Hub (Delhi)",
-              city: "Delhi",
-            },
-            {
-              code: "MUMBAI-01",
-              name: "Bhiwandi Central Warehouse (Mumbai)",
-              city: "Mumbai",
-            },
-            {
-              code: "BLR-01",
-              name: "Peenya Distribution Node (Bengaluru)",
-              city: "Bengaluru",
+              code: "PRAYAGRAJ-01",
+              name: "Prayagraj Central Store & Hub",
+              city: "Prayagraj",
             },
           ];
 

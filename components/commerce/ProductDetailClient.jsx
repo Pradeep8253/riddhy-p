@@ -181,12 +181,21 @@ export default function ProductDetailClient({ product, related = [] }) {
 
   const media = useMemo(() => {
     if (product.gallery && product.gallery.length > 0) {
-      return product.gallery.map((g, idx) => ({
+      // Show ONLY 2 images: Front and Back as requested by client
+      const front = product.gallery.find((g) => g.view === 'front') || product.gallery[0];
+      const back = product.gallery.find((g) => g.view === 'back') || product.gallery.find((g) => g !== front && g.url !== front.url);
+
+      const items = [front];
+      if (back && back.url !== front.url) {
+        items.push(back);
+      }
+
+      return items.map((g, idx) => ({
         src: g.large || g.medium || g.url,
         thumb: g.thumbUrl || g.thumb || g.url,
         blurDataURL: g.blurDataURL || blurDataURL,
-        alt: g.alt || `${product.name} view ${idx + 1}`,
-        view: g.view || (idx === 0 ? 'front' : idx === 1 ? 'angle' : idx === 2 ? 'detail' : idx === 3 ? 'lifestyle' : 'interior'),
+        alt: g.alt || `${product.name} — ${idx === 0 ? 'Front View' : 'Back View'}`,
+        view: idx === 0 ? 'front' : 'back',
         viewType: g.viewType || 'verified-product',
       }));
     }

@@ -7,7 +7,7 @@ import { ok, fail, jsonBody } from '@/lib/http';
 
 const schema = z.object({
   sku: z.string().min(3),
-  warehouseCode: z.string().min(2).default('DELHI-01'),
+  warehouseCode: z.string().min(2).default('PRAYAGRAJ-01'),
   available: z.number().int().min(0).max(100000).optional(),
   action: z.enum(['set', 'in', 'out']).default('set'),
   quantity: z.number().int().min(1).max(10000).optional(),
@@ -51,7 +51,7 @@ export async function GET() {
           sku: variant?.sku || 'Unknown SKU',
           product: product?.name || 'Unknown product',
           slug: product?.slug,
-          warehouseCode: warehouse?.code || 'DELHI-01',
+          warehouseCode: warehouse?.code || 'PRAYAGRAJ-01',
           available: row.available,
           reserved: row.reserved,
           lowStockAt: row.lowStockAt,

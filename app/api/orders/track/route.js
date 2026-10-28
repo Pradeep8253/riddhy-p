@@ -75,8 +75,8 @@ export async function GET(request) {
         qty: it.qty,
         sku: it.sku
       })),
-      shippingCity: order.shippingAddress?.city || 'Delhi NCR',
-      shippingState: order.shippingAddress?.state || 'Delhi',
+      shippingCity: order.shippingAddress?.city || 'Prayagraj',
+      shippingState: order.shippingAddress?.state || 'Uttar Pradesh',
       carrier: order.tracking?.carrier || 'Delhivery Express Logistics',
       trackingNumber: order.tracking?.trackingNumber || `TRK${order.orderNumber?.replace(/[^0-9]/g, '') || '987654'}`,
       timeline: order.timeline && order.timeline.length > 0 ? order.timeline : defaultTimeline,

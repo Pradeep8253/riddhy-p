@@ -75,7 +75,7 @@ export default function ServiceabilityChecker() {
         )}
       </div>
       <span className={styles.deco} aria-hidden="true">
-        DELHI · NCR · MORE
+        PRAYAGRAJ · LOCAL STORE
       </span>
     </div>
   );

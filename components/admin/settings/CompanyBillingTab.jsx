@@ -136,7 +136,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
             className={styles.input}
             value={comp.jurisdictionCity}
             onChange={(e) => updateField('company', 'jurisdictionCity', e.target.value)}
-            placeholder="e.g. New Delhi"
+            placeholder="e.g. Prayagraj"
           />
         </div>
       </div>
@@ -321,7 +321,7 @@ export default function CompanyBillingTab({ formData, updateField, fieldErrors =
                 </option>
               ))
             ) : (
-              <option value="DELHI-01">DELHI-01 — Central North Depot (Delhi)</option>
+              <option value="PRAYAGRAJ-01">PRAYAGRAJ-01 — Prayagraj Central Store & Depot (Prayagraj)</option>
             )}
           </select>
         </div>

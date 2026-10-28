@@ -25,10 +25,13 @@ export async function GET(request) {
 
   try {
     await connectDB();
-    const categories = await Category.find().sort({ sortOrder: 1, name: 1 }).lean();
+    const categories = await Category.find({ isDeleted: { $ne: true } })
+      .sort({ sortOrder: 1, createdAt: -1 })
+      .lean();
 
-    // Aggregate product counts per category slug
+    // Aggregate product counts per category slug for non-deleted products
     const productCounts = await Product.aggregate([
+      { $match: { isDeleted: { $ne: true } } },
       { $group: { _id: '$category', count: { $sum: 1 } } }
     ]);
     const countsMap = new Map(productCounts.map((row) => [row._id, row.count]));

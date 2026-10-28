@@ -115,7 +115,7 @@ export default function AdminInventory() {
     try {
       let payload = {
         sku: activeItem.sku,
-        warehouseCode: activeItem.warehouseCode || 'DELHI-01',
+        warehouseCode: activeItem.warehouseCode || 'PRAYAGRAJ-01',
         reason: modalReason.trim() || 'Inventory update'
       };
 

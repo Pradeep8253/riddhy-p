@@ -115,27 +115,12 @@ export async function DELETE(request, { params }) {
       return fail('Category not found', 404);
     }
 
-    // Check if products exist in this category
-    const productCount = await Product.countDocuments({ category: category.slug });
-    const url = new URL(request.url);
-    const force = url.searchParams.get('force') === 'true';
-
-    if (productCount > 0 && !force) {
-      // Instead of hard delete, soft deactivate
-      category.active = false;
-      await category.save();
-
-      try {
-        revalidateTag('catalogue', 'max');
-      } catch {}
-
-      return ok({
-        message: `Category deactivated because it contains ${productCount} products. Pass ?force=true to permanently delete.`,
-        deactivated: true
-      });
-    }
-
-    await Category.findByIdAndDelete(id);
+    // Soft delete: NEVER permanently delete from database!
+    await Category.findByIdAndUpdate(
+      id,
+      { $set: { isDeleted: true, deletedAt: new Date(), active: false } },
+      { strict: false, new: true }
+    );
 
     // Audit log
     await AuditLog.create({
@@ -143,7 +128,7 @@ export async function DELETE(request, { params }) {
       action: 'category.delete',
       resource: 'category',
       resourceId: id,
-      metadata: { slug: category.slug, name: category.name, productCount }
+      metadata: { slug: category.slug, name: category.name, softDelete: true }
     }).catch(() => {});
 
     try {

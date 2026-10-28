@@ -163,7 +163,7 @@ export async function GET(request) {
     // Aggregate B2CS by POS and Rate
     const b2csAgg = new Map();
     invoices.filter((inv) => !inv.buyer?.isB2B && (!inv.buyer?.gstin || inv.buyer.gstin.length < 15)).forEach((inv) => {
-      const pos = `${inv.buyer?.stateCode || '07'}-${inv.placeOfSupply || 'Delhi'}`;
+      const pos = `${inv.buyer?.stateCode || '09'}-${inv.placeOfSupply || 'Uttar Pradesh'}`;
       (inv.items || []).forEach((item) => {
         const r = item.gstRate || 18;
         const key = `${pos}_${r}`;

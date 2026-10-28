@@ -776,7 +776,7 @@ export default function AdminInvoices() {
                         )}
                       </td>
                       <td>
-                        {inv.placeOfSupply || "Delhi"}
+                        {inv.placeOfSupply || "Uttar Pradesh"}
                         <div style={{ fontSize: "10px", color: "#727e74" }}>
                           Code: {inv.placeOfSupplyStateCode || "07"}
                         </div>

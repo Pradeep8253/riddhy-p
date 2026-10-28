@@ -60,10 +60,12 @@ export async function DELETE(request, { params }) {
     const product = await Product.findById(id);
     if (!product) return fail('Product not found.', 404);
 
-    // Soft delete: archive
-    product.status = 'archived';
-    product.archivedAt = new Date();
-    await product.save();
+    // Soft delete: never hard delete from database!
+    await Product.findByIdAndUpdate(
+      id,
+      { $set: { isDeleted: true, deletedAt: new Date(), status: 'archived', archivedAt: new Date() } },
+      { strict: false, new: true }
+    );
 
     await Variant.updateMany({ productId: product._id }, { $set: { active: false } });
 
@@ -77,7 +79,7 @@ export async function DELETE(request, { params }) {
     });
 
     revalidateTag('catalogue', 'max');
-    return ok({ message: 'Product archived successfully.', id: String(product._id) });
+    return ok({ message: 'Product deleted successfully.', id: String(product._id), deleted: true });
   } catch (error) {
     return fail(error.message, 500);
   }

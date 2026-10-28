@@ -133,6 +133,14 @@ const bulkActionSchema = z.discriminatedUnion("action", [
     action: z.literal("archive"),
     id: z.string().min(1),
   }),
+  z.object({
+    action: z.literal("bulkDelete"),
+    ids: z.array(z.string().min(1)).min(1),
+  }),
+  z.object({
+    action: z.literal("delete"),
+    id: z.string().min(1),
+  }),
 ]);
 
 export async function GET(request) {
@@ -152,7 +160,7 @@ export async function GET(request) {
       Math.max(10, Number(searchParams.get("limit") || 25)),
     );
     const q = (searchParams.get("q") || "").trim();
-    const sortParam = searchParams.get("sort") || "updatedAt:desc";
+    const sortParam = searchParams.get("sort") || "createdAt:desc";
     const [sortFieldRaw, sortDirRaw] = sortParam.split(":");
     const sortDir = sortDirRaw === "asc" ? 1 : -1;
 
@@ -172,8 +180,8 @@ export async function GET(request) {
     const createdFrom = searchParams.get("createdFrom");
     const createdTo = searchParams.get("createdTo");
 
-    // Build base MongoDB filter for Product
-    const filter = {};
+    // Build base MongoDB filter for Product (exclude soft-deleted)
+    const filter = { isDeleted: { $ne: true } };
 
     if (status && status !== "all") {
       filter.status = status;
@@ -325,8 +333,9 @@ export async function GET(request) {
     // Execute query aggregation and facets aggregation concurrently
     const [mainResult, facetStats] = await Promise.all([
       Product.aggregate(pipeline),
-      // Facets across the entire active catalogue
+      // Facets across the entire active catalogue (exclude soft-deleted)
       Product.aggregate([
+        { $match: { isDeleted: { $ne: true } } },
         {
           $lookup: {
             from: "variants",
@@ -548,7 +557,7 @@ export async function POST(request) {
       }
 
       const company = await getCompanySettings();
-      const warehouseCode = company.defaultWarehouseCode || "DELHI-01";
+      const warehouseCode = company.defaultWarehouseCode || "PRAYAGRAJ-01";
       const warehouse = await Warehouse.findOneAndUpdate(
         { code: warehouseCode },
         {
@@ -689,7 +698,7 @@ export async function PATCH(request) {
 
       if (stock !== undefined) {
         const company = await getCompanySettings();
-        const warehouseCode = company.defaultWarehouseCode || "DELHI-01";
+        const warehouseCode = company.defaultWarehouseCode || "PRAYAGRAJ-01";
         const warehouse = await Warehouse.findOne({ code: warehouseCode });
         if (warehouse) {
           const oldInv = await Inventory.findOne({
@@ -740,12 +749,10 @@ export async function PATCH(request) {
     const update = { status: data.status };
     if (data.status === "archived") update.archivedAt = new Date();
     await Product.updateMany({ _id: { $in: data.ids } }, { $set: update });
-    if (data.status === "active" || data.status === "archived") {
-      await Variant.updateMany(
-        { productId: { $in: data.ids } },
-        { $set: { active: data.status === "active" } },
-      );
-    }
+    await Variant.updateMany(
+      { productId: { $in: data.ids } },
+      { $set: { active: data.status === "active" } },
+    );
   } else if (data.action === "bulkAddTag") {
     await Product.updateMany(
       { _id: { $in: data.ids } },
@@ -780,6 +787,43 @@ export async function PATCH(request) {
       { productId: data.id },
       { $set: { active: false } },
     );
+  } else if (data.action === "bulkDelete") {
+    // Soft delete: never remove from database
+    await Product.updateMany(
+      { _id: { $in: data.ids } },
+      { $set: { isDeleted: true, deletedAt: new Date(), status: "archived" } },
+      { strict: false }
+    );
+    await Variant.updateMany(
+      { productId: { $in: data.ids } },
+      { $set: { active: false } },
+    );
+    await AuditLog.create({
+      actorId: actor.sub,
+      actorEmail: actor.email,
+      action: "product.bulkDelete",
+      entity: "Product",
+      after: { ids: data.ids, isDeleted: true },
+    }).catch(() => {});
+  } else if (data.action === "delete") {
+    // Soft delete: never remove from database
+    await Product.findByIdAndUpdate(
+      data.id,
+      { $set: { isDeleted: true, deletedAt: new Date(), status: "archived" } },
+      { strict: false, new: true }
+    );
+    await Variant.updateMany(
+      { productId: data.id },
+      { $set: { active: false } },
+    );
+    await AuditLog.create({
+      actorId: actor.sub,
+      actorEmail: actor.email,
+      action: "product.delete",
+      entity: "Product",
+      entityId: data.id,
+      after: { isDeleted: true, status: "archived" },
+    }).catch(() => {});
   }
 
   await AuditLog.create({

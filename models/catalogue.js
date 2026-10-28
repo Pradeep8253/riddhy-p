@@ -17,10 +17,13 @@ const CategorySchema = new Schema(
     sortOrder: { type: Number, default: 0 },
     filters: { type: [Schema.Types.Mixed], default: [] },
     active: { type: Boolean, default: true },
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null },
   },
-  { timestamps: true },
+  { timestamps: true, strict: false },
 );
 CategorySchema.index({ parentId: 1, sortOrder: 1 });
+CategorySchema.index({ isDeleted: 1, active: 1 });
 const BrandSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -124,14 +127,17 @@ const ProductSchema = new Schema(
       default: "draft",
     },
     archivedAt: Date,
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null },
     isDemo: { type: Boolean, default: true },
     isDemoImage: { type: Boolean, default: true },
     features: [String],
     seo: Schema.Types.Mixed,
     model3d: Schema.Types.Mixed,
   },
-  { timestamps: true },
+  { timestamps: true, strict: false },
 );
+ProductSchema.index({ isDeleted: 1, status: 1 });
 ProductSchema.index({ type: 1, category: 1, status: 1, price: 1 });
 ProductSchema.index({ brand: 1, category: 1, price: 1 });
 ProductSchema.index({ status: 1, tags: 1 });
@@ -255,12 +261,12 @@ const MarriagePackageSchema = new Schema(
 
 MarriagePackageSchema.index({ active: 1, sortOrder: 1 });
 
-export const Category =
-  mongoose.models.Category || mongoose.model("Category", CategorySchema);
+if (mongoose.models.Category) delete mongoose.models.Category;
+if (mongoose.models.Product) delete mongoose.models.Product;
+export const Category = mongoose.model("Category", CategorySchema);
 export const Brand =
   mongoose.models.Brand || mongoose.model("Brand", BrandSchema);
-export const Product =
-  mongoose.models.Product || mongoose.model("Product", ProductSchema);
+export const Product = mongoose.model("Product", ProductSchema);
 export const Variant =
   mongoose.models.Variant || mongoose.model("Variant", VariantSchema);
 export const Price =

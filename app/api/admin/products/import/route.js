@@ -200,7 +200,7 @@ export async function POST(request) {
     }
 
     const company = await getCompanySettings();
-    const warehouseCode = company.defaultWarehouseCode || 'DELHI-01';
+    const warehouseCode = company.defaultWarehouseCode || 'PRAYAGRAJ-01';
     const warehouse = await Warehouse.findOneAndUpdate(
       { code: warehouseCode },
       { $setOnInsert: { code: warehouseCode, name: 'Default Hub', active: true } },
