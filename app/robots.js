@@ -1,4 +1,44 @@
 export default function robots() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  return { rules: [{ userAgent: '*', allow: '/', disallow: ['/admin', '/account', '/api', '/checkout', '/debug'] }], sitemap: `${base}/sitemap.xml` };
+  const base = 'https://www.riddhyfurnitures.in';
+
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: [
+          '/admin',
+          '/admin/*',
+          '/account',
+          '/account/*',
+          '/api/admin',
+          '/api/admin/*',
+          '/checkout',
+          '/checkout/*',
+          '/cart',
+        ],
+      },
+      {
+        userAgent: [
+          'GPTBot',
+          'PerplexityBot',
+          'ClaudeBot',
+          'Google-Extended',
+          'Amazonbot',
+          'Applebot-Extended',
+        ],
+        allow: '/',
+        disallow: [
+          '/admin',
+          '/admin/*',
+          '/account',
+          '/account/*',
+          '/api/*',
+          '/checkout',
+          '/checkout/*',
+        ],
+      },
+    ],
+    sitemap: `${base}/sitemap.xml`,
+  };
 }

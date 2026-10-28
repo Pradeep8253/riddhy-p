@@ -1,7 +1,7 @@
 import { getCuratedLook } from "@/lib/catalogue";
 import { ok, apiError } from "@/lib/http";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
   try {

@@ -1,6 +1,9 @@
+import { Suspense } from "react";
 import { getSession } from "@/lib/auth";
 import AdminShell from "@/components/admin/AdminShell";
 import "@/components/admin/adminResponsive.css";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }) {
   const session = await getSession();
@@ -15,5 +18,9 @@ export default async function AdminLayout({ children }) {
       "finance",
     ].includes(session.role);
 
-  return <AdminShell session={isAdmin ? session : null}>{children}</AdminShell>;
+  return (
+    <Suspense fallback={<div style={{ padding: 24 }}>Loading Admin...</div>}>
+      <AdminShell session={isAdmin ? session : null}>{children}</AdminShell>
+    </Suspense>
+  );
 }
