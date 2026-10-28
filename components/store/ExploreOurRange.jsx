@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   useState,
@@ -6,76 +6,53 @@ import {
   useEffect,
   useRef,
   useCallback,
-  useLayoutEffect
-} from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import ProductCard from '@/components/ui/ProductCard';
-import styles from './ExploreOurRange.module.css';
+  useLayoutEffect,
+} from "react";
+import Image from "next/image";
+import Link from "next/link";
+import ProductCard from "@/components/ui/ProductCard";
+import styles from "./ExploreOurRange.module.css";
 
 const useIsoLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
-
-const DEPARTMENT_CONFIG = {
-  furniture: {
-    key: 'furniture',
-    label: 'Furnitures',
-    avatar: '/images/products/aarav-l-shape-sectional-living-sofa-set/front.webp',
-    href: '/furniture',
-    circles: [
-      { slug: 'all', name: 'All Furniture', image: '/images/room-living.webp' },
-      { slug: 'sofa-set', name: 'Sofa Set', image: '/images/products/aarav-l-shape-sectional-living-sofa-set/front.webp' },
-      { slug: 'double-bed', name: 'Double Bed', image: '/images/products/avani-sheesham-wood-queen-double-bed/front.webp' },
-      { slug: 'wooden-wordrobe', name: 'Wardrobe', image: '/images/products/arohi-3-door-sheesham-wardrobe/front.webp' },
-      { slug: 'fancy-almirah', name: 'Fancy Almirah', image: '/images/products/decora-laser-cut-decorative-glass-almirah/decora-fancy-front.webp' },
-      { slug: 'almirah', name: 'Steel Almirah', image: '/images/products/riddhy-supreme-double-door-steel-almirah/riddhy-supreme-steel-front.webp' },
-      { slug: 'centre-table', name: 'Centre Table', image: '/images/products/aarohan-oval-wooden-coffee-centre-table/front.webp' },
-      { slug: 'mattress', name: 'Mattress', image: '/images/products/sukoon-high-density-coir-foam-mattress/front.webp' }
-    ]
-  },
-  appliances: {
-    key: 'appliances',
-    label: 'Appliances',
-    avatar: '/images/products/aarohan-340l-convertible-5-in-1-triple-door-fridge/front.webp',
-    href: '/appliances',
-    circles: [
-      { slug: 'all', name: 'All Appliances', image: '/images/products/aarohan-340l-convertible-5-in-1-triple-door-fridge/front.webp' },
-      { slug: 'fridge', name: 'Refrigerator', image: '/images/products/aarohan-340l-convertible-5-in-1-triple-door-fridge/front.webp' },
-      { slug: 'washing-machine', name: 'Washing Machine', image: '/images/products/aarohan-7-5kg-smart-top-load-washing-machine/front.webp' },
-      { slug: 'cooler', name: 'Desert Cooler', image: '/images/products/kisan-gold-diacut-commercial-body-air-cooler/front.webp' },
-      { slug: 'gas-chulha', name: 'Gas Stove', image: '/images/products/prestige-3-burner-toughened-black-glass-gas-stove/front.webp' },
-      { slug: 'mixer', name: 'Mixer Grinder', image: '/images/products/bajaj-classic-750w-4-jar-kitchen-mixer-grinder/front.webp' },
-      { slug: 'iron', name: 'Iron (Press)', image: '/images/products/bajaj-majesty-non-stick-golden-soleplate-dry-iron/front.webp' },
-      { slug: 'utensils-washer', name: 'Dishwasher', image: '/images/products/bosch-serie-6-free-standing-hygiene-utensil-washer/front.webp' }
-    ]
-  },
-  utensils: {
-    key: 'utensils',
-    label: 'Utensils',
-    avatar: '/images/products/riddhy-royal-61-piece-stainless-steel-heavy-dinner-set/front.webp',
-    href: '/utensils',
-    circles: [
-      { slug: 'all', name: 'All Utensils', image: '/images/products/riddhy-royal-61-piece-stainless-steel-heavy-dinner-set/front.webp' },
-      { slug: 'dinner-set', name: 'Dinner Sets', image: '/images/products/riddhy-royal-61-piece-stainless-steel-heavy-dinner-set/front.webp' },
-      { slug: 'pressure-cooker', name: 'Pressure Cooker', image: '/images/products/hawkins-contura-hard-anodized-5l-3l-pressure-cooker-combo/front.webp' },
-      { slug: 'kadai-frypan', name: 'Kadai & Fry Pan', image: '/images/products/bergner-tri-ply-2-5l-heavy-stainless-steel-kadai-with-glass-lid/front.webp' },
-      { slug: 'roti-tawa', name: 'Roti & Dosa Tawa', image: '/images/products/hawkins-futura-28cm-hard-anodized-concave-roti-tawa/front.webp' },
-      { slug: 'thali-set', name: 'Thali Set', image: '/images/products/mirror-finish-heavy-ss-304-maharaja-thali-set/front.webp' },
-      { slug: 'casserole-set', name: 'Hotpot Casserole', image: '/images/products/cello-chef-deluxe-thermal-hotpot-food-warmer-gift-set/front.webp' },
-      { slug: 'water-jug', name: 'Water Jug Set', image: '/images/products/floral-embossed-royal-steel-water-jug-tumbler-7-piece-set/front.webp' }
-    ]
-  }
-};
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const PRODUCT_DISPLAY_LIMIT = 6;
 
-export default function ExploreOurRange({ allProducts = [], categories = [], initialDept = 'furniture' }) {
+const DEPARTMENTS = [
+  {
+    key: "furniture",
+    label: "Furnitures",
+    href: "/furniture",
+    type: "furniture",
+    fallbackImage: "/images/category-double-bed.webp",
+  },
+  {
+    key: "appliances",
+    label: "Appliances",
+    href: "/appliances",
+    type: "appliance",
+    fallbackImage: "/images/category-fridge.webp",
+  },
+  {
+    key: "utensils",
+    label: "Utensils",
+    href: "/utensils",
+    type: "utensils",
+    fallbackImage: "/images/category-dinner-set.webp",
+  },
+];
+
+export default function ExploreOurRange({
+  allProducts = [],
+  categories = [],
+  initialDept = "furniture",
+}) {
   const [activeDept, setActiveDept] = useState(initialDept);
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState("all");
   const [fetchedProducts, setFetchedProducts] = useState([]);
   const [categoriesList, setCategoriesList] = useState(categories || []);
 
-  /* ---------------- Fancy UI state (no functional impact) ---------------- */
+  /* ---------------- Fancy UI state (aurora stardust & pill capsule) ---------------- */
   const pillTrackRef = useRef(null);
   const pillRefs = useRef({});
   const [capsule, setCapsule] = useState({ x: 0, width: 0, ready: false });
@@ -88,7 +65,7 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
       left: Math.random() * 100,
       size: 1.6 + Math.random() * 2.8,
       delay: Math.random() * 7,
-      duration: 4.5 + Math.random() * 5.5
+      duration: 4.5 + Math.random() * 5.5,
     }));
     setStardust(items);
   }, []);
@@ -102,7 +79,7 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
     setCapsule({
       x: elRect.left - trackRect.left + track.scrollLeft,
       width: elRect.width,
-      ready: true
+      ready: true,
     });
   }, [activeDept]);
 
@@ -112,10 +89,10 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
 
   useEffect(() => {
     const onResize = () => measureCapsule();
-    window.addEventListener('resize', onResize);
+    window.addEventListener("resize", onResize);
     const t = setTimeout(measureCapsule, 60);
     return () => {
-      window.removeEventListener('resize', onResize);
+      window.removeEventListener("resize", onResize);
       clearTimeout(t);
     };
   }, [measureCapsule]);
@@ -124,30 +101,49 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
   const legacyAliases = useMemo(
     () =>
       new Set([
-        'sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables', 'mattresses', 'decor', 'storage',
-        'refrigerators', 'washing-machines', 'air-conditioners', 'televisions', 'microwaves', 'chimneys', 'water-purifiers'
+        "sofas",
+        "beds",
+        "wardrobes",
+        "dining-sets",
+        "study-tables",
+        "mattresses",
+        "decor",
+        "storage",
+        "refrigerators",
+        "washing-machines",
+        "air-conditioners",
+        "televisions",
+        "microwaves",
+        "chimneys",
+        "water-purifiers",
       ]),
-    []
+    [],
   );
 
+  // Sync or fetch dynamic categories from backend
   useEffect(() => {
     if (categories && categories.length > 0) {
       setCategoriesList(categories);
     } else {
-      fetch('/api/categories')
+      fetch("/api/categories")
         .then((res) => (res.ok ? res.json() : null))
         .then((json) => {
-          if (json?.success && Array.isArray(json?.data) && json.data.length > 0) {
+          if (
+            json?.success &&
+            Array.isArray(json?.data) &&
+            json.data.length > 0
+          ) {
             setCategoriesList(json.data);
           }
         })
-        .catch(() => { });
+        .catch(() => {});
     }
   }, [categories]);
 
+  // Sync or fetch dynamic products from backend
   useEffect(() => {
     if (!allProducts || allProducts.length === 0) {
-      fetch('/api/products?limit=50')
+      fetch("/api/products?limit=50")
         .then((res) => (res.ok ? res.json() : null))
         .then((json) => {
           const items = json?.data?.items || json?.data || [];
@@ -155,45 +151,51 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
             setFetchedProducts(items);
           }
         })
-        .catch(() => { });
+        .catch(() => {});
     }
   }, [allProducts]);
 
-  const deptData = useMemo(() => {
-    const base = DEPARTMENT_CONFIG[activeDept] || DEPARTMENT_CONFIG.furniture;
-    if (!categoriesList || categoriesList.length === 0) return base;
+  const activeDeptObj = useMemo(() => {
+    return DEPARTMENTS.find((d) => d.key === activeDept) || DEPARTMENTS[0];
+  }, [activeDept]);
 
-    const deptType = activeDept === 'appliances' ? 'appliance' : activeDept;
-    const backendCategories = categoriesList.filter(
-      (c) =>
-        (c.type === deptType || (activeDept === 'appliances' && c.type === 'appliances')) &&
-        c.active !== false &&
-        !legacyAliases.has(c.slug)
-    );
+  // Categories belonging to current active department, sorted by backend sortOrder
+  const deptCategories = useMemo(() => {
+    if (!Array.isArray(categoriesList) || categoriesList.length === 0) return [];
+    const deptType = activeDeptObj.type;
 
-    if (backendCategories.length === 0) return base;
+    return categoriesList
+      .filter((c) => {
+        if (c.active === false || c.isDeleted) return false;
+        if (legacyAliases.has(c.slug)) return false;
+        if (activeDept === "appliances") {
+          return c.type === "appliance" || c.type === "appliances";
+        }
+        return c.type === deptType;
+      })
+      .sort((a, b) => {
+        const orderA = typeof a.sortOrder === "number" ? a.sortOrder : 999;
+        const orderB = typeof b.sortOrder === "number" ? b.sortOrder : 999;
+        return orderA - orderB;
+      });
+  }, [categoriesList, activeDept, activeDeptObj, legacyAliases]);
 
-    const allCircle = base.circles[0] || {
-      slug: 'all',
-      name: `All ${base.label}`,
-      image: backendCategories[0]?.image || base.avatar
+  // Circular navigation items: First is "All [Dept]", then backend categories
+  const circles = useMemo(() => {
+    const allCircle = {
+      slug: "all",
+      name: `All ${activeDeptObj.label}`,
+      image: deptCategories[0]?.image || activeDeptObj.fallbackImage,
     };
 
-    const dynamicCircles = [
-      allCircle,
-      ...backendCategories.map((c) => ({
-        slug: c.slug,
-        name: c.name,
-        image: c.image || base.avatar
-      }))
-    ];
+    const dynamicCircles = deptCategories.map((c) => ({
+      slug: c.slug,
+      name: c.name,
+      image: c.image || activeDeptObj.fallbackImage,
+    }));
 
-    return {
-      ...base,
-      avatar: backendCategories[0]?.image || base.avatar,
-      circles: dynamicCircles
-    };
-  }, [activeDept, categoriesList, legacyAliases]);
+    return [allCircle, ...dynamicCircles];
+  }, [deptCategories, activeDeptObj]);
 
   const productsList = useMemo(() => {
     if (Array.isArray(allProducts) && allProducts.length > 0) {
@@ -204,36 +206,104 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
 
   const handleDeptChange = (deptKey) => {
     setActiveDept(deptKey);
-    setActiveCategory('all');
+    setActiveCategory("all");
   };
 
+  // Lookup map for category sort priority (used for "All" tab view)
+  const categoryOrderMap = useMemo(() => {
+    const map = new Map();
+    if (Array.isArray(categoriesList)) {
+      categoriesList.forEach((c) => {
+        if (c.slug && typeof c.sortOrder === "number") {
+          map.set(c.slug.toLowerCase(), c.sortOrder);
+          map.set(c.slug.toLowerCase().replace(/s$/, ""), c.sortOrder);
+        }
+      });
+    }
+    // Canonical fallbacks
+    const aliases = {
+      beds: 1,
+      "double-bed": 1,
+      sringardan: 2,
+      sofas: 3,
+      "sofa-set": 3,
+      "centre-table": 4,
+      wardrobes: 5,
+      "wooden-wordrobe": 5,
+      almirah: 6,
+      "fancy-almirah": 7,
+      mattresses: 8,
+      mattress: 8,
+      "washing-machines": 29,
+      "washing-machine": 29,
+      refrigerators: 30,
+      fridge: 30,
+    };
+    for (const [k, v] of Object.entries(aliases)) {
+      if (!map.has(k)) map.set(k, v);
+    }
+    return map;
+  }, [categoriesList]);
+
+  // Curated showcase products capped at 6
   const filteredProducts = useMemo(() => {
     if (!Array.isArray(productsList) || productsList.length === 0) return [];
 
-    const deptType = activeDept === 'appliances' ? 'appliance' : activeDept;
+    const deptType = activeDept === "appliances" ? "appliance" : activeDept;
+    const deptProducts = productsList.filter(
+      (p) => !p.type || p.type === deptType || p.type === activeDept,
+    );
 
-    if (activeCategory === 'all') {
-      return productsList
-        .filter((p) => p.type === deptType || p.type === activeDept)
-        .slice(0, PRODUCT_DISPLAY_LIMIT);
+    if (activeCategory === "all") {
+      const getOrder = (p) => {
+        const cat = String(p.category || "").toLowerCase();
+        const catSlug = String(p.categorySlug || "").toLowerCase();
+        if (categoryOrderMap.has(cat)) return categoryOrderMap.get(cat);
+        if (categoryOrderMap.has(catSlug)) return categoryOrderMap.get(catSlug);
+        return 999;
+      };
+
+      const sorted = [...deptProducts].sort((a, b) => getOrder(a) - getOrder(b));
+      const result = [];
+      const seenCategories = new Set();
+
+      // Showcase a diverse selection across top categories
+      for (const p of sorted) {
+        const cat = p.category;
+        if (!seenCategories.has(cat)) {
+          seenCategories.add(cat);
+          result.push(p);
+          if (result.length >= PRODUCT_DISPLAY_LIMIT) break;
+        }
+      }
+      // If fewer than limit, fill with remaining products
+      if (result.length < PRODUCT_DISPLAY_LIMIT) {
+        for (const p of sorted) {
+          if (!result.includes(p)) {
+            result.push(p);
+            if (result.length >= PRODUCT_DISPLAY_LIMIT) break;
+          }
+        }
+      }
+      return result;
     }
 
+    // Specific category filter
     const target = activeCategory.toLowerCase();
-    const matching = productsList.filter((p) => {
-      const matchType = !p.type || p.type === deptType || p.type === activeDept;
-      if (!matchType) return false;
-
-      const cat = String(p.category || '').toLowerCase();
-      const catSlug = String(p.categorySlug || '').toLowerCase();
-      const catLabel = String(p.categoryLabel || '').toLowerCase();
-      const model = String(p.modelType || '').toLowerCase();
+    const matching = deptProducts.filter((p) => {
+      const cat = String(p.category || "").toLowerCase();
+      const catSlug = String(p.categorySlug || "").toLowerCase();
+      const catLabel = String(p.categoryLabel || "").toLowerCase();
+      const model = String(p.modelType || "").toLowerCase();
 
       return (
         cat === target ||
         catSlug === target ||
         catLabel === target ||
         model === target ||
-        cat.replace(/-/g, '') === target.replace(/-/g, '') ||
+        cat.replace(/-/g, "") === target.replace(/-/g, "") ||
+        cat.replace(/s$/, "") === target.replace(/s$/, "") ||
+        target.replace(/s$/, "") === cat.replace(/s$/, "") ||
         cat.includes(target) ||
         target.includes(cat)
       );
@@ -243,20 +313,21 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
       return matching.slice(0, PRODUCT_DISPLAY_LIMIT);
     }
 
-    return productsList
-      .filter((p) => p.type === deptType || p.type === activeDept)
-      .slice(0, PRODUCT_DISPLAY_LIMIT);
-  }, [productsList, activeDept, activeCategory]);
+    return deptProducts.slice(0, PRODUCT_DISPLAY_LIMIT);
+  }, [productsList, activeDept, activeCategory, categoryOrderMap]);
 
   const shopMoreHref = useMemo(() => {
-    if (activeCategory && activeCategory !== 'all') {
+    if (activeCategory && activeCategory !== "all") {
       return `/${activeDept}/${activeCategory}`;
     }
-    return deptData.href;
-  }, [activeDept, activeCategory, deptData.href]);
+    return activeDeptObj.href;
+  }, [activeDept, activeCategory, activeDeptObj.href]);
 
   return (
-    <section className={styles.rangeCosmosSection} aria-label="Explore Our Range">
+    <section
+      className={styles.rangeCosmosSection}
+      aria-label="Explore Our Range"
+    >
       {/* Festive ambient layer — soft sparkle spread evenly, background only */}
       <div className={styles.festiveAuroraField} aria-hidden="true">
         <div className={styles.auroraOrbTopLeft} />
@@ -274,7 +345,7 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
               width: `${s.size}px`,
               height: `${s.size}px`,
               animationDelay: `${s.delay}s`,
-              animationDuration: `${s.duration}s`
+              animationDuration: `${s.duration}s`,
             }}
           />
         ))}
@@ -285,12 +356,27 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
         <div className={styles.rangeHeadlineBar}>
           <span className={styles.headlineFlourishLeft} aria-hidden="true" />
           <h2 className={styles.rangeHeadlineText}>
-            Explore Our{' '}
+            Explore Our{" "}
             <span className={styles.rangeWordAccent}>
               Range
-              <svg className={styles.accentBrushSvg} viewBox="0 0 140 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 8.5C36 3.5 102 3 137 7.5" stroke="#e0a040" strokeWidth="3.2" strokeLinecap="round" />
-                <path d="M18 10C50 6.5 98 6.5 125 9.5" stroke="#c48620" strokeWidth="1.8" strokeLinecap="round" />
+              <svg
+                className={styles.accentBrushSvg}
+                viewBox="0 0 140 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 8.5C36 3.5 102 3 137 7.5"
+                  stroke="#e0a040"
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M18 10C50 6.5 98 6.5 125 9.5"
+                  stroke="#c48620"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
               </svg>
             </span>
           </h2>
@@ -310,7 +396,7 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
                 className={styles.slidingCapsule}
                 style={{
                   transform: `translateX(${capsule.x}px)`,
-                  width: `${capsule.width}px`
+                  width: `${capsule.width}px`,
                 }}
                 aria-hidden="true"
               >
@@ -319,7 +405,7 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
               </span>
             )}
 
-            {Object.values(DEPARTMENT_CONFIG).map((dept) => {
+            {DEPARTMENTS.map((dept) => {
               const isActive = activeDept === dept.key;
               return (
                 <button
@@ -330,22 +416,28 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
                   type="button"
                   role="tab"
                   aria-selected={isActive}
-                  className={`${styles.departmentPillItem} ${isActive ? styles.departmentPillItemLive : ''}`}
+                  className={`${styles.departmentPillItem} ${isActive ? styles.departmentPillItemLive : ""}`}
                   onClick={() => handleDeptChange(dept.key)}
                 >
-                  <span className={styles.departmentPillText}>{dept.label}</span>
+                  <span className={styles.departmentPillText}>
+                    {dept.label}
+                  </span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Circular Sub-Categories — default clean font, fixed size, ellipsis truncation */}
+        {/* Circular Sub-Categories — dynamically populated from backend categories */}
         <div className={styles.categoryOrbitDeck}>
           <div className={styles.orbitFadeEdgeStart} aria-hidden="true" />
           <div className={styles.orbitFadeEdgeEnd} aria-hidden="true" />
-          <div className={styles.categoryOrbitTrack} role="tablist" aria-label={`${deptData.label} category filter`}>
-            {deptData.circles.map((circle, idx) => {
+          <div
+            className={styles.categoryOrbitTrack}
+            role="tablist"
+            aria-label={`${activeDeptObj.label} category filter`}
+          >
+            {circles.map((circle, idx) => {
               const isActive = activeCategory === circle.slug;
               return (
                 <button
@@ -353,8 +445,8 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
                   type="button"
                   role="tab"
                   aria-selected={isActive}
-                  className={`${styles.categoryOrbItem} ${isActive ? styles.categoryOrbItemLive : ''}`}
-                  style={{ '--delay': `${idx * 0.06}s` }}
+                  className={`${styles.categoryOrbItem} ${isActive ? styles.categoryOrbItemLive : ""}`}
+                  style={{ "--delay": `${idx * 0.06}s` }}
                   onClick={() => setActiveCategory(circle.slug)}
                   title={circle.name}
                 >
@@ -374,7 +466,9 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
                       </div>
                     </div>
                   </div>
-                  <span className={styles.categoryOrbCaption}>{circle.name}</span>
+                  <span className={styles.categoryOrbCaption}>
+                    {circle.name}
+                  </span>
                   {isActive ? (
                     <div className={styles.categoryOrbUnderline} />
                   ) : (
@@ -386,7 +480,7 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
           </div>
         </div>
 
-        {/* Products Grid — UNCHANGED FUNCTIONALITY, capped at 6 */}
+        {/* Products Grid — dynamically filtered & diverse showcase */}
         <div className={styles.curatedShowcaseGrid}>
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -394,7 +488,8 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
             ))
           ) : (
             <div className={styles.showcaseEmptyNotice}>
-              No pieces currently in this selection. Explore all {deptData.label} in our catalog.
+              No pieces currently in this selection. Explore all{" "}
+              {activeDeptObj.label} in our catalog.
             </div>
           )}
         </div>
@@ -402,9 +497,17 @@ export default function ExploreOurRange({ allProducts = [], categories = [], ini
         {/* Shop More — below grid, centered */}
         <div className={styles.rangeFooterCtaRow}>
           <Link href={shopMoreHref} className={styles.exploreMoreCta}>
-
             <span>Shop More</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </Link>

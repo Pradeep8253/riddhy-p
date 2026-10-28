@@ -36,13 +36,19 @@ const defaultApplianceFinishes = [
   { id: 'red', name: 'Wine Scarlet', code: '#7a1f26', desc: 'Embossed floral metallic finish' }
 ];
 
+const defaultUtensilFinishes = [
+  { id: 'ss-mirror', name: 'Mirror Finish SS 304', code: '#d8dee9', desc: 'Food-grade high-polish stainless steel' },
+  { id: 'ss-satin', name: 'Brushed Satin Finish', code: '#a0aab8', desc: 'Scratch-resistant satin matte polish' },
+  { id: 'gold-accent', name: 'Royal Gold Accents', code: '#d4af37', desc: 'Titanium gold PVD coated luxury rim' }
+];
+
 const viewLabels = {
-  front: 'Front View',
+  front: 'Front Studio View',
   angle: 'Three-Quarter Angle',
   detail: 'Material & Craft Detail',
   lifestyle: 'Styled Room Placement',
   interior: 'Internal Storage & Structure',
-  back: 'Rear Architecture',
+  back: 'Detail & Craftsmanship View',
   packaging: 'Packaging & Accessories',
 };
 
@@ -87,7 +93,12 @@ export default function ProductDetailClient({ product, related = [] }) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [qty, setQty] = useState(1);
   const isAppliance = product.type === 'appliance';
-  const finishOptions = isAppliance ? defaultApplianceFinishes : defaultFurnitureFinishes;
+  const isUtensils = product.type === 'utensils';
+  const finishOptions = isAppliance
+    ? defaultApplianceFinishes
+    : isUtensils
+    ? defaultUtensilFinishes
+    : defaultFurnitureFinishes;
   const [selectedFinish, setSelectedFinish] = useState(finishOptions[0]);
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
@@ -347,8 +358,8 @@ export default function ProductDetailClient({ product, related = [] }) {
           <div className={styles.breadcrumbItems}>
             <Link href="/">Home</Link>
             <span className={styles.crumbSep}>/</span>
-            <Link href={product.type === 'furniture' ? '/furniture' : '/appliances'}>
-              {product.type === 'furniture' ? 'Furniture Collection' : 'Home Appliances'}
+            <Link href={product.type === 'furniture' ? '/furniture' : product.type === 'utensils' ? '/utensils' : '/appliances'}>
+              {product.type === 'furniture' ? 'Furniture Collection' : product.type === 'utensils' ? 'Kitchen & Utensils' : 'Home Appliances'}
             </Link>
             <span className={styles.crumbSep}>/</span>
             <span className={styles.crumbCategory}>
@@ -676,7 +687,11 @@ export default function ProductDetailClient({ product, related = [] }) {
               <div className={styles.variantsBlock}>
                 <div className={styles.variantHead}>
                   <span className={styles.variantLabel}>
-                    {isAppliance ? 'Selected Finish:' : 'Selected Finish & Wood:'}
+                    {isAppliance
+                      ? 'Selected Finish:'
+                      : isUtensils
+                      ? 'Selected Grade & Finish:'
+                      : 'Selected Finish & Wood:'}
                   </span>
                   <b className={styles.variantValue}>{selectedFinish.name}</b>
                   <span className={styles.variantDesc}>({selectedFinish.desc})</span>
