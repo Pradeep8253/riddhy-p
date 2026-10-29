@@ -318,3 +318,38 @@
   border-radius: 999px;
   background: var(--rf-green-700, #1f5f2e);
 }
+
+/* Responsive Card 07 Symmetry - Full Width Bottom Showcase */
+@media (max-width: 767px) {
+  .sequenceCard {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 10px 14px !important;
+    gap: 14px !important;
+  }
+
+  .sequenceCard .sequenceVisual {
+    width: 76px !important;
+    height: 76px !important;
+    flex: 0 0 76px !important;
+    margin: 0 !important;
+  }
+
+  .sequenceCard .details {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+  }
+
+  .sequenceCard .details b {
+    font-size: 13px !important;
+  }
+
+  .sequenceCard .details small {
+    font-size: 11px !important;
+  }
+}
