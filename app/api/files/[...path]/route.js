@@ -34,7 +34,36 @@ export async function GET(request, { params }) {
   }
 
   try {
-    const stats = await fs.promises.stat(fullPath);
+    let targetPath = fullPath;
+    let stats;
+    try {
+      stats = await fs.promises.stat(targetPath);
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        // Fallback 1: variant requested (e.g. -large.webp), but only base .webp exists
+        const baseVariant = targetPath.replace(/-(thumb|medium|large|original)\.webp$/i, '.webp');
+        if (baseVariant !== targetPath) {
+          try {
+            stats = await fs.promises.stat(baseVariant);
+            targetPath = baseVariant;
+          } catch {
+            return new Response('File not found', { status: 404 });
+          }
+        } else {
+          // Fallback 2: base .webp requested, but legacy -large.webp exists
+          const legacyVariant = targetPath.replace(/\.webp$/i, '-large.webp');
+          try {
+            stats = await fs.promises.stat(legacyVariant);
+            targetPath = legacyVariant;
+          } catch {
+            return new Response('File not found', { status: 404 });
+          }
+        }
+      } else {
+        throw err;
+      }
+    }
+
     if (!stats.isFile()) {
       return new Response('File not found', { status: 404 });
     }
@@ -45,10 +74,10 @@ export async function GET(request, { params }) {
       return new Response(null, { status: 304 });
     }
 
-    const ext = path.extname(fullPath).toLowerCase();
+    const ext = path.extname(targetPath).toLowerCase();
     const contentType = MIME_MAP[ext] || 'application/octet-stream';
 
-    const fileBuffer = await fs.promises.readFile(fullPath);
+    const fileBuffer = await fs.promises.readFile(targetPath);
 
     return new Response(fileBuffer, {
       status: 200,

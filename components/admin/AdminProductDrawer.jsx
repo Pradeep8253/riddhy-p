@@ -78,6 +78,13 @@ export default function AdminProductDrawer({
   const [error, setError] = useState("");
   const [availableCategories, setAvailableCategories] = useState([]);
   const [isSlugManual, setIsSlugManual] = useState(false);
+  const [savingStep, setSavingStep] = useState(false);
+  const [savedSuccessMsg, setSavedSuccessMsg] = useState("");
+  const [savedProductId, setSavedProductId] = useState(null);
+
+  useEffect(() => {
+    setSavedProductId(initialData?._id || initialData?.id || null);
+  }, [initialData]);
 
   useEffect(() => {
     if (isOpen) {
@@ -533,7 +540,161 @@ export default function AdminProductDrawer({
   const isFirstStep = currentStepIndex <= 0;
   const isLastStep = currentStepIndex === STEPS.length - 1;
 
-  const handleNextStep = (e) => {
+  const isStepCompleted = (stepId) => {
+    switch (stepId) {
+      case "general":
+        return Boolean(form.name?.trim() && form.slug?.trim() && form.sku?.trim());
+      case "media":
+        return Boolean(form.gallery?.length > 0 || form.image);
+      case "pricing":
+        return Boolean(Number(form.price) > 0 && Number(form.mrp) >= Number(form.price));
+      case "inventory":
+        return Boolean(form.stock !== "" && Number(form.stock) >= 0);
+      case "tags":
+        return Boolean(form.tags?.length > 0);
+      case "warranty":
+        return Boolean(form.warranty?.coverage);
+      default:
+        return false;
+    }
+  };
+
+  const handlePrevStep = (e) => {
+    e?.preventDefault?.();
+    setError("");
+    if (currentStepIndex > 0) {
+      setTab(STEPS[currentStepIndex - 1].id);
+    }
+  };
+
+  const performSave = async (options = { closeOnSuccess: false, advanceNext: false }) => {
+    setError("");
+    const name = String(form.name || "").trim();
+    const slug = String(form.slug || "").trim();
+    const sku = String(form.sku || "").trim();
+
+    if (!name) {
+      setError("Product name is required.");
+      setTab("general");
+      return false;
+    }
+    if (!slug) {
+      setError("Product slug is required.");
+      setTab("general");
+      return false;
+    }
+    if (!sku) {
+      setError("SKU is required.");
+      setTab("general");
+      return false;
+    }
+
+    const priceNum = Number(form.price || 0);
+    const mrpNum = Number(form.mrp || 0);
+
+    // If closing or publishing or user is on pricing step, validate pricing
+    if (options.closeOnSuccess || (options.advanceNext && tab === "pricing")) {
+      if (priceNum <= 0) {
+        setError("A valid selling price is required.");
+        setTab("pricing");
+        return false;
+      }
+      if (mrpNum < priceNum) {
+        setError("MRP must be greater than or equal to selling price.");
+        setTab("pricing");
+        return false;
+      }
+    }
+
+    const targetId = savedProductId || initialData?._id || initialData?.id || undefined;
+    const canSaveToDb = targetId || (priceNum > 0 && mrpNum >= priceNum);
+
+    if (canSaveToDb) {
+      if (options.advanceNext) {
+        setSavingStep(true);
+      } else {
+        setBusy(true);
+      }
+
+      try {
+        const payload = {
+          id: targetId,
+          name,
+          slug,
+          sku: sku.toUpperCase(),
+          type: form.type,
+          modelType: form.modelType,
+          category: form.category,
+          brand: form.brand || "RF Riddhy",
+          price: priceNum || 1,
+          mrp: mrpNum >= priceNum ? mrpNum : priceNum || 1,
+          discount: Number(form.discount || 0),
+          stock: Number(form.stock || 0),
+          hsnCode: form.hsnCode || (form.type === "appliance" ? "8516" : "9403"),
+          status: form.status,
+          description: form.description || "",
+          tagline: form.tagline || "",
+          badgeText: form.badgeText || "",
+          image: form.gallery?.[0]?.url || form.image || "",
+          gallery: form.gallery || [],
+          tags: form.tags || [],
+          tagOverrides: form.tagOverrides || { pin: [], hide: [] },
+          warranty: form.warranty || {},
+          seo: {
+            metaTitle: form.seo?.metaTitle || `${name} | RF Riddhy`,
+            metaDescription:
+              form.seo?.metaDescription ||
+              (form.description ? form.description.slice(0, 160) : "") ||
+              form.tagline ||
+              `Explore ${name} at RF Riddhy. Premium craftsmanship and doorstep delivery.`,
+          },
+        };
+
+        const res = await fetch("/api/admin/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error?.message || "Could not save product.");
+        }
+
+        if (data.data?.id || data.data?._id) {
+          setSavedProductId(data.data.id || data.data._id);
+        }
+
+        onSaved?.();
+        setSavedSuccessMsg("Saved!");
+        setTimeout(() => setSavedSuccessMsg(""), 2500);
+
+        if (options.closeOnSuccess) {
+          onClose();
+          return true;
+        }
+      } catch (err) {
+        setError(err.message || "Failed to save product.");
+        return false;
+      } finally {
+        setBusy(false);
+        setSavingStep(false);
+      }
+    } else {
+      // Local draft save if new product before pricing is entered
+      try {
+        localStorage.setItem("rf_admin_product_draft", JSON.stringify(form));
+        setSavedSuccessMsg("Draft saved");
+        setTimeout(() => setSavedSuccessMsg(""), 2000);
+      } catch {}
+    }
+
+    if (options.advanceNext && currentStepIndex < STEPS.length - 1) {
+      setTab(STEPS[currentStepIndex + 1].id);
+    }
+    return true;
+  };
+
+  const handleSaveAndNext = async (e) => {
     e?.preventDefault?.();
     setError("");
 
@@ -546,6 +707,10 @@ export default function AdminProductDrawer({
         setError("Product slug is required before proceeding.");
         return;
       }
+      if (!String(form.sku || "").trim()) {
+        setError("SKU is required before proceeding.");
+        return;
+      }
     } else if (tab === "pricing") {
       if (!form.price || Number(form.price) <= 0) {
         setError("A valid selling price is required before proceeding.");
@@ -555,125 +720,55 @@ export default function AdminProductDrawer({
         setError("MRP must be greater than or equal to selling price.");
         return;
       }
-    }
-
-    if (currentStepIndex < STEPS.length - 1) {
-      setTab(STEPS[currentStepIndex + 1].id);
-    }
-  };
-
-  const handlePrevStep = (e) => {
-    e?.preventDefault?.();
-    setError("");
-    if (currentStepIndex > 0) {
-      setTab(STEPS[currentStepIndex - 1].id);
-    }
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    const name = String(form.name || "").trim();
-    const slug = String(form.slug || "").trim();
-    const sku = String(form.sku || "").trim();
-
-    if (!name) {
-      setError("Product name is required.");
-      setTab("general");
-      return;
-    }
-    if (!slug) {
-      setError("Product slug is required.");
-      setTab("general");
-      return;
-    }
-    if (!sku) {
-      setError("SKU is required.");
-      setTab("general");
-      return;
-    }
-    if (!form.price || Number(form.price) <= 0) {
-      setError("A valid selling price is required.");
-      setTab("pricing");
-      return;
-    }
-    if (!form.mrp || Number(form.mrp) < Number(form.price)) {
-      setError("MRP must be greater than or equal to selling price.");
-      setTab("pricing");
-      return;
-    }
-
-    setBusy(true);
-    try {
-      const payload = {
-        id: initialData?._id || initialData?.id || undefined,
-        name,
-        slug,
-        sku: sku.toUpperCase(),
-        type: form.type,
-        modelType: form.modelType,
-        category: form.category,
-        brand: form.brand || "RF Riddhy",
-        price: Number(form.price),
-        mrp: Number(form.mrp),
-        discount: Number(form.discount || 0),
-        stock: Number(form.stock || 0),
-        hsnCode: form.hsnCode || (form.type === "appliance" ? "8516" : "9403"),
-        status: form.status,
-        description: form.description || "",
-        tagline: form.tagline || "",
-        badgeText: form.badgeText || "",
-        image: form.gallery?.[0]?.url || form.image || "",
-        gallery: form.gallery || [],
-        tags: form.tags || [],
-        tagOverrides: form.tagOverrides || { pin: [], hide: [] },
-        warranty: form.warranty || {},
-        seo: {
-          metaTitle: form.seo?.metaTitle || `${name} | RF Riddhy`,
-          metaDescription:
-            form.seo?.metaDescription ||
-            (form.description ? form.description.slice(0, 160) : "") ||
-            form.tagline ||
-            `Explore ${name} at RF Riddhy. Premium craftsmanship and doorstep delivery.`,
-        },
-      };
-
-      const res = await fetch("/api/admin/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error?.message || "Could not save product.");
+    } else if (tab === "inventory") {
+      if (form.stock === "" || Number(form.stock) < 0) {
+        setError("Stock cannot be negative.");
+        return;
       }
-
-      onSaved?.();
-      onClose();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
     }
+
+    await performSave({ closeOnSuccess: false, advanceNext: true });
+  };
+
+  const handleSubmit = async (e) => {
+    e?.preventDefault?.();
+    await performSave({ closeOnSuccess: true, advanceNext: false });
+  };
+
+  const handleSaveDraft = async (e) => {
+    e?.preventDefault?.();
+    await performSave({ closeOnSuccess: false, advanceNext: false });
   };
 
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.drawer} onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
+        {/* Modern Header */}
         <div className={styles.header}>
           <div className={styles.titleArea}>
+            <div className={styles.headerContext}>
+              <span>Catalogue</span>
+              <span className={styles.contextSeparator}>/</span>
+              <span>Products</span>
+              {savedSuccessMsg && (
+                <span className={styles.savedPill}>
+                  <Check size={12} strokeWidth={2.5} /> {savedSuccessMsg}
+                </span>
+              )}
+            </div>
             <h2>
               {initialData
                 ? `Edit: ${form.name || form.sku}`
                 : "Add New Product"}
             </h2>
             <div className={styles.subtitle}>
-              <span>{form.sku || "No SKU assigned"}</span>
-              <span>•</span>
-              <span style={{ textTransform: "uppercase", fontWeight: 600 }}>
-                {form.status}
+              <span className={styles.skuBadge}>{form.sku || "No SKU assigned"}</span>
+              <span className={form.status === "published" ? styles.statusBadgeActive : styles.statusBadgeDraft}>
+                {form.status || "draft"}
+              </span>
+              <span className={styles.typeBadge}>
+                {form.type === "appliance" ? "Appliance" : form.type === "utensils" ? "Utensils" : "Furniture"}
               </span>
             </div>
           </div>
@@ -682,55 +777,40 @@ export default function AdminProductDrawer({
             className={styles.closeBtn}
             onClick={onClose}
             aria-label="Close drawer"
+            title="Close (Esc)"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs with Modern Steps Indicator */}
         <div className={styles.tabsNav}>
-          <button
-            type="button"
-            className={`${styles.tabBtn} ${tab === "general" ? styles.activeTab : ""}`}
-            onClick={() => setTab("general")}
-          >
-            <Layers size={15} /> General
-          </button>
-          <button
-            type="button"
-            className={`${styles.tabBtn} ${tab === "media" ? styles.activeTab : ""}`}
-            onClick={() => setTab("media")}
-          >
-            <ImageIcon size={15} /> Media ({form.gallery?.length || 0})
-          </button>
-          <button
-            type="button"
-            className={`${styles.tabBtn} ${tab === "pricing" ? styles.activeTab : ""}`}
-            onClick={() => setTab("pricing")}
-          >
-            <DollarSign size={15} /> Pricing & Tax
-          </button>
-          <button
-            type="button"
-            className={`${styles.tabBtn} ${tab === "inventory" ? styles.activeTab : ""}`}
-            onClick={() => setTab("inventory")}
-          >
-            <Boxes size={15} /> Inventory
-          </button>
-          <button
-            type="button"
-            className={`${styles.tabBtn} ${tab === "tags" ? styles.activeTab : ""}`}
-            onClick={() => setTab("tags")}
-          >
-            <Tag size={15} /> Tags ({form.tags?.length || 0})
-          </button>
-          <button
-            type="button"
-            className={`${styles.tabBtn} ${tab === "warranty" ? styles.activeTab : ""}`}
-            onClick={() => setTab("warranty")}
-          >
-            <ShieldCheck size={15} /> Warranty
-          </button>
+          {STEPS.map((step, idx) => {
+            const isDone = isStepCompleted(step.id);
+            const isActive = tab === step.id;
+            return (
+              <button
+                key={step.id}
+                type="button"
+                className={`${styles.tabBtn} ${isActive ? styles.activeTab : ""} ${isDone ? styles.completedTab : ""}`}
+                onClick={() => {
+                  setError("");
+                  setTab(step.id);
+                }}
+              >
+                <span className={`${styles.tabStepNum} ${isDone ? styles.tabStepNumDone : ""}`}>
+                  {isDone ? <Check size={11} strokeWidth={3} /> : idx + 1}
+                </span>
+                <span>{step.label}</span>
+                {step.id === "media" && form.gallery?.length > 0 && (
+                  <span className={styles.tabBadge}>{form.gallery.length}</span>
+                )}
+                {step.id === "tags" && form.tags?.length > 0 && (
+                  <span className={styles.tabBadge}>{form.tags.length}</span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Content Body */}
@@ -1333,7 +1413,7 @@ export default function AdminProductDrawer({
                 type="button"
                 className={styles.btnSecondary}
                 onClick={onClose}
-                disabled={busy}
+                disabled={busy || savingStep}
               >
                 Cancel
               </button>
@@ -1343,41 +1423,48 @@ export default function AdminProductDrawer({
                   type="button"
                   className={styles.btnSecondary}
                   onClick={handlePrevStep}
-                  disabled={busy}
+                  disabled={busy || savingStep}
                 >
                   <ChevronLeft size={16} /> Previous
                 </button>
               )}
 
-              {initialData && !isLastStep && (
-                <button
-                  type="submit"
-                  className={styles.btnSecondary}
-                  disabled={busy}
-                  title="Save current progress"
-                >
-                  {busy && <Loader2 size={15} className="animate-spin" />}
-                  Save Changes
-                </button>
-              )}
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={handleSaveDraft}
+                disabled={busy || savingStep}
+                title="Save current draft"
+              >
+                {busy && !savingStep && <Loader2 size={15} className="animate-spin" />}
+                Save Draft
+              </button>
 
               {!isLastStep ? (
                 <button
                   type="button"
                   className={styles.btnPrimary}
-                  onClick={handleNextStep}
-                  disabled={busy}
+                  onClick={handleSaveAndNext}
+                  disabled={busy || savingStep}
                 >
-                  Next <ChevronRight size={16} />
+                  {savingStep ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" /> Saving…
+                    </>
+                  ) : (
+                    <>
+                      Save & Next <ChevronRight size={16} />
+                    </>
+                  )}
                 </button>
               ) : (
                 <button
                   type="submit"
                   className={styles.btnPrimary}
-                  disabled={busy}
+                  disabled={busy || savingStep}
                 >
-                  {busy && <Loader2 size={16} className="animate-spin" />}
-                  <Check size={16} /> {initialData ? "Save Changes" : "Create Product"}
+                  {busy ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
+                  {initialData ? "Save Changes" : "Save & Create Product"}
                 </button>
               )}
             </div>

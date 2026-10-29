@@ -341,7 +341,11 @@ function AdminShellInner({ children, session }) {
   const userInitials = (session?.name || session?.email || 'AD').slice(0, 2).toUpperCase();
 
   return (
-    <div className={styles.crmContainer} data-lenis-prevent="true">
+    <div
+      className={`${styles.crmContainer} ${isMini ? styles.sidebarMiniMode : ''}`}
+      style={{ '--admin-current-sidebar-w': isMini ? '76px' : '260px' }}
+      data-lenis-prevent="true"
+    >
       {/* Mobile Drawer Backdrop */}
       {mobileSidebarOpen && (
         <div

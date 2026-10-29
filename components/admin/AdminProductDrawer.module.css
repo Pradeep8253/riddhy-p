@@ -552,3 +552,141 @@
   }
 }
 
+
+/* Modern Breadcrumb & Badges in Header */
+.headerContext {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.contextSeparator {
+  color: #cbd5e1;
+}
+
+.savedPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.skuBadge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.statusBadgeActive {
+  font-size: 10.5px;
+  font-weight: 800;
+  background: #dcfce7;
+  color: #15803d;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.statusBadgeDraft {
+  font-size: 10.5px;
+  font-weight: 800;
+  background: #fef3c7;
+  color: #b45309;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.typeBadge {
+  font-size: 10.5px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Modern Tab Step Indicators */
+.tabStepNum {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.activeTab .tabStepNum {
+  background: #1f5f2e;
+  color: #ffffff;
+}
+
+.tabStepNumDone {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+.completedTab {
+  color: #334155;
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.activeTab .tabBadge {
+  background: rgba(31, 95, 46, 0.14);
+  color: #1f5f2e;
+}
+
+/* Desktop Slide-over Drawer with Left Sidebar Fully Visible */
+@media (min-width: 1024px) {
+  .overlay {
+    left: var(--admin-current-sidebar-w, 260px) !important;
+    width: calc(100vw - var(--admin-current-sidebar-w, 260px)) !important;
+    background: rgba(13, 30, 21, 0.45);
+    backdrop-filter: blur(5px);
+  }
+
+  .drawer {
+    width: 760px !important;
+    max-width: min(800px, calc(100vw - var(--admin-current-sidebar-w, 260px) - 20px)) !important;
+    border-left: 1px solid #e2e8f0;
+    box-shadow: -16px 0 48px -8px rgba(15, 23, 42, 0.22);
+  }
+}

@@ -15,6 +15,7 @@
 
 /* SIDEBAR */
 .sidebar {
+
   width: 260px;
   min-width: 260px;
   max-width: 260px;
@@ -29,7 +30,7 @@
   height: 100vh;
   height: 100dvh;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 100;
+  z-index: 1050;
   transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), min-width 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
 }

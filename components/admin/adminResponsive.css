@@ -1,6 +1,7 @@
 :root {
   --admin-header-height: 60px;
   --admin-sidebar-width: 260px;
+  --admin-current-sidebar-w: 260px;
   --admin-sidebar-mini-width: 76px;
   --admin-safe-top: env(safe-area-inset-top, 0px);
   --admin-safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -28,7 +29,7 @@ body {
   box-sizing: border-box !important;
 }
 
-:is([class*="crmContainer"], [class*="Admin"]) > * {
+:is([class*="crmContainer"], [class*="Admin"]):not([class*="overlay"]):not([class*="Overlay"]):not([class*="drawerOverlay"]):not([class*="modalOverlay"]) > *:not([class*="drawer"]):not([class*="Drawer"]):not([class*="modal"]):not([class*="Modal"]) {
   min-width: 0 !important;
   max-width: 100% !important;
 }
@@ -290,4 +291,13 @@ body {
 
 .adminSafeBottomMargin {
   margin-bottom: var(--admin-safe-bottom) !important;
+}
+
+
+/* DESKTOP ADMIN DRAWERS & OVERLAYS DOCK TO SIDEBAR */
+@media (min-width: 1024px) {
+  :is([class*="overlay"], [class*="Overlay"], [class*="drawerOverlay"], [class*="modalOverlay"]):not([class*="mobileOverlay"]):not([class*="CommandPalette"]):not([class*="Toast"]) {
+    left: var(--admin-current-sidebar-w, 260px) !important;
+    width: calc(100vw - var(--admin-current-sidebar-w, 260px)) !important;
+  }
 }

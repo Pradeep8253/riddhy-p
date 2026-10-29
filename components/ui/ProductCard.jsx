@@ -32,7 +32,8 @@ export default function ProductCard({ product, compact = false }) {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useSelector((state) => state.ui?.locale || "en");
-  const fullTitle = getLocalizedProductName(product, locale) || product.name || "";
+  const fullTitle =
+    getLocalizedProductName(product, locale) || product.name || "";
   const desktopTitle = truncateTitle(fullTitle, 35);
   const mobileTitle = truncateTitle(fullTitle, 21);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
@@ -139,7 +140,8 @@ export default function ProductCard({ product, compact = false }) {
               : null);
 
   const isOutOfStock = Number(product.stock ?? 1) <= 0;
-  const isLowStock = !isOutOfStock && Number(product.stock ?? 1) <= (product.lowStockAt || 3);
+  const isLowStock =
+    !isOutOfStock && Number(product.stock ?? 1) <= (product.lowStockAt || 3);
 
   return (
     <article className={`${styles.card} ${compact ? styles.compact : ""}`}>

@@ -1,19 +1,19 @@
-import AboutHero from "@/components/store/about/AboutHero";
-import AboutCategories from "@/components/store/about/AboutCategories";
-import AboutWhyChooseUs from "@/components/store/about/AboutWhyChooseUs";
-import AboutCommitment from "@/components/store/about/AboutCommitment";
-import AboutStory from "@/components/store/about/AboutStory";
 import AboutBeliefs from "@/components/store/about/AboutBeliefs";
-import AboutDuo from "@/components/store/about/AboutDuo";
 import AboutCareTimeline from "@/components/store/about/AboutCareTimeline";
-import AboutMetrics from "@/components/store/about/AboutMetrics";
-import AboutShowroom from "@/components/store/about/AboutShowroom";
-import AboutPartners from "@/components/store/about/AboutPartners";
+import AboutCategories from "@/components/store/about/AboutCategories";
+import AboutCommitment from "@/components/store/about/AboutCommitment";
 import AboutCTA from "@/components/store/about/AboutCTA";
+import AboutDuo from "@/components/store/about/AboutDuo";
+import AboutHero from "@/components/store/about/AboutHero";
+import AboutMetrics from "@/components/store/about/AboutMetrics";
+import AboutPartners from "@/components/store/about/AboutPartners";
+import AboutShowroom from "@/components/store/about/AboutShowroom";
+import AboutStory from "@/components/store/about/AboutStory";
+import AboutWhyChooseUs from "@/components/store/about/AboutWhyChooseUs";
 import ReviewWall from "@/components/store/ReviewWall";
-import { siteConfig, isConfigured } from "@/lib/site-config";
-import { getLiveSiteConfig } from "@/lib/server-config";
 import { getCategories } from "@/lib/catalogue";
+import { getLiveSiteConfig } from "@/lib/server-config";
+import { isConfigured } from "@/lib/site-config";
 
 export async function generateMetadata() {
   const liveConfig = await getLiveSiteConfig();
