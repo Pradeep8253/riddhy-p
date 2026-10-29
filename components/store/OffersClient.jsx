@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import SectionHeading from '@/components/ui/SectionHeading';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';

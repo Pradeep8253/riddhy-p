@@ -76,7 +76,13 @@ export default function ApplianceGrid({ categories: propCategories, showAll = fa
   const displayCategories = showAll
     ? allCategories
     : FEATURED_SLUGS
-        .map((slug) => allCategories.find((c) => c.slug === slug || c.slug === `${slug}s`))
+        .map((slug) => {
+          const variants = [slug, `${slug}s`, slug.replace(/s$/, '')];
+          if (slug === 'fridge') variants.push('refrigerators', 'refrigerator');
+          if (slug === 'washing-machine') variants.push('washing-machines');
+          if (slug === 'cooler') variants.push('diacut-cooler');
+          return allCategories.find((c) => variants.includes(c.slug));
+        })
         .filter(Boolean)
         .slice(0, 6);
 

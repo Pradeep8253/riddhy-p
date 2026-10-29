@@ -1,5 +1,6 @@
 import WarrantyPortalClient from '@/components/store/WarrantyPortalClient';
 import { getLiveSiteConfig } from '@/lib/server-config';
+import { getCanonicalUrl } from '@/lib/seo';
 
 export async function generateMetadata() {
   const config = await getLiveSiteConfig();
@@ -10,7 +11,7 @@ export async function generateMetadata() {
     description:
       'Register your purchased RF Riddhy furniture and home appliances. Track real-time remaining warranty days, view coverage certificates, and request warranty service online.',
     alternates: {
-      canonical: '/warranty'
+      canonical: getCanonicalUrl('/warranty'),
     },
     openGraph: {
       title: `Warranty Registration & Protection | ${brand}`,

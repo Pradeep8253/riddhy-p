@@ -3,34 +3,41 @@ import ContactForm from '@/components/commerce/ContactForm';
 import Icon from '@/components/ui/Icon';
 import { siteConfig, isConfigured } from '@/lib/site-config';
 import { getLiveSiteConfig } from '@/lib/server-config';
+import { getBreadcrumbSchema } from '@/lib/seo';
 import styles from './content.module.css';
 
 export async function generateMetadata() {
   const liveConfig = await getLiveSiteConfig();
   const url = `${liveConfig.siteUrl}/contact`;
-  const title = 'Contact RF Riddhy — Customer Care & Showroom';
+  const title = 'Contact Showroom in Prayagraj & Customer Care | Riddhy Furnitures';
   const description =
-    'Connect with the RF Riddhy team for product advice, order status, delivery, installation, warranty, and showroom visits.';
+    'Visit the Riddhy Furnitures showroom at Mansoorabad, Prayagraj (229411) or call +91 88402 45188. Google Maps directions, WhatsApp chat, showroom hours, and wedding package assistance.';
 
   return {
     title,
     description,
+    keywords: [
+      'furniture shop in Prayagraj contact',
+      'Riddhy Furnitures Mansoorabad address',
+      'furniture showroom Prayagraj phone number',
+      'furniture showroom in Mansoorabad',
+    ],
     alternates: {
-      canonical: url
+      canonical: url,
     },
     openGraph: {
       type: 'website',
       url,
       title,
       description,
-      images: ['/images/og-image.webp']
+      images: ['/images/og-image.webp'],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/images/og-image.webp']
-    }
+      images: ['/images/og-image.webp'],
+    },
   };
 }
 
@@ -76,11 +83,16 @@ export default async function ContactPage({ searchParams }) {
     }
   };
 
+  const breadcrumbs = getBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Contact', url: '/contact' },
+  ]);
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([contactSchema, breadcrumbs]).replace(/</g, '\\u003c') }}
       />
 
       <main className="container" style={{ paddingBlock: 'clamp(48px, 6vw, 90px)' }}>

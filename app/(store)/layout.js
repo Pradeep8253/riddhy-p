@@ -6,13 +6,17 @@ import CartDrawer from '@/components/commerce/CartDrawer';
 import MobileBottomNav from '@/components/store/MobileBottomNav';
 import OffersModal from '@/components/store/OffersModal';
 import { getLiveSiteConfig } from '@/lib/server-config';
+import { getCategories } from '@/lib/catalogue';
 
 export default async function StoreLayout({ children }) {
-  const liveConfig = await getLiveSiteConfig();
+  const [liveConfig, categories] = await Promise.all([
+    getLiveSiteConfig(),
+    getCategories().catch(() => []),
+  ]);
 
   return (
     <>
-      <Header config={liveConfig} />
+      <Header config={liveConfig} initialCategories={categories} />
       <div>{children}</div>
       <Footer config={liveConfig} />
       <ToastViewport />

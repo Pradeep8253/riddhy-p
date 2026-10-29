@@ -143,7 +143,7 @@ export default function ExploreOurRange({
   // Sync or fetch dynamic products from backend
   useEffect(() => {
     if (!allProducts || allProducts.length === 0) {
-      fetch("/api/products?limit=50")
+      fetch("/api/products?limit=250")
         .then((res) => (res.ok ? res.json() : null))
         .then((json) => {
           const items = json?.data?.items || json?.data || [];
@@ -288,22 +288,34 @@ export default function ExploreOurRange({
       return result;
     }
 
-    // Specific category filter - strict category association without substring leakage
+    // Specific category filter - strict category association with smart synonyms
     const target = activeCategory.toLowerCase();
+    const synonyms = {
+      'double-bed': ['beds', 'double-bed', 'bed'],
+      'sofa-set': ['sofas', 'sofa-set', 'sofa'],
+      'wooden-wordrobe': ['wardrobes', 'wooden-wordrobe', 'wardrobe'],
+      'fancy-almirah': ['fancy-almirah', 'almirah'],
+      fridge: ['fridge', 'refrigerators', 'refrigerator'],
+      'washing-machine': ['washing-machine', 'washing-machines'],
+      cooler: ['cooler', 'diacut-cooler'],
+      mattress: ['mattress', 'mattresses'],
+    }[target] || [target];
+
     const matching = deptProducts.filter((p) => {
       const cat = String(p.category || "").toLowerCase();
       const catSlug = String(p.categorySlug || "").toLowerCase();
       const catLabel = String(p.categoryLabel || "").toLowerCase();
       const model = String(p.modelType || "").toLowerCase();
 
-      return (
-        cat === target ||
-        catSlug === target ||
-        catLabel === target ||
-        model === target ||
-        cat.replace(/-/g, "") === target.replace(/-/g, "") ||
-        cat.replace(/s$/, "") === target.replace(/s$/, "") ||
-        target.replace(/s$/, "") === cat.replace(/s$/, "")
+      return synonyms.some(
+        (syn) =>
+          cat === syn ||
+          catSlug === syn ||
+          catLabel === syn ||
+          model === syn ||
+          cat.replace(/-/g, "") === syn.replace(/-/g, "") ||
+          cat.replace(/s$/, "") === syn.replace(/s$/, "") ||
+          syn.replace(/s$/, "") === cat.replace(/s$/, "")
       );
     });
 

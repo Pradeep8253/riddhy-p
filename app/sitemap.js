@@ -13,7 +13,7 @@ export default async function sitemap() {
     { path: "/marriage-packages", priority: 0.9, freq: "weekly" },
     { path: "/offers", priority: 0.8, freq: "daily" },
     { path: "/rooms", priority: 0.8, freq: "weekly" },
-    { path: "/rooms/living-room", priority: 0.7, freq: "weekly" },
+    { path: "/rooms/living", priority: 0.7, freq: "weekly" },
     { path: "/rooms/bedroom", priority: 0.7, freq: "weekly" },
     { path: "/rooms/kitchen", priority: 0.7, freq: "weekly" },
     { path: "/rooms/dining", priority: 0.7, freq: "weekly" },

@@ -1,14 +1,37 @@
 import BulkEnquiryForm from '@/components/commerce/BulkEnquiryForm';
+import { getCanonicalUrl, getBreadcrumbSchema } from '@/lib/seo';
 import styles from './bulk.module.css';
 
 export const metadata = {
-  title: 'Trade & Bulk Enquiries — RF Riddhy Commercial Desk',
-  description: 'Furnishing a hotel, workspace, rental property, or multi-unit project? Request a considered B2B trade quote with volume discounts and GST input credit.'
+  title: 'Bulk Furniture & Appliance Orders in Prayagraj | RF Riddhy Commercial Desk',
+  description:
+    'Furnishing hotels, offices, hostesses or wedding events in Prayagraj? Request bulk quotes with volume discounts, GST tax credit and white-glove delivery from Riddhy Furnitures.',
+  alternates: {
+    canonical: getCanonicalUrl('/bulk-enquiry'),
+  },
+  openGraph: {
+    title: 'Bulk Furniture & Appliance Orders in Prayagraj | RF Riddhy',
+    description:
+      'Commercial bulk quotes, institutional supply, and hotel/hostel furnishing in Prayagraj.',
+    url: getCanonicalUrl('/bulk-enquiry'),
+  },
 };
 
 export default function BulkEnquiryPage() {
+  const breadcrumbs = getBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Bulk Enquiry', url: '/bulk-enquiry' },
+  ]);
+
   return (
-    <main className="container">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbs).replace(/</g, '\\u003c'),
+        }}
+      />
+      <main className="container">
       <section className={styles.page}>
         <div className={styles.copy}>
           <span className="kicker">Enterprise · Hospitality · Projects</span>
@@ -56,6 +79,7 @@ export default function BulkEnquiryPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }
 

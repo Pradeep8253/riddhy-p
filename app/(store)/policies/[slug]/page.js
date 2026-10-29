@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getCanonicalUrl, getBreadcrumbSchema } from "@/lib/seo";
 import styles from "./policy.module.css";
 
 const policies = {
@@ -56,6 +57,28 @@ const policies = {
       [
         "Non-returnable items",
         "Custom-sized furniture, clearance/sale items marked 'final sale', and products with removed tags or missing original packaging cannot be returned unless defective.",
+      ],
+    ],
+    notice:
+      "Please inspect your furniture at the time of delivery. Approval of delivery does not waive your right to report a defect within the return window.",
+  },
+
+  refund: {
+    title: "Returns & Refund Policy",
+    intro:
+      "We want you to love your furniture. If something isn't right, our refund and return process is straightforward and fast.",
+    sections: [
+      [
+        "Return window",
+        "Most products can be returned within 7 days of delivery if unused, uninstalled and in original packaging. Mattresses have a 100-night trial period. Custom-made and made-to-order furniture is non-returnable unless defective or damaged.",
+      ],
+      [
+        "Refund processing & timelines",
+        "Once the returned item passes quality inspection, refunds are processed to your original payment method within 5–7 business days. For prepaid orders (cards, UPI, net banking), refunds go back to the source account. COD orders are refunded via direct bank transfer.",
+      ],
+      [
+        "Damaged or defective pieces",
+        "If your item arrives damaged or with a manufacturing defect, contact us within 48 hours with photos or videos. We provide free replacement, repair, or full refund.",
       ],
     ],
     notice:
@@ -156,7 +179,7 @@ const policies = {
       ],
       [
         "Governing law",
-        "These terms are governed by the laws of India. Any disputes will be subject to the jurisdiction of the courts located in [your city].",
+        "These terms are governed by the laws of India. Any disputes will be subject to the jurisdiction of the courts located in Prayagraj, Uttar Pradesh.",
       ],
     ],
     notice:
@@ -192,9 +215,20 @@ const policies = {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
+  const policy = policies[slug];
+  const title = policy?.title || "Policies";
+  const description = policy?.intro || "Riddhy Furniture policies.";
   return {
-    title: policies[slug]?.title || "Policies",
-    description: policies[slug]?.intro || "Riddhy Furniture policies.",
+    title: `${title} | Riddhy Furnitures Prayagraj`,
+    description,
+    alternates: {
+      canonical: getCanonicalUrl(`/policies/${slug}`),
+    },
+    openGraph: {
+      title: `${title} | Riddhy Furnitures Prayagraj`,
+      description,
+      url: getCanonicalUrl(`/policies/${slug}`),
+    },
   };
 }
 
@@ -203,23 +237,37 @@ export default async function PolicyPage({ params }) {
   const policy = policies[slug];
   if (!policy) notFound();
 
+  const breadcrumbs = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Policies", url: `/policies/${slug}` },
+    { name: policy.title, url: `/policies/${slug}` },
+  ]);
+
   return (
-    <article className={`container ${styles.page}`}>
-      <span className="kicker">Riddhy Furniture · Policy Information</span>
-      <h1>{policy.title}</h1>
-      <p className={styles.intro}>{policy.intro}</p>
-      <div className={styles.sections}>
-        {policy.sections.map(([title, body]) => (
-          <section key={title}>
-            <h2>{title}</h2>
-            <p>{body}</p>
-          </section>
-        ))}
-      </div>
-      <aside>{policy.notice}</aside>
-      <small className={styles.updated}>
-        Last updated: policies are reviewed periodically to stay current.
-      </small>
-    </article>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c"),
+        }}
+      />
+      <article className={`container ${styles.page}`}>
+        <span className="kicker">Riddhy Furniture · Policy Information</span>
+        <h1>{policy.title}</h1>
+        <p className={styles.intro}>{policy.intro}</p>
+        <div className={styles.sections}>
+          {policy.sections.map(([title, body]) => (
+            <section key={title}>
+              <h2>{title}</h2>
+              <p>{body}</p>
+            </section>
+          ))}
+        </div>
+        <aside>{policy.notice}</aside>
+        <small className={styles.updated}>
+          Last updated: policies are reviewed periodically to stay current.
+        </small>
+      </article>
+    </>
   );
 }

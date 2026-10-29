@@ -30,9 +30,27 @@ import {
 export const revalidate = 0;
 
 export const metadata = {
-  title: "Furniture & Home Appliances for Thoughtful Living",
+  title: {
+    absolute: "Riddhy Furnitures | Best Furniture & Home Appliances Shop in Prayagraj",
+  },
+  keywords: [
+    "furniture shop in Prayagraj",
+    "furniture showroom in Prayagraj",
+    "best furniture shop in Prayagraj",
+    "sofa shop in Prayagraj",
+    "double bed in Prayagraj",
+    "almirah shop in Prayagraj",
+    "wedding furniture packages in Prayagraj",
+    "home appliances in Prayagraj",
+    "furniture shop in Mansoorabad",
+    "Riddhy Furnitures",
+    "RF Riddhy",
+  ],
+  alternates: {
+    canonical: "https://www.riddhyfurnitures.in",
+  },
   description:
-    "Explore room-ready furniture and dependable home appliances, with delivery, installation and warranty details made clear.",
+    "Best furniture showroom & home appliances store in Prayagraj & Mansoorabad (229411). Solid wood double beds, sofa sets, almirahs, dining tables, utensils & wedding packages with free doorstep delivery.",
 };
 
 export default async function HomePage() {

@@ -1,13 +1,17 @@
 import { getSession } from '@/lib/auth';
 import AuthForm from '@/components/commerce/AuthForm';
 import TrackOrderClient from './TrackOrderClient';
+import { getCanonicalUrl } from '@/lib/seo';
 import styles from '../account/account.module.css';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Track Your Order & Delivery Status — RF Riddhy',
-  description: 'Enter your order reference number and mobile number to track real-time delivery status, express logistics transit, and installation scheduling.'
+  description: 'Enter your order reference number and mobile number to track real-time delivery status, express logistics transit, and installation scheduling.',
+  alternates: {
+    canonical: getCanonicalUrl('/track-order'),
+  },
 };
 
 export default async function TrackOrderPage() {

@@ -39,7 +39,7 @@ const servicesLinks = [
   { label: 'Store Visit', href: '/contact', icon: 'mapPin' }
 ];
 
-export default function Header({ config }) {
+export default function Header({ config, initialCategories = [] }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -57,8 +57,18 @@ export default function Header({ config }) {
 
   const [mounted, setMounted] = useState(false);
   const [dynamicNav, setDynamicNav] = useState(defaultNav);
-  const [categoryLabels, setCategoryLabels] = useState({});
-  const [categoriesList, setCategoriesList] = useState([]);
+  const initialLabels = useMemo(() => {
+    const map = {};
+    if (Array.isArray(initialCategories)) {
+      initialCategories.forEach((c) => {
+        if (c.slug && c.name) map[c.slug] = c.name;
+      });
+    }
+    return map;
+  }, [initialCategories]);
+
+  const [categoryLabels, setCategoryLabels] = useState(initialLabels);
+  const [categoriesList, setCategoriesList] = useState(initialCategories || []);
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const legacyAliases = useMemo(
@@ -820,7 +830,7 @@ export default function Header({ config }) {
                         onClick={() => setActiveDropdown(null)}
                       >
                         <span className={styles.megaMenuArrow}>›</span>
-                        <span>View All Furniture ({furnitureCategories.length}) →</span>
+                        <span>View All Furniture {furnitureCategories.length > 0 ? `(${furnitureCategories.length})` : ''} →</span>
                       </Link>
                     </div>
                   </div>
@@ -846,7 +856,7 @@ export default function Header({ config }) {
                         onClick={() => setActiveDropdown(null)}
                       >
                         <span className={styles.megaMenuArrow}>›</span>
-                        <span>View All Utensils ({utensilsCategories.length}) →</span>
+                        <span>View All Utensils {utensilsCategories.length > 0 ? `(${utensilsCategories.length})` : ''} →</span>
                       </Link>
                     </div>
                   </div>
@@ -872,7 +882,7 @@ export default function Header({ config }) {
                         onClick={() => setActiveDropdown(null)}
                       >
                         <span className={styles.megaMenuArrow}>›</span>
-                        <span>View All Appliances ({applianceCategories.length}) →</span>
+                        <span>View All Appliances {applianceCategories.length > 0 ? `(${applianceCategories.length})` : ''} →</span>
                       </Link>
                     </div>
                   </div>

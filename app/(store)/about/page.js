@@ -14,17 +14,24 @@ import ReviewWall from "@/components/store/ReviewWall";
 import { getCategories } from "@/lib/catalogue";
 import { getLiveSiteConfig } from "@/lib/server-config";
 import { isConfigured } from "@/lib/site-config";
+import { getBreadcrumbSchema } from "@/lib/seo";
 
 export async function generateMetadata() {
   const liveConfig = await getLiveSiteConfig();
   const url = `${liveConfig.siteUrl}/about`;
-  const title = "About RF Riddhy — Furniture & Home Appliances";
+  const title = "About Riddhy Furnitures | Furniture & Appliances Showroom in Prayagraj";
   const description =
-    "RF Riddhy brings thoughtfully chosen furniture and dependable home appliances together with warmth, clarity, and genuine aftercare.";
+    "Learn about Riddhy Furnitures (RF Riddhy) in Mansoorabad, Prayagraj. Handcrafted solid wood furniture, dependable home appliances, wedding packages, and reliable customer aftercare.";
 
   return {
     title,
     description,
+    keywords: [
+      "about Riddhy Furnitures",
+      "furniture store Mansoorabad Prayagraj",
+      "best furniture showroom Prayagraj",
+      "RF Riddhy story",
+    ],
     alternates: {
       canonical: url,
     },
@@ -93,18 +100,17 @@ export default async function AboutPage() {
     },
   };
 
+  const breadcrumbs = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "About", url: "/about" },
+  ]);
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(orgSchema).replace(/</g, "\\u003c"),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(aboutPageSchema).replace(/</g, "\\u003c"),
+          __html: JSON.stringify([orgSchema, aboutPageSchema, breadcrumbs]).replace(/</g, "\\u003c"),
         }}
       />
 
