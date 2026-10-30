@@ -324,6 +324,8 @@
 .modalBackdrop {
   position: fixed;
   inset: 0;
+  left: var(--admin-current-sidebar-w, 260px);
+  width: calc(100% - var(--admin-current-sidebar-w, 260px));
   background: rgba(17, 38, 27, 0.65);
   backdrop-filter: blur(5px);
   display: flex;
@@ -336,13 +338,14 @@
 
 .modal {
   background: #ffffff;
-  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 22px;
   width: 100%;
-  max-width: 780px;
-  max-height: 90vh;
+  max-width: 960px;
+  max-height: min(84vh, 820px);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 30px 90px rgba(8, 27, 16, 0.34), 0 4px 18px rgba(8, 27, 16, 0.1);
   overflow: hidden;
   animation: modalScale 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -356,9 +359,9 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 20px 28px;
-  border-bottom: 1.5px solid #ebe7df;
-  background: #faf9f6;
+  padding: 22px 30px;
+  border-bottom: 1px solid #eae8df;
+  background: linear-gradient(135deg, #fffefa 0%, #f7f8f2 100%);
 }
 
 .modalHeader h2 {
@@ -407,7 +410,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 24px 28px;
+  padding: 26px 30px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -448,8 +451,8 @@
 
 .zoneCard {
   border: 1.5px solid #e2ded5;
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 16px;
+  padding: 16px;
   background: #faf9f6;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -545,6 +548,105 @@
   flex-direction: column;
   gap: 12px;
 }
+
+.popupNote {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 1px solid #e3e9d8;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #f7f8ee, #f3f8f2);
+  color: #193c25;
+}
+
+.popupNoteIcon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  color: #b28516;
+  background: #fff8dc;
+  font-size: 20px;
+}
+
+.popupNote strong,
+.popupNote small { display: block; }
+.popupNote strong { font-size: 13px; }
+.popupNote small { margin-top: 3px; color: #718073; font-size: 12px; }
+.popupNote button {
+  margin-left: auto;
+  padding: 8px 12px;
+  border: 1px solid #d9e1d2;
+  border-radius: 9px;
+  background: #fff;
+  color: #216938;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.uploadContainerPopup {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: stretch;
+  gap: 14px;
+}
+
+.uploadContainerPopup .dropZone {
+  min-height: 230px;
+  justify-content: center;
+  padding: 26px;
+  border-color: #b7cbb5;
+  background: radial-gradient(ellipse at 50% 0%, #fff 0%, #f5f9f3 72%);
+}
+
+.uploadContainerPopup .urlInputRow {
+  grid-column: 1;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.uploadContainerPopup .previewBox {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 14px;
+  border-color: #e8e7df;
+  border-radius: 16px;
+  background: #fbfbf8;
+}
+
+.uploadContainerPopup .previewImgWrap {
+  flex: 1;
+  aspect-ratio: auto;
+  max-height: 320px;
+  min-height: 190px;
+  background: #102219;
+}
+
+.previewEmpty {
+  display: flex;
+  flex: 1;
+  min-height: 190px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px dashed #d7ded1;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #f6f8f2, #fff);
+  color: #7d8c7d;
+}
+
+.previewEmpty span { color: #bd9a3a; font-size: 24px; }
+.previewEmpty strong { color: #344c38; font-size: 13px; }
+.previewEmpty small { font-size: 11px; }
 
 .dropZone {
   border: 2px dashed #a4bfaa;
@@ -891,7 +993,9 @@
     min-height: 44px;
     padding: 8px 14px;
   }
-  .modalOverlay {
+  .modalBackdrop {
+    left: 0;
+    width: 100%;
     padding: 0;
     align-items: flex-end;
   }

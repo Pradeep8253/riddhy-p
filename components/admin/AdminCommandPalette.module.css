@@ -11,6 +11,13 @@
   animation: fadeIn 0.15s ease-out;
 }
 
+@media (min-width: 1025px) {
+  .overlay {
+    inset-inline-start: var(--admin-current-sidebar-w, 260px);
+    width: calc(100% - var(--admin-current-sidebar-w, 260px));
+  }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

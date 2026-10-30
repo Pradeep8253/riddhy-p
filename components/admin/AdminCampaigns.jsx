@@ -26,6 +26,13 @@ const ZONES = [
     description: 'Bottom promotional card on the right side next to slider.',
     recommended: 'Recommended: 800 × 440px (Wide)',
   },
+  {
+    id: 'popupbanner',
+    label: 'Popup Banner',
+    badge: 'Popup Banner',
+    description: 'Image shown in the website popup. Only image and active status are managed here.',
+    recommended: 'Recommended: landscape image',
+  },
 ];
 
 const QUICK_LINKS = [
@@ -54,6 +61,7 @@ export default function AdminCampaigns() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [showZonePicker, setShowZonePicker] = useState(true);
 
   const fileInputRef = useRef(null);
 
@@ -93,7 +101,9 @@ export default function AdminCampaigns() {
 
   const openCreateModal = () => {
     setEditingId(null);
-    setForm(initialBlank);
+    const zone = filterZone === 'popupbanner' ? 'popupbanner' : initialBlank.zone;
+    setForm({ ...initialBlank, zone });
+    setShowZonePicker(zone !== 'popupbanner');
     setMessage('');
     setIsModalOpen(true);
   };
@@ -108,6 +118,7 @@ export default function AdminCampaigns() {
       sortOrder: item.sortOrder ?? 1,
       active: item.active !== false,
     });
+    setShowZonePicker(item.zone !== 'popupbanner');
     setMessage('');
     setIsModalOpen(true);
   };
@@ -116,6 +127,7 @@ export default function AdminCampaigns() {
     setIsModalOpen(false);
     setEditingId(null);
     setForm(initialBlank);
+    setShowZonePicker(true);
   };
 
   const handleImageUpload = async (e) => {
@@ -163,8 +175,8 @@ export default function AdminCampaigns() {
 
     try {
       const payload = {
-        name: form.title || 'Homepage Banner',
-        title: form.title || 'Homepage Banner',
+        name: form.zone === 'popupbanner' ? 'Popup Banner' : (form.title || 'Homepage Banner'),
+        title: form.zone === 'popupbanner' ? 'Popup Banner' : (form.title || 'Homepage Banner'),
         zone: form.zone,
         desktopImage: form.desktopImage,
         mobileImage: form.desktopImage,
@@ -294,27 +306,11 @@ export default function AdminCampaigns() {
             >
               All Zones ({items.length})
             </button>
-            <button
-              type="button"
-              className={`${styles.filterBtn} ${filterZone === 'hero-slider' ? styles.filterBtnActive : ''}`}
-              onClick={() => setFilterZone('hero-slider')}
-            >
-              Left Slider
-            </button>
-            <button
-              type="button"
-              className={`${styles.filterBtn} ${filterZone === 'hero-side-top' ? styles.filterBtnActive : ''}`}
-              onClick={() => setFilterZone('hero-side-top')}
-            >
-              Right Top
-            </button>
-            <button
-              type="button"
-              className={`${styles.filterBtn} ${filterZone === 'hero-side-bottom' ? styles.filterBtnActive : ''}`}
-              onClick={() => setFilterZone('hero-side-bottom')}
-            >
-              Right Bottom
-            </button>
+            {ZONES.map((zone) => (
+              <button key={zone.id} type="button"
+                className={`${styles.filterBtn} ${filterZone === zone.id ? styles.filterBtnActive : ''}`}
+                onClick={() => setFilterZone(zone.id)}>{zone.badge}</button>
+            ))}
           </div>
         </div>
 
@@ -355,10 +351,10 @@ export default function AdminCampaigns() {
                   </div>
 
                   <div className={styles.cardBody}>
-                    <div className={styles.cardTitle}>{item.title || item.name}</div>
-                    <div className={styles.cardHref}>
+                    <div className={styles.cardTitle}>{item.zone === 'popupbanner' ? 'Popup Banner' : (item.title || item.name)}</div>
+                    {item.zone !== 'popupbanner' && <div className={styles.cardHref}>
                       <span className={styles.hrefTag}>Target:</span> {item.href || '/packages'}
-                    </div>
+                    </div>}
 
                     <div className={styles.cardFooter}>
                       <span className={styles.sortBadge}>Order #{item.sortOrder ?? 1}</span>
@@ -394,9 +390,9 @@ export default function AdminCampaigns() {
             {/* Modal Header */}
             <div className={styles.modalHeader}>
               <div>
-                <h2>{editingId ? '✏️ Edit Banner' : '➕ Upload New Banner Image'}</h2>
+                <h2>{form.zone === 'popupbanner' ? 'Popup Banner Image' : (editingId ? '✏️ Edit Banner' : '➕ Upload New Banner Image')}</h2>
                 <span className={styles.modalSub}>
-                  {editingId ? `Editing: ${form.title || 'Banner'}` : 'Configure and upload banner image for homepage'}
+                  {form.zone === 'popupbanner' ? 'This image appears in the website popup.' : (editingId ? `Editing: ${form.title || 'Banner'}` : 'Configure and upload banner image for homepage')}
                 </span>
               </div>
               <button type="button" className={styles.closeBtn} onClick={closeModal} aria-label="Close modal">
@@ -407,8 +403,7 @@ export default function AdminCampaigns() {
             {/* Modal Form */}
             <form onSubmit={submit} className={styles.modalForm}>
               <div className={styles.modalBody}>
-                {/* 1. SELECT PLACEMENT ZONE */}
-                <div className={styles.fieldSection}>
+                {showZonePicker && <div className={styles.fieldSection}>
                   <label className={styles.sectionLabel}>
                     1. Placement Zone <span className={styles.req}>*</span>
                   </label>
@@ -417,14 +412,20 @@ export default function AdminCampaigns() {
                       <div
                         key={z.id}
                         className={`${styles.zoneCard} ${form.zone === z.id ? styles.zoneCardActive : ''}`}
-                        onClick={() => update('zone', z.id)}
+                        onClick={() => {
+                          update('zone', z.id);
+                          setShowZonePicker(z.id !== 'popupbanner');
+                        }}
                       >
                         <div className={styles.zoneCardHead}>
                           <input
                             type="radio"
                             name="zone"
                             checked={form.zone === z.id}
-                            onChange={() => update('zone', z.id)}
+                            onChange={() => {
+                              update('zone', z.id);
+                              setShowZonePicker(z.id !== 'popupbanner');
+                            }}
                           />
                           <span className={styles.zoneBadge}>{z.badge}</span>
                         </div>
@@ -434,15 +435,23 @@ export default function AdminCampaigns() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div>}
+
+                {form.zone === 'popupbanner' && !showZonePicker && (
+                  <div className={styles.popupNote}>
+                    <span className={styles.popupNoteIcon}>✦</span>
+                    <span><strong>Popup banner</strong><small>One image, shown in the center of the storefront.</small></span>
+                    <button type="button" onClick={() => setShowZonePicker(true)}>Change placement</button>
+                  </div>
+                )}
 
                 {/* 2. IMAGE UPLOAD & PREVIEW */}
                 <div className={styles.fieldSection}>
                   <label className={styles.sectionLabel}>
-                    2. Banner Image <span className={styles.req}>*</span>
+                    {form.zone === 'popupbanner' ? 'Popup image' : '2. Banner Image'} <span className={styles.req}>*</span>
                   </label>
 
-                  <div className={styles.uploadContainer}>
+                  <div className={`${styles.uploadContainer} ${form.zone === 'popupbanner' ? styles.uploadContainerPopup : ''}`}>
                     {/* Direct Upload Box */}
                     <div className={styles.dropZone} onClick={() => fileInputRef.current?.click()}>
                       <input
@@ -473,15 +482,15 @@ export default function AdminCampaigns() {
                     </div>
 
                     {/* Live Preview of Selected Image */}
-                    {form.desktopImage && (
-                      <div className={styles.previewBox}>
+                    {(form.desktopImage || form.zone === 'popupbanner') && (
+                      <div className={`${styles.previewBox} ${form.zone === 'popupbanner' ? styles.popupPreviewBox : ''}`}>
                         <div className={styles.previewBoxHead}>
                           <span>Image Preview</span>
-                          <a href={form.desktopImage} target="_blank" rel="noreferrer" className={styles.previewLink}>
+                          {form.desktopImage && <a href={form.desktopImage} target="_blank" rel="noreferrer" className={styles.previewLink}>
                             View Full Image ↗
-                          </a>
+                          </a>}
                         </div>
-                        <div className={styles.previewImgWrap}>
+                        {form.desktopImage ? <div className={styles.previewImgWrap}>
                           <img
                             src={form.desktopImage}
                             alt="Banner preview"
@@ -490,12 +499,13 @@ export default function AdminCampaigns() {
                               e.target.style.display = 'none';
                             }}
                           />
-                        </div>
+                        </div> : <div className={styles.previewEmpty}><span>✦</span><strong>Image preview</strong><small>Your popup image will appear here</small></div>}
                       </div>
                     )}
                   </div>
                 </div>
 
+                {form.zone !== 'popupbanner' && <>
                 {/* 3. TITLE & LINK DETAILS */}
                 <div className={styles.fieldSection}>
                   <label className={styles.sectionLabel}>3. Banner Details</label>
@@ -575,8 +585,8 @@ export default function AdminCampaigns() {
                     </div>
                   </div>
                 </div>
+                </>}
               </div>
-
               {/* Modal Footer Actions */}
               <div className={styles.modalFooter}>
                 <button type="button" onClick={closeModal} className={styles.cancelBtn}>
@@ -593,3 +603,4 @@ export default function AdminCampaigns() {
     </div>
   );
 }
+

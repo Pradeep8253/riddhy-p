@@ -23,13 +23,16 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
   const [query, setQuery] = useState('');
   const [asyncResults, setAsyncResults] = useState({ orders: [], products: [], leads: [] });
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef(null);
+  const resultsRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
       setQuery('');
       setAsyncResults({ orders: [], products: [], leads: [] });
+      setActiveIndex(0);
     }
   }, [isOpen]);
 
@@ -78,6 +81,16 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
 
     return () => clearTimeout(timer);
   }, [query]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [query, asyncResults.orders.length, asyncResults.products.length, asyncResults.leads.length]);
+
+  useEffect(() => {
+    resultsRef.current
+      ?.querySelector(`[data-command-index="${activeIndex}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [activeIndex]);
 
   if (!isOpen) return null;
 
@@ -185,9 +198,33 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
     asyncResults.products.length > 0 ||
     asyncResults.leads.length > 0;
 
+  const visibleNav = matchedNav.slice(0, 5);
+  const navCount = visibleNav.length;
+  const resultCount = navCount + asyncResults.orders.length + asyncResults.products.length + asyncResults.leads.length;
+
+  const handleSearchKeyDown = (event) => {
+    const focusedResult = event.target.closest?.('[data-command-result="true"]');
+    if (event.target !== inputRef.current && !focusedResult) return;
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (!resultCount) return;
+      const direction = event.key === 'ArrowDown' ? 1 : -1;
+      setActiveIndex((current) => (current + direction + resultCount) % resultCount);
+    } else if (event.key === 'Enter' || (event.key === ' ' && focusedResult)) {
+      const activeResult = focusedResult || (event.target === inputRef.current
+        ? resultsRef.current?.querySelector(`[data-command-index="${activeIndex}"]`)
+        : null);
+      if (activeResult) {
+        event.preventDefault();
+        activeResult.click();
+      }
+    }
+  };
+
   return (
     <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-label="Command search palette">
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()} onKeyDown={handleSearchKeyDown}>
         {/* Search Input Header */}
         <div className={styles.searchHeader}>
           <Search size={18} />
@@ -197,6 +234,10 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
             placeholder="Search orders, products, customers…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-activedescendant={resultCount ? `command-result-${activeIndex}` : undefined}
+            aria-controls="admin-command-results"
+            role="combobox"
+            aria-expanded="true"
           />
           <button type="button" className={styles.escBadge} onClick={onClose}>
             ESC
@@ -204,16 +245,22 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
         </div>
 
         {/* Results Body */}
-        <div className={styles.resultsBody}>
+        <div className={styles.resultsBody} id="admin-command-results" ref={resultsRef}>
           {/* Navigation Quick Links */}
           {matchedNav.length > 0 && (
             <div>
               <div className={styles.sectionTitle}>Navigation & Pages</div>
               <div className={styles.resultList}>
-                {matchedNav.slice(0, 5).map((nav) => (
+                {visibleNav.map((nav, index) => (
                   <div
                     key={nav.href}
-                    className={styles.resultItem}
+                    id={`command-result-${index}`}
+                    data-command-index={index}
+                    data-command-result="true"
+                    role="button"
+                    tabIndex={0}
+                    aria-selected={activeIndex === index}
+                    className={`${styles.resultItem} ${activeIndex === index ? styles.resultItemActive : ''}`}
                     onClick={() => handleSelect(nav.href)}
                   >
                     <div className={styles.resultItemLeft}>
@@ -235,10 +282,18 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
             <div>
               <div className={styles.sectionTitle}>Orders ({asyncResults.orders.length})</div>
               <div className={styles.resultList}>
-                {asyncResults.orders.map((o) => (
+                {asyncResults.orders.map((o, index) => {
+                  const commandIndex = navCount + index;
+                  return (
                   <div
                     key={o.id}
-                    className={styles.resultItem}
+                    id={`command-result-${commandIndex}`}
+                    data-command-index={commandIndex}
+                    data-command-result="true"
+                    role="button"
+                    tabIndex={0}
+                    aria-selected={activeIndex === commandIndex}
+                    className={`${styles.resultItem} ${activeIndex === commandIndex ? styles.resultItemActive : ''}`}
                     onClick={() => handleSelect(o.href)}
                   >
                     <div className={styles.resultItemLeft}>
@@ -250,7 +305,7 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
                     </div>
                     <span className={styles.resultBadge}>{o.badge}</span>
                   </div>
-                ))}
+                );})}
               </div>
             </div>
           )}
@@ -260,10 +315,18 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
             <div>
               <div className={styles.sectionTitle}>Catalogue ({asyncResults.products.length})</div>
               <div className={styles.resultList}>
-                {asyncResults.products.map((p) => (
+                {asyncResults.products.map((p, index) => {
+                  const commandIndex = navCount + asyncResults.orders.length + index;
+                  return (
                   <div
                     key={p.id}
-                    className={styles.resultItem}
+                    id={`command-result-${commandIndex}`}
+                    data-command-index={commandIndex}
+                    data-command-result="true"
+                    role="button"
+                    tabIndex={0}
+                    aria-selected={activeIndex === commandIndex}
+                    className={`${styles.resultItem} ${activeIndex === commandIndex ? styles.resultItemActive : ''}`}
                     onClick={() => handleSelect(p.href)}
                   >
                     <div className={styles.resultItemLeft}>
@@ -275,7 +338,7 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
                     </div>
                     <span className={styles.resultBadge}>{p.badge}</span>
                   </div>
-                ))}
+                );})}
               </div>
             </div>
           )}
@@ -285,10 +348,18 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
             <div>
               <div className={styles.sectionTitle}>Inquiries & Leads ({asyncResults.leads.length})</div>
               <div className={styles.resultList}>
-                {asyncResults.leads.map((l) => (
+                {asyncResults.leads.map((l, index) => {
+                  const commandIndex = navCount + asyncResults.orders.length + asyncResults.products.length + index;
+                  return (
                   <div
                     key={l.id}
-                    className={styles.resultItem}
+                    id={`command-result-${commandIndex}`}
+                    data-command-index={commandIndex}
+                    data-command-result="true"
+                    role="button"
+                    tabIndex={0}
+                    aria-selected={activeIndex === commandIndex}
+                    className={`${styles.resultItem} ${activeIndex === commandIndex ? styles.resultItemActive : ''}`}
                     onClick={() => handleSelect(l.href)}
                   >
                     <div className={styles.resultItemLeft}>
@@ -300,7 +371,7 @@ export default function AdminCommandPalette({ isOpen, onClose }) {
                     </div>
                     <span className={styles.resultBadge}>{l.badge}</span>
                   </div>
-                ))}
+                );})}
               </div>
             </div>
           )}

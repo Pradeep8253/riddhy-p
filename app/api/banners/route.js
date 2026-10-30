@@ -86,12 +86,27 @@ export async function GET(request) {
 
     let banners = await Banner.find(query).sort({ sortOrder: 1, createdAt: -1 }).lean();
 
+    // Keep existing CMS-managed popup entries visible until they are re-saved
+    // under the dedicated popupbanner zone.
+    if (
+      (!banners || banners.length === 0) &&
+      zone === 'popupbanner' &&
+      (await Banner.countDocuments({ zone: 'popupbanner' })) === 0
+    ) {
+      banners = await Banner.find({ active: true, zone: 'offers-modal', ...dateFilter })
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .lean();
+    }
+
     if (banners && banners.length > 0) {
       return ok(banners.map((b) => ({ ...b, id: String(b._id) })));
     }
 
+    if (zone === 'popupbanner') return ok([]);
     return ok(fallbackBanners);
   } catch (err) {
+    if (new URL(request.url).searchParams.get('zone') === 'popupbanner') return ok([]);
     return ok(fallbackBanners);
   }
 }
+

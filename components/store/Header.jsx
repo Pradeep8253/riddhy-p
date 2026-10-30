@@ -261,6 +261,7 @@ export default function Header({ config, initialCategories = [] }) {
 
   const displayCartCount = mounted ? cartCount : 0;
   const displayWishlistCount = mounted ? wishlistCount : 0;
+  const isTelevisionSearch = /^(tv|television|televisions|smart tv|led tv)$/.test(query.trim().toLowerCase());
 
   // Debounced live search
   useEffect(() => {
@@ -463,6 +464,28 @@ export default function Header({ config, initialCategories = [] }) {
             <div className={styles.searchDropdown}>
               {query.trim().length >= 2 ? (
                 <>
+                  {isTelevisionSearch && (
+                    <div className={styles.searchDropdownSection}>
+                      <div className={styles.searchDropdownHeader}>Category</div>
+                      <Link
+                        href="/appliances/televisions"
+                        className={styles.searchResultItem}
+                        onClick={() => {
+                          setSearchFocused(false);
+                          setQuery('');
+                        }}
+                      >
+                        <div className={styles.searchItemThumb}>
+                          <img src="/images/category-televisions.webp" alt="" />
+                        </div>
+                        <div className={styles.searchItemInfo}>
+                          <span className={styles.searchItemName}>Televisions</span>
+                          <span className={styles.searchItemCat}>Browse home entertainment</span>
+                        </div>
+                        <Icon name="arrow" size={14} />
+                      </Link>
+                    </div>
+                  )}
                   <div className={styles.searchDropdownSection}>
                     <div className={styles.searchDropdownHeader}>
                       {searchLoading
