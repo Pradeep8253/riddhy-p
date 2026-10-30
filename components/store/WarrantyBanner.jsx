@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import { ShieldCheck, ArrowRight, Clock } from 'lucide-react';
 import styles from './WarrantyBanner.module.css';
 
@@ -9,28 +10,31 @@ export default function WarrantyBanner() {
   const [loading, setLoading] = useState(true);
   const [activeWarranty, setActiveWarranty] = useState(null);
   const [cmsConfig, setCmsConfig] = useState(null);
+  const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadData() {
-      // 1. Try to fetch logged-in customer warranties
-      try {
-        const res = await fetch('/api/me/warranties', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          const items = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
-          // Find earliest active expiring warranty
-          const active = items
-            .filter((w) => (w.daysRemaining ?? 0) > 0)
-            .sort((a, b) => (a.daysRemaining || 0) - (b.daysRemaining || 0))[0];
+      // 1. Fetch user warranty ONLY when user is signed in
+      if (isAuthenticated) {
+        try {
+          const res = await fetch('/api/me/warranties', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            const items = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+            // Find earliest active expiring warranty
+            const active = items
+              .filter((w) => (w.daysRemaining ?? 0) > 0)
+              .sort((a, b) => (a.daysRemaining || 0) - (b.daysRemaining || 0))[0];
 
-          if (isMounted && active) {
-            setActiveWarranty(active);
+            if (isMounted && active) {
+              setActiveWarranty(active);
+            }
           }
+        } catch {
+          // Fall back silently
         }
-      } catch {
-        // Fall back silently for guests
       }
 
       // 2. Fetch CMS banner configuration if available
@@ -57,7 +61,7 @@ export default function WarrantyBanner() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isAuthenticated]);
 
   // Default copy
   const defaultText = 'Bought from us? Your warranty starts the day you buy.';

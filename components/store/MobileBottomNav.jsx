@@ -39,8 +39,8 @@ export default function MobileBottomNav() {
     pathname?.startsWith('/appliances') ||
     pathname?.startsWith('/utensils') ||
     pathname?.startsWith('/search');
-  const isWishlistActive = pathname?.startsWith('/account/wishlist');
-  const isAccountActive = pathname?.startsWith('/account') && !isWishlistActive;
+  const isWishlistActive = pathname === '/wishlist';
+  const isAccountActive = pathname?.startsWith('/account');
 
   return (
     <nav className={styles.bottomNav} aria-label="Mobile navigation bar">
@@ -70,7 +70,7 @@ export default function MobileBottomNav() {
 
       {/* 3. Wishlist */}
       <Link
-        href="/account/wishlist"
+        href="/wishlist"
         className={`${styles.navItem} ${isWishlistActive ? styles.active : ''}`}
         aria-label="Wishlist"
       >
