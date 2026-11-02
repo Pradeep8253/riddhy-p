@@ -11,7 +11,7 @@
   animation: fadeIn 0.15s ease-out;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 1024px) {
   .overlay {
     inset-inline-start: var(--admin-current-sidebar-w, 260px);
     width: calc(100% - var(--admin-current-sidebar-w, 260px));
@@ -200,14 +200,14 @@
 }
 
 /* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1023px) {
   .modal {
     max-width: 560px;
   }
 }
 
 /* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .overlay {
     padding: 0;
     align-items: stretch;
@@ -267,7 +267,7 @@
 }
 
 /* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .searchHeader {
     padding: calc(12px + var(--admin-safe-top, 0px)) 12px 12px;
   }
@@ -282,7 +282,7 @@
 }
 
 /* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+@media (max-width: 359px) {
   .resultText b {
     font-size: 12px;
   }

@@ -5,6 +5,12 @@ import "@/components/admin/adminResponsive.css";
 
 export const dynamic = "force-dynamic";
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default async function AdminLayout({ children }) {
   const session = await getSession();
   const isAdmin =

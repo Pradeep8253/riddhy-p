@@ -342,7 +342,7 @@ function AdminShellInner({ children, session }) {
 
   return (
     <div
-      className={`${styles.crmContainer} ${isMini ? styles.sidebarMiniMode : ''}`}
+      className={`adminScope ${styles.crmContainer} ${isMini ? styles.sidebarMiniMode : ''}`}
       style={{ '--admin-current-sidebar-w': isMini ? '76px' : '260px' }}
       data-lenis-prevent="true"
     >

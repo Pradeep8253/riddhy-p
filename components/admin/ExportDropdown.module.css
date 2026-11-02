@@ -100,8 +100,8 @@
   text-transform: uppercase;
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .trigger {
     min-height: 44px;
   }
@@ -110,10 +110,9 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .menu {
     min-width: 160px;
   }
 }
-

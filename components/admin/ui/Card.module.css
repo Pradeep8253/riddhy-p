@@ -57,8 +57,8 @@
   justify-content: space-between;
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (<= 1023px) ========== */
+@media (max-width: 1023px) {
   .head {
     padding: 18px 20px 12px;
   }
@@ -70,8 +70,8 @@
   }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .head {
     padding: 16px 16px 12px;
     flex-direction: column;
@@ -89,8 +89,8 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .head {
     padding: 14px 12px 10px;
   }
@@ -102,3 +102,12 @@
   }
 }
 
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
+  .head {
+    padding: 12px 10px 8px;
+  }
+  .body {
+    padding: 12px 10px;
+  }
+}

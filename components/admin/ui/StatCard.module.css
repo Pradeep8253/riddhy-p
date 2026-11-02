@@ -121,15 +121,15 @@
   color: #1565c0;
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (<= 1023px) ========== */
+@media (max-width: 1023px) {
   .statCard {
     padding: 16px 18px;
   }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .statCard {
     padding: 14px;
     border-radius: 14px;
@@ -143,13 +143,23 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .statCard {
     padding: 12px;
   }
   .value {
     font-size: clamp(16px, 5vw, 20px);
+  }
+}
+
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
+  .statCard {
+    padding: 10px 8px;
+  }
+  .value {
+    font-size: clamp(14px, 4.5vw, 18px);
   }
 }
 

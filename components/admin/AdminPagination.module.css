@@ -23,6 +23,12 @@
   color: var(--rf-forest-deep, #1b2e23);
 }
 
+.pageSizeLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .pageSizeSelect {
   padding: 4px 8px;
   border-radius: 6px;
@@ -38,6 +44,20 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.desktopNumbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobilePageIndicator {
+  display: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--rf-forest-deep, #1b2e23);
+  padding: 0 10px;
 }
 
 .btn {
@@ -78,15 +98,15 @@
   color: #8b968d;
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .pagination {
     padding: 12px 14px;
   }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .pagination {
     flex-direction: column;
     align-items: stretch;
@@ -103,25 +123,34 @@
 
   .pageSizeSelect {
     min-height: 44px;
-    padding: 6px 10px;
-    font-size: 13px;
+    padding: 6px 12px;
+    font-size: 16px !important;
+  }
+
+  .desktopNumbers {
+    display: none !important;
+  }
+
+  .mobilePageIndicator {
+    display: inline-flex !important;
+    align-items: center;
   }
 
   .controls {
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
-    flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
   }
 
   .btn {
     min-width: 44px;
     height: 44px;
+    padding: 0 14px;
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .pagination {
     padding: 10px 8px;
     gap: 10px;
@@ -131,28 +160,22 @@
     font-size: 11px;
   }
 
-  .controls {
-    gap: 4px;
+  .btn {
+    min-width: 44px;
+    height: 44px;
+  }
+}
+
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
+  .btn {
+    min-width: 40px;
+    height: 44px;
+    padding: 0 8px;
   }
 
-  .btn {
-    min-width: 36px;
-    height: 40px;
-    padding: 0 4px;
+  .mobilePageIndicator {
     font-size: 11px;
+    padding: 0 4px;
   }
 }
-
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
-  .btn {
-    min-width: 32px;
-    height: 38px;
-    padding: 0 2px;
-  }
-
-  .ellipsis {
-    padding: 0 2px;
-  }
-}
-

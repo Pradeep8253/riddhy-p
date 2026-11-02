@@ -417,16 +417,37 @@
   font-size: 13px;
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .controlsBar {
     flex-wrap: wrap;
     gap: 12px;
   }
+  .tableScroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .tableScroll table {
+    min-width: 700px;
+  }
+  .tableScroll table th:first-child,
+  .tableScroll table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #ffffff;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
+  .tableScroll table th:first-child {
+    z-index: 3;
+    background: #f5f1ea;
+  }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .page {
     padding-bottom: calc(24px + var(--admin-safe-bottom, 0px));
   }
@@ -484,7 +505,7 @@
     scrollbar-width: thin;
   }
   .tableScroll table {
-    min-width: 700px;
+    min-width: 650px;
   }
   .tableScroll table th:first-child,
   .tableScroll table td:first-child {
@@ -505,6 +526,7 @@
   .submitBtn,
   .cancelBtn {
     min-height: 44px;
+    font-size: 14px;
   }
   .modalOverlay {
     padding: 0;
@@ -520,8 +542,8 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .heading h1 {
     font-size: 24px;
   }
@@ -537,8 +559,8 @@
   }
 }
 
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
   .heading h1 {
     font-size: 20px;
   }

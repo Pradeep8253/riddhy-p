@@ -204,8 +204,8 @@
   color: var(--rf-forest-deep);
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .head {
     flex-wrap: wrap;
     gap: 14px;
@@ -214,10 +214,34 @@
     flex-wrap: wrap;
     gap: 10px;
   }
+  .tableCard {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .table {
+    min-width: 700px;
+  }
+  .table th:first-child,
+  .table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: inherit;
+  }
+  .table th:first-child {
+    background: var(--rf-cream-100);
+    z-index: 3;
+  }
+  .table td:first-child {
+    background: #ffffff;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .head {
     flex-direction: column;
     align-items: stretch;
@@ -258,7 +282,7 @@
     border-radius: 12px;
   }
   .table {
-    min-width: 680px;
+    min-width: 650px;
   }
   .table th:first-child,
   .table td:first-child {
@@ -273,6 +297,7 @@
   }
   .table th:first-child {
     background: var(--rf-cream-100);
+    z-index: 3;
   }
   .table td:first-child {
     background: #ffffff;
@@ -287,17 +312,16 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .head h1 {
     font-size: 24px;
   }
 }
 
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
   .head h1 {
     font-size: 20px;
   }
 }
-

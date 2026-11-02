@@ -762,28 +762,46 @@
   100% { background-position: -200% 0; }
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .paymentsSection {
     grid-template-columns: 1fr;
-    gap: 18px;
+    gap: 20px;
   }
   .analyticsGrid {
     grid-template-columns: 1fr;
-    gap: 18px;
+    gap: 20px;
   }
   .bottomSectionGrid {
     grid-template-columns: 1fr;
-    gap: 18px;
+    gap: 20px;
   }
   .kpiGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .tableWrap,
+  .tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table th:first-child,
+  .table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #ffffff;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
+  .table th:first-child {
+    z-index: 3;
+    background: #faf8f5;
   }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .page {
     gap: 18px;
     padding-bottom: calc(28px + var(--admin-safe-bottom, 0px));
@@ -792,6 +810,9 @@
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
+  }
+  .headerLeft h1 {
+    font-size: clamp(22px, 5vw, 32px);
   }
   .controls {
     width: 100%;
@@ -858,13 +879,19 @@
   }
   .kpiTitle {
     font-size: 11px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
   .kpiIconWrap {
     width: 28px !important;
     height: 28px !important;
   }
   .kpiValue {
-    font-size: 18px !important;
+    font-size: clamp(16px, 4vw, 20px) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
   .kpiFooter {
     font-size: 10px !important;
@@ -919,10 +946,10 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .headerLeft h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
   .kpiGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -939,7 +966,7 @@
     text-overflow: ellipsis !important;
   }
   .kpiValue {
-    font-size: 16px !important;
+    font-size: clamp(14px, 4.5vw, 18px) !important;
   }
   .kpiFooter {
     font-size: 9px !important;
@@ -966,13 +993,17 @@
   }
 }
 
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
   .headerLeft h1 {
     font-size: 20px;
   }
+  .kpiGrid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
   .kpiValue {
-    font-size: 22px;
+    font-size: 18px !important;
   }
   .panel {
     padding: 12px 8px;
@@ -984,4 +1015,3 @@
     display: none;
   }
 }
-

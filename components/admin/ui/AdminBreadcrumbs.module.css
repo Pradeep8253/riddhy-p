@@ -48,8 +48,8 @@
   font-weight: 800;
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .breadcrumbs {
     margin-bottom: 12px;
     overflow-x: auto;
@@ -69,4 +69,3 @@
     padding: 6px 4px;
   }
 }
-

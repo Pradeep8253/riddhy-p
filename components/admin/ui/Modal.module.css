@@ -92,15 +92,16 @@
   to { transform: translateY(0); }
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .dialog {
     max-width: 560px;
+    width: 90vw;
   }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .backdrop {
     padding: 0;
     align-items: flex-end;
@@ -147,8 +148,8 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .dialog {
     max-height: 95dvh;
   }
@@ -163,8 +164,8 @@
   }
 }
 
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
   .dialog {
     max-height: 98dvh;
   }
@@ -175,4 +176,3 @@
     padding: 12px 10px;
   }
 }
-

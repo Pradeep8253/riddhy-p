@@ -227,14 +227,14 @@
 }
 
 /* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1023px) {
   .modal {
     max-width: 720px;
   }
 }
 
 /* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .overlay {
     padding: 0;
     align-items: flex-end;
@@ -302,7 +302,7 @@
 }
 
 /* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .header {
     padding: 14px 12px;
   }
@@ -317,7 +317,7 @@
 }
 
 /* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+@media (max-width: 359px) {
   .titleArea h3 {
     font-size: 1rem;
   }

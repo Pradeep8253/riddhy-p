@@ -46,14 +46,13 @@ export default function AdminPagination({
         </span>
 
         {onPageSizeChange && (
-          <label
-            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
-          >
+          <label className={styles.pageSizeLabel}>
             <span>Per page:</span>
             <select
               className={styles.pageSizeSelect}
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              aria-label="Records per page"
             >
               {pageSizeOptions.map((opt) => (
                 <option key={opt} value={opt}>
@@ -73,25 +72,31 @@ export default function AdminPagination({
           disabled={currentPage <= 1}
           aria-label="Previous page"
         >
-          <ChevronLeft size={15} />
+          <ChevronLeft size={16} />
         </button>
 
-        {getPageNumbers().map((page, index) =>
-          page === "..." ? (
-            <span key={`ellipsis-${index}`} className={styles.ellipsis}>
-              …
-            </span>
-          ) : (
-            <button
-              type="button"
-              key={page}
-              className={`${styles.btn} ${currentPage === page ? styles.active : ""}`}
-              onClick={() => onPageChange(page)}
-            >
-              {page}
-            </button>
-          ),
-        )}
+        <span className={styles.mobilePageIndicator}>
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <div className={styles.desktopNumbers}>
+          {getPageNumbers().map((page, index) =>
+            page === "..." ? (
+              <span key={`ellipsis-${index}`} className={styles.ellipsis}>
+                …
+              </span>
+            ) : (
+              <button
+                type="button"
+                key={page}
+                className={`${styles.btn} ${currentPage === page ? styles.active : ""}`}
+                onClick={() => onPageChange(page)}
+              >
+                {page}
+              </button>
+            ),
+          )}
+        </div>
 
         <button
           type="button"
@@ -100,7 +105,7 @@ export default function AdminPagination({
           disabled={currentPage >= totalPages}
           aria-label="Next page"
         >
-          <ChevronRight size={15} />
+          <ChevronRight size={16} />
         </button>
       </div>
     </div>

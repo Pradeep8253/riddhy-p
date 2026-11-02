@@ -910,7 +910,7 @@
 
 /* ── RESPONSIVE ── */
 /* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1023px) {
   .head {
     flex-wrap: wrap;
     gap: 14px;
@@ -935,7 +935,7 @@
 }
 
 /* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .page {
     gap: 20px;
     padding-bottom: calc(40px + var(--admin-safe-bottom, 0px));
@@ -1040,7 +1040,7 @@
 }
 
 /* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+@media (max-width: 479px) {
   .head h1 {
     font-size: 24px;
   }
@@ -1060,7 +1060,7 @@
 }
 
 /* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+@media (max-width: 359px) {
   .head h1 {
     font-size: 20px;
   }

@@ -260,21 +260,40 @@
   font-size: 13px;
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .head {
     flex-wrap: wrap;
     gap: 14px;
   }
   .filterBar {
-    flex-direction: column;
-    align-items: stretch;
     gap: 12px;
+  }
+  .table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rowHead,
+  .row {
+    min-width: 720px;
+  }
+  .rowHead > span:first-child,
+  .row > div:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #fffefa;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
+  .rowHead > span:first-child {
+    background: #f4f0e8;
+    z-index: 3;
   }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .page {
     padding-bottom: calc(24px + var(--admin-safe-bottom, 0px));
   }
@@ -320,43 +339,85 @@
     min-height: 44px;
     font-size: 16px !important;
   }
+
+  /* Transform table into stacked cards on mobile */
   .table {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
   }
-  .rowHead,
+  .rowHead {
+    display: none !important;
+  }
   .row {
-    min-width: 700px;
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid var(--rf-line, rgba(31, 95, 46, 0.15)) !important;
+    border-radius: 14px !important;
+    padding: 14px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    gap: 10px !important;
   }
-  .rowHead > span:first-child,
   .row > div:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 2;
-    background: #fffefa;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
-    max-width: 140px;
-    overflow: hidden;
-    word-break: break-word;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    position: static !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid rgba(31, 95, 46, 0.08) !important;
+    padding-bottom: 8px !important;
   }
-  .rowHead > span:first-child {
-    background: #f4f0e8;
-    z-index: 3;
+  .row > div:nth-child(2) {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    width: 100% !important;
   }
-  .row select {
-    min-height: 44px;
-    font-size: 16px !important;
+  .row > div:nth-child(3) {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
   }
-  .row button {
-    min-height: 44px;
-    padding: 8px 14px;
+  .row > div:nth-child(4) {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  .row > div:last-child {
+    display: flex !important;
+    width: 100% !important;
+    border-top: 1px solid rgba(31, 95, 46, 0.08) !important;
+    padding-top: 8px !important;
+    justify-content: stretch !important;
+  }
+  .row .rowBtn {
+    width: 100% !important;
+    min-height: 44px !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+    background: rgba(31, 95, 46, 0.06) !important;
+    border-color: rgba(31, 95, 46, 0.2) !important;
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .head h1 {
     font-size: 22px;
   }
@@ -370,20 +431,17 @@
   .filterBar {
     padding: 10px 8px;
   }
-  .rowHead,
   .row {
     padding: 12px 10px;
   }
 }
 
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
   .head h1 {
     font-size: 20px;
   }
-  .rowHead,
   .row {
-    padding: 10px 6px;
+    padding: 10px 8px;
   }
 }
-

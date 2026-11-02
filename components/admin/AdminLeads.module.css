@@ -482,18 +482,24 @@
   cursor: pointer;
 }
 
-/* ========== TABLET (<= 1024px) ========== */
-@media (max-width: 1024px) {
+/* ========== TABLET (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .kpiRow {
     grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .drawerOverlay {
+    left: 0 !important;
+    width: 100vw !important;
   }
   .drawer {
-    max-width: 550px;
+    width: 560px !important;
+    max-width: 80vw !important;
   }
 }
 
-/* ========== MOBILE (<= 768px) ========== */
-@media (max-width: 768px) {
+/* ========== MOBILE (<= 767px) ========== */
+@media (max-width: 767px) {
   .heading {
     flex-direction: column;
     align-items: stretch;
@@ -508,7 +514,7 @@
     min-height: 44px;
   }
   .kpiRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
   .filterBar {
@@ -536,6 +542,11 @@
     min-height: 44px;
     width: 100%;
     font-size: 16px !important;
+  }
+  .drawerOverlay {
+    left: 0 !important;
+    width: 100vw !important;
+    padding: 0;
   }
   .drawer {
     width: 100%;
@@ -580,10 +591,13 @@
   }
 }
 
-/* ========== SMALL MOBILE (<= 480px) ========== */
-@media (max-width: 480px) {
+/* ========== SMALL MOBILE (<= 479px) ========== */
+@media (max-width: 479px) {
   .heading h1 {
     font-size: 24px;
+  }
+  .kpiRow {
+    grid-template-columns: 1fr;
   }
   .card {
     padding: 16px;
@@ -601,8 +615,8 @@
   }
 }
 
-/* ========== EXTRA SMALL (<= 360px) ========== */
-@media (max-width: 360px) {
+/* ========== MICRO MOBILE (<= 359px) ========== */
+@media (max-width: 359px) {
   .heading h1 {
     font-size: 20px;
   }

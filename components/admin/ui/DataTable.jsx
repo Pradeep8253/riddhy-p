@@ -201,7 +201,7 @@ export default function DataTable({
                 .map((col) => (
                   <th
                     key={col.key}
-                    className={col.sortable !== false ? styles.sortableTh : ''}
+                    className={`${col.sortable !== false ? styles.sortableTh : ''} ${col.hideOnTablet ? styles.hideOnTablet : ''}`}
                     onClick={() => col.sortable !== false && handleSort(col.key)}
                   >
                     <div className={styles.thContent}>
@@ -223,8 +223,15 @@ export default function DataTable({
                   {columns
                     .filter((c) => visibleColumns.has(c.key))
                     .map((col) => (
-                      <td key={col.key}>
-                        {col.render ? col.render(row[col.key], row) : (row[col.key] ?? '—')}
+                      <td
+                        key={col.key}
+                        data-label={col.label}
+                        className={col.hideOnTablet ? styles.hideOnTablet : ''}
+                      >
+                        <span className={styles.cellLabel}>{col.label}</span>
+                        <div className={styles.cellValue}>
+                          {col.render ? col.render(row[col.key], row) : (row[col.key] ?? '—')}
+                        </div>
                       </td>
                     ))}
                 </tr>
