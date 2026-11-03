@@ -12,15 +12,16 @@ const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setLocale(state) {
-      state.locale = "en";
+    setLocale(state, action) {
+      const nextLocale = action.payload || "en";
+      state.locale = nextLocale;
       if (typeof window !== "undefined") {
         try {
-          window.localStorage.setItem("rf-locale", "en");
+          window.localStorage.setItem("rf-locale", nextLocale);
           document.cookie =
-            "rf-locale=en; path=/; max-age=31536000; SameSite=Lax";
+            "rf-locale=" + nextLocale + "; path=/; max-age=31536000; SameSite=Lax";
           document.cookie =
-            "rf_locale=en; path=/; max-age=31536000; SameSite=Lax";
+            "rf_locale=" + nextLocale + "; path=/; max-age=31536000; SameSite=Lax";
         } catch {}
       }
     },

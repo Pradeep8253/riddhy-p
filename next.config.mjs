@@ -32,12 +32,13 @@ const nextConfig = {
   async headers() {
     const cspDirectives = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://checkout.razorpay.com https://api.razorpay.com https://accounts.google.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://checkout.razorpay.com https://api.razorpay.com https://accounts.google.com https://*.google.com https://*.googleapis.com",
+      "script-src-elem 'self' 'unsafe-inline' https://*.google.com https://*.googleapis.com https://checkout.razorpay.com https://accounts.google.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com https://*.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://api.razorpay.com",
-      "frame-src 'self' https://api.razorpay.com https://accounts.google.com",
-      "connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com https://res.cloudinary.com https://api.cloudinary.com https://accounts.google.com https://raw.githubusercontent.com https://cdn.jsdelivr.net",
+      "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://api.razorpay.com https://*.gstatic.com https://*.google.com https://*.googleapis.com",
+      "frame-src 'self' https://api.razorpay.com https://accounts.google.com https://*.google.com",
+      "connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com https://res.cloudinary.com https://api.cloudinary.com https://accounts.google.com https://raw.githubusercontent.com https://cdn.jsdelivr.net https://*.google.com https://*.googleapis.com",
       "media-src 'self' https://res.cloudinary.com blob: data:",
       "object-src 'none'",
       "base-uri 'self'",

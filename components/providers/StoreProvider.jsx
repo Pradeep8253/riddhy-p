@@ -14,12 +14,9 @@ export default function StoreProvider({ children }) {
     const store = storeRef.current;
     try {
       const savedLocale = window.localStorage.getItem('rf-locale');
-      if (savedLocale === 'hi') {
-        window.localStorage.setItem('rf-locale', 'en');
-        document.cookie = 'rf-locale=en; path=/; max-age=31536000; SameSite=Lax';
-        document.cookie = 'rf_locale=en; path=/; max-age=31536000; SameSite=Lax';
+      if (savedLocale) {
+        store.dispatch({ type: 'ui/setLocale', payload: savedLocale });
       }
-      store.dispatch({ type: 'ui/setLocale', payload: 'en' });
 
       const saved = window.localStorage.getItem('rf-riddhy-state');
       if (saved) {
@@ -82,4 +79,3 @@ export default function StoreProvider({ children }) {
 
   return <Provider store={storeRef.current}>{children}</Provider>;
 }
-

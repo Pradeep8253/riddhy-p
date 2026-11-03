@@ -1087,6 +1087,12 @@
   color: #edb95e;
   margin-left: 2px;
   line-height: 1;
+  display: inline-block;
+  transition: transform 0.22s ease;
+}
+
+.shopByCategoryBtnActive .shopByCategoryChevron {
+  transform: rotate(180deg);
 }
 
 .megaMenuDropdown {
@@ -2057,4 +2063,31 @@
   .drawer {
     width: 92vw;
   }
+}
+.dropdownOpen {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+}
+
+.dropdownHidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-4px) !important;
+}
+
+.megaMenuDropdownOpen {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+.megaMenuDropdownHidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateX(-50%) translateY(-4px) !important;
 }

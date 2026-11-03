@@ -11,6 +11,7 @@ import { getLocalizedProductName, getLocalizedCategoryName } from '@/lib/transla
 import Icon from '@/components/ui/Icon';
 import { siteConfig } from '@/lib/site-config';
 import { tr } from '@/lib/i18n';
+import GoogleTranslate from '@/components/ui/GoogleTranslate';
 import styles from './Header.module.css';
 
 const defaultNav = [
@@ -343,7 +344,7 @@ export default function Header({ config, initialCategories = [] }) {
   };
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} notranslate`} translate="no">
       {/* Moving Announcement Bar with Phone, Email, WhatsApp, Address & Icons */}
       <div className={styles.announcementBar}>
         <div className={styles.marqueeTrack}>
@@ -575,6 +576,8 @@ export default function Header({ config, initialCategories = [] }) {
             <span>Free consultation</span>
           </Link>
 
+          <GoogleTranslate variant="compact" />
+
           <button
             type="button"
             className={styles.searchToggle}
@@ -729,7 +732,7 @@ export default function Header({ config, initialCategories = [] }) {
       )}
 
       {/* Desktop Main Navigation Bar */}
-      <nav className={styles.desktopNav} aria-label="Main desktop navigation">
+      <nav className={`${styles.desktopNav} notranslate`} translate="no" aria-label="Main desktop navigation">
         <div className={styles.navInner}>
           {dynamicNav.map((item) => (
             <div 
@@ -745,8 +748,13 @@ export default function Header({ config, initialCategories = [] }) {
               >
                 {tr(locale, item.key)}
               </Link>
-              {item.children && activeDropdown === item.key && (
-                <div className={`${styles.dropdown} ${item.key === 'rooms' ? styles.dropdownRooms : ''}`}>
+              {item.children && (
+                <div
+                  className={`${styles.dropdown} ${item.key === 'rooms' ? styles.dropdownRooms : ''} ${
+                    activeDropdown === item.key ? styles.dropdownOpen : styles.dropdownHidden
+                  }`}
+                  aria-hidden={activeDropdown !== item.key}
+                >
                   <div className={styles.dropdownHeader}>
                     <span>Explore Our Collection</span>
                   </div>
@@ -819,14 +827,18 @@ export default function Header({ config, initialCategories = [] }) {
               aria-expanded={activeDropdown === 'mega-category'}
             >
               <span className={styles.shopByCategoryDiamond}>◆</span>
-              <span>Shop by Category</span>
-              <span className={styles.shopByCategoryChevron}>
-                {activeDropdown === 'mega-category' ? '▴' : '▾'}
-              </span>
+              <span>{tr(locale, 'shopByCategory')}</span>
+              <span className={styles.shopByCategoryChevron}>▾</span>
             </button>
 
-            {activeDropdown === 'mega-category' && (
-              <div className={styles.megaMenuDropdown}>
+            <div
+                className={`${styles.megaMenuDropdown} ${
+                  activeDropdown === 'mega-category'
+                    ? styles.megaMenuDropdownOpen
+                    : styles.megaMenuDropdownHidden
+                }`}
+                aria-hidden={activeDropdown !== 'mega-category'}
+              >
                 <div className={styles.megaMenuHeader}>
                   <span>Explore Our Collection</span>
                 </div>
@@ -844,7 +856,7 @@ export default function Header({ config, initialCategories = [] }) {
                           onClick={() => setActiveDropdown(null)}
                         >
                           <span className={styles.megaMenuArrow}>›</span>
-                          <span>{cat.name}</span>
+                          <span>{(locale === 'hi' && cat.name_hi) ? cat.name_hi : cat.name}</span>
                         </Link>
                       ))}
                       <Link
@@ -870,7 +882,7 @@ export default function Header({ config, initialCategories = [] }) {
                           onClick={() => setActiveDropdown(null)}
                         >
                           <span className={styles.megaMenuArrow}>›</span>
-                          <span>{cat.name}</span>
+                          <span>{(locale === 'hi' && cat.name_hi) ? cat.name_hi : cat.name}</span>
                         </Link>
                       ))}
                       <Link
@@ -896,7 +908,7 @@ export default function Header({ config, initialCategories = [] }) {
                           onClick={() => setActiveDropdown(null)}
                         >
                           <span className={styles.megaMenuArrow}>›</span>
-                          <span>{cat.name}</span>
+                          <span>{(locale === 'hi' && cat.name_hi) ? cat.name_hi : cat.name}</span>
                         </Link>
                       ))}
                       <Link
@@ -911,29 +923,28 @@ export default function Header({ config, initialCategories = [] }) {
                   </div>
                 </div>
               </div>
-            )}
           </div>
 
           <Link
             href="/packages"
             className={pathname === '/packages' || pathname === '/marriage-packages' ? styles.active : ''}
           >
-            <span className={styles.offerBadge}>Exclusive</span>
-            Our Packages
+            <span className={styles.offerBadge}>{tr(locale, 'exclusive')}</span>
+            <span>{tr(locale, 'packages')}</span>
           </Link>
 
           <Link
             href="/about"
             className={pathname === '/about' ? styles.active : ''}
           >
-            About
+            <span>{tr(locale, 'about')}</span>
           </Link>
 
           <Link
             href="/consultation"
             className={pathname === '/consultation' ? styles.active : ''}
           >
-            Free Consultation
+            <span>{tr(locale, 'freeConsultation')}</span>
           </Link>
         </div>
       </nav>
@@ -979,6 +990,9 @@ export default function Header({ config, initialCategories = [] }) {
             <span className={styles.drawerLocationPulse} />
             <span>{activeConfig.showroom?.addressLine1 ? `${activeConfig.showroom.addressLine1} Showroom · ${activeConfig.showroom.city || 'Prayagraj'}` : 'Mansoorabad Showroom · Prayagraj'}</span>
           </div>
+
+          {/* Language Selector */}
+          <GoogleTranslate variant="drawer" />
 
           {/* Drawer Quick Search */}
           <form className={styles.drawerSearch} onSubmit={submitSearch}>

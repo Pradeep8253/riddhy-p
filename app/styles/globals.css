@@ -351,3 +351,66 @@ svg {
     font-size: 20px;
   }
 }
+
+/* ==========================================================================
+   Google Website Translator Widget - 100% Background Stealth Mode
+   ========================================================================== */
+
+html,
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+/* Suppress all Google Translate floating badges, circular icons, banners & popups */
+[class*="VIpgJd"],
+[class*="goog-te-banner"],
+[class*="goog-te-gadget-icon"],
+[class*="goog-te-spinner"],
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+iframe.skiptranslate,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO,
+.VIpgJd-yAWNEb-hvhgNd,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd,
+div.skiptranslate:not(#google_translate_element),
+body > div[class*="skiptranslate"],
+body > iframe[class*="skiptranslate"],
+.goog-te-gadget,
+.goog-te-gadget-simple,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0px !important;
+  width: 0px !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  border: none !important;
+}
+
+/* Suppress Google highlight hover rectangles on translated words */
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Keep Google's native container rendered off-screen */
+#google_translate_element {
+  position: fixed !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -9999 !important;
+}

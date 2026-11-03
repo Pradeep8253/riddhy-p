@@ -1,4 +1,5 @@
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import './styles/globals.css';
 import StoreProvider from '@/components/providers/StoreProvider';
 import LocaleSync from '@/components/providers/LocaleSync';
@@ -135,6 +136,47 @@ export default function RootLayout({ children }) {
             ),
           }}
         />
+                {/* React + Google Translate DOM Reconciliation Safeguard */}
+        <Script
+          id="gt-dom-patch"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof Node === 'function' && Node.prototype) {
+                var origRemoveChild = Node.prototype.removeChild;
+                Node.prototype.removeChild = function(child) {
+                  if (child && child.parentNode !== this) {
+                    if (child.parentNode && child.parentNode.parentNode === this) {
+                      try {
+                        return origRemoveChild.call(this, child.parentNode);
+                      } catch (e) {
+                        return child;
+                      }
+                    }
+                    return child;
+                  }
+                  return origRemoveChild.apply(this, arguments);
+                };
+                var origInsertBefore = Node.prototype.insertBefore;
+                Node.prototype.insertBefore = function(newNode, referenceNode) {
+                  if (referenceNode && referenceNode.parentNode !== this) {
+                    if (referenceNode.parentNode && referenceNode.parentNode.parentNode === this) {
+                      try {
+                        return origInsertBefore.call(this, newNode, referenceNode.parentNode);
+                      } catch (e) {
+                        return newNode;
+                      }
+                    }
+                    return newNode;
+                  }
+                  return origInsertBefore.apply(this, arguments);
+                };
+              }
+            `,
+          }}
+        />
+        {/* Google Website Translator Global Container */}
+        <div id="google_translate_element" aria-hidden="true" />
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>

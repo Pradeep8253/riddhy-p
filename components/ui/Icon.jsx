@@ -56,7 +56,9 @@ import {
   Store,
   Layers,
   Flame,
-  Crown
+  Crown,
+  Globe,
+  Languages
 } from 'lucide-react';
 
 function WhatsApp({ size = 20, className, color = 'currentColor', style }) {
@@ -161,7 +163,9 @@ const iconMap = {
   store: Store,
   layers: Layers,
   flame: Flame,
-  crown: Crown
+  crown: Crown,
+  globe: Globe,
+  languages: Languages
 };
 
 export default function Icon({

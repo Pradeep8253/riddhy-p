@@ -1,0 +1,464 @@
+.container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-manrope, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+/* ==========================================================================
+   Compact Trigger Button (Header Navbar & Admin Topbar)
+   Luxury Pill with Heritage Gold & Forest Green Accents
+   ========================================================================== */
+.triggerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 12px 0 6px;
+  background: linear-gradient(180deg, #ffffff 0%, #fdfbf7 100%);
+  border: 1.5px solid rgba(196, 134, 32, 0.28);
+  border-radius: 999px;
+  color: #10261a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(16, 38, 26, 0.04), 0 1px 2px rgba(196, 134, 32, 0.06);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.triggerBtn:hover {
+  background: #ffffff;
+  border-color: #c48620;
+  color: #10261a;
+  box-shadow: 0 4px 14px rgba(196, 134, 32, 0.18), 0 2px 4px rgba(16, 38, 26, 0.04);
+  transform: translateY(-1px);
+}
+
+.triggerBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(16, 38, 26, 0.08);
+}
+
+.triggerBtnActive {
+  background: #ffffff;
+  border-color: #c48620;
+  box-shadow: 0 0 0 3px rgba(196, 134, 32, 0.16), 0 4px 12px rgba(16, 38, 26, 0.06);
+}
+
+.triggerBtn:focus-visible {
+  outline: 2px solid #c48620;
+  outline-offset: 2px;
+}
+
+/* Mini Royal Badge inside Trigger */
+.triggerGlyphPill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbf3e4 0%, #f4e3c3 100%);
+  border: 1px solid rgba(196, 134, 32, 0.35);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  flex-shrink: 0;
+}
+
+.glyphText {
+  font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: #a86f18;
+  line-height: 1;
+}
+
+.currentLabel {
+  display: inline-block;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #10261a;
+}
+
+.chevronIcon {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #8c734b;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #c48620;
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Luxury Dropdown Popover Card (English & हिन्दी)
+   Inspired by RF Riddhy's Heritage Furniture & Gold Logo Emblem
+   ========================================================================== */
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 224px;
+  background: #ffffff;
+  border: 1.5px solid rgba(196, 134, 32, 0.3);
+  border-radius: 16px;
+  box-shadow: 
+    0 20px 48px -12px rgba(16, 38, 26, 0.22),
+    0 4px 16px -2px rgba(196, 134, 32, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  padding: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: dropdownFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dropdown Header */
+.menuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 8px 6px;
+  border-bottom: 1px solid rgba(196, 134, 32, 0.14);
+  margin-bottom: 8px;
+}
+
+.menuHeaderTag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a86f18;
+}
+
+.menuHeaderHindi {
+  font-size: 11px;
+  font-weight: 600;
+  color: #617064;
+}
+
+/* Dropdown Options List */
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Individual Language Card */
+.langOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 9px 11px;
+  border: 1.5px solid transparent;
+  background: #fdfbf7;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.langOption:hover {
+  background: #ffffff;
+  border-color: rgba(196, 134, 32, 0.45);
+  box-shadow: 0 4px 12px rgba(196, 134, 32, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Active State Card */
+.langOptionActive {
+  background: linear-gradient(135deg, rgba(224, 160, 64, 0.1) 0%, rgba(20, 70, 33, 0.04) 100%);
+  border-color: #c48620;
+  box-shadow: 0 4px 14px rgba(196, 134, 32, 0.14);
+}
+
+.optionLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Avatar Badge (A or अ) */
+.glyphBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fbf6ec;
+  border: 1px solid rgba(196, 134, 32, 0.22);
+  color: #8c5d14;
+  font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+  font-size: 15px;
+  font-weight: 700;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.glyphBadgeActive {
+  background: linear-gradient(135deg, #e0a040 0%, #c48620 100%);
+  border-color: #c48620;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(196, 134, 32, 0.3);
+}
+
+.langNameNative {
+  font-size: 14px;
+  font-weight: 700;
+  color: #10261a;
+  letter-spacing: -0.01em;
+}
+
+.optionRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* Golden Checkmark Badge */
+.activeCheckBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e0a040 0%, #c48620 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(196, 134, 32, 0.35);
+}
+
+.inactiveRing {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(44, 62, 45, 0.2);
+  background: #ffffff;
+  transition: border-color 0.15s ease;
+}
+
+.langOption:hover .inactiveRing {
+  border-color: #c48620;
+}
+
+/* Dropdown Footer */
+.menuFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(196, 134, 32, 0.12);
+  font-size: 10px;
+  font-weight: 600;
+  color: #7a887d;
+  letter-spacing: 0.02em;
+}
+
+.footerShield {
+  color: #c48620;
+  display: inline-flex;
+}
+
+/* ==========================================================================
+   Drawer Variant (Inside Mobile Sliding Navigation Drawer)
+   ========================================================================== */
+.drawerContainer {
+  width: 100%;
+  padding: 14px 0;
+  border-top: 1px solid rgba(196, 134, 32, 0.14);
+  border-bottom: 1px solid rgba(196, 134, 32, 0.14);
+  margin: 14px 0;
+}
+
+.drawerTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.drawerTitleLeft {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #10261a;
+}
+
+.titleEmblem {
+  color: #c48620;
+  display: inline-flex;
+}
+
+.drawerCurrentBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a86f18;
+  background: #fbf3e4;
+  border: 1px solid rgba(196, 134, 32, 0.25);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.drawerGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.drawerCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px;
+  background: #ffffff;
+  border: 1.5px solid rgba(196, 134, 32, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+}
+
+.drawerCard:active {
+  transform: scale(0.98);
+}
+
+.drawerCardActive {
+  background: linear-gradient(135deg, rgba(224, 160, 64, 0.12) 0%, rgba(20, 70, 33, 0.06) 100%);
+  border-color: #c48620;
+  box-shadow: 0 4px 12px rgba(196, 134, 32, 0.14);
+}
+
+.drawerGlyphCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #fbf3e4;
+  border: 1px solid rgba(196, 134, 32, 0.25);
+  color: #a86f18;
+  font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.drawerCardActive .drawerGlyphCircle {
+  background: #c48620;
+  color: #ffffff;
+  border-color: #c48620;
+}
+
+.drawerCardText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.drawerCardNative {
+  font-size: 13px;
+  font-weight: 700;
+  color: #10261a;
+  line-height: 1.2;
+}
+
+.drawerCardSub {
+  font-size: 10.5px;
+  color: #617064;
+  line-height: 1.2;
+}
+
+.drawerCheckWrap {
+  flex-shrink: 0;
+}
+
+.drawerCheckActive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #c48620;
+  color: #ffffff;
+}
+
+.drawerCheckEmpty {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(44, 62, 45, 0.2);
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 480px) {
+  .triggerBtn {
+    height: 34px;
+    padding: 0 10px 0 5px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .triggerGlyphPill {
+    width: 24px;
+    height: 24px;
+  }
+
+  .glyphText {
+    font-size: 12px;
+  }
+
+  .dropdownMenu {
+    width: 240px;
+    right: -20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .triggerBtn {
+    padding: 0 8px 0 4px;
+    gap: 4px;
+  }
+
+  .currentLabel {
+    font-size: 12px;
+  }
+
+  .chevronIcon {
+    display: none;
+  }
+}

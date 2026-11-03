@@ -24,6 +24,7 @@ import {
 import { ADMIN_NAV_CONFIG } from '@/config/adminNav';
 import AdminCommandPalette from './AdminCommandPalette';
 import { AdminBreadcrumbs } from '@/components/admin/ui';
+import GoogleTranslate from '@/components/ui/GoogleTranslate';
 import styles from './AdminShell.module.css';
 
 function NavIcon({ name }) {
@@ -565,6 +566,8 @@ function AdminShellInner({ children, session }) {
             >
               <Search size={16} strokeWidth={2.2} />
             </button>
+
+            <GoogleTranslate variant="compact" />
 
             <div className={styles.userMenuContainer} ref={userMenuRef}>
               <button
