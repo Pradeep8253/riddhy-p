@@ -8,6 +8,8 @@ import {
   SITE_URL,
 } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getCatalogProduct(slug);

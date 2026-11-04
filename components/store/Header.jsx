@@ -40,6 +40,11 @@ const servicesLinks = [
   { label: 'Store Visit', href: '/contact', icon: 'mapPin' }
 ];
 
+const legacyAliasesSet = new Set([
+  'sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables', 'mattresses', 'decor', 'storage',
+  'refrigerators', 'washing-machines', 'air-conditioners', 'televisions', 'microwaves', 'chimneys', 'water-purifiers'
+]);
+
 export default function Header({ config, initialCategories = [] }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -57,7 +62,20 @@ export default function Header({ config, initialCategories = [] }) {
   const locale = useSelector((state) => state.ui.locale);
 
   const [mounted, setMounted] = useState(false);
-  const [dynamicNav, setDynamicNav] = useState(defaultNav);
+  const [dynamicNav, setDynamicNav] = useState(() => {
+    if (Array.isArray(initialCategories) && initialCategories.length > 0) {
+      const furn = initialCategories.filter((c) => c.type === 'furniture' && c.active !== false && !legacyAliasesSet.has(c.slug));
+      const app = initialCategories.filter((c) => (c.type === 'appliance' || c.type === 'appliances') && c.active !== false && !legacyAliasesSet.has(c.slug));
+      const uten = initialCategories.filter((c) => c.type === 'utensils' && c.active !== false && !legacyAliasesSet.has(c.slug));
+      return [
+        { key: 'furniture', href: '/furniture', children: furn.map((c) => c.slug) },
+        { key: 'appliances', href: '/appliances', children: app.map((c) => c.slug) },
+        { key: 'utensils', href: '/utensils', children: uten.map((c) => c.slug) },
+        defaultNav[3]
+      ];
+    }
+    return defaultNav;
+  });
   const initialLabels = useMemo(() => {
     const map = {};
     if (Array.isArray(initialCategories)) {
@@ -72,7 +90,8 @@ export default function Header({ config, initialCategories = [] }) {
   const [categoriesList, setCategoriesList] = useState(initialCategories || []);
   const [activeDropdown, setActiveDropdown] = useState(null);
 
-  const legacyAliases = useMemo(
+  const legacyAliases = legacyAliasesSet;
+  const legacyAliasesUnused = null && useMemo(
     () =>
       new Set([
         'sofas', 'beds', 'wardrobes', 'dining-sets', 'study-tables', 'mattresses', 'decor', 'storage',
@@ -212,6 +231,7 @@ export default function Header({ config, initialCategories = [] }) {
 
   useEffect(() => {
     setMounted(true);
+    if (initialCategories?.length > 0) return;
 
     fetch('/api/categories')
       .then((r) => (r.ok ? r.json() : null))
@@ -344,7 +364,7 @@ export default function Header({ config, initialCategories = [] }) {
   };
 
   return (
-    <header className={`${styles.header} notranslate`} translate="no">
+    <header className={styles.header}>
       {/* Moving Announcement Bar with Phone, Email, WhatsApp, Address & Icons */}
       <div className={styles.announcementBar}>
         <div className={styles.marqueeTrack}>
@@ -417,7 +437,7 @@ export default function Header({ config, initialCategories = [] }) {
           </button>
 
           {/* Logo WITHOUT any background, WITHOUT any border, ONLY logo PNG */}
-          <Link href="/" className={styles.brand} aria-label="RF Riddhy home" onClick={closeMenu}>
+          <Link href="/" className={`${styles.brand} notranslate`} translate="no" aria-label="RF Riddhy home" onClick={closeMenu}>
             <Image
               src="/logo.png"
               alt="RF Riddhy Furniture & Appliances"
@@ -732,7 +752,7 @@ export default function Header({ config, initialCategories = [] }) {
       )}
 
       {/* Desktop Main Navigation Bar */}
-      <nav className={`${styles.desktopNav} notranslate`} translate="no" aria-label="Main desktop navigation">
+      <nav className={styles.desktopNav} aria-label="Main desktop navigation">
         <div className={styles.navInner}>
           {dynamicNav.map((item) => (
             <div 
@@ -856,7 +876,7 @@ export default function Header({ config, initialCategories = [] }) {
                           onClick={() => setActiveDropdown(null)}
                         >
                           <span className={styles.megaMenuArrow}>›</span>
-                          <span>{(locale === 'hi' && cat.name_hi) ? cat.name_hi : cat.name}</span>
+                          <span>{getLocalizedCategoryName(cat, locale)}</span>
                         </Link>
                       ))}
                       <Link
@@ -882,7 +902,7 @@ export default function Header({ config, initialCategories = [] }) {
                           onClick={() => setActiveDropdown(null)}
                         >
                           <span className={styles.megaMenuArrow}>›</span>
-                          <span>{(locale === 'hi' && cat.name_hi) ? cat.name_hi : cat.name}</span>
+                          <span>{getLocalizedCategoryName(cat, locale)}</span>
                         </Link>
                       ))}
                       <Link
@@ -908,7 +928,7 @@ export default function Header({ config, initialCategories = [] }) {
                           onClick={() => setActiveDropdown(null)}
                         >
                           <span className={styles.megaMenuArrow}>›</span>
-                          <span>{(locale === 'hi' && cat.name_hi) ? cat.name_hi : cat.name}</span>
+                          <span>{getLocalizedCategoryName(cat, locale)}</span>
                         </Link>
                       ))}
                       <Link
@@ -965,7 +985,7 @@ export default function Header({ config, initialCategories = [] }) {
         <div className={styles.drawerInner}>
           {/* Top of drawer: Clean Logo PNG without background/border + Close button */}
           <div className={styles.drawerHeader}>
-            <Link href="/" onClick={closeMenu} className={styles.drawerBrand} aria-label="RF Riddhy home">
+            <Link href="/" onClick={closeMenu} className={`${styles.drawerBrand} notranslate`} translate="no" aria-label="RF Riddhy home">
               <Image
                 src="/logo.png"
                 alt="RF Riddhy Furniture & Appliances"

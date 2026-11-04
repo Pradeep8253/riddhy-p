@@ -72,6 +72,9 @@ export default function Footer({ config }) {
   const whatsappDigits = (activeConfig.contact?.whatsapp || activeConfig.contact?.phone || '918840245188').replace(/[^0-9]/g, '');
   const hindiTagline = activeConfig.hindiTagline || siteConfig.hindiTagline;
 
+  const instagramUrl = activeConfig.social?.instagram || siteConfig.social?.instagram || 'https://www.instagram.com/riddhyfurnitures';
+  const facebookUrl = activeConfig.social?.facebook || siteConfig.social?.facebook || 'https://www.facebook.com/riddhyfurnitures';
+
   return (
     <footer className={styles.footer}>
       {/* Background ambient lighting accents */}
@@ -118,28 +121,36 @@ export default function Footer({ config }) {
 
           <p className={styles.hindiTagline}>{hindiTagline}</p>
 
-          {/* {(hasPhone || hasEmail) && (
-            <div className={styles.contactChips}>
-              {hasPhone && (
+          {/* Social Icons in Footer */}
+          <div className={styles.socialRow}>
+            <span className={styles.socialLabel}>Connect With Us</span>
+            <div className={styles.socialIcons}>
+              {instagramUrl && (
                 <a
-                  href={`tel:${phone.replace(/[^0-9+]/g, '')}`}
-                  className={styles.contactChip}
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialBtn}
+                  aria-label="Follow RF Riddhy on Instagram"
+                  title="Follow us on Instagram"
                 >
-                  <Icon name="phone" size={14} className={styles.contactIcon} />
-                  <span>{phone}</span>
+                  <Icon name="instagram" size={17} />
                 </a>
               )}
-              {hasEmail && (
+              {facebookUrl && (
                 <a
-                  href={`mailto:${email}`}
-                  className={styles.contactChip}
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialBtn}
+                  aria-label="Follow RF Riddhy on Facebook"
+                  title="Follow us on Facebook"
                 >
-                  <Icon name="mail" size={14} className={styles.contactIcon} />
-                  <span>{email}</span>
+                  <Icon name="facebook" size={17} />
                 </a>
               )}
             </div>
-          )} */}
+          </div>
         </div>
 
         {/* Navigation Link Groups */}
@@ -210,7 +221,6 @@ export default function Footer({ config }) {
           </div>
         </div>
       </div>
-
 
       {/* Footer Bottom Bar */}
       <div className={styles.footerBottom}>

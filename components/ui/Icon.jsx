@@ -98,6 +98,25 @@ function Instagram({ size = 20, strokeWidth = 1.7, className, color, style }) {
   );
 }
 
+function Facebook({ size = 20, strokeWidth = 1.7, className, color, style }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color || 'currentColor'}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      style={style}
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
 const iconMap = {
   search: Search,
   bag: ShoppingBag,
@@ -129,6 +148,7 @@ const iconMap = {
   clock: Clock,
   gift: Gift,
   instagram: Instagram,
+  facebook: Facebook,
   mail: Mail,
   phone: Phone,
   calendar: Calendar,

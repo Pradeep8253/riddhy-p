@@ -47,6 +47,21 @@ const DEPARTMENTS = [
 ];
 
 const HINDI_CATEGORY_NAMES = {
+  rajai: "रजाई (क्विल्ट)",
+  "rajai-quilt": "रजाई (क्विल्ट)",
+  quilt: "रजाई (क्विल्ट)",
+  kambal: "कंबल (2-इन-1)",
+  blanket: "कंबल (2-इन-1)",
+  "kambal-2-in-1": "कंबल (2-इन-1)",
+  "bhagona-cookware-set": "भगोना और कुकवेयर सेट",
+  bhagona: "भगोना सेट",
+  "skillet-fry-pan": "स्किलेट और फ्राई पैन",
+  "bread-dosa-tawa": "ब्रेड और डोसा तवा",
+  "stainless-steel-thali-set": "स्टेनलेस स्टील थाली सेट",
+  "water-jug-glasses": "पानी का जग और गिलास",
+  "masala-box": "मसाला डिब्बा",
+  "insulated-hotpot-casserole": "इन्सुलेटेड हॉटपॉट / कैसरोल",
+  "cutlery-spoon-stand": "कटलरी और चम्मच स्टैंड",
   beds: "बेड्स",
   "double-bed": "डबल बेड",
   sringardan: "श्रृंगारदान",
@@ -256,6 +271,7 @@ export default function ExploreOurRange({
         .catch(() => {});
     }
   }, [allProducts]);
+
 
   const activeDeptObj = useMemo(() => {
     return DEPARTMENTS.find((d) => d.key === activeDept) || DEPARTMENTS[0];

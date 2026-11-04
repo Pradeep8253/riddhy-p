@@ -234,6 +234,54 @@
   transform: translateX(3px);
 }
 
+
+/* Social Icons Row */
+.socialRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.socialLabel {
+  font-family: var(--font-display, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #edb95e;
+}
+
+.socialIcons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(237, 185, 94, 0.28);
+  color: #edb95e;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.socialBtn:hover {
+  background: linear-gradient(135deg, rgba(237, 185, 94, 0.25), rgba(237, 185, 94, 0.1));
+  border-color: #edb95e;
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 6px 18px rgba(237, 185, 94, 0.35);
+}
+
 .contactIcon {
   color: #edb95e;
   flex-shrink: 0;

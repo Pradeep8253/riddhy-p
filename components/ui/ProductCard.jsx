@@ -16,7 +16,9 @@ import {
   getLocalizedProductTagline,
 } from "@/lib/translate-backend";
 import Icon from "./Icon";
-import QuickViewModal from "./QuickViewModal";
+import dynamic from "next/dynamic";
+
+const QuickViewModal = dynamic(() => import("./QuickViewModal"), { ssr: false });
 import { getProductWhatsAppUrl } from "@/lib/site-config";
 import styles from "./ProductCard.module.css";
 

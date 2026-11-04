@@ -2,8 +2,8 @@ import MarriagePackagesClient from "@/components/store/MarriagePackagesClient";
 import { getLivePackages } from "@/lib/packages-data";
 import { getCanonicalUrl, getBreadcrumbSchema } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+
+export const revalidate = 60;
 
 export const metadata = {
   title: "Wedding Furniture Packages in Prayagraj | Complete Marriage Setup | RF Riddhy",

@@ -31,8 +31,9 @@ const Hero = ({ initialSlides = [], initialSideCards = [] }) => {
   }, [initialSideCards]);
 
   useEffect(() => {
+    if (initialSlides?.length > 0) return;
     let mounted = true;
-    fetch('/api/banners?all=true', { cache: 'no-store' })
+    fetch('/api/banners?all=true')
       .then((response) => response.json())
       .then((res) => {
         if (!mounted) return;

@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  compress: true,
   output: 'standalone',
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
+  },
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
   turbopack: {
     rules: {
@@ -28,7 +32,8 @@ const nextConfig = {
     ];
   },
   experimental: {
-    serverActions: { bodySizeLimit: '8mb' }
+    serverActions: { bodySizeLimit: '8mb' },
+    optimizePackageImports: ['lucide-react', '@reduxjs/toolkit', 'framer-motion', 'gsap']
   },
   async headers() {
     const cspDirectives = [
@@ -48,6 +53,18 @@ const nextConfig = {
 
     return [
       {
+        source: '/fonts/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }
+        ]
+      },
+      {
+        source: '/images/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }
+        ]
+      },
+      {
         source: '/:path*',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -63,4 +80,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-// Dev server reload timestamp: 2026-10-28T00:06:00

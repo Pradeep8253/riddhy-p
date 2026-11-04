@@ -15,8 +15,15 @@ function OffersModalInner() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    try {
+      const isOffersExplicit = searchParams?.get('offers') === '1' || searchParams?.get('openOffers') === 'true';
+      if (!isOffersExplicit && sessionStorage.getItem('rf_offer_dismissed')) {
+        setLoaded(true);
+        return;
+      }
+    } catch {}
     let mounted = true;
-    fetch('/api/banners?zone=popupbanner', { cache: 'no-store' })
+    fetch('/api/banners?zone=popupbanner')
       .then((res) => res.json())
       .then((json) => {
         const rows = Array.isArray(json) ? json : (json?.data || []);

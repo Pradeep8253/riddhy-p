@@ -2,8 +2,8 @@ import MarriagePackagesClient from '@/components/store/MarriagePackagesClient';
 import { getLivePackages } from '@/lib/packages-data';
 import { siteConfig } from '@/lib/site-config';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+
+export const revalidate = 60;
 
 export const metadata = {
   title: 'Our Packages — RF Riddhy Furnitures & Home Appliances',

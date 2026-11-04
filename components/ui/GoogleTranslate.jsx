@@ -56,7 +56,7 @@ export const SUPPORTED_LANGUAGES = [
   },
 ];
 
-function getStoredLang() {
+export function getStoredLang() {
   if (typeof document === 'undefined') return 'en';
   try {
     const local = window.localStorage.getItem('rf-locale');
@@ -70,12 +70,12 @@ function getStoredLang() {
   return 'en';
 }
 
-function setGoogleTranslateCookie(code) {
+export function setGoogleTranslateCookie(code) {
   if (typeof document === 'undefined') return;
   const val = `/en/${code}`;
   const host = window.location.hostname;
 
-  // 1. Host-only cookie (Works 100% on localhost, 127.0.0.1, Vercel, and live domains)
+  // 1. Host-only cookie (Works on localhost, 127.0.0.1, Vercel, and live domains)
   document.cookie = `googtrans=${val}; path=/; max-age=31536000; SameSite=Lax`;
 
   // 2. Cross-domain cookie if not localhost or raw IP
@@ -89,7 +89,7 @@ function setGoogleTranslateCookie(code) {
   }
 }
 
-function clearGoogleTranslateCookie() {
+export function clearGoogleTranslateCookie() {
   if (typeof document === 'undefined') return;
   const host = window.location.hostname;
   const expire = 'expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -120,7 +120,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
     setCurrentLang(initial);
   }, []);
 
-  // Suppress and hide Google's floating icons, banners, and body top displacement
+  // Suppress and hide Google's floating banners, tooltips, and top body displacement
   useEffect(() => {
     const cleanGoogleUI = () => {
       if (typeof document === 'undefined') return;
@@ -128,7 +128,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
         document.body.style.top = '0px';
       }
       const elementsToHide = document.querySelectorAll(
-        'iframe.goog-te-banner-frame, iframe.skiptranslate, [class*="VIpgJd"], [class*="goog-te-banner"], [class*="goog-te-gadget-icon"], [class*="goog-te-spinner"], #goog-gt-tt, .goog-te-balloon-frame, .goog-tooltip, body > div.skiptranslate'
+        'iframe.goog-te-banner-frame, iframe.skiptranslate, [class*="goog-te-banner"], [class*="goog-te-gadget-icon"], [class*="goog-te-spinner"], #goog-gt-tt, .goog-te-balloon-frame, .goog-tooltip, body > div.skiptranslate, body > [class*="VIpgJd"], iframe[class*="VIpgJd"]'
       );
       elementsToHide.forEach((el) => {
         if (el.id === 'google_translate_element') return;
@@ -145,15 +145,10 @@ export default function GoogleTranslate({ variant = 'compact' }) {
     };
 
     cleanGoogleUI();
-    const observer = new MutationObserver(cleanGoogleUI);
-    if (document.body) {
-      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-    }
-    const interval = setInterval(cleanGoogleUI, 200);
-    const timeout = setTimeout(() => clearInterval(interval), 15000);
+    const interval = setInterval(cleanGoogleUI, 300);
+    const timeout = setTimeout(() => clearInterval(interval), 10000);
 
     return () => {
-      observer.disconnect();
       clearInterval(interval);
       clearTimeout(timeout);
     };
@@ -193,7 +188,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
       window.googleTranslateElementInit();
     }
 
-    // 3. Sync combo if initial language is not English
+    // 3. Sync combo if initial language is Hindi
     const syncCombo = () => {
       const combo = document.querySelector('.goog-te-combo');
       if (combo && combo.options && combo.options.length > 0) {
@@ -259,14 +254,32 @@ export default function GoogleTranslate({ variant = 'compact' }) {
 
     if (code === 'en') {
       clearGoogleTranslateCookie();
+
+      // Check if Google Translate banner has an internal restore button and click it
+      const bannerIframe = document.querySelector('iframe.goog-te-banner-frame');
+      if (bannerIframe) {
+        try {
+          const innerDoc = bannerIframe.contentDocument || bannerIframe.contentWindow?.document;
+          const restoreBtn = innerDoc?.querySelector('button[id*="restore"], .goog-close-link, button.goog-te-banner-frame-restore');
+          if (restoreBtn) {
+            restoreBtn.click();
+          }
+        } catch (e) {}
+      }
+
       const combo = document.querySelector('.goog-te-combo');
       if (combo) {
-        combo.value = '';
+        const hasEn = Array.from(combo.options || []).some((o) => o.value === 'en');
+        combo.value = hasEn ? 'en' : '';
         combo.dispatchEvent(new Event('change', { bubbles: true }));
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 150);
+
+      // Remove Google translation classes from root html element
+      if (typeof document !== 'undefined') {
+        document.documentElement.classList.remove('translated-ltr', 'translated-rtl');
+      }
+
+      // Seamless switch without reloading website
       return;
     }
 
