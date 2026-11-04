@@ -295,7 +295,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
       <div className={`${styles.drawerContainer} notranslate`} translate="no">
         <div className={styles.drawerTitle}>
           <div className={styles.drawerTitleLeft}>
-            <Icon name="globe" size={15} />
+            <Icon name="globe" size={13} />
             <span>Language / भाषा चुनें</span>
           </div>
           <span className={styles.drawerCurrentBadge} suppressHydrationWarning>
@@ -324,7 +324,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
                 <div className={styles.drawerCheckWrap}>
                   {isActive ? (
                     <div className={styles.drawerCheckActive}>
-                      <Icon name="check" size={12} />
+                      <Icon name="check" size={10} />
                     </div>
                   ) : (
                     <div className={styles.drawerCheckEmpty} />

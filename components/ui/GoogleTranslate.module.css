@@ -294,30 +294,30 @@
 
 /* ==========================================================================
    Drawer Variant (Inside Mobile Sliding Navigation Drawer)
+   Very compact, small language selector with 3px padding and responsive styling
    ========================================================================== */
 .drawerContainer {
   width: 100%;
-  padding: 12px 0;
-  border-top: 1px solid rgba(196, 134, 32, 0.14);
-  border-bottom: 1px solid rgba(196, 134, 32, 0.14);
-  margin: 12px 0;
+  padding: 6px 18px 4px;
+  box-sizing: border-box;
+  margin: 4px 0 2px;
 }
 
 .drawerTitle {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 9px;
+  margin-bottom: 5px;
 }
 
 .drawerTitleLeft {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11.5px;
+  gap: 5px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: #10261a;
 }
 
@@ -327,32 +327,41 @@
 }
 
 .drawerCurrentBadge {
-  font-size: 10.5px;
+  font-size: 9px;
   font-weight: 700;
   color: #a86f18;
   background: #fbf3e4;
-  border: 1px solid rgba(196, 134, 32, 0.25);
-  padding: 2px 7px;
+  border: 1px solid rgba(196, 134, 32, 0.22);
+  padding: 1px 6px;
   border-radius: 999px;
+  line-height: 1.3;
 }
 
 .drawerGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 4px;
+  padding: 3px;
+  background: rgba(31, 95, 46, 0.04);
+  border: 1px solid rgba(196, 134, 32, 0.15);
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .drawerCard {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 9px;
+  gap: 5px;
+  padding: 3px 6px;
+  min-height: 27px;
   background: #ffffff;
-  border: 1.5px solid rgba(196, 134, 32, 0.2);
-  border-radius: 10px;
+  border: 1px solid rgba(196, 134, 32, 0.22);
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.16s ease;
   text-align: left;
+  user-select: none;
+  box-sizing: border-box;
 }
 
 .drawerCard:active {
@@ -360,23 +369,23 @@
 }
 
 .drawerCardActive {
-  background: linear-gradient(135deg, rgba(224, 160, 64, 0.12) 0%, rgba(20, 70, 33, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(224, 160, 64, 0.15) 0%, rgba(20, 70, 33, 0.05) 100%);
   border-color: #c48620;
-  box-shadow: 0 3px 10px rgba(196, 134, 32, 0.12);
+  box-shadow: 0 1px 4px rgba(196, 134, 32, 0.15);
 }
 
 .drawerGlyphCircle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 19px;
+  height: 19px;
+  border-radius: 4px;
   background: #fbf3e4;
   border: 1px solid rgba(196, 134, 32, 0.25);
   color: #a86f18;
   font-family: var(--font-display, 'Playfair Display', Georgia, serif);
-  font-size: 11.5px;
+  font-size: 10px;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -395,38 +404,43 @@
 }
 
 .drawerCardNative {
-  font-size: 12px;
+  font-size: 10.5px;
   font-weight: 700;
   color: #10261a;
-  line-height: 1.2;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .drawerCardSub {
-  font-size: 10px;
+  font-size: 9px;
   color: #617064;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .drawerCheckWrap {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .drawerCheckActive {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   background: #c48620;
   color: #ffffff;
 }
 
 .drawerCheckEmpty {
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  border: 1.5px solid rgba(44, 62, 45, 0.2);
+  border: 1px solid rgba(44, 62, 45, 0.25);
 }
 
 /* ==========================================================================
@@ -486,8 +500,8 @@
 
 @media (max-width: 480px) {
   .triggerBtn {
-    height: 24px;
-    padding: 0 5px 0 2.5px;
+    height: 31px;
+    padding: 0 5px 0 5px;
     gap: 3px;
   }
 
@@ -514,6 +528,46 @@
     align-items: center;
     flex-direction: column;
   }
+
+  /* Compact drawer buttons for mobile */
+  .drawerContainer {
+    padding: 5px 14px 2px;
+    margin: 3px 0 1px;
+  }
+
+  .drawerGrid {
+    gap: 3px;
+    padding: 3px;
+  }
+
+  .drawerCard {
+    padding: 3px 5px;
+    gap: 4px;
+    min-height: 25px;
+    border-radius: 5px;
+  }
+
+  .drawerGlyphCircle {
+    width: 17px;
+    height: 17px;
+    font-size: 9.5px;
+    border-radius: 3.5px;
+  }
+
+  .drawerCardNative {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .drawerCheckActive {
+    width: 12px;
+    height: 12px;
+  }
+
+  .drawerCheckEmpty {
+    width: 10px;
+    height: 10px;
+  }
 }
 
 @media (max-width: 360px) {
@@ -538,5 +592,52 @@
 
   .chevronIcon {
     display: none;
+  }
+
+  /* Ultra-compact drawer buttons for ultra-narrow mobile */
+  .drawerContainer {
+    padding: 4px 10px 1px;
+  }
+
+  .drawerGrid {
+    gap: 2.5px;
+    padding: 3px;
+  }
+
+  .drawerCard {
+    padding: 3px 4px;
+    gap: 3.5px;
+    min-height: 24px;
+  }
+
+  .drawerGlyphCircle {
+    width: 15px;
+    height: 15px;
+    font-size: 8.5px;
+    border-radius: 3px;
+  }
+
+  .drawerCardNative {
+    font-size: 9.5px;
+  }
+
+  .drawerTitleLeft {
+    font-size: 9px;
+    gap: 4px;
+  }
+
+  .drawerCurrentBadge {
+    font-size: 8px;
+    padding: 1px 4px;
+  }
+
+  .drawerCheckActive {
+    width: 11px;
+    height: 11px;
+  }
+
+  .drawerCheckEmpty {
+    width: 9px;
+    height: 9px;
   }
 }
