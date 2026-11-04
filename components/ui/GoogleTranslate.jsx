@@ -66,7 +66,7 @@ function getStoredLang() {
       const c = match[1].toLowerCase();
       if (c === 'hi' || c === 'en') return c;
     }
-  } catch {}
+  } catch { }
   return 'en';
 }
 
@@ -178,7 +178,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
             'google_translate_element'
           );
         }
-      } catch (e) {}
+      } catch (e) { }
     };
 
     // 2. Inject Google Translate script dynamically if not present
@@ -255,7 +255,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
     try {
       window.localStorage.setItem('rf-locale', code);
       document.cookie = `rf-locale=${code}; path=/; max-age=31536000; SameSite=Lax`;
-    } catch {}
+    } catch { }
 
     if (code === 'en') {
       clearGoogleTranslateCookie();
@@ -299,7 +299,8 @@ export default function GoogleTranslate({ variant = 'compact' }) {
             <span>Language / भाषा चुनें</span>
           </div>
           <span className={styles.drawerCurrentBadge} suppressHydrationWarning>
-            {activeLangObj.native}
+            <span className={styles.fullLabel}>{activeLangObj.native}</span>
+            <span className={styles.shortLabel}>{activeLangObj.short}</span>
           </span>
         </div>
 
@@ -355,11 +356,12 @@ export default function GoogleTranslate({ variant = 'compact' }) {
           </span>
         </span>
         <span className={styles.currentLabel} suppressHydrationWarning>
-          {activeLangObj.native}
+          <span className={styles.fullLabel}>{activeLangObj.native}</span>
+          <span className={styles.shortLabel}>{activeLangObj.short}</span>
         </span>
         <Icon
           name="chevron"
-          size={13}
+          size={10}
           className={`${styles.chevronIcon} ${isOpen ? styles.chevronOpen : ''}`}
         />
       </button>
@@ -409,7 +411,7 @@ export default function GoogleTranslate({ variant = 'compact' }) {
             <span className={styles.footerShield}>
               <Icon name="shield" size={10} />
             </span>
-            <span>RF Riddhy • Bilingual Experience</span>
+            <span>RF Riddhy • Experience</span>
           </div>
         </div>
       )}

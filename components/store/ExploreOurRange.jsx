@@ -10,6 +10,7 @@ import {
 } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import ProductCard from "@/components/ui/ProductCard";
 import styles from "./ExploreOurRange.module.css";
 
@@ -22,6 +23,7 @@ const DEPARTMENTS = [
   {
     key: "furniture",
     label: "Furnitures",
+    labelHi: "फर्नीचर",
     href: "/furniture",
     type: "furniture",
     fallbackImage: "/images/category-double-bed.webp",
@@ -29,6 +31,7 @@ const DEPARTMENTS = [
   {
     key: "appliances",
     label: "Appliances",
+    labelHi: "उपकरण",
     href: "/appliances",
     type: "appliance",
     fallbackImage: "/images/category-fridge.webp",
@@ -36,17 +39,72 @@ const DEPARTMENTS = [
   {
     key: "utensils",
     label: "Utensils",
+    labelHi: "बर्तन",
     href: "/utensils",
     type: "utensils",
     fallbackImage: "/images/category-dinner-set.webp",
   },
 ];
 
+const HINDI_CATEGORY_NAMES = {
+  beds: "बेड्स",
+  "double-bed": "डबल बेड",
+  sringardan: "श्रृंगारदान",
+  sofas: "सोफा",
+  "sofa-set": "सोफा सेट",
+  "centre-table": "सेंटर टेबल",
+  wardrobes: "वार्डरोब",
+  "wooden-wordrobe": "लकड़ी की अलमारी",
+  almirah: "अलमारी",
+  "fancy-almirah": "फैंसी अलमारी",
+  mattresses: "गद्दे",
+  mattress: "गद्दे",
+  "study-tables": "स्टडी टेबल",
+  decor: "सजावट",
+  storage: "स्टोरेज",
+  refrigerators: "रेफ्रिजरेटर",
+  fridge: "फ्रिज",
+  "washing-machines": "वॉशिंग मशीन",
+  "washing-machine": "वॉशिंग मशीन",
+  "air-conditioners": "एयर कंडीशनर",
+  ac: "एसी",
+  cooler: "कूलर",
+  "diacut-cooler": "डायकट कूलर",
+  televisions: "टेलीविज़न",
+  tv: "स्मार्ट टीवी",
+  microwaves: "माइक्रोवेव",
+  chimneys: "चिमनी",
+  "kitchen-chimneys": "किचन चिमनी",
+  "water-purifiers": "वाटर प्यूरीफायर",
+  "water-dispenser": "वाटर डिस्पेंसर",
+  "dinner-sets": "डिनर सेट",
+  cookware: "कुकवेयर",
+  utensils: "बर्तन",
+  "pressure-cooker": "प्रेशर कुकर",
+  "gas-chulha": "गैस चूल्हा",
+  mixer: "मिक्सर ग्राइंडर",
+  juicer: "जूसर",
+  iron: "प्रेस / आयरन",
+  "roti-maker": "रोटी मेकर",
+};
+
 export default function ExploreOurRange({
   allProducts = [],
   categories = [],
   initialDept = "furniture",
 }) {
+  const reduxLocale = useSelector((state) => state.ui?.locale);
+  const [locale, setLocale] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("rf-locale");
+      setLocale(reduxLocale || stored || "en");
+    }
+  }, [reduxLocale]);
+
+  const isHindi = locale === "hi";
+
   const [activeDept, setActiveDept] = useState(initialDept);
   const [activeCategory, setActiveCategory] = useState("all");
   const [fetchedProducts, setFetchedProducts] = useState([]);
@@ -85,17 +143,61 @@ export default function ExploreOurRange({
 
   useIsoLayoutEffect(() => {
     measureCapsule();
-  }, [measureCapsule]);
+  }, [measureCapsule, isHindi]);
 
+  // Reactive listeners for resize, scroll, font-load, and Google Translate / Hindi text mutations
   useEffect(() => {
+    const track = pillTrackRef.current;
+    if (!track) return;
+
+    measureCapsule();
+
+    // 1. ResizeObserver: watches track and all pill items as fonts load or text wraps
+    let resizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        measureCapsule();
+      });
+      resizeObserver.observe(track);
+      Object.values(pillRefs.current).forEach((el) => {
+        if (el) resizeObserver.observe(el);
+      });
+    }
+
+    // 2. MutationObserver: catches Google Translate or dynamic text translations into Hindi
+    let mutationObserver;
+    if (typeof MutationObserver !== "undefined") {
+      mutationObserver = new MutationObserver(() => {
+        measureCapsule();
+      });
+      mutationObserver.observe(track, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
+    }
+
     const onResize = () => measureCapsule();
+    const onScroll = () => measureCapsule();
+
     window.addEventListener("resize", onResize);
-    const t = setTimeout(measureCapsule, 60);
+    track.addEventListener("scroll", onScroll, { passive: true });
+
+    // Multi-interval check to ensure custom fonts have loaded and settled
+    const t1 = setTimeout(measureCapsule, 50);
+    const t2 = setTimeout(measureCapsule, 200);
+    const t3 = setTimeout(measureCapsule, 600);
+
     return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+      if (mutationObserver) mutationObserver.disconnect();
       window.removeEventListener("resize", onResize);
-      clearTimeout(t);
+      track.removeEventListener("scroll", onScroll);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
     };
-  }, [measureCapsule]);
+  }, [measureCapsule, isHindi]);
   /* ------------------------------------------------------------------- */
 
   const legacyAliases = useMemo(
@@ -181,21 +283,32 @@ export default function ExploreOurRange({
   }, [categoriesList, activeDept, activeDeptObj, legacyAliases]);
 
   // Circular navigation items: First is "All [Dept]", then backend categories
+  // Automatically localized for Hindi and dynamic text sizes
   const circles = useMemo(() => {
+    const allCircleLabel = isHindi
+      ? `सभी ${activeDeptObj.labelHi || activeDeptObj.label}`
+      : `All ${activeDeptObj.label}`;
+
     const allCircle = {
       slug: "all",
-      name: `All ${activeDeptObj.label}`,
+      name: allCircleLabel,
       image: deptCategories[0]?.image || activeDeptObj.fallbackImage,
     };
 
-    const dynamicCircles = deptCategories.map((c) => ({
-      slug: c.slug,
-      name: c.name,
-      image: c.image || activeDeptObj.fallbackImage,
-    }));
+    const dynamicCircles = deptCategories.map((c) => {
+      let displayName = c.name;
+      if (isHindi) {
+        displayName = c.name_hi || HINDI_CATEGORY_NAMES[c.slug] || c.name;
+      }
+      return {
+        slug: c.slug,
+        name: displayName,
+        image: c.image || activeDeptObj.fallbackImage,
+      };
+    });
 
     return [allCircle, ...dynamicCircles];
-  }, [deptCategories, activeDeptObj]);
+  }, [deptCategories, activeDeptObj, isHindi]);
 
   const productsList = useMemo(() => {
     if (Array.isArray(allProducts) && allProducts.length > 0) {
@@ -207,6 +320,10 @@ export default function ExploreOurRange({
   const handleDeptChange = (deptKey) => {
     setActiveDept(deptKey);
     setActiveCategory("all");
+    const el = pillRefs.current[deptKey];
+    if (el && typeof el.scrollIntoView === "function") {
+      el.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
   };
 
   // Lookup map for category sort priority (used for "All" tab view)
@@ -291,14 +408,14 @@ export default function ExploreOurRange({
     // Specific category filter - strict category association with smart synonyms
     const target = activeCategory.toLowerCase();
     const synonyms = {
-      'double-bed': ['beds', 'double-bed', 'bed'],
-      'sofa-set': ['sofas', 'sofa-set', 'sofa'],
-      'wooden-wordrobe': ['wardrobes', 'wooden-wordrobe', 'wardrobe'],
-      'fancy-almirah': ['fancy-almirah', 'almirah'],
-      fridge: ['fridge', 'refrigerators', 'refrigerator'],
-      'washing-machine': ['washing-machine', 'washing-machines'],
-      cooler: ['cooler', 'diacut-cooler'],
-      mattress: ['mattress', 'mattresses'],
+      "double-bed": ["beds", "double-bed", "bed"],
+      "sofa-set": ["sofas", "sofa-set", "sofa"],
+      "wooden-wordrobe": ["wardrobes", "wooden-wordrobe", "wardrobe"],
+      "fancy-almirah": ["fancy-almirah", "almirah"],
+      fridge: ["fridge", "refrigerators", "refrigerator"],
+      "washing-machine": ["washing-machine", "washing-machines"],
+      cooler: ["cooler", "diacut-cooler"],
+      mattress: ["mattress", "mattresses"],
     }[target] || [target];
 
     const matching = deptProducts.filter((p) => {
@@ -333,6 +450,11 @@ export default function ExploreOurRange({
     return activeDeptObj.href;
   }, [activeDept, activeCategory, activeDeptObj.href]);
 
+  const getDeptLabel = (dept) => {
+    if (isHindi && dept.labelHi) return dept.labelHi;
+    return dept.label;
+  };
+
   return (
     <section
       className={styles.rangeCosmosSection}
@@ -366,9 +488,9 @@ export default function ExploreOurRange({
         <div className={styles.rangeHeadlineBar}>
           <span className={styles.headlineFlourishLeft} aria-hidden="true" />
           <h2 className={styles.rangeHeadlineText}>
-            Explore Our{" "}
+            {isHindi ? "हमारे " : "Explore Our "}
             <span className={styles.rangeWordAccent}>
-              Range
+              {isHindi ? "कलेक्शन" : "Range"}
               <svg
                 className={styles.accentBrushSvg}
                 viewBox="0 0 140 12"
@@ -393,7 +515,7 @@ export default function ExploreOurRange({
           <span className={styles.headlineFlourishRight} aria-hidden="true" />
         </div>
 
-        {/* Department Pills — premium sliding glass capsule indicator */}
+        {/* Department Pills — responsive sliding glass capsule indicator */}
         <div className={styles.departmentOrbitStage}>
           <div
             className={styles.departmentPillTrack}
@@ -430,7 +552,7 @@ export default function ExploreOurRange({
                   onClick={() => handleDeptChange(dept.key)}
                 >
                   <span className={styles.departmentPillText}>
-                    {dept.label}
+                    {getDeptLabel(dept)}
                   </span>
                 </button>
               );
@@ -438,7 +560,7 @@ export default function ExploreOurRange({
           </div>
         </div>
 
-        {/* Circular Sub-Categories — dynamically populated from backend categories */}
+        {/* Circular Sub-Categories — dynamically adjusting width according to text size */}
         <div className={styles.categoryOrbitDeck}>
           <div className={styles.orbitFadeEdgeStart} aria-hidden="true" />
           <div className={styles.orbitFadeEdgeEnd} aria-hidden="true" />
@@ -456,7 +578,7 @@ export default function ExploreOurRange({
                   role="tab"
                   aria-selected={isActive}
                   className={`${styles.categoryOrbItem} ${isActive ? styles.categoryOrbItemLive : ""}`}
-                  style={{ "--delay": `${idx * 0.06}s` }}
+                  style={{ "--delay": `${idx * 0.05}s` }}
                   onClick={() => setActiveCategory(circle.slug)}
                   title={circle.name}
                 >
@@ -468,7 +590,7 @@ export default function ExploreOurRange({
                           src={circle.image}
                           alt={circle.name}
                           fill
-                          sizes="92px"
+                          sizes="(max-width: 768px) 76px, 92px"
                           className={styles.categoryOrbPhoto}
                           unoptimized
                         />
@@ -498,8 +620,9 @@ export default function ExploreOurRange({
             ))
           ) : (
             <div className={styles.showcaseEmptyNotice}>
-              No pieces currently in this selection. Explore all{" "}
-              {activeDeptObj.label} in our catalog.
+              {isHindi
+                ? `इस श्रेणी में अभी कोई उत्पाद उपलब्ध नहीं है। हमारे कैटलॉग में सभी ${activeDeptObj.labelHi || activeDeptObj.label} देखें।`
+                : `No pieces currently in this selection. Explore all ${activeDeptObj.label} in our catalog.`}
             </div>
           )}
         </div>
@@ -507,7 +630,7 @@ export default function ExploreOurRange({
         {/* Shop More — below grid, centered */}
         <div className={styles.rangeFooterCtaRow}>
           <Link href={shopMoreHref} className={styles.exploreMoreCta}>
-            <span>Shop More</span>
+            <span>{isHindi ? "और देखें" : "Shop More"}</span>
             <svg
               width="15"
               height="15"

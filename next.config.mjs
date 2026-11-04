@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   output: 'standalone',
+  transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
   turbopack: {
     rules: {
       '*.glsl': { loaders: ['raw-loader'], as: '*.js' },
