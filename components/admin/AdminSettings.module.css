@@ -1046,6 +1046,18 @@
   cursor: not-allowed;
 }
 
+/* ========== 14-INCH LAPTOP (1024px - 1240px) ========== */
+@media (min-width: 1024px) and (max-width: 1240px) {
+  .settingsLayout {
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .grid3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* ========== TABLET (<= 1024px) ========== */
 @media (min-width: 768px) and (max-width: 1023px) {
   .head {

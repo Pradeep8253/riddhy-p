@@ -346,6 +346,7 @@
     opacity: 0;
     transform: translateX(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -599,7 +600,7 @@
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid #e7e4dc;
-  padding: 0 28px;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -697,7 +698,10 @@
   border: 1px solid #e4ddd1;
   border-radius: 999px;
   padding: 6px 14px;
-  width: 320px;
+  width: 100%;
+  max-width: 300px;
+  flex: 0 1 300px;
+  min-width: 180px;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -759,7 +763,10 @@
 
 .main {
   flex: 1;
-  padding: 26px 28px;
+  padding: 24px 20px 36px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Mobile Overlay Drawer */
@@ -1025,6 +1032,29 @@
   flex-shrink: 0;
 }
 
+/* ========== 14-INCH LAPTOP & COMPACT DESKTOP (1024px - 1366px) ========== */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .topbar {
+    padding: 0 18px;
+  }
+
+  .quickSearch {
+    max-width: 250px;
+    flex: 0 1 250px;
+  }
+
+  .main {
+    padding: 20px 18px 32px;
+  }
+
+  .breadcrumbActive {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 /* ========== TABLET & MOBILE OFF-CANVAS SHELL (<= 1023px) ========== */
 @media (max-width: 1023px) {
   .mobileOverlay {
@@ -1093,12 +1123,12 @@
   }
 
   .main {
-    padding: 20px 20px 32px !important;
+    padding: 18px 16px 32px !important;
   }
 
   .quickSearch {
     display: flex !important;
-    max-width: 320px;
+    max-width: 250px;
   }
 
   .mobileSearchBtn {
@@ -1143,8 +1173,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 150px;
-    font-size: 13.5px;
+    max-width: clamp(100px, 34vw, 160px);
+    font-size: 13px;
     font-weight: 700;
     color: #10261a;
   }
@@ -1185,7 +1215,7 @@
   }
 
   .main {
-    padding: 16px 14px calc(var(--admin-bottom-dock-height, 64px) + 16px + var(--admin-safe-bottom, 0px)) !important;
+    padding: 14px 12px calc(var(--admin-bottom-dock-height, 64px) + 16px + var(--admin-safe-bottom, 0px)) !important;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -1213,7 +1243,7 @@
     left: 0;
     right: 0;
     z-index: 990;
-    height: calc(62px + var(--admin-safe-bottom, 0px));
+    height: calc(58px + var(--admin-safe-bottom, 0px));
     padding-bottom: var(--admin-safe-bottom, 0px);
     background: rgba(13, 30, 21, 0.95);
     backdrop-filter: blur(20px);
@@ -1231,10 +1261,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
     flex: 1;
-    min-height: 50px;
-    padding: 4px 2px;
+    min-height: 48px;
+    padding: 2px 0;
     background: transparent;
     border: none;
     color: #a7baa9;
@@ -1255,8 +1285,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 24px;
+    width: 26px;
+    height: 22px;
     color: inherit;
     transition: transform 0.2s ease, color 0.2s ease;
   }
@@ -1320,12 +1350,12 @@
   }
 
   .mobilePageTitle {
-    font-size: 12.5px;
-    max-width: 120px;
+    font-size: 12px;
+    max-width: clamp(90px, 28vw, 125px);
   }
 
   .main {
-    padding: 12px 8px calc(var(--admin-bottom-dock-height, 64px) + 12px + var(--admin-safe-bottom, 0px)) !important;
+    padding: 12px 10px calc(var(--admin-bottom-dock-height, 64px) + 14px + var(--admin-safe-bottom, 0px)) !important;
   }
 
   .sidebar {
@@ -1351,11 +1381,11 @@
   }
 
   .main {
-    padding: 10px 6px calc(var(--admin-bottom-dock-height, 64px) + 10px + var(--admin-safe-bottom, 0px)) !important;
+    padding: 10px 8px calc(var(--admin-bottom-dock-height, 64px) + 12px + var(--admin-safe-bottom, 0px)) !important;
   }
 
   .mobilePageTitle {
-    max-width: 90px;
+    max-width: clamp(80px, 26vw, 105px);
     font-size: 11.5px;
   }
 
