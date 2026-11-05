@@ -8,7 +8,7 @@ import { removeCompareItem, clearCompare } from "@/store/compareSlice";
 import { addItem } from "@/store/cartSlice";
 import { showToast } from "@/store/uiSlice";
 import { formatINR } from "@/lib/pricing";
-import { getLocalizedCategoryName } from "@/lib/translate-backend";
+import { getLocalizedCategoryName, getLocalizedBrand } from "@/lib/translate-backend";
 import ProductGrid from "@/components/ui/ProductGrid";
 import Button from "@/components/ui/Button";
 import styles from "./CompareClient.module.css";
@@ -32,6 +32,7 @@ function get(item, path) {
 }
 
 export default function CompareClient() {
+  const locale = useSelector((state) => state.ui?.locale || "en");
   const router = useRouter();
   const items = useSelector((state) => state.compare.items);
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
@@ -103,7 +104,9 @@ export default function CompareClient() {
                     } else if (unit && vals[index] != null) {
                       valDisplay = `${vals[index]} ${unit}`;
                     } else if (isCategory && valDisplay !== "—") {
-                      valDisplay = getLocalizedCategoryName(valDisplay);
+                      valDisplay = getLocalizedCategoryName(valDisplay, locale);
+                    } else if (label === "Brand" && valDisplay !== "—") {
+                      valDisplay = getLocalizedBrand(valDisplay, locale);
                     }
                     return (
                       <td key={item.slug} className={unique ? styles.diff : ""}>

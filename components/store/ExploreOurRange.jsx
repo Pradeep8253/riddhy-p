@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import ProductCard from "@/components/ui/ProductCard";
+import { getLocalizedCategoryName } from "@/lib/translate-backend";
 import styles from "./ExploreOurRange.module.css";
 
 const useIsoLayoutEffect =
@@ -116,6 +117,11 @@ export default function ExploreOurRange({
       const stored = window.localStorage.getItem("rf-locale");
       setLocale(reduxLocale || stored || "en");
     }
+    const onLocaleChange = (e) => {
+      setLocale(e.detail || "en");
+    };
+    window.addEventListener("rf-locale-change", onLocaleChange);
+    return () => window.removeEventListener("rf-locale-change", onLocaleChange);
   }, [reduxLocale]);
 
   const isHindi = locale === "hi";
@@ -314,7 +320,7 @@ export default function ExploreOurRange({
     const dynamicCircles = deptCategories.map((c) => {
       let displayName = c.name;
       if (isHindi) {
-        displayName = c.name_hi || HINDI_CATEGORY_NAMES[c.slug] || c.name;
+        displayName = isHindi ? (c.name_hi || getLocalizedCategoryName(c, 'hi') || HINDI_CATEGORY_NAMES[c.slug] || c.name) : c.name;
       }
       return {
         slug: c.slug,

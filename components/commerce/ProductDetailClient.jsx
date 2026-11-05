@@ -18,7 +18,8 @@ import ProductRail from '@/components/store/ProductRail';
 import {
   getLocalizedProductName,
   getLocalizedProductTagline,
-  getLocalizedCategoryName
+  getLocalizedCategoryName,
+  getLocalizedBrand
 } from '@/lib/translate-backend';
 import { getProductWhatsAppUrl } from '@/lib/site-config';
 import styles from './ProductDetailClient.module.css';
@@ -612,7 +613,7 @@ export default function ProductDetailClient({ product, related = [] }) {
             {/* Product Info Section */}
             <div className={styles.info}>
               <div className={styles.brandRow}>
-                <span className={styles.brandName}>{product.brand || 'RF Riddhy'}</span>
+                <span className={styles.brandName}>{getLocalizedBrand(product.brand || 'RF Riddhy', locale)}</span>
                 <span className={styles.brandDot}>·</span>
                 <span className={styles.categoryName}>
                   {getLocalizedCategoryName(product.categoryLabel || product.category, locale)}
@@ -914,8 +915,8 @@ export default function ProductDetailClient({ product, related = [] }) {
 
               <div className={styles.specGrid}>
                 <div>
-                  <span>Brand</span>
-                  <b>{product.brand || 'RF Riddhy'}</b>
+                  <span>{locale === 'hi' ? 'ब्रांड' : 'Brand'}</span>
+                  <b>{getLocalizedBrand(product.brand || 'RF Riddhy', locale)}</b>
                 </div>
                 <div>
                   <span>Primary Material</span>

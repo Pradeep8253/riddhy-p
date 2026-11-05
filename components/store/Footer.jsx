@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import Icon from '@/components/ui/Icon';
 import { siteConfig, isConfigured } from '@/lib/site-config';
 import styles from './Footer.module.css';
@@ -39,6 +40,47 @@ const groups = [
   }
 ];
 
+
+const trustPillarsHi = [
+  { icon: 'shield', title: '5-वर्षीय वारंटी', subtitle: 'व्यापक संरचनात्मक आश्वासन' },
+  { icon: 'truck', title: 'मुफ़्त डिलीवरी व सेटअप', subtitle: 'सावधानीपूर्वक इंस्टॉलेशन' },
+  { icon: 'mapPin', title: 'प्रयागराज स्थानीय स्टोर', subtitle: 'स्थानीय डिलीवरी एवं शोरूम सहायता' },
+  { icon: 'award', title: '100% सॉलिड टिम्बर', subtitle: 'टिकाऊ प्राकृतिक लकड़ी' }
+];
+
+const groupsHi = [
+  {
+    title: 'ख़रीदारी',
+    links: [
+      ['फर्नीचर', '/furniture'],
+      ['घरेलू उपकरण', '/appliances'],
+      ['विवाह पैकेज', '/packages'],
+      ['कमरे के अनुसार', '/rooms/living']
+    ]
+  },
+  {
+    title: 'सहायता व सेवा',
+    links: [
+      ['ऑर्डर ट्रैक करें', '/track-order'],
+      ['प्रयागराज स्टोर व हब', '/contact'],
+      ['वारंटी विवरण', '/warranty'],
+      ['डिलीवरी एवं स्थापना', '/policies/shipping'],
+      ['वापसी व धनवापसी', '/policies/returns'],
+      ['वारंटी नीतियां', '/policies/warranty'],
+      ['अक्सर पूछे जाने वाले प्रश्न', '/faq']
+    ]
+  },
+  {
+    title: 'रिद्धि के बारे में',
+    links: [
+      ['हमारे बारे में', '/about'],
+      ['संपर्क करें', '/contact'],
+      ['थोक एवं व्यापार पूछताछ', '/bulk-enquiry'],
+      ['गोपनीयता नीति', '/policies/privacy']
+    ]
+  }
+];
+
 const trustPillars = [
   {
     icon: 'shield',
@@ -63,6 +105,7 @@ const trustPillars = [
 ];
 
 export default function Footer({ config }) {
+  const locale = useSelector((state) => state.ui?.locale || 'en');
   const activeConfig = config || siteConfig;
   const hasPhone = isConfigured(activeConfig.contact?.phone);
   const hasEmail = isConfigured(activeConfig.contact?.email);
@@ -74,6 +117,8 @@ export default function Footer({ config }) {
 
   const instagramUrl = activeConfig.social?.instagram || siteConfig.social?.instagram || 'https://www.instagram.com/riddhyfurnitures';
   const facebookUrl = activeConfig.social?.facebook || siteConfig.social?.facebook || 'https://www.facebook.com/riddhyfurnitures';
+  const youtubeUrl = activeConfig.social?.youtube || siteConfig.social?.youtube || 'https://www.youtube.com/@riddhyfurnitures';
+  const mapUrl = activeConfig.showroom?.mapUrl || siteConfig.showroom?.mapUrl || 'https://www.google.com/maps/search/?api=1&query=Riddhy+Furnitures+Mansoorabad+Prayagraj+Uttar+Pradesh+229411';
 
   return (
     <footer className={styles.footer}>
@@ -84,7 +129,7 @@ export default function Footer({ config }) {
       {/* Top Trust Ribbon */}
       <div className={styles.trustRibbon}>
         <div className={styles.trustGrid}>
-          {trustPillars.map((item, idx) => (
+          {(locale === 'hi' ? trustPillarsHi : trustPillars).map((item, idx) => (
             <div key={idx} className={styles.trustItem}>
               <div className={styles.trustIconWrap}>
                 <Icon name={item.icon} size={20} className={styles.trustIcon} />
@@ -120,41 +165,10 @@ export default function Footer({ config }) {
           </p>
 
           <p className={styles.hindiTagline}>{hindiTagline}</p>
-
-          {/* Social Icons in Footer */}
-          <div className={styles.socialRow}>
-            <span className={styles.socialLabel}>Connect With Us</span>
-            <div className={styles.socialIcons}>
-              {instagramUrl && (
-                <a
-                  href={instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialBtn}
-                  aria-label="Follow RF Riddhy on Instagram"
-                  title="Follow us on Instagram"
-                >
-                  <Icon name="instagram" size={17} />
-                </a>
-              )}
-              {facebookUrl && (
-                <a
-                  href={facebookUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialBtn}
-                  aria-label="Follow RF Riddhy on Facebook"
-                  title="Follow us on Facebook"
-                >
-                  <Icon name="facebook" size={17} />
-                </a>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* Navigation Link Groups */}
-        {groups.map((group) => (
+        {(locale === 'hi' ? groupsHi : groups).map((group) => (
           <div className={styles.linkGroup} key={group.title}>
             <h3 className={styles.groupHeading}>{group.title}</h3>
             <ul className={styles.groupLinks}>
@@ -174,9 +188,7 @@ export default function Footer({ config }) {
         <div className={styles.promiseCol}>
           <div className={styles.promiseCard}>
             <div className={styles.promiseHeader}>
-              <span className={styles.promiseLabel}>
-                A Riddhy promise
-              </span>
+              <span className={styles.promiseLabel}>{locale === 'hi' ? 'रिद्धि का वादा' : 'A Riddhy promise'}</span>
 
               {/* Fancy Animated Small Vastu Image - Pure graphical emblem without any vastu text */}
               <div className={styles.vastuSealWrap} aria-label="Auspicious Seal">
@@ -195,8 +207,7 @@ export default function Footer({ config }) {
             </div>
 
             <strong className={styles.promiseHeadline}>
-              Made for living.<br />
-              Here for the long run.
+              {locale === 'hi' ? <>परिवार के लिए निर्मित।<br />लंबे समय के भरोसे के साथ।</> : <>Made for living.<br />Here for the long run.</>}
             </strong>
 
             <p className={styles.promiseDesc}>
@@ -205,7 +216,7 @@ export default function Footer({ config }) {
 
             <div className={styles.promiseActions}>
               <Link href="/contact" className={styles.ctaPrimary}>
-                <span>Visit {city} Store</span>
+                <span>{locale === 'hi' ? `${city === 'Prayagraj' ? 'प्रयागराज' : city} स्टोर पर जाएँ` : `Visit ${city} Store`}</span>
                 <Icon name="arrow" size={14} />
               </Link>
               <a
@@ -214,9 +225,77 @@ export default function Footer({ config }) {
                 rel="noopener noreferrer"
                 className={styles.ctaSecondary}
               >
-                <span>Chat on WhatsApp</span>
+                <span>{locale === 'hi' ? 'व्हाट्सएप पर चैट करें' : 'Chat on WhatsApp'}</span>
                 <Icon name="arrowUpRight" size={13} />
               </a>
+            </div>
+            {/* Social Icons & Store Direction directly below Prayagraj store option */}
+            <div className={styles.promiseSocialWrap}>
+              <span className={styles.promiseSocialLabel}>
+                {locale === 'hi' ? 'सोशल मीडिया व स्टोर' : 'Connect & Find Store'}
+              </span>
+              <div className={styles.promiseSocialIcons}>
+                {instagramUrl && (
+                  <a
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialBtn}
+                    aria-label="Instagram"
+                    title="Follow us on Instagram"
+                  >
+                    <Icon name="instagram" size={16} />
+                  </a>
+                )}
+                {facebookUrl && (
+                  <a
+                    href={facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialBtn}
+                    aria-label="Facebook"
+                    title="Follow us on Facebook"
+                  >
+                    <Icon name="facebook" size={16} />
+                  </a>
+                )}
+                {youtubeUrl && (
+                  <a
+                    href={youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialBtn}
+                    aria-label="YouTube"
+                    title="Watch on YouTube"
+                  >
+                    <Icon name="youtube" size={16} />
+                  </a>
+                )}
+                {mapUrl && (
+                  <a
+                    href={mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialBtn}
+                    aria-label="Prayagraj Store on Google Maps"
+                    title="Visit Prayagraj Store on Google Maps"
+                  >
+                    <Icon name="mapPin" size={16} />
+                  </a>
+                )}
+                {whatsappDigits && (
+                  <a
+                    href={`https://wa.me/${whatsappDigits}?text=Hello%20RF%20Riddhy%2C%20I%20want%20to%20inquire%20about%20your%20Prayagraj%20store`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialBtn}
+                    aria-label="WhatsApp"
+                    title="Chat on WhatsApp"
+                  >
+                    <Icon name="whatsapp" size={16} />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>

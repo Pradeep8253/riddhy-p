@@ -14,6 +14,7 @@ import {
   getLocalizedCategoryName,
   getLocalizedBadge,
   getLocalizedProductTagline,
+  getLocalizedBrand,
 } from "@/lib/translate-backend";
 import Icon from "./Icon";
 import dynamic from "next/dynamic";
@@ -189,16 +190,16 @@ export default function ProductCard({ product, compact = false }) {
 
         {/* Stock / Discount Badges */}
         {isOutOfStock ? (
-          <span className={styles.outOfStockBadge}>Sold Out</span>
+          <span className={styles.outOfStockBadge}>{locale === 'hi' ? 'बिक चुका है' : 'Sold Out'}</span>
         ) : isLowStock ? (
           <span
             className={styles.lowStockBadge}
-          >{`Only ${product.stock} left`}</span>
+          >{locale === 'hi' ? `केवल ${product.stock} शेष` : `Only ${product.stock} left`}</span>
         ) : product.discount > 0 ? (
           <span
             className={`${styles.discount} ${tagBadge ? styles.discountOffset : ""}`}
           >
-            {product.discount}% off
+            {product.discount}% {locale === 'hi' ? 'छूट' : 'off'}
           </span>
         ) : null}
 
@@ -237,7 +238,7 @@ export default function ProductCard({ product, compact = false }) {
 
       <div className={styles.details}>
         <div className={styles.meta}>
-          {product.brand || "RF Riddhy"} <span>·</span>{" "}
+          {getLocalizedBrand(product.brand || "RF Riddhy", locale)} <span>·</span>{" "}
           {getLocalizedCategoryName(
             product.categoryLabel || product.category,
             locale,
@@ -270,7 +271,7 @@ export default function ProductCard({ product, compact = false }) {
                   <Icon name="star" size={13} /> {product.rating}
                 </>
               ) : (
-                "Verified"
+                locale === 'hi' ? 'सत्यापित' : 'Verified'
               )}
             </span>
           </div>
@@ -279,14 +280,15 @@ export default function ProductCard({ product, compact = false }) {
             className={styles.priceRow}
             style={{ color: "#64748b", fontSize: "0.85rem" }}
           >
-            <span>Price on inquiry</span>
+            <span>{locale === 'hi' ? 'पूछताछ पर मूल्य' : 'Price on inquiry'}</span>
           </div>
         )}
 
         {hasValidPrice && Number(product.price) >= 8000 && !compact && (
           <div className={styles.emiSnippet}>
-            ⚡ EMI ₹
-            {Math.round(Number(product.price) / 6).toLocaleString("en-IN")}/mo
+            {locale === 'hi' ? '⚡ ईएमआई ₹' : '⚡ EMI ₹'}
+            {Math.round(Number(product.price) / 6).toLocaleString("en-IN")}
+            {locale === 'hi' ? '/माह' : '/mo'}
           </div>
         )}
 
@@ -299,10 +301,10 @@ export default function ProductCard({ product, compact = false }) {
           >
             <span>
               {!hasValidPrice
-                ? "Unavailable"
+                ? (locale === 'hi' ? "अनुपलब्ध" : "Unavailable")
                 : isOutOfStock
-                  ? "Out of stock"
-                  : "Add to bag"}
+                  ? (locale === 'hi' ? "स्टॉक समाप्त" : "Out of stock")
+                  : (locale === 'hi' ? "बैग में जोड़ें" : "Add to bag")}
             </span>
             <Icon name="arrow" size={17} />
           </button>

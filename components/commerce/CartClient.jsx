@@ -9,6 +9,7 @@ import { formatINR } from "@/lib/pricing";
 import Button from "@/components/ui/Button";
 import Icon from "@/components/ui/Icon";
 import { getProductWhatsAppUrl } from "@/lib/site-config";
+import { getLocalizedBrand, getLocalizedCategoryName, getLocalizedProductName } from "@/lib/translate-backend";
 import styles from "./CartClient.module.css";
 
 const FREE_SHIPPING_THRESHOLD = 50000;
@@ -188,11 +189,11 @@ export default function CartClient() {
               </Link>
               <div className={styles.details}>
                 <span>
-                  {item.brand || "Riddhy Select"} ·{" "}
-                  {item.categoryLabel || "Home"}
+                  {getLocalizedBrand(item.brand || "Riddhy Select", locale)} ·{" "}
+                  {getLocalizedCategoryName(item.categoryLabel || "Home", locale)}
                 </span>
                 <Link href={`/product/${item.slug}`}>
-                  <b>{item.name}</b>
+                  <b>{getLocalizedProductName(item, locale) || item.name}</b>
                 </Link>
                 <small>
                   {item.dimensions

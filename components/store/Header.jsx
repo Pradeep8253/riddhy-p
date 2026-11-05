@@ -799,7 +799,7 @@ export default function Header({ config, initialCategories = [] }) {
                           onClick={() => setActiveDropdown(null)}
                         >
                           <span className={styles.dropdownArrow}>›</span>
-                          <span className={styles.dropdownText}>{categoryLabels[slug] || slug.replace(/-/g, ' ')}</span>
+                          <span className={styles.dropdownText}>{getLocalizedCategoryName(categoryLabels[slug] || slug, locale)}</span>
                         </Link>
                       ))}
                     </div>
@@ -866,7 +866,7 @@ export default function Header({ config, initialCategories = [] }) {
                 <div className={styles.megaMenuColumns}>
                   {/* Furniture Column */}
                   <div className={styles.megaMenuCol}>
-                    <div className={styles.megaMenuBadge}>Furniture</div>
+                    <div className={styles.megaMenuBadge}>{locale === 'hi' ? 'फर्नीचर' : 'Furniture'}</div>
                     <div className={styles.megaMenuList}>
                       {furnitureCategories.slice(0, 10).map((cat) => (
                         <Link
@@ -885,14 +885,14 @@ export default function Header({ config, initialCategories = [] }) {
                         onClick={() => setActiveDropdown(null)}
                       >
                         <span className={styles.megaMenuArrow}>›</span>
-                        <span>View All Furniture {furnitureCategories.length > 0 ? `(${furnitureCategories.length})` : ''} →</span>
+                        <span>{locale === 'hi' ? `सभी फर्नीचर देखें ${furnitureCategories.length > 0 ? `(${furnitureCategories.length})` : ''} →` : `View All Furniture ${furnitureCategories.length > 0 ? `(${furnitureCategories.length})` : ''} →`}</span>
                       </Link>
                     </div>
                   </div>
 
                   {/* Utensils Column */}
                   <div className={styles.megaMenuCol}>
-                    <div className={styles.megaMenuBadge}>Utensils</div>
+                    <div className={styles.megaMenuBadge}>{locale === 'hi' ? 'बर्तन' : 'Utensils'}</div>
                     <div className={styles.megaMenuList}>
                       {utensilsCategories.slice(0, 10).map((cat) => (
                         <Link
@@ -911,14 +911,14 @@ export default function Header({ config, initialCategories = [] }) {
                         onClick={() => setActiveDropdown(null)}
                       >
                         <span className={styles.megaMenuArrow}>›</span>
-                        <span>View All Utensils {utensilsCategories.length > 0 ? `(${utensilsCategories.length})` : ''} →</span>
+                        <span>{locale === 'hi' ? `सभी बर्तन देखें ${utensilsCategories.length > 0 ? `(${utensilsCategories.length})` : ''} →` : `View All Utensils ${utensilsCategories.length > 0 ? `(${utensilsCategories.length})` : ''} →`}</span>
                       </Link>
                     </div>
                   </div>
 
                   {/* Appliances Column */}
                   <div className={styles.megaMenuCol}>
-                    <div className={styles.megaMenuBadge}>Appliances</div>
+                    <div className={styles.megaMenuBadge}>{locale === 'hi' ? 'उपकरण' : 'Appliances'}</div>
                     <div className={styles.megaMenuList}>
                       {applianceCategories.slice(0, 10).map((cat) => (
                         <Link
@@ -937,7 +937,7 @@ export default function Header({ config, initialCategories = [] }) {
                         onClick={() => setActiveDropdown(null)}
                       >
                         <span className={styles.megaMenuArrow}>›</span>
-                        <span>View All Appliances {applianceCategories.length > 0 ? `(${applianceCategories.length})` : ''} →</span>
+                        <span>{locale === 'hi' ? `सभी उपकरण देखें ${applianceCategories.length > 0 ? `(${applianceCategories.length})` : ''} →` : `View All Appliances ${applianceCategories.length > 0 ? `(${applianceCategories.length})` : ''} →`}</span>
                       </Link>
                     </div>
                   </div>
@@ -1051,7 +1051,7 @@ export default function Header({ config, initialCategories = [] }) {
             <div className={styles.drawerSection}>
               <div className={styles.drawerSectionHeader}>
                 <span className={styles.drawerSectionTitle}>
-                  Furniture Collections ({furnitureCategories.length})
+                  {locale === 'hi' ? `फर्नीचर कलेक्शन (${furnitureCategories.length})` : `Furniture Collections (${furnitureCategories.length})`}
                 </span>
                 <Link href="/furniture" onClick={closeMenu} className={styles.drawerSectionAllLink}>
                   <span>View All →</span>
@@ -1067,7 +1067,7 @@ export default function Header({ config, initialCategories = [] }) {
                     className={styles.categoryCard}
                   >
                     <div className={styles.cardContent}>
-                      <span className={styles.cardTitle}>{item.name}</span>
+                      <span className={styles.cardTitle}>{getLocalizedCategoryName(item, locale)}</span>
                       {item.name_hi ? (
                         <span className={styles.cardDesc}>{item.name_hi}</span>
                       ) : item.room ? (
@@ -1083,7 +1083,7 @@ export default function Header({ config, initialCategories = [] }) {
             <div className={styles.drawerSection}>
               <div className={styles.drawerSectionHeader}>
                 <span className={styles.drawerSectionTitle}>
-                  Home Appliances ({applianceCategories.length})
+                  {locale === 'hi' ? `घरेलू उपकरण (${applianceCategories.length})` : `Home Appliances (${applianceCategories.length})`}
                 </span>
                 <Link href="/appliances" onClick={closeMenu} className={styles.drawerSectionAllLink}>
                   <span>View All →</span>
@@ -1115,7 +1115,7 @@ export default function Header({ config, initialCategories = [] }) {
             <div className={styles.drawerSection}>
               <div className={styles.drawerSectionHeader}>
                 <span className={styles.drawerSectionTitle}>
-                  Utensils & Kitchenware ({utensilsCategories.length})
+                  {locale === 'hi' ? `बर्तन और रसोई के सामान (${utensilsCategories.length})` : `Utensils & Kitchenware (${utensilsCategories.length})`}
                 </span>
                 <Link href="/utensils" onClick={closeMenu} className={styles.drawerSectionAllLink}>
                   <span>View All →</span>

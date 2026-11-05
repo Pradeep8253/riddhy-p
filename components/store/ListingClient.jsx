@@ -1,10 +1,12 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import ProductGrid from '@/components/ui/ProductGrid';
 import { formatINR } from '@/lib/pricing';
 import Icon from '@/components/ui/Icon';
+import { getLocalizedBrand, getLocalizedCategoryName } from '@/lib/translate-backend';
 import styles from './ListingClient.module.css';
 
 const DEFAULT_PAGE_SIZE = 12;
@@ -18,6 +20,8 @@ const budgetPresets = [
 ];
 
 export default function ListingClient({
+  // Redux locale for Hindi/English localization
+
   products = [],
   title = 'Explore the Collection',
   description = 'Handcrafted furniture and smart home appliances designed for real life.',
@@ -25,6 +29,7 @@ export default function ListingClient({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const locale = useSelector((state) => state.ui?.locale || 'en');
 
   // Search & Filter State
   const [query, setQuery] = useState(params.get('q') || '');
@@ -244,7 +249,7 @@ export default function ListingClient({
             className={`${styles.catPill} ${!selectedCategory ? styles.catPillActive : ''}`}
             onClick={() => handleCategorySelect('')}
           >
-            All Designs ({products.length})
+            {locale === 'hi' ? `सभी डिज़ाइन (${products.length})` : `All Designs (${products.length})`}
           </button>
           {categories.map((c) => (
             <button
@@ -253,7 +258,7 @@ export default function ListingClient({
               className={`${styles.catPill} ${selectedCategory === c.name ? styles.catPillActive : ''}`}
               onClick={() => handleCategorySelect(c.name)}
             >
-              {c.name} ({c.count})
+              {locale === 'hi' ? getLocalizedCategoryName(c.name, locale) : c.name} ({c.count})
             </button>
           ))}
         </div>
@@ -264,7 +269,7 @@ export default function ListingClient({
         {/* Sidebar Filters */}
         <aside className={`${styles.sidebar} ${filtersOpen ? styles.showMobile : ''}`}>
           <div className={styles.filterTop}>
-            <b>Refine Selection</b>
+            <b>{locale === 'hi' ? 'फ़िल्टर चयन' : 'Refine Selection'}</b>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
               <button type="button" className={styles.clearBtn} onClick={clear}>
                 Reset all
@@ -282,13 +287,13 @@ export default function ListingClient({
 
           {/* Search within collection */}
           <div className={styles.field}>
-            <span className={styles.fieldTitle}>Search Collection</span>
+            <span className={styles.fieldTitle}>{locale === 'hi' ? 'कलेक्शन में खोजें' : 'Search Collection'}</span>
             <div className={styles.inputWithIcon}>
               <Icon name="search" size={15} />
               <input
                 value={query}
                 onChange={(e) => setQueryAndSync(e.target.value)}
-                placeholder="Search by name, wood, model..."
+                placeholder={locale === 'hi' ? 'नाम या मॉडल से खोजें...' : 'Search by name, wood, model...'}
               />
               {query && (
                 <button
@@ -304,7 +309,7 @@ export default function ListingClient({
 
           {/* Quick Budget Chips */}
           <div className={styles.field}>
-            <span className={styles.fieldTitle}>Price Range</span>
+            <span className={styles.fieldTitle}>{locale === 'hi' ? 'मूल्य सीमा' : 'Price Range'}</span>
             <div className={styles.budgetChipsGrid}>
               {budgetPresets.map((b, idx) => {
                 const isActive = (b.min === minPrice && b.max === maxPrice);
@@ -345,7 +350,7 @@ export default function ListingClient({
           {/* Brand Filter */}
           {brands.length > 1 && (
             <div className={styles.field}>
-              <span className={styles.fieldTitle}>Brand / Maker</span>
+              <span className={styles.fieldTitle}>{locale === 'hi' ? 'ब्रांड' : 'Brand / Maker'}</span>
               <select
                 value={brand}
                 onChange={(e) => {
@@ -356,7 +361,7 @@ export default function ListingClient({
                 }}
                 className={styles.filterSelect}
               >
-                <option value="">All Brands ({brands.length})</option>
+                <option value="">{locale === 'hi' ? `सभी ब्रांड (${brands.length})` : `All Brands (${brands.length})`}</option>
                 {brands.map((b) => (
                   <option key={b} value={b}>
                     {b}
@@ -368,7 +373,7 @@ export default function ListingClient({
 
           {/* Rating Filter */}
           <div className={styles.field}>
-            <span className={styles.fieldTitle}>Customer Rating</span>
+            <span className={styles.fieldTitle}>{locale === 'hi' ? 'ग्राहक रेटिंग' : 'Customer Rating'}</span>
             <select
               value={minRating}
               onChange={(e) => {
@@ -388,14 +393,14 @@ export default function ListingClient({
 
           {/* Value Assurances Box */}
           <div className={styles.checks}>
-            <b>The Riddhy Guarantee</b>
+            <b>{locale === 'hi' ? 'रिद्धि गारंटी' : 'The Riddhy Guarantee'}</b>
             <span>
               <Icon name="check" size={13} color="#25d366" />
-              10-Year Hardwood Frame Warranty
+              {locale === 'hi' ? '10-वर्ष फ़्रेम वारंटी' : '10-Year Hardwood Frame Warranty'}
             </span>
             <span>
               <Icon name="check" size={13} color="#25d366" />
-              Free White-Glove Installation
+              {locale === 'hi' ? 'निःशुल्क वाइट-ग्लव इंस्टॉलेशन' : 'Free White-Glove Installation'}
             </span>
             <span>
               <Icon name="check" size={13} color="#25d366" />
@@ -413,7 +418,7 @@ export default function ListingClient({
             className={styles.applyFilterBtnMobile}
             onClick={() => setFiltersOpen(false)}
           >
-            Show {filtered.length} Results
+            {locale === 'hi' ? `${filtered.length} उत्पाद देखें` : `Show ${filtered.length} Results`}
           </button>
         </aside>
 
@@ -427,7 +432,7 @@ export default function ListingClient({
               onClick={() => setFiltersOpen(true)}
             >
               <Icon name="sliders" size={15} />
-              <span>Filters & Sort {((query || brand || minPrice > 0 || maxPrice > 0 || inStockOnly || minRating > 0 || selectedCategory) ? '• Active' : '')}</span>
+              <span>{locale === 'hi' ? 'फ़िल्टर एवं सॉर्ट' : 'Filters & Sort'} {((query || brand || minPrice > 0 || maxPrice > 0 || inStockOnly || minRating > 0 || selectedCategory) ? '• Active' : '')}</span>
             </button>
 
             <span className={styles.resultCount}>
@@ -436,7 +441,7 @@ export default function ListingClient({
 
             <div className={styles.sortControls}>
               <label className={styles.sortLabel}>
-                <span>Sort by:</span>
+                <span>{locale === 'hi' ? 'क्रमबद्ध करें:' : 'Sort by:'}</span>
                 <select
                   value={sort}
                   onChange={(e) => {
@@ -457,7 +462,7 @@ export default function ListingClient({
               </label>
 
               <label className={styles.pageSizeSelect}>
-                <span>Per page:</span>
+                <span>{locale === 'hi' ? 'प्रति पृष्ठ:' : 'Per page:'}</span>
                 <select
                   value={pageSize}
                   onChange={(e) => {
@@ -509,7 +514,7 @@ export default function ListingClient({
             <div className={styles.chips}>
               {selectedCategory && (
                 <button onClick={() => handleCategorySelect('')} type="button">
-                  Category: {selectedCategory} <Icon name="close" size={11} />
+                  {locale === 'hi' ? 'श्रेणी: ' : 'Category: '}{locale === 'hi' ? getLocalizedCategoryName(selectedCategory, locale) : selectedCategory} <Icon name="close" size={11} />
                 </button>
               )}
               {query && (
@@ -536,7 +541,7 @@ export default function ListingClient({
                   }}
                   type="button"
                 >
-                  Brand: {brand} <Icon name="close" size={11} />
+                  {locale === 'hi' ? 'ब्रांड: ' : 'Brand: '}{locale === 'hi' ? getLocalizedBrand(brand, locale) : brand} <Icon name="close" size={11} />
                 </button>
               )}
               {(minPrice > 0 || maxPrice > 0) && (
@@ -568,7 +573,7 @@ export default function ListingClient({
                 </button>
               )}
               <button onClick={clear} className={styles.clearAllChip} type="button">
-                Clear All
+                {locale === 'hi' ? 'सभी हटाएं' : 'Clear All'}
               </button>
             </div>
           )}
@@ -628,10 +633,10 @@ export default function ListingClient({
               <div className={styles.emptyIcon}>🔍</div>
               <h3>No matching pieces found</h3>
               <p>
-                We could not find products matching your filters. Try clearing some criteria or adjusting your budget.
+                {locale === 'hi' ? 'आपके चुने गए फ़िल्टर के अनुसार कोई उत्पाद नहीं मिला। कृपया अपने फ़िल्टर बदलें या बजट समायोजित करें।' : 'We could not find products matching your filters. Try clearing some criteria or adjusting your budget.'}
               </p>
               <button type="button" className={styles.resetBtn} onClick={clear}>
-                Reset All Filters
+                {locale === 'hi' ? 'सभी फ़िल्टर रीसेट करें' : 'Reset All Filters'}
               </button>
             </div>
           )}

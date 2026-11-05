@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocale } from '@/store/uiSlice';
+import { useRouter } from 'next/navigation';
 import Icon from '@/components/ui/Icon';
 import styles from './GoogleTranslate.module.css';
 
@@ -106,6 +107,7 @@ export function clearGoogleTranslateCookie() {
 }
 
 export default function GoogleTranslate({ variant = 'compact' }) {
+  const router = useRouter();
   const dispatch = useDispatch();
   const reduxLocale = useSelector((state) => state.ui?.locale);
   const [currentLang, setCurrentLang] = useState('en');
@@ -250,6 +252,11 @@ export default function GoogleTranslate({ variant = 'compact' }) {
     try {
       window.localStorage.setItem('rf-locale', code);
       document.cookie = `rf-locale=${code}; path=/; max-age=31536000; SameSite=Lax`;
+      document.cookie = `rf_locale=${code}; path=/; max-age=31536000; SameSite=Lax`;
+      window.dispatchEvent(new CustomEvent('rf-locale-change', { detail: code }));
+      if (typeof router?.refresh === 'function') {
+        router.refresh();
+      }
     } catch { }
 
     if (code === 'en') {

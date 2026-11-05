@@ -1,5 +1,8 @@
 'use client';
 
+import { useSelector } from 'react-redux';
+import { getLocalizedSectionHeader, getLocalizedEyebrow } from '@/lib/translate-backend';
+
 import styles from './ListingHeader.module.css';
 
 export default function ListingHeader({
@@ -12,9 +15,9 @@ export default function ListingHeader({
     <header className={styles.header}>
       <div className="container">
         <div className={styles.content}>
-          <span className={styles.eyebrowTag}>{eyebrow}</span>
-          <h1 className={styles.title}>{title}</h1>
-          {description && <p className={styles.description}>{description}</p>}
+          <span className={styles.eyebrowTag}>{getLocalizedEyebrow(eyebrow, locale)}</span>
+          <h1 className={styles.title}>{getLocalizedSectionHeader(title, locale)}</h1>
+          {description && <p className={styles.description}>{getLocalizedSectionHeader(description, locale)}</p>}
 
           <div className={styles.metaRow}>
             {count != null && (
@@ -23,11 +26,11 @@ export default function ListingHeader({
               </span>
             )}
             <div className={styles.perks}>
-              <span>✓ 10-Year Frame Warranty</span>
+              <span>{locale === 'hi' ? '✓ 10-वर्ष फ़्रेम वारंटी' : '✓ 10-Year Frame Warranty'}</span>
               <span className={styles.perkDot}>·</span>
-              <span>✓ Free White-Glove Assembly</span>
+              <span>{locale === 'hi' ? '✓ निःशुल्क वाइट-ग्लव असेंबली' : '✓ Free White-Glove Assembly'}</span>
               <span className={styles.perkDot}>·</span>
-              <span>✓ Doorstep Delivery in UP</span>
+              <span>{locale === 'hi' ? '✓ यूपी में घर तक डिलीवरी' : '✓ Doorstep Delivery in UP'}</span>
             </div>
           </div>
         </div>
